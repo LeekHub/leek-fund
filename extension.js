@@ -9,13 +9,14 @@ let fundCodes = [];
 let fundList = []; // 基金数据缓存
 let fundMap = {}; // 名称和code对应的
 let dataProvider = null;
-let context = null; // vscode.ExtensionContext
+let extContext = null; // vscode.ExtensionContext
+let stockData = [];
 let updateInterval = 10000;
 let timer = null;
 let showTimer = null;
 
 function activate(context) {
-  this.context = context;
+  extContext = context;
   init();
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(handleConfigChange)
@@ -198,6 +199,7 @@ function fetchSZData() {
             data.push(result[item]);
           });
           displayData(data);
+          stockData = data;
         } catch (error) {}
       },
       (error) => {
@@ -270,9 +272,24 @@ function refreshViewTree(fundList) {
       text: str,
     });
   }
-  dataProvider = new DataProvider(this.context);
+  dataProvider = new DataProvider(extContext);
   dataProvider.setItem(list);
   vscode.window.registerTreeDataProvider('fund', dataProvider);
+
+  const stockList = [];
+  stockData.forEach((item) => {
+    const { code, percent, symbol, price } = item;
+    stockList.push({
+      grow: percent >= 0,
+      text: `${item.name}-${item.type}${symbol}：${price}（${keepDecimal(
+        item.percent * 100,
+        2
+      )}%）`,
+    });
+  });
+  const data2 = new DataProvider(extContext);
+  data2.setItem(stockList);
+  vscode.window.registerTreeDataProvider('stock', data2);
 }
 
 function getItemColor(item) {
