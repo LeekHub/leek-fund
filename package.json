@@ -1,0 +1,92 @@
+{
+  "name": "leek-fund",
+  "displayName": "Leek Fund Watch",
+  "description": "自选基金 | 天天基金 | 实时基金数据 | watch fund when coding",
+  "version": "0.1.0",
+  "publisher": "giscafer",
+  "license": "MIT",
+  "keywords": [
+    "stock",
+    "fund",
+    "vscode"
+  ],
+  "icon": "funds.jpg",
+  "engines": {
+    "vscode": "^1.47.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./extension",
+  "contributes": {
+    "configuration": {
+      "properties": {
+        "leek-fund.funds": {
+          "type": "array",
+          "default": [
+            "001632",
+            "420009",
+            "320007",
+            "003096",
+            "001102",
+            "003885",
+            "001071",
+            "005963",
+            "005223",
+            "002316",
+            "161726",
+            "161028",
+            "519674",
+            "161725"
+          ],
+          "description": "配置需要监控的基金代码"
+        },
+        "leek-fund.updateInterval": {
+          "type": "number",
+          "default": 5000,
+          "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"
+        },
+        "leek-fund.riseColor": {
+          "type": "string",
+          "default": "white",
+          "description": "股票涨的颜色"
+        },
+        "leek-fund.fallColor": {
+          "type": "string",
+          "default": "black",
+          "description": "股票跌的颜色"
+        },
+        "leek-fund.showTime": {
+          "type": "array",
+          "default": [
+            9,
+            23
+          ],
+          "description": "显示的时间段"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^2.6.1",
+    "vscode": "^1.1.6",
+    "eslint": "^4.11.0",
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "axios": "^0.18.1",
+    "cheerio": "^1.0.0-rc.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giscafer/leek-fund"
+  }
+}
