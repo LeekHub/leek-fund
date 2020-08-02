@@ -88,6 +88,9 @@ http://fund.eastmoney.com/js/fundcode_search.js
 参考文章：
 
 ```
+// 官方插件文档介绍
+https://code.visualstudio.com/api/extension-guides/overview
+
 // python 爬取基金数据
 https://blog.csdn.net/yuzhucu/article/details/55261024
 

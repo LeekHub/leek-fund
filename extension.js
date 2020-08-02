@@ -2,16 +2,20 @@ const cheerio = require('cheerio');
 const vscode = require('vscode');
 const axios = require('axios');
 const { randHeader } = require('./utils');
+const { DataProvider } = require('./views/dataprovider');
 
 let statusBarItems = {};
 let fundCodes = [];
 let fundList = []; // 基金数据缓存
 let fundMap = {}; // 名称和code对应的
+let dataProvider = null;
+let context = null; // vscode.ExtensionContext
 let updateInterval = 10000;
 let timer = null;
 let showTimer = null;
 
 function activate(context) {
+  this.context = context;
   init();
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(handleConfigChange)
@@ -93,8 +97,8 @@ function getFundNameList(codes) {
   }
   Promise.all(promiseList)
     .then((res) => {
-      console.log(res.length);
-      console.log(fundMap);
+      // console.log(res.length);
+      // console.log(fundMap);
     })
     .catch((err) => console.log(err));
 }
@@ -174,6 +178,7 @@ function fetchAllFundData() {
     const data = result.sort((a, b) => (a.percent > b.percent ? -1 : 1));
     // console.log(data);
     fundList = data;
+    refreshViewTree(fundList);
   });
 }
 
@@ -253,6 +258,21 @@ function getFundTooltipText() {
     }」\n-------------------------------------\n`;
   }
   return `【基金详情】\n\n ${fundTemplate}`;
+}
+
+// 左侧栏数据刷新
+function refreshViewTree(fundList) {
+  const list = [];
+  for (let fund of fundList) {
+    const str = `${fund.percent}   「${fundMap[fund.code]}」`;
+    list.push({
+      grow: fund.percent.indexOf('-') === 0 ? false : true,
+      text: str,
+    });
+  }
+  dataProvider = new DataProvider(this.context);
+  dataProvider.setItem(list);
+  vscode.window.registerTreeDataProvider('fund', dataProvider);
 }
 
 function getItemColor(item) {

@@ -13,7 +13,7 @@
     "蚂蚁财富",
     "vscode"
   ],
-  "icon": "funds.jpg",
+  "icon": "images/logo.jpg",
   "engines": {
     "vscode": "^1.47.0"
   },
@@ -25,6 +25,27 @@
   ],
   "main": "./extension",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fundMenu",
+          "title": "Fund（基金）",
+          "icon": "images/fund.svg"
+        }
+      ]
+    },
+    "views": {
+      "fundMenu": [
+        {
+          "id": "fund",
+          "name": "自选基金"
+        },
+        {
+          "id": "stock",
+          "name": "A股"
+        }
+      ]
+    },
     "configuration": {
       "properties": {
         "leek-fund.funds": {
