@@ -27,13 +27,13 @@ function init() {
     fundCodes = getFundCodes();
     getFundNameList(fundCodes);
     // 配置变化时，获取基金名称缓存
-    console.log('fundCodes=', fundCodes);
+    // console.log('fundCodes=', fundCodes);
     updateInterval = getUpdateInterval();
     fetchSZData(); // 上证指数
-    fetchFundData(); // 基金数据
+    fetchAllFundData(); // 基金数据
     timer = setInterval(() => {
       fetchSZData(); // 上证指数
-      fetchFundData(); // 基金数据
+      fetchAllFundData(); // 基金数据
     }, updateInterval);
   } else {
     hideAllStatusBar();
@@ -163,8 +163,8 @@ function fetchFundData(url, code) {
   });
 }
 
-function fetchFundData() {
-  console.log('fetchFundData');
+function fetchAllFundData() {
+  console.log('fetchAllFundData');
   const promiseAll = [];
   for (const fundCode of fundCodes) {
     const url = getFundUrlByCode(fundCode);
@@ -217,7 +217,7 @@ function displayData(data) {
   });
   // 手动加基金item
   if (statusBarItems['fund']) {
-    statusBarItems['fund'].text = `  「基金」详情`;
+    statusBarItems['fund'].text = ` 🐥「基金详情」`;
     statusBarItems['fund'].color = getItemColor({ percent: 1 }); // 随意写的 percent
     statusBarItems['fund'].tooltip = getFundTooltipText();
   } else {
@@ -244,10 +244,10 @@ function getFundTooltipText() {
   for (let fund of fundList) {
     fundTemplate += `${
       fund.percent.indexOf('-') === 0
-        ? '↓'
+        ? '↓ '
         : fund.percent === '0.00%'
         ? ''
-        : '↑'
+        : '↑ '
     } ${fund.percent}   「${
       fundMap[fund.code]
     }」\n-------------------------------------\n`;

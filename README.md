@@ -4,9 +4,9 @@ VScode 插件，随时关注 上证指数和实时基金数据。
 
 **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
 
-GitHub: https://github.com/giscafer/leek-fund 欢迎 PR、Star
+![截屏](https://raw.githubusercontent.com/giscafer/leek-fund/master/funds.jpg)
 
-## Configuration
+## 插件配置说明
 
 修改用户配置，添加你所需要监控的股票代码
 
@@ -84,5 +84,14 @@ http://fund.eastmoney.com/js/fundcode_search.js
 
 参考文章：
 
+```
+// python 爬取基金数据
 https://blog.csdn.net/yuzhucu/article/details/55261024
+
+// 发布流程
 https://blog.csdn.net/Suwanqing_su/article/details/105947156
+```
+
+## Github
+
+源码: https://github.com/giscafer/leek-fund 欢迎 PR、Star

@@ -1,5 +1,5 @@
 .vscode
-node_modules
+screenshot
 .vscode-test/**
 test/**
 .gitignore
