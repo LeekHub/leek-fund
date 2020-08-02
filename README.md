@@ -7,6 +7,7 @@ VScode 插件，随时关注 上证指数和实时基金数据。
 ## Screenshot
 
 鼠标悬浮查看上证指数和基金详情：
+
 ![demo2.png](https://ww1.sinaimg.cn/large/940e68eegy1ghcoqirahuj214w1pke73.jpg)
 
 ## 插件配置说明
