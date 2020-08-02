@@ -14,6 +14,19 @@ let stockData = [];
 let updateInterval = 10000;
 let timer = null;
 let showTimer = null;
+const stockCodes = [
+  // 股票代码（目前不可配置）
+  '0000001',
+  '0000300',
+  '0000016',
+  '0000688',
+  '0399006',
+  '0000913',
+  '0000905',
+  '0600519',
+  '0399975',
+  '0399995',
+];
 
 function activate(context) {
   extContext = context;
@@ -186,7 +199,9 @@ function fetchAllFundData() {
 function fetchSZData() {
   axios
     // @ts-ignore
-    .get(`https://api.money.126.net/data/feed/0000001?callback=a`) // 上证指数
+    .get(
+      `https://api.money.126.net/data/feed/${stockCodes.join(',')}?callback=a`
+    ) // 上证指数
     .then(
       (rep) => {
         try {
@@ -212,16 +227,15 @@ function fetchSZData() {
 }
 
 function displayData(data) {
-  data.map((item) => {
-    const key = item.code;
-    if (statusBarItems[key]) {
-      statusBarItems[key].text = getItemText(item);
-      statusBarItems[key].color = getItemColor(item);
-      statusBarItems[key].tooltip = getTooltipText(item);
-    } else {
-      statusBarItems[key] = createStatusBarItem(item);
-    }
-  });
+  const item = data[0];
+  const key = item.code;
+  if (statusBarItems[key]) {
+    statusBarItems[key].text = getItemText(item);
+    statusBarItems[key].color = getItemColor(item);
+    statusBarItems[key].tooltip = getTooltipText(item);
+  } else {
+    statusBarItems[key] = createStatusBarItem(item);
+  }
   // 手动加基金item
   if (statusBarItems['fund']) {
     statusBarItems['fund'].text = ` 🐥「基金详情」`;
@@ -266,7 +280,7 @@ function getFundTooltipText() {
 function refreshViewTree(fundList) {
   const list = [];
   for (let fund of fundList) {
-    const str = `${fund.percent}   「${fundMap[fund.code]}」`;
+    const str = `${fund.percent}   「${fundMap[fund.code]}」(${fund.code})`;
     list.push({
       grow: fund.percent.indexOf('-') === 0 ? false : true,
       text: str,
@@ -277,14 +291,14 @@ function refreshViewTree(fundList) {
   vscode.window.registerTreeDataProvider('fund', dataProvider);
 
   const stockList = [];
-  stockData.forEach((item) => {
+  const arr = stockData.sort((a, b) => (a.percent >= b.percent ? -1 : 1));
+  arr.forEach((item) => {
     const { code, percent, symbol, price } = item;
     stockList.push({
       grow: percent >= 0,
-      text: `${item.name}-${item.type}${symbol}：${price}（${keepDecimal(
-        item.percent * 100,
-        2
-      )}%）`,
+      text: `${keepDecimal(item.percent * 100, 2)}%   ${price}    「${
+        item.name
+      }」${item.type}${symbol}`,
     });
   });
   const data2 = new DataProvider(extContext);
@@ -303,7 +317,7 @@ function getItemColor(item) {
 function createStatusBarItem(item) {
   const barItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
-    0 - fundCodes.indexOf(item.code)
+    3
   );
   barItem.text = getItemText(item);
   barItem.color = getItemColor(item);
@@ -315,7 +329,7 @@ function createStatusBarItem(item) {
 function createFundStatusBarItem() {
   const barItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
-    0 - 999999
+    2
   );
   barItem.text = `  「基金」详情`;
   barItem.color = getItemColor({ percent: 1 });

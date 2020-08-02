@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜基金",
   "description": "VSCode 插件，在编码的时候随时关注 上证指数 & 实时基金数据",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
@@ -29,7 +29,7 @@
       "activitybar": [
         {
           "id": "fundMenu",
-          "title": "Fund（基金）",
+          "title": "LeetFund 🐥",
           "icon": "images/fund.svg"
         }
       ]
@@ -38,11 +38,11 @@
       "fundMenu": [
         {
           "id": "fund",
-          "name": "自选基金"
+          "name": "Fund"
         },
         {
           "id": "stock",
-          "name": "A股"
+          "name": "A-Stock"
         }
       ]
     },
