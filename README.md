@@ -4,7 +4,10 @@ VScode 插件，随时关注 上证指数和实时基金数据。
 
 **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
 
-![截屏](https://raw.githubusercontent.com/giscafer/leek-fund/master/funds.jpg)
+## Screenshot
+
+鼠标悬浮查看上证指数和基金 Tooltip 详情：
+![demo1.png](https://ww1.sinaimg.cn/large/940e68eegy1ghches4ozkj20xq0ryk3f.jpg)
 
 ## 插件配置说明
 

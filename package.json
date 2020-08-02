@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜基金",
   "description": "VSCode 插件，在编码的时候随时关注 上证指数 & 实时基金数据",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
