@@ -1,7 +1,7 @@
 {
   "name": "leek-fund",
   "displayName": "Leek Fund Watch",
-  "description": "自选基金 | 天天基金 | 实时基金数据 | watch fund when coding",
+  "description": "VScode 插件，在编码的时候随时关注 上证指数 & 实时基金数据",
   "version": "0.1.0",
   "publisher": "giscafer",
   "license": "MIT",
