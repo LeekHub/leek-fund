@@ -41,10 +41,18 @@ exports.registerViewEvent = (context) => {
           vscode.ViewColumn.One
         );
         panel.webview.html = `<html>
-          <style>.lsjz{
+          <style>
+          .lsjz{
             width: 100%;
             text-align: center;
-          }</style>
+          }
+          .red{
+            color:red;
+          }
+          .grn{
+            color:green;
+          }
+          </style>
           <body>
             <br/>
             <p style="margin-left:20px;font-size:18px">${text}</p>
