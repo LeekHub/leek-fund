@@ -16,7 +16,7 @@ function getFundUrlByCode(fundCode) {
   return fundUrl;
 }
 
-const stockCodes = [
+const fundCodes = [
   '001632',
   /* '420009',
   '320007',
@@ -34,15 +34,15 @@ const stockCodes = [
   '161725', */
 ];
 
-function fetchFundData(url) {
+function fetchFundData(url, code) {
   return new Promise((resolve, reject) => {
     // @ts-ignore
     axios.get(url, { headers: randHeader() }).then((response) => {
       eval(response.data);
       // @ts-ignore
-      // console.log(apidata);
-      // @ts-ignore
       const $ = cheerio.load(apidata.content);
+      // @ts-ignore
+      // console.log(apidata.content);
       const red = $('td.tor.bold.red');
       const green = $('td.tor.bold.grn');
       let value = '0.00%';
@@ -58,21 +58,21 @@ function fetchFundData(url) {
           value = text;
         }
       }
-      resolve(value);
+      resolve({ percent: value, code });
     });
   });
 }
-
-function fetchAllData() {
-  console.log('fetchAllData');
+function fetchAllFundData() {
+  console.log('fetchAllFundData');
   const promiseAll = [];
-  for (const fundCode of stockCodes) {
+  for (const fundCode of fundCodes) {
     const url = getFundUrlByCode(fundCode);
-    promiseAll.push(fetchFundData(url));
+    promiseAll.push(fetchFundData(url, fundCode));
   }
   Promise.all(promiseAll).then((result) => {
-    console.log(result.sort((a, b) => (a > b ? -1 : 1)));
+    const data = result.sort((a, b) => (a.percent > b.percent ? -1 : 1));
+    console.log(data);
   });
 }
 
-fetchAllData();
+fetchAllFundData();

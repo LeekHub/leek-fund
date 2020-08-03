@@ -1,8 +1,8 @@
 {
   "name": "leek-fund",
   "displayName": "韭菜基金",
-  "description": "VSCode 插件，在编码的时候随时关注 上证指数 & 实时基金数据",
-  "version": "0.1.5",
+  "description": "VSCode 插件，在编码的时候随时关注实时股票&基金数据",
+  "version": "0.1.6",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
@@ -42,12 +42,29 @@
         },
         {
           "id": "stock",
-          "name": "A-Stock"
+          "name": "Stock"
         }
       ]
     },
     "configuration": {
       "properties": {
+        "leek-fund.stocks": {
+          "type": "array",
+          "default": [
+            "0000001",
+            "0000300",
+            "0000016",
+            "0000688",
+            "0399006",
+            "0000913",
+            "0000905",
+            "0600519",
+            "0399975",
+            "0399995",
+            "hk09988"
+          ],
+          "description": "配置需要监控的股票代码"
+        },
         "leek-fund.funds": {
           "type": "array",
           "default": [
@@ -87,7 +104,7 @@
           "type": "array",
           "default": [
             9,
-            23
+            22
           ],
           "description": "显示的时间段"
         }

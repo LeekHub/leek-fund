@@ -3,6 +3,7 @@ const vscode = require('vscode');
 const axios = require('axios');
 const { randHeader } = require('./utils');
 const { DataProvider } = require('./views/dataprovider');
+const { url } = require('inspector');
 
 let statusBarItems = {};
 let fundCodes = [];
@@ -14,19 +15,7 @@ let stockData = [];
 let updateInterval = 10000;
 let timer = null;
 let showTimer = null;
-const stockCodes = [
-  // 股票代码（目前不可配置）
-  '0000001',
-  '0000300',
-  '0000016',
-  '0000688',
-  '0399006',
-  '0000913',
-  '0000905',
-  '0600519',
-  '0399975',
-  '0399995',
-];
+let stockCodes = [];
 
 function activate(context) {
   extContext = context;
@@ -43,6 +32,7 @@ function init() {
   initShowTimeChecker();
   if (isShowTime()) {
     fundCodes = getFundCodes();
+    stockCodes = getStockCodes();
     getFundNameList(fundCodes);
     // 配置变化时，获取基金名称缓存
     // console.log('fundCodes=', fundCodes);
@@ -81,6 +71,7 @@ function handleConfigChange() {
   timer && clearInterval(timer);
   showTimer && clearInterval(showTimer);
   const codes = getFundCodes();
+  stockCodes = getStockCodes();
   Object.keys(statusBarItems).forEach((item) => {
     if (codes.indexOf(item) === -1) {
       statusBarItems[item].hide();
@@ -122,6 +113,11 @@ function getFundCodes() {
   const funds = config.get('leek-fund.funds');
   return funds;
 }
+function getStockCodes() {
+  const config = vscode.workspace.getConfiguration();
+  const stocks = config.get('leek-fund.stocks');
+  return stocks;
+}
 
 function getUpdateInterval() {
   const config = vscode.workspace.getConfiguration();
@@ -144,39 +140,21 @@ function isShowTime() {
 }
 
 function getFundUrlByCode(fundCode) {
-  // const date = new Date();
-  // let day = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  // day = '2020-7-31';
-  const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${fundCode}&page=1&per=1`;
-  // console.log(fundUrl);
+  // 历史数据
+  // const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${fundCode}&page=1&per=1`;
+  const fundUrl = `http://fundgz.1234567.com.cn/js/${fundCode}.js?rt="${new Date().getTime()}`;
   return fundUrl;
 }
 
 function fetchFundData(url, code) {
   return new Promise((resolve, reject) => {
     // @ts-ignore
-    axios.get(url, { headers: randHeader() }).then((response) => {
-      eval(response.data);
-      // @ts-ignore
-      const $ = cheerio.load(apidata.content);
-      // @ts-ignore
-      // console.log(apidata.content);
-      const red = $('td.tor.bold.red');
-      const green = $('td.tor.bold.grn');
-      let value = '0.00%';
-      if (red) {
-        const text = red.text();
-        if (text) {
-          value = text;
-        }
-      }
-      if (green) {
-        const text = green.text();
-        if (text) {
-          value = text;
-        }
-      }
-      resolve({ percent: value, code });
+    axios.get(url, { headers: randHeader() }).then((rep) => {
+      const data = JSON.parse(rep.data.slice(8, -2));
+
+      // {"fundcode":"320007","name":"诺安混合成长","jzrq":"2020-07-31","dwjz":"1.9900","gsz":"2.0444","gszzl":"2.73","gztime":"2020-08-03 10:42"}
+      const { gszzl, gztime, name } = data;
+      resolve({ percent: gszzl + '%', code, time: gztime, name });
     });
   });
 }
@@ -197,11 +175,12 @@ function fetchAllFundData() {
 }
 
 function fetchSZData() {
+  const url = `https://api.money.126.net/data/feed/${stockCodes.join(
+    ','
+  )}?callback=a`;
   axios
     // @ts-ignore
-    .get(
-      `https://api.money.126.net/data/feed/${stockCodes.join(',')}?callback=a`
-    ) // 上证指数
+    .get(url) // 上证指数
     .then(
       (rep) => {
         try {
@@ -215,7 +194,9 @@ function fetchSZData() {
           });
           displayData(data);
           stockData = data;
-        } catch (error) {}
+        } catch (err) {
+          console.log(err);
+        }
       },
       (error) => {
         console.error(error);
@@ -227,6 +208,7 @@ function fetchSZData() {
 }
 
 function displayData(data) {
+  // console.log(data);
   const item = data[0];
   const key = item.code;
   if (statusBarItems[key]) {
@@ -278,9 +260,10 @@ function getFundTooltipText() {
 
 // 左侧栏数据刷新
 function refreshViewTree(fundList) {
+  // 基金
   const list = [];
   for (let fund of fundList) {
-    const str = `${fund.percent}   「${fundMap[fund.code]}」(${fund.code})`;
+    const str = `${fund.percent}   「${fund.name}」(${fund.code})`;
     list.push({
       grow: fund.percent.indexOf('-') === 0 ? false : true,
       text: str,
@@ -290,6 +273,7 @@ function refreshViewTree(fundList) {
   dataProvider.setItem(list);
   vscode.window.registerTreeDataProvider('fund', dataProvider);
 
+  // 股票
   const stockList = [];
   const arr = stockData.sort((a, b) => (a.percent >= b.percent ? -1 : 1));
   arr.forEach((item) => {
