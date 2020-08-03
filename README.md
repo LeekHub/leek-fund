@@ -1,6 +1,6 @@
 # leek-fund
 
-VSCode 插件，在编码的时候随时关注实时股票&基金数据。
+VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因接口原因基金数据延迟 2 分钟左右，股票数据是实时**
 
 **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
 
@@ -99,7 +99,7 @@ http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=001632&page=1&&sdat
 比如上证指数：
 https://api.money.126.net/data/feed/0000001?callback=a
 
-// 基金实时数据（有几分钟延迟）
+// 基金实时数据（有几分钟延迟，插件基金数据使用的是此接口）
 // 比如诺安成长混合
 http://fundgz.1234567.com.cn/js/320007.js?callback=a
 
