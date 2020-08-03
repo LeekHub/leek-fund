@@ -165,7 +165,7 @@ function fetchFundData(url, code) {
 }
 
 function fetchAllFundData() {
-  console.log('fetchAllFundData');
+  console.log('fetching fund data……');
   const promiseAll = [];
   for (const fundCode of fundCodes) {
     const url = getFundUrlByCode(fundCode);
