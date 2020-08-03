@@ -4,7 +4,7 @@ const { TreeItem, TreeItemCollapsibleState } = require('vscode');
 
 class DataProvider {
   constructor(context) {
-    this.data = [new DataItem('暂无数据')];
+    this.data = [];
     this.context = context;
     this.onDidChangeTreeData = undefined;
   }
@@ -36,6 +36,20 @@ class DataProvider {
       treeItem.iconPath = this.context.asAbsolutePath(
         path.join('images', `${item.grow ? 'up-arrow' : 'down-arrow'}.svg`)
       );
+      // 点击事件
+      treeItem.command = {
+        title: item.name, // 标题
+        command: item.isStock
+          ? 'extension.leetfund.stockItemClick'
+          : 'extension.leetfund.fundItemClick', // 命令 ID
+        // tooltip: item.text, // 鼠标覆盖时的小小提示框
+        arguments: [
+          // 向 registerCommand 传递的参数。
+          item.code, // 基金/股票编码
+          item.name, // 基金/股票名称
+          item.text,
+        ],
+      };
       temp.push(treeItem);
     }
     // @ts-ignore

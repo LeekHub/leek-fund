@@ -1,8 +1,6 @@
 const cheerio = require('cheerio');
 const axios = require('axios');
 const { randHeader } = require('../utils');
-// @ts-ignore
-const baseUrl = 'https://api.money.126.net/data/feed/';
 
 // @ts-ignore
 // const request = axios.create({});

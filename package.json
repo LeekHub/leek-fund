@@ -103,8 +103,8 @@
         "leek-fund.showTime": {
           "type": "array",
           "default": [
-            9,
-            22
+            0,
+            24
           ],
           "description": "显示的时间段"
         }
@@ -124,8 +124,7 @@
     "@types/mocha": "^2.2.42"
   },
   "dependencies": {
-    "axios": "^0.18.1",
-    "cheerio": "^1.0.0-rc.3"
+    "axios": "^0.18.1"
   },
   "repository": {
     "type": "git",

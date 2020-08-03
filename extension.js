@@ -1,9 +1,8 @@
-const cheerio = require('cheerio');
 const vscode = require('vscode');
 const axios = require('axios');
 const { randHeader } = require('./utils');
 const { DataProvider } = require('./views/dataprovider');
-const { url } = require('inspector');
+const { registerViewEvent } = require('./views/register-event');
 
 let statusBarItems = {};
 let fundCodes = [];
@@ -23,6 +22,7 @@ function activate(context) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration(handleConfigChange)
   );
+  registerViewEvent(context);
 }
 exports.activate = activate;
 function deactivate() {}
@@ -89,14 +89,17 @@ function getFundNameList(codes) {
     const p = new Promise((resolve, reject) => {
       const url = `http://fundgz.1234567.com.cn/js/${code}.js`;
       // console.log(url);
-      // @ts-ignore
-      axios.get(url).then((response) => {
-        const data = response.data;
-        const text = data.replace('jsonpgz(', '').replace(');', '');
-        const fundName = JSON.parse(text).name;
-        fundMap[code] = fundName;
-        resolve({ name: fundName, code });
-      });
+      axios
+        // @ts-ignore
+        .get(url)
+        .then((response) => {
+          const data = response.data;
+          const text = data.replace('jsonpgz(', '').replace(');', '');
+          const fundName = JSON.parse(text).name;
+          fundMap[code] = fundName;
+          resolve({ name: fundName, code });
+        })
+        .catch(() => resolve({ name: '基金代码错误', code }));
     });
     promiseList.push(p);
   }
@@ -148,14 +151,16 @@ function getFundUrlByCode(fundCode) {
 
 function fetchFundData(url, code) {
   return new Promise((resolve, reject) => {
-    // @ts-ignore
-    axios.get(url, { headers: randHeader() }).then((rep) => {
-      const data = JSON.parse(rep.data.slice(8, -2));
-
-      // {"fundcode":"320007","name":"诺安混合成长","jzrq":"2020-07-31","dwjz":"1.9900","gsz":"2.0444","gszzl":"2.73","gztime":"2020-08-03 10:42"}
-      const { gszzl, gztime, name } = data;
-      resolve({ percent: gszzl + '%', code, time: gztime, name });
-    });
+    axios
+      // @ts-ignore
+      .get(url, { headers: randHeader() })
+      .then((rep) => {
+        const data = JSON.parse(rep.data.slice(8, -2));
+        // {"fundcode":"320007","name":"诺安混合成长","jzrq":"2020-07-31","dwjz":"1.9900","gsz":"2.0444","gszzl":"2.73","gztime":"2020-08-03 10:42"}
+        const { gszzl, gztime, name } = data;
+        resolve({ percent: gszzl + '%', code, time: gztime, name });
+      })
+      .catch(() => resolve({ percent: 'NaN', name: '基金代码错误', code }));
   });
 }
 
@@ -166,12 +171,16 @@ function fetchAllFundData() {
     const url = getFundUrlByCode(fundCode);
     promiseAll.push(fetchFundData(url, fundCode));
   }
-  Promise.all(promiseAll).then((result) => {
-    const data = result.sort((a, b) => (a.percent > b.percent ? -1 : 1));
-    // console.log(data);
-    fundList = data;
-    refreshViewTree(fundList);
-  });
+  Promise.all(promiseAll)
+    .then((result) => {
+      const data = result.sort((a, b) => (a.percent > b.percent ? -1 : 1));
+      // console.log(data);
+      fundList = data;
+      refreshViewTree(fundList);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 function fetchSZData() {
@@ -252,7 +261,7 @@ function getFundTooltipText() {
         ? ''
         : '↑ '
     } ${fund.percent}   「${
-      fundMap[fund.code]
+      fund.name
     }」\n-------------------------------------\n`;
   }
   return `【基金详情】\n\n ${fundTemplate}`;
@@ -267,6 +276,8 @@ function refreshViewTree(fundList) {
     list.push({
       grow: fund.percent.indexOf('-') === 0 ? false : true,
       text: str,
+      code: fund.code,
+      name: fund.name,
     });
   }
   dataProvider = new DataProvider(extContext);
@@ -277,12 +288,16 @@ function refreshViewTree(fundList) {
   const stockList = [];
   const arr = stockData.sort((a, b) => (a.percent >= b.percent ? -1 : 1));
   arr.forEach((item) => {
-    const { code, percent, symbol, price } = item;
+    const { code, percent, symbol, name, price, type } = item;
     stockList.push({
+      isStock: true,
       grow: percent >= 0,
-      text: `${keepDecimal(item.percent * 100, 2)}%   ${price}    「${
-        item.name
-      }」${item.type}${symbol}`,
+      code,
+      name,
+      text: `${keepDecimal(
+        percent * 100,
+        2
+      )}%   ${price}    「${name}」${type}${symbol}`,
     });
   });
   const data2 = new DataProvider(extContext);

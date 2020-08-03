@@ -24,7 +24,6 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
 
   // 港股股票代码前面需要加上hk前缀，如hk09988即可监控阿里巴巴港股
 
-
   "leek-fund.stocks": [
     "0000001",
     "0000300",
@@ -38,6 +37,7 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
     "0399995",
     "hk09988"
   ],
+
   // 配置需要监控的基金代码
   "leek-fund.funds": [
     "001632",
@@ -124,13 +124,17 @@ http://fund.eastmoney.com/js/fundcode_search.js
 // 官方插件文档介绍
 https://code.visualstudio.com/api/extension-guides/overview
 
-// python 爬取基金数据
+// Python 爬取历史基金数据
 https://blog.csdn.net/yuzhucu/article/details/55261024
 
 // 发布流程
 https://blog.csdn.net/Suwanqing_su/article/details/105947156
+
+// 开发系列博文
+http://blog.haoji.me/vscode-plugin-overview.html
+
 ```
 
 ## Github
 
-源码: https://github.com/giscafer/leek-fund 欢迎 PR、Star
+https://github.com/giscafer/leek-fund
