@@ -293,6 +293,7 @@ function refreshViewTree(fundList) {
       isStock: true,
       grow: percent >= 0,
       code,
+      stockCode: `${type}${symbol}`,
       name,
       text: `${keepDecimal(
         percent * 100,

@@ -6,7 +6,7 @@ exports.registerViewEvent = (context) => {
   context.subscriptions.push(
     vscode.commands.registerCommand(
       'extension.leetfund.stockItemClick',
-      (code, name, text) => {
+      (code, name, text, stockCode) => {
         // 创建webview
         const panel = vscode.window.createWebviewPanel(
           'stockWebview', // viewType
@@ -22,7 +22,18 @@ exports.registerViewEvent = (context) => {
           <p style="margin-left:20px;font-size:18px">${text}</p>
           <hr />
           <br/>
+          <h3>实时走势图</3> <br/>
           <img src="http://img1.money.126.net/chart/hs/time/210x140/${code}.png" width="420"/>
+          <br/>
+          <h3>时分K线图</3> <br/>
+          <img src="https://image.sinajs.cn/newchart/min/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <br/>
+          <h3>日K线图</3> <br/>
+          <img src="http://image.sinajs.cn/newchart/daily/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <h3>周K线图</3> <br/>
+          <img src="http://image.sinajs.cn/newchart/weekly/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <h3>月K线图</3> <br/>
+          <img src="https://image.sinajs.cn/newchart/monthly/n/${stockCode.toLowerCase()}.gif" width="420"/>
         </body></html>`;
       }
     )
@@ -44,6 +55,7 @@ exports.registerViewEvent = (context) => {
           <style>
           .lsjz{
             width: 100%;
+            min-width:600px;
             text-align: center;
           }
           .red{

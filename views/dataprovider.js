@@ -48,6 +48,7 @@ class DataProvider {
           item.code, // 基金/股票编码
           item.name, // 基金/股票名称
           item.text,
+          item.stockCode,
         ],
       };
       temp.push(treeItem);
