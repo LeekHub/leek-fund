@@ -36,6 +36,7 @@ class DataProvider {
       treeItem.iconPath = this.context.asAbsolutePath(
         path.join('images', `${item.grow ? 'up-arrow' : 'down-arrow'}.svg`)
       );
+      treeItem.id = item.code; // 基金/股票编码
       // 点击事件
       treeItem.command = {
         title: item.name, // 标题
