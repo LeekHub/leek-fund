@@ -19,13 +19,7 @@ class DataProvider {
     }
     return element.children;
   }
-  /* setItem(textList) {
-    const temp = [];
-    for (let item of textList) {
-      temp.push(new DataItem(item));
-    }
-    this.data = temp;
-  } */
+
   setItem(textList) {
     const temp = [];
     for (let item of textList) {
@@ -56,18 +50,6 @@ class DataProvider {
     }
     // @ts-ignore
     this.data = temp;
-  }
-}
-
-class DataItem extends TreeItem {
-  constructor(label, children) {
-    super(
-      label,
-      children === undefined
-        ? TreeItemCollapsibleState.None
-        : TreeItemCollapsibleState.Collapsed
-    );
-    this.children = children;
   }
 }
 
