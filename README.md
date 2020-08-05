@@ -4,13 +4,16 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
 
 **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
 
-## Screenshot
+安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
+
+## 截图
 
 鼠标悬浮查看股票和基金实时数据截图：
 
 ![界面截图 1](https://ww1.sinaimg.cn/large/940e68eegy1ghcoqirahuj214w1pke73.jpg)
+![基金历史净值](https://raw.githubusercontent.com/giscafer/leek-fund/master/screenshot/fund-history-detail.png)
 
-- [查看界面图片 2](http://ww1.sinaimg.cn/large/940e68eegy1ghcvziv655j20wm1aywnx.jpg)
+- [VSCode 插件开发——韭菜基金（查看更多界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
 ## 插件配置说明
 
@@ -18,10 +21,9 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
 
 ```
   // 配置需要监控的股票代码
-  // 可根据沪市深市分别加上sh、sz前缀，亦可不加
-  // 不加前缀的情况下，6开头的代码默认加上sh，其余加上sz
-  // 需要查看上证指数，代码为sh000001
 
+  // 深股头位 1，沪股头位 0，后跟六位代码，比如需要查看上证指数，代码为0000001
+  // 可以浏览器用这个链接测试一下是否有返回数据（改对应的股票代码）：https://api.money.126.net/data/feed/0000001?callback=a
   // 港股股票代码前面需要加上hk前缀，如hk09988即可监控阿里巴巴港股
 
   "leek-fund.stocks": [
