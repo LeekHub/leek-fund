@@ -47,6 +47,30 @@
         }
       ]
     },
+    "commands": [
+      {
+        "command": "fund.add",
+        "title": "Add"
+      },
+      {
+        "command": "fund.delete",
+        "title": "Delete"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "fund.add",
+          "when": "view == fund"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "fund.delete",
+          "when": "view == fund"
+        }
+      ]
+    },
     "configuration": {
       "properties": {
         "leek-fund.stocks": {

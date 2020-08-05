@@ -23,9 +23,12 @@ function activate(context) {
     vscode.workspace.onDidChangeConfiguration(handleConfigChange)
   );
   registerViewEvent(context);
+
+  vscode.commands.registerCommand('fund.delete', target => deleteFund(target.id));
+  vscode.commands.registerCommand('fund.add', () => addFund());
 }
 exports.activate = activate;
-function deactivate() {}
+function deactivate() { }
 exports.deactivate = deactivate;
 
 function init() {
@@ -113,8 +116,24 @@ function getFundNameList(codes) {
 
 function getFundCodes() {
   const config = vscode.workspace.getConfiguration();
-  const funds = config.get('leek-fund.funds');
+  const funds = config.get('leek-fund.funds') || [];
   return funds;
+}
+function deleteFund(target) {
+  const config = vscode.workspace.getConfiguration();
+  const funds = config.get('leek-fund.funds');
+  const result = funds.filter(code => code !== target);
+
+  config.update('leek-fund.funds', result, true)
+  vscode.window.showInformationMessage(`Successfully delete.`)
+}
+function addFund() {
+  vscode.window.showInputBox().then(code => {
+    const config = vscode.workspace.getConfiguration();
+    const funds = config.get('leek-fund.funds') || [];
+    config.update('leek-fund.funds', [...funds, code], true)
+    vscode.window.showInformationMessage(`Successfully add.`)
+  })
 }
 function getStockCodes() {
   const config = vscode.workspace.getConfiguration();
@@ -240,15 +259,15 @@ function displayData(data) {
 function getItemText(item) {
   return `「${item.name}」${keepDecimal(item.price, calcFixedNumber(item))}  ${
     item.percent >= 0 ? '📈' : '📉'
-  }（${keepDecimal(item.percent * 100, 2)}%）`;
+    }（${keepDecimal(item.percent * 100, 2)}%）`;
 }
 
 function getTooltipText(item) {
   return `【今日行情】${item.type}${item.symbol}\n涨跌：${
     item.updown
-  }   百分：${keepDecimal(item.percent * 100, 2)}%\n最高：${
+    }   百分：${keepDecimal(item.percent * 100, 2)}%\n最高：${
     item.high
-  }   最低：${item.low}\n今开：${item.open}   昨收：${item.yestclose}`;
+    }   最低：${item.low}\n今开：${item.open}   昨收：${item.yestclose}`;
 }
 // 基金 Tooltip
 function getFundTooltipText() {
@@ -258,11 +277,11 @@ function getFundTooltipText() {
       fund.percent.indexOf('-') === 0
         ? '↓ '
         : fund.percent === '0.00%'
-        ? ''
-        : '↑ '
-    } ${fund.percent}   「${
+          ? ''
+          : '↑ '
+      } ${fund.percent}   「${
       fund.name
-    }」\n-------------------------------------\n`;
+      }」\n-------------------------------------\n`;
   }
   return `【基金详情】\n\n ${fundTemplate}`;
 }
