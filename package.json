@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜基金",
   "description": "VSCode 插件，在编码的时候随时关注实时股票&基金数据",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
@@ -16,7 +16,7 @@
   ],
   "icon": "images/logo.jpg",
   "engines": {
-    "vscode": "^1.47.0"
+    "vscode": "^1.29.0"
   },
   "categories": [
     "Other"
@@ -142,6 +142,8 @@
   },
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install",
+    "package": "vsce package",
+    "publish": "vsce publish",
     "test": "node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
