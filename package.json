@@ -50,7 +50,11 @@
     "commands": [
       {
         "command": "fund.add",
-        "title": "Add"
+        "title": "Add",
+        "icon": {
+          "light": "images/light/add.svg",
+          "dark": "images/dark/add.svg"
+        }
       },
       {
         "command": "fund.delete",
@@ -61,7 +65,8 @@
       "view/title": [
         {
           "command": "fund.add",
-          "when": "view == fund"
+          "when": "view == fund",
+          "group": "navigation"
         }
       ],
       "view/item/context": [

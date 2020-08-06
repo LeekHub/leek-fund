@@ -36,4 +36,26 @@ module.exports = {
     };
     return result;
   },
+
+  /**
+   * 数组去重
+   */
+  unique: elements => {
+    if (!Array.isArray(elements)) {
+      return []
+    }
+
+    return elements.filter((element, index) => index === elements.indexOf(element))
+  },
+
+  /**
+   * 清除数组里面的非法值
+   */
+  clean: elements => {
+    if (!Array.isArray(elements)) {
+      return []
+    }
+
+    return elements.filter(element => !!element)
+  }
 };

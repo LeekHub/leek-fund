@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const axios = require('axios');
-const { randHeader } = require('./utils');
+const { randHeader, clean, unique } = require('./utils');
 const { DataProvider } = require('./views/dataprovider');
 const { registerViewEvent } = require('./views/register-event');
 
@@ -129,9 +129,18 @@ function deleteFund(target) {
 }
 function addFund() {
   vscode.window.showInputBox().then(code => {
+    if (!code) {
+      return;
+    }
+
     const config = vscode.workspace.getConfiguration();
     const funds = config.get('leek-fund.funds') || [];
-    config.update('leek-fund.funds', [...funds, code], true)
+
+    let codes = [...funds, code];
+    codes = clean(codes);
+    codes = unique(codes);
+
+    config.update('leek-fund.funds', codes, true)
     vscode.window.showInformationMessage(`Successfully add.`)
   })
 }
