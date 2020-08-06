@@ -1,8 +1,18 @@
 const vscode = require('vscode');
 const axios = require('axios');
-const { randHeader, clean, unique } = require('./utils');
+const { randHeader, keepDecimal, calcFixedNumber } = require('./utils');
 const { DataProvider } = require('./views/dataprovider');
 const { registerViewEvent } = require('./views/register-event');
+const {
+  isStockTime,
+  isShowTime,
+  getUpdateInterval,
+  getFundCodes,
+  getStockCodes,
+  deleteFund,
+  addFund,
+  getItemColor,
+} = require('./config-util');
 
 let statusBarItems = {};
 let fundCodes = [];
@@ -24,11 +34,13 @@ function activate(context) {
   );
   registerViewEvent(context);
 
-  vscode.commands.registerCommand('fund.delete', target => deleteFund(target.id));
+  vscode.commands.registerCommand('fund.delete', (target) =>
+    deleteFund(target.id)
+  );
   vscode.commands.registerCommand('fund.add', () => addFund());
 }
 exports.activate = activate;
-function deactivate() { }
+function deactivate() {}
 exports.deactivate = deactivate;
 
 function init() {
@@ -42,9 +54,18 @@ function init() {
     updateInterval = getUpdateInterval();
     fetchSZData(); // 上证指数
     fetchAllFundData(); // 基金数据
+    if (timer) {
+      clearInterval(timer);
+      timer = null;
+    }
+
     timer = setInterval(() => {
-      fetchSZData(); // 上证指数
-      fetchAllFundData(); // 基金数据
+      if (isStockTime()) {
+        fetchSZData(); // 上证指数
+        fetchAllFundData(); // 基金数据
+      } else {
+        console.log('闭市了，不再请求');
+      }
     }, updateInterval);
   } else {
     hideAllStatusBar();
@@ -114,62 +135,6 @@ function getFundNameList(codes) {
     .catch((err) => console.log(err));
 }
 
-function getFundCodes() {
-  const config = vscode.workspace.getConfiguration();
-  const funds = config.get('leek-fund.funds') || [];
-  return funds;
-}
-function deleteFund(target) {
-  const config = vscode.workspace.getConfiguration();
-  const funds = config.get('leek-fund.funds');
-  const result = funds.filter(code => code !== target);
-
-  config.update('leek-fund.funds', result, true)
-  vscode.window.showInformationMessage(`Successfully delete.`)
-}
-function addFund() {
-  vscode.window.showInputBox().then(code => {
-    if (!code) {
-      return;
-    }
-
-    const config = vscode.workspace.getConfiguration();
-    const funds = config.get('leek-fund.funds') || [];
-
-    let codes = [...funds, code];
-    codes = clean(codes);
-    codes = unique(codes);
-
-    config.update('leek-fund.funds', codes, true)
-    vscode.window.showInformationMessage(`Successfully add.`)
-  })
-}
-function getStockCodes() {
-  const config = vscode.workspace.getConfiguration();
-  const stocks = config.get('leek-fund.stocks');
-  return stocks;
-}
-
-function getUpdateInterval() {
-  const config = vscode.workspace.getConfiguration();
-  return config.get('leek-fund.updateInterval');
-}
-
-function isShowTime() {
-  const config = vscode.workspace.getConfiguration();
-  const configShowTime = config.get('leek-fund.showTime');
-  let showTime = [0, 23];
-  if (
-    Array.isArray(configShowTime) &&
-    configShowTime.length === 2 &&
-    configShowTime[0] <= configShowTime[1]
-  ) {
-    showTime = configShowTime;
-  }
-  const now = new Date().getHours();
-  return now >= showTime[0] && now <= showTime[1];
-}
-
 function getFundUrlByCode(fundCode) {
   // 历史数据
   // const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${fundCode}&page=1&per=1`;
@@ -204,7 +169,7 @@ function fetchAllFundData() {
       const data = result.sort((a, b) => (a.percent > b.percent ? -1 : 1));
       // console.log(data);
       fundList = data;
-      refreshViewTree(fundList);
+      renderFundView(fundList);
     })
     .catch((err) => {
       console.log(err);
@@ -212,6 +177,7 @@ function fetchAllFundData() {
 }
 
 function fetchSZData() {
+  console.log('fetching stock data…');
   const url = `https://api.money.126.net/data/feed/${stockCodes.join(
     ','
   )}?callback=a`;
@@ -229,8 +195,9 @@ function fetchSZData() {
             }
             data.push(result[item]);
           });
-          displayData(data);
           stockData = data;
+          displayData(data);
+          renderStockView(data);
         } catch (err) {
           console.log(err);
         }
@@ -268,15 +235,15 @@ function displayData(data) {
 function getItemText(item) {
   return `「${item.name}」${keepDecimal(item.price, calcFixedNumber(item))}  ${
     item.percent >= 0 ? '📈' : '📉'
-    }（${keepDecimal(item.percent * 100, 2)}%）`;
+  }（${keepDecimal(item.percent * 100, 2)}%）`;
 }
 
 function getTooltipText(item) {
   return `【今日行情】${item.type}${item.symbol}\n涨跌：${
     item.updown
-    }   百分：${keepDecimal(item.percent * 100, 2)}%\n最高：${
+  }   百分：${keepDecimal(item.percent * 100, 2)}%\n最高：${
     item.high
-    }   最低：${item.low}\n今开：${item.open}   昨收：${item.yestclose}`;
+  }   最低：${item.low}\n今开：${item.open}   昨收：${item.yestclose}`;
 }
 // 基金 Tooltip
 function getFundTooltipText() {
@@ -286,18 +253,17 @@ function getFundTooltipText() {
       fund.percent.indexOf('-') === 0
         ? '↓ '
         : fund.percent === '0.00%'
-          ? ''
-          : '↑ '
-      } ${fund.percent}   「${
+        ? ''
+        : '↑ '
+    } ${fund.percent}   「${
       fund.name
-      }」\n-------------------------------------\n`;
+    }」\n-------------------------------------\n`;
   }
   return `【基金详情】\n\n ${fundTemplate}`;
 }
 
-// 左侧栏数据刷新
-function refreshViewTree(fundList) {
-  // 基金
+// 左侧栏基金数据刷新
+function renderFundView(fundList) {
   const list = [];
   for (let fund of fundList) {
     const str = `${fund.percent}   「${fund.name}」(${fund.code})`;
@@ -311,8 +277,10 @@ function refreshViewTree(fundList) {
   dataProvider = new DataProvider(extContext);
   dataProvider.setItem(list);
   vscode.window.registerTreeDataProvider('fund', dataProvider);
+}
 
-  // 股票
+// 左侧栏股票数据刷新
+function renderStockView(stockData) {
   const stockList = [];
   const arr = stockData.sort((a, b) => (a.percent >= b.percent ? -1 : 1));
   arr.forEach((item) => {
@@ -332,14 +300,6 @@ function refreshViewTree(fundList) {
   const data2 = new DataProvider(extContext);
   data2.setItem(stockList);
   vscode.window.registerTreeDataProvider('stock', data2);
-}
-
-function getItemColor(item) {
-  const config = vscode.workspace.getConfiguration();
-  const riseColor = config.get('leek-fund.riseColor');
-  const fallColor = config.get('leek-fund.fallColor');
-
-  return item.percent >= 0 ? riseColor : fallColor;
 }
 
 function createStatusBarItem(item) {
@@ -364,42 +324,4 @@ function createFundStatusBarItem() {
   barItem.tooltip = getFundTooltipText();
   barItem.show();
   return barItem;
-}
-
-function keepDecimal(num, fixed) {
-  let result = parseFloat(num);
-  if (isNaN(result)) {
-    return '--';
-  }
-  return result.toFixed(fixed);
-}
-
-function calcFixedNumber(item) {
-  let high =
-    String(item.high).indexOf('.') === -1
-      ? 0
-      : String(item.high).length - String(item.high).indexOf('.') - 1;
-  let low =
-    String(item.low).indexOf('.') === -1
-      ? 0
-      : String(item.low).length - String(item.low).indexOf('.') - 1;
-  let open =
-    String(item.open).indexOf('.') === -1
-      ? 0
-      : String(item.open).length - String(item.open).indexOf('.') - 1;
-  let yest =
-    String(item.yestclose).indexOf('.') === -1
-      ? 0
-      : String(item.yestclose).length - String(item.yestclose).indexOf('.') - 1;
-  let updown =
-    String(item.updown).indexOf('.') === -1
-      ? 0
-      : String(item.updown).length - String(item.updown).indexOf('.') - 1;
-  let max = Math.max(high, low, open, yest, updown);
-
-  if (max === 0) {
-    max = 2;
-  }
-
-  return max;
 }

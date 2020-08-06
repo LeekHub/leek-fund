@@ -36,26 +36,65 @@ module.exports = {
     };
     return result;
   },
+  keepDecimal: (num, fixed) => {
+    let result = parseFloat(num);
+    if (isNaN(result)) {
+      return '--';
+    }
+    return result.toFixed(fixed);
+  },
+  calcFixedNumber: (item) => {
+    let high =
+      String(item.high).indexOf('.') === -1
+        ? 0
+        : String(item.high).length - String(item.high).indexOf('.') - 1;
+    let low =
+      String(item.low).indexOf('.') === -1
+        ? 0
+        : String(item.low).length - String(item.low).indexOf('.') - 1;
+    let open =
+      String(item.open).indexOf('.') === -1
+        ? 0
+        : String(item.open).length - String(item.open).indexOf('.') - 1;
+    let yest =
+      String(item.yestclose).indexOf('.') === -1
+        ? 0
+        : String(item.yestclose).length -
+          String(item.yestclose).indexOf('.') -
+          1;
+    let updown =
+      String(item.updown).indexOf('.') === -1
+        ? 0
+        : String(item.updown).length - String(item.updown).indexOf('.') - 1;
+    let max = Math.max(high, low, open, yest, updown);
 
+    if (max === 0) {
+      max = 2;
+    }
+
+    return max;
+  },
   /**
    * 数组去重
    */
-  unique: elements => {
+  unique: (elements) => {
     if (!Array.isArray(elements)) {
-      return []
+      return [];
     }
 
-    return elements.filter((element, index) => index === elements.indexOf(element))
+    return elements.filter(
+      (element, index) => index === elements.indexOf(element)
+    );
   },
 
   /**
    * 清除数组里面的非法值
    */
-  clean: elements => {
+  clean: (elements) => {
     if (!Array.isArray(elements)) {
-      return []
+      return [];
     }
 
-    return elements.filter(element => !!element)
-  }
+    return elements.filter((element) => !!element);
+  },
 };

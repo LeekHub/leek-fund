@@ -6,13 +6,14 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
 
 安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 
-灵感来自 [stock-watch](https://github.com/TDGarden/stock-watch)插件，不过此插件只有股票，没有基金，个人只养鸡不玩股票，也没找到好用的别的插件，所以就借鉴了代码并按个人的想法二次开发，新增基金模块和菜单面板等功能，所以就有了 **leek-fund(韭菜基金)** ，功能主要有：
+功能主要有：
 
 - 基金涨跌查看，可自定义配置基金代码，支持查看基金历史净值详情
 - 股票涨跌查看，可自定义配置股票代码，支持查看股票实时 K 线图
 - 左侧菜单面板
 - 底部状态 bar
 - 支持 GUI 操作新增&删除基金
+- 持续更新……（欢迎 PR）
 
 ## 截图
 
@@ -25,7 +26,7 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
 
 ## 插件配置说明
 
-修改用户配置，添加你所需要监控的股票代码
+手动修改用户配置，添加你所需要监控的股票代码
 
 ```
   // 配置需要监控的股票代码
@@ -146,6 +147,19 @@ http://blog.haoji.me/vscode-plugin-overview.html
 
 ```
 
+## Contributors
+
+- [giscafer](https://github.com/giscafer)
+- [zomixi](https://github.com/zomixi)
+
+## Inspired by
+
+灵感来自 [stock-watch](https://github.com/TDGarden/stock-watch)插件，不过此插件只有股票，没有基金，个人只养鸡不玩股票，也没找到好用的别的插件，所以就借鉴了部分代码并按个人的想法二次开发，新增基金模块和菜单面板等功能，所以就有了 **leek-fund(韭菜基金)**
+
 ## Github
 
 https://github.com/giscafer/leek-fund
+
+## License
+
+MIT
