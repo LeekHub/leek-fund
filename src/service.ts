@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { TreeItem, TreeItemCollapsibleState, ExtensionContext } from 'vscode';
+import { join } from 'path';
+import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { keepDecimal, randHeader, sortData } from './utils';
-import { join, basename } from 'path';
 
 interface FundInfo {
   percent: any;

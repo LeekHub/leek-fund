@@ -118,7 +118,7 @@
         "leek-fund.interval": {
           "type": "number",
           "default": 5000,
-          "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"
+          "description": "配置轮询请求最新数据的时间间隔，单位：毫秒（最小轮询间隔是3秒）"
         },
         "leek-fund.riseColor": {
           "type": "string",
