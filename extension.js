@@ -9,8 +9,6 @@ const {
   getUpdateInterval,
   getFundCodes,
   getStockCodes,
-  deleteFund,
-  addFund,
   getItemColor,
 } = require('./config-util');
 
@@ -33,11 +31,6 @@ function activate(context) {
     vscode.workspace.onDidChangeConfiguration(handleConfigChange)
   );
   registerViewEvent(context);
-
-  vscode.commands.registerCommand('fund.delete', (target) =>
-    deleteFund(target.id)
-  );
-  vscode.commands.registerCommand('fund.add', () => addFund());
 }
 exports.activate = activate;
 function deactivate() {}

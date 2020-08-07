@@ -1,9 +1,18 @@
 const vscode = require('vscode');
 const { getFundHistoryData } = require('./fund-history');
+const { deleteFund, addFund } = require('../config-util');
 
 exports.registerViewEvent = (context) => {
+  // 基金删除
+  vscode.commands.registerCommand('fund.delete', (target) =>
+    deleteFund(target.id)
+  );
+  // 基金添加
+  vscode.commands.registerCommand('fund.add', () => addFund());
+
   // 注册事件
   context.subscriptions.push(
+    // 股票点击
     vscode.commands.registerCommand(
       'extension.leetfund.stockItemClick',
       (code, name, text, stockCode) => {

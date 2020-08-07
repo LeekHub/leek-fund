@@ -154,7 +154,8 @@ http://blog.haoji.me/vscode-plugin-overview.html
 
 ## Inspired by
 
-灵感来自 [stock-watch](https://github.com/TDGarden/stock-watch)插件，不过此插件只有股票，没有基金，个人只养鸡不玩股票，也没找到好用的别的插件，所以就借鉴了部分代码并按个人的想法二次开发，新增基金模块和菜单面板等功能，所以就有了 **leek-fund(韭菜基金)**
+灵感来自 [stock-watch](https://github.com/TDGarden/stock-watch) 插件，不过当时此插件不够完善，功能也只有股票，没有基金。
+个人只养鸡不玩股，也没找到相关好用的 VSCode 插件，所以就按个人的想法开发，就有了 [leek-fund(韭菜基金)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)。
 
 ## Github
 
