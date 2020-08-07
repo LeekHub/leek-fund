@@ -1,21 +1,37 @@
-const vscode = require('vscode');
-const { getFundHistoryData } = require('./fund-history');
-const { deleteFund, addFund } = require('../config-util');
+import * as vscode from 'vscode';
+import { FundModel } from './views/model';
+import { FundService } from './service';
 
-exports.registerViewEvent = (context) => {
+export function registerViewEvent(
+  context: vscode.ExtensionContext,
+  service: FundService
+) {
+  const fundModel = new FundModel();
   // 基金删除
   vscode.commands.registerCommand('fund.delete', (target) =>
-    deleteFund(target.id)
+    fundModel.removeFundCfg(target.id)
   );
   // 基金添加
-  vscode.commands.registerCommand('fund.add', () => addFund());
+  vscode.commands.registerCommand('fund.add', () => {
+    vscode.window
+      .showInputBox({
+        prompt: '请输入基金代码，多个用英文逗号隔开（回车保存）',
+      })
+      .then((code) => {
+        if (!code) {
+          return;
+        }
+        fundModel.updateFundCfg(code.replace(/，/g, ','));
+      });
+  });
 
   // 注册事件
   context.subscriptions.push(
     // 股票点击
     vscode.commands.registerCommand(
-      'extension.leetfund.stockItemClick',
+      'leetfund.stockItemClick',
       (code, name, text, stockCode) => {
+        console.log('stockCode=', stockCode);
         // 创建webview
         const panel = vscode.window.createWebviewPanel(
           'stockWebview', // viewType
@@ -51,9 +67,9 @@ exports.registerViewEvent = (context) => {
   // 基金点击
   context.subscriptions.push(
     vscode.commands.registerCommand(
-      'extension.leetfund.fundItemClick',
+      'leetfund.fundItemClick',
       async (code, name, text) => {
-        const res = await getFundHistoryData(code);
+        const res = await service.getFundHistoryByCode(code);
         // 创建webview
         const panel = vscode.window.createWebviewPanel(
           'fundWebview',
@@ -84,4 +100,4 @@ exports.registerViewEvent = (context) => {
       }
     )
   );
-};
+}

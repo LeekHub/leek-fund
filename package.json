@@ -1,20 +1,21 @@
 {
   "name": "leek-fund",
   "displayName": "韭菜基金",
-  "description": "VSCode 插件，在编码的时候随时关注实时股票&基金数据",
-  "version": "0.2.1",
+  "description": "VSCode 插件（韭菜基金），VSCode 里也可以看股票 & 基金实时数据",
+  "version": "0.3.0",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
     "stock",
     "fund",
+    "股票",
     "基金",
     "韭菜基金",
     "天天基金",
     "蚂蚁财富",
     "vscode"
   ],
-  "icon": "images/logo.jpg",
+  "icon": "https://ww1.sinaimg.cn/large/940e68eegy1ghic1q9f9wj20dw0dw75d.jpg",
   "engines": {
     "vscode": "^1.29.0"
   },
@@ -24,36 +25,40 @@
   "activationEvents": [
     "*"
   ],
-  "main": "./extension",
+  "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
         {
           "id": "fundMenu",
-          "title": "LeetFund 🐥",
-          "icon": "images/fund.svg"
+          "title": "LeetFund 🐥🐥🐥",
+          "icon": "resources/fund.svg"
         }
       ]
     },
     "views": {
       "fundMenu": [
         {
-          "id": "fund",
+          "id": "views.fund",
           "name": "Fund"
         },
         {
-          "id": "stock",
+          "id": "views.stock",
           "name": "Stock"
         }
       ]
     },
     "commands": [
       {
+        "command": "leek-fund.helloWorld",
+        "title": "Hello World"
+      },
+      {
         "command": "fund.add",
         "title": "添加基金",
         "icon": {
-          "light": "images/light/add.svg",
-          "dark": "images/dark/add.svg"
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
         }
       },
       {
@@ -114,9 +119,9 @@
           ],
           "description": "配置需要监控的基金代码"
         },
-        "leek-fund.updateInterval": {
+        "leek-fund.interval": {
           "type": "number",
-          "default": 10000,
+          "default": 3000,
           "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"
         },
         "leek-fund.riseColor": {
@@ -141,23 +146,27 @@
     }
   },
   "scripts": {
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "package": "vsce package",
-    "publish": "vsce publish",
-    "test": "node ./node_modules/vscode/bin/test"
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "lint": "eslint src --ext ts",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.6",
-    "eslint": "^4.11.0",
-    "@types/node": "^7.0.43",
-    "@types/mocha": "^2.2.42"
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^13.11.0",
+    "@types/vscode": "^1.47.0",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "glob": "^7.1.6",
+    "mocha": "^7.1.2",
+    "typescript": "^3.8.3",
+    "vscode-test": "^1.3.0"
   },
   "dependencies": {
-    "axios": "^0.18.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/giscafer/leek-fund"
+    "axios": "^0.19.2"
   }
 }

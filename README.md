@@ -72,11 +72,11 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。**因�
   "leek-fund.updateInterval": 10000
 
 
-  // 配置股票涨的颜色，默认为white。为什么不是red，红色像是报错，很刺眼。
+  // 配置股票涨的颜色，默认为 white。
   "leek-fund.riseColor": "white"
 
 
-  // 配置股票跌的颜色，默认为green
+  // 配置股票跌的颜色，默认为 green
   "leek-fund.fallColor": "black"
 
   // 配置展示的时间段，默认为[9, 15]，每十分钟判断一下
