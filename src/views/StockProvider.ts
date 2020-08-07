@@ -23,7 +23,8 @@ export class StockProvider implements TreeDataProvider<FundTreeItem> {
 
   getChildren(): FundTreeItem[] | Thenable<FundTreeItem[]> {
     const stockCodes = this.model.getCfg('leek-fund.stocks') || [];
-    return this.service.fetchStockData(stockCodes, this.order);
+    const children = this.service.fetchStockData(stockCodes, this.order);
+    return children;
   }
 
   getParent(element: FundTreeItem): FundTreeItem | null {

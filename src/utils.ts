@@ -117,3 +117,12 @@ export const clean = (elements: Array<string | number>) => {
 
   return elements.filter((element) => !!element);
 };
+
+export const isStockTime = () => {
+  let stockTime = [9, 15];
+  const date = new Date();
+  const hours = date.getHours();
+  const minus = date.getMinutes();
+  const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
+  return (hours >= stockTime[0] && hours <= stockTime[1]) || delay;
+};

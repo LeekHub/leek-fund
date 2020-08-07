@@ -50,10 +50,6 @@
     },
     "commands": [
       {
-        "command": "leek-fund.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "fund.add",
         "title": "添加基金",
         "icon": {
@@ -70,14 +66,14 @@
       "view/title": [
         {
           "command": "fund.add",
-          "when": "view == fund",
+          "when": "view == views.fund",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "fund.delete",
-          "when": "view == fund"
+          "when": "view == views.fund"
         }
       ]
     },
@@ -121,7 +117,7 @@
         },
         "leek-fund.interval": {
           "type": "number",
-          "default": 3000,
+          "default": 5000,
           "description": "配置轮询请求最新数据的时间间隔，单位：毫秒"
         },
         "leek-fund.riseColor": {
@@ -133,14 +129,6 @@
           "type": "string",
           "default": "black",
           "description": "股票跌的颜色"
-        },
-        "leek-fund.showTime": {
-          "type": "array",
-          "default": [
-            0,
-            23
-          ],
-          "description": "显示的时间段"
         }
       }
     }

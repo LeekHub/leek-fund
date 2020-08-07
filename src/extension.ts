@@ -11,6 +11,10 @@ import { StockProvider } from './views/stockProvider';
 
 import { registerViewEvent } from './registerEvent';
 import { FundService } from './service';
+import { StatusBar } from './views/statusBar';
+import { isStockTime } from './utils';
+
+let intervalTimer: NodeJS.Timeout | null = null;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -26,18 +30,29 @@ export function activate(context: vscode.ExtensionContext) {
   if (interval < 3000) {
     interval = 3000;
   }
-
+  // fund
   const fundService = new FundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   nodeFundProvider.refresh();
+  // stock
   const nodeStockProvider = new StockProvider(fundService);
   nodeStockProvider.refresh();
-  setInterval(() => {
-    console.log('setInterval');
-    nodeFundProvider.refresh();
-    nodeStockProvider.refresh();
+
+  // status bar
+  const statusBar = new StatusBar(fundService);
+  statusBar.refresh();
+  // interval
+  intervalTimer = setInterval(() => {
+    if (isStockTime()) {
+      nodeFundProvider.refresh();
+      nodeStockProvider.refresh();
+      statusBar.refresh();
+    } else {
+      console.log('StockMarket Closed! Polling closed!');
+    }
   }, interval);
 
+  // views
   vscode.window.registerTreeDataProvider('views.fund', nodeFundProvider);
   vscode.window.registerTreeDataProvider('views.stock', nodeStockProvider);
 
@@ -48,4 +63,8 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {
   console.log('deactivate');
+  if (intervalTimer) {
+    clearInterval(intervalTimer);
+    intervalTimer = null;
+  }
 }

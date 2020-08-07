@@ -14,7 +14,7 @@ export class BaseModel {
     const updatedCfg = [...config.get(cfgKey, []), ...codes];
     let newCodes = clean(updatedCfg);
     newCodes = uniq(newCodes);
-    config.update(cfgKey, updatedCfg, true);
+    config.update(cfgKey, newCodes, true);
   }
 
   removeConfig(cfgKey: string, code: string) {

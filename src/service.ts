@@ -15,6 +15,7 @@ interface FundInfo {
   high?: string | number;
   low?: string | number;
   time?: string;
+  updown?: string;
   isStock?: boolean;
 }
 
@@ -54,6 +55,7 @@ export class FundTreeItem extends TreeItem {
 export class FundService {
   private _fundList: Array<FundTreeItem> = [];
   private context: ExtensionContext;
+  szItem: any;
   constructor(context: ExtensionContext) {
     this.context = context;
   }
@@ -122,7 +124,7 @@ export class FundService {
       const idxs = response.data.indexOf('"<table');
       const lastIdx = response.data.indexOf('</table>"');
       const content = response.data.slice(idxs, lastIdx);
-      console.log(idxs, lastIdx, content);
+      // console.log(idxs, lastIdx, content);
       return { code, content };
     } catch (err) {
       console.log(err);
@@ -144,7 +146,9 @@ export class FundService {
       const rep = await axios.get(url);
       const result = JSON.parse(rep.data.slice(2, -2));
       let data: Array<FundTreeItem> = [];
-      Object.keys(result).map((item) => {
+      const keys = Object.keys(result);
+      let sz: FundTreeItem | null = null;
+      keys.map((item) => {
         result[item].percent = `${keepDecimal(
           String(result[item].percent * 100),
           2
@@ -153,8 +157,13 @@ export class FundService {
         if (!result[item].code) {
           result[item].code = item;
         }
+        if (item === '0000001') {
+          sz = new FundTreeItem(result[item], this.context);
+        }
         data.push(new FundTreeItem(result[item], this.context));
       });
+      // 选择上证指数，如没有则取第一个
+      this.szItem = sz || data[0];
       const res = sortData(data, order);
       return res;
     } catch (err) {
