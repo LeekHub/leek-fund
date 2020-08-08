@@ -1,9 +1,49 @@
-# Change Log
+# ChangeLog
 
-All notable changes to the "leek-fund" extension will be documented in this file.
+## [1.0.0]
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- refactor: 重构代码
+- feat: 替换股票数据为新浪 api
+- fix: 修复港股和美股数据无法获取问题
 
-## [Unreleased]
+## [0.2.1]
 
-- Initial release
+- fix: 闭市后不再请求数据，数据定时请求时间固定在 9 点到 15 点
+
+## [0.2.0]
+
+- feat: 支持 GUI 操作新增&删除基金
+
+## [0.1.10]
+
+- fix: 兼容到 VSCode `1.29.0` 版本
+- chore: 配置说明修改
+
+## [0.1.9]
+
+- feat: 股票支持 K 线走势图
+
+## [0.1.8]
+
+- fix: 错误的基金编码处理
+- feat: 支持基金历史数据查看&股票走势图查看
+
+## [0.1.6]
+
+- fix: 替换实时基金接口
+
+## [0.1.5]
+
+- 新增 A 股指数
+
+## [0.1.4]
+
+- 新增菜单面板查看基金和上证指数
+
+## [0.1.3]
+
+- 修改体验细节
+
+## [0.1.0]
+
+- 实现基金涨跌实时查看

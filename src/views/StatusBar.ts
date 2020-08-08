@@ -1,7 +1,6 @@
-import { window, StatusBarAlignment, StatusBarItem } from 'vscode';
-import { calcFixedNumber, keepDecimal } from '../utils';
+import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import { FundService, FundTreeItem } from '../service';
 import { FundModel } from './model';
-import { FundTreeItem, FundService } from '../service';
 
 export class StatusBar {
   private model: FundModel;
@@ -37,10 +36,9 @@ export class StatusBar {
       updown,
     } = item.info;
     const deLow = percent.indexOf('-') === -1;
-    this.stockBarItem.text = `「${item.info.name}」${keepDecimal(
-      String(price),
-      calcFixedNumber(item)
-    )}  ${deLow ? '📈' : '📉'}（${percent}）`;
+    this.stockBarItem.text = `「${item.info.name}」${price}  ${
+      deLow ? '📈' : '📉'
+    }（${percent}）`;
 
     this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     this.stockBarItem.color = deLow ? this.riseColor : this.fallColor;

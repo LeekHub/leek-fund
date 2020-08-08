@@ -3,7 +3,11 @@
   "displayName": "韭菜基金",
   "description": "VSCode 插件（韭菜基金），VSCode 里也可以看股票 & 基金实时数据",
   "version": "1.0.0",
-  "publisher": "giscafer",
+  "author": "giscafer <giscafer@outlook.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/giscafer/leek-fund.git"
+  },
   "license": "MIT",
   "keywords": [
     "stock",
@@ -16,7 +20,8 @@
     "蚂蚁财富",
     "vscode"
   ],
-  "icon": "https://ww1.sinaimg.cn/large/940e68eegy1ghic1q9f9wj20dw0dw75d.jpg",
+  "publisher": "giscafer",
+  "icon": "resources/logo.jpg",
   "engines": {
     "vscode": "^1.41.0"
   },

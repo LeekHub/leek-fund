@@ -53,7 +53,7 @@ export class FundTreeItem extends TreeItem {
         ? 'leetfund.stockItemClick'
         : 'leetfund.fundItemClick', // 命令 ID
       arguments: [
-        info.code, // 基金/股票编码
+        info.isStock ? '0' + info.symbol : info.code, // 基金/股票编码
         info.name, // 基金/股票名称
         text,
         `${info.type}${info.symbol}`,
@@ -178,7 +178,6 @@ export class FundService {
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
-        console.log(code, typeof code);
         let type = code.substr(0, 2) || 'sh';
         let symbol = code.substr(2);
         let stockItem: any;
@@ -227,6 +226,7 @@ export class FundService {
           }
           if (stockItem) {
             const { yestclose, price } = stockItem;
+            stockItem.isStock = true;
             stockItem.type = type;
             stockItem.symbol = symbol;
             stockItem.updown = formatNumber(+price - +yestclose, 2, false);
@@ -253,44 +253,4 @@ export class FundService {
       return [];
     }
   }
-
-  /* async fetchStockData(
-    codes: Array<string>,
-    order: number
-  ): Promise<Array<FundTreeItem>> {
-    console.log('fetching stock data…');
-    // TODO:  重构，使用新浪的接口
-    const url = `https://api.money.126.net/data/feed/${codes.join(
-      ','
-    )}?callback=a`;
-
-    try {
-      const rep = await axios.get(url);
-      const result = JSON.parse(rep.data.slice(2, -2));
-      let data: Array<FundTreeItem> = [];
-      const keys = Object.keys(result);
-      let sz: FundTreeItem | null = null;
-      keys.map((item) => {
-        result[item].percent = `${keepDecimal(
-          String(result[item].percent * 100),
-          2
-        )}% `;
-        result[item].isStock = true;
-        if (!result[item].code) {
-          result[item].code = item;
-        }
-        if (item === '0000001') {
-          sz = new FundTreeItem(result[item], this.context);
-        }
-        data.push(new FundTreeItem(result[item], this.context));
-      });
-      // 选择上证指数，如没有则取第一个
-      this.szItem = sz || data[0];
-      const res = sortData(data, order);
-      return res;
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
-  } */
 }
