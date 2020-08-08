@@ -34,14 +34,14 @@ export class FundTreeItem extends TreeItem {
   constructor(info: FundInfo, context: ExtensionContext) {
     super(
       info.isStock
-        ? `${info.percent}   ${info.price}    「${info.name}」${info.type}${info.symbol}`
-        : `${info.percent}   「${info.name}」(${info.code})`,
+        ? `${info.percent}%   ${info.price}    「${info.name}」${info.type}${info.symbol}`
+        : `${info.percent}%   「${info.name}」(${info.code})`,
       TreeItemCollapsibleState.None
     );
     this.info = info;
     const text = info.isStock
-      ? `${info.percent}   ${info.price}    「${info.name}」${info.type}${info.symbol}`
-      : `${info.percent}   「${info.name}」(${info.code})`;
+      ? `${info.percent}%   ${info.price}    「${info.name}」${info.type}${info.symbol}`
+      : `${info.percent}%   「${info.name}」(${info.code})`;
     const grow = info.percent.indexOf('-') === 0 ? false : true;
     this.iconPath = context.asAbsolutePath(
       join('resources', `${grow ? 'up-arrow' : 'down-arrow'}.svg`)
@@ -99,7 +99,7 @@ export class FundService {
         .then((rep) => {
           const data = JSON.parse(rep.data.slice(8, -2));
           const { gszzl, gztime, name } = data;
-          resolve({ percent: gszzl + '%', code, time: gztime, name });
+          resolve({ percent: gszzl, code, time: gztime, name });
         })
         .catch(() => resolve({ percent: 'NaN', name: '基金代码错误', code }));
     });
@@ -236,8 +236,7 @@ export class FundService {
                 (Math.abs(stockItem.updown) / +yestclose) * 100,
                 2,
                 false
-              ) +
-              '%';
+              );
             if (code === 'sh000001') {
               sz = new FundTreeItem(stockItem, this.context);
             }

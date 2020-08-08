@@ -56,6 +56,14 @@
     },
     "commands": [
       {
+        "command": "fund.sort",
+        "title": "升序/降序",
+        "icon": {
+          "light": "resources/light/sort.svg",
+          "dark": "resources/dark/sort.svg"
+        }
+      },
+      {
         "command": "fund.add",
         "title": "添加基金",
         "icon": {
@@ -66,13 +74,48 @@
       {
         "command": "fund.delete",
         "title": "删除基金"
+      },
+      {
+        "command": "stock.sort",
+        "title": "升序/降序",
+        "icon": {
+          "light": "resources/light/sort.svg",
+          "dark": "resources/dark/sort.svg"
+        }
+      },
+      {
+        "command": "stock.add",
+        "title": "添加股票",
+        "icon": {
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "stock.delete",
+        "title": "删除股票"
       }
     ],
     "menus": {
       "view/title": [
         {
+          "command": "fund.sort",
+          "when": "view == views.fund",
+          "group": "navigation"
+        },
+        {
           "command": "fund.add",
           "when": "view == views.fund",
+          "group": "navigation"
+        },
+        {
+          "command": "stock.sort",
+          "when": "view == views.stock",
+          "group": "navigation"
+        },
+        {
+          "command": "stock.add",
+          "when": "view == views.stock",
           "group": "navigation"
         }
       ],
@@ -80,6 +123,10 @@
         {
           "command": "fund.delete",
           "when": "view == views.fund"
+        },
+        {
+          "command": "stock.delete",
+          "when": "view == views.stock"
         }
       ]
     },

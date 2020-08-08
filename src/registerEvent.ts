@@ -1,17 +1,23 @@
 import { window, commands, ExtensionContext, ViewColumn } from 'vscode';
 import { FundModel } from './views/model';
 import { FundService } from './service';
+import { FundProvider } from './views/fundProvider';
+import { StockProvider } from './views/stockProvider';
 
 export function registerViewEvent(
   context: ExtensionContext,
-  service: FundService
+  service: FundService,
+  fundPorvider: FundProvider,
+  stockPorvider: StockProvider
 ) {
   const fundModel = new FundModel();
-  // 基金删除
-  commands.registerCommand('fund.delete', (target) =>
-    fundModel.removeFundCfg(target.id)
-  );
-  // 基金添加
+
+  // Fund operation
+  commands.registerCommand('fund.delete', (target) => {
+    fundModel.removeFundCfg(target.id, () => {
+      fundPorvider.refresh();
+    });
+  });
   commands.registerCommand('fund.add', () => {
     window
       .showInputBox({
@@ -21,11 +27,42 @@ export function registerViewEvent(
         if (!code) {
           return;
         }
-        fundModel.updateFundCfg(code.replace(/，/g, ','));
+        fundModel.updateFundCfg(code.replace(/，/g, ','), () => {
+          fundPorvider.refresh();
+        });
       });
   });
+  commands.registerCommand('fund.sort', () => {
+    fundPorvider.changeOrder();
+    fundPorvider.refresh();
+  });
 
-  // 注册事件
+  // Stock operation
+  commands.registerCommand('stock.delete', (target) => {
+    fundModel.removeStockCfg(target.id, () => {
+      stockPorvider.refresh();
+    });
+  });
+  commands.registerCommand('stock.add', () => {
+    window
+      .showInputBox({
+        prompt: '请输入股票代码，多个用英文逗号隔开（回车保存）',
+      })
+      .then((code) => {
+        if (!code) {
+          return;
+        }
+        fundModel.updateStockCfg(code.replace(/，/g, ','), () => {
+          stockPorvider.refresh();
+        });
+      });
+  });
+  commands.registerCommand('stock.sort', () => {
+    stockPorvider.changeOrder();
+    stockPorvider.refresh();
+  });
+
+  // Webview
   context.subscriptions.push(
     // 股票点击
     commands.registerCommand(

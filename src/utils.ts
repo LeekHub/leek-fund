@@ -51,18 +51,12 @@ export const formatNumber = (
 
 export const sortData = (data: FundTreeItem[] = [], order = 0) => {
   return data.sort((a: any, b: any) => {
+    const aValue = +a.info.percent;
+    const bValue = +b.info.percent;
     if (order) {
-      if (a.info.percent.indexOf('-') !== -1) {
-        return a.info.percent > b.info.percent ? 1 : -1;
-      } else {
-        return a.info.percent > b.info.percent ? -1 : 1;
-      }
+      return aValue > bValue ? -1 : 1;
     } else {
-      if (a.info.percent.indexOf('-') !== -1) {
-        return a.info.percent > b.info.percent ? -1 : 1;
-      } else {
-        return a.info.percent > b.info.percent ? 1 : -1;
-      }
+      return aValue > bValue ? 1 : -1;
     }
   });
 };

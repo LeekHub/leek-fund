@@ -53,7 +53,7 @@ export function activate(context: ExtensionContext) {
   window.registerTreeDataProvider('views.stock', nodeStockProvider);
 
   // register event
-  registerViewEvent(context, fundService);
+  registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider);
 }
 
 // this method is called when your extension is deactivated
