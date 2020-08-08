@@ -34,7 +34,7 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ##### 排序
 
-![升序/降序排序](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/delete.png)
+![升序/降序排序](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/sort.png)
 
 ##### 趋势图和 K 线图
 
