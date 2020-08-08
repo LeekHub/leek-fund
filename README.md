@@ -18,18 +18,30 @@ VSCode 最低版本要求：`v1.40.0+`
 - 支持升序/降序排序
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
-## 截图
+## 界面截图
 
 - [VSCode 插件开发——韭菜基金（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
-### 操作功能说明
-
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
+##### 新增
+
 ![GUI新增操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/add.png)
+
+##### 删除
+
 ![GUI删除操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/delete.png)
+
+##### 排序
+
 ![升序/降序排序](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/delete.png)
+
+##### 趋势图和 K 线图
+
 ![股票实时K线图](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/stock-k-line.png)
+
+##### 基金历史净值
+
 ![基金历史净值](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/fund-history.png)
 
 ## 插件配置说明
