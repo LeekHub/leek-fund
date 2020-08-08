@@ -136,7 +136,7 @@ export class FundService {
     try {
       const idxs = response.data.indexOf('"<table');
       const lastIdx = response.data.indexOf('</table>"');
-      const content = response.data.slice(idxs, lastIdx);
+      const content = response.data.slice(idxs + 1, lastIdx);
       // console.log(idxs, lastIdx, content);
       return { code, content };
     } catch (err) {
