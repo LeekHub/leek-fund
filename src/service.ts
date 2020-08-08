@@ -1,21 +1,31 @@
 import axios from 'axios';
 import { join } from 'path';
-import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { keepDecimal, randHeader, sortData } from './utils';
+import * as iconv from 'iconv-lite';
+import {
+  ExtensionContext,
+  TreeItem,
+  TreeItemCollapsibleState,
+  window,
+} from 'vscode';
+import { keepDecimal, randHeader, sortData, formatNumber } from './utils';
 
 interface FundInfo {
   percent: any;
   name: string;
   code: string;
-  price?: string;
   symbol?: string;
   type?: string;
-  yestclose?: string | number;
+  yestclose?: string | number; // 昨日净值
   open?: string | number;
+  highStop?: string | number;
   high?: string | number;
+  lowStop?: string | number;
   low?: string | number;
   time?: string;
-  updown?: string;
+  updown?: string; // 涨跌值 price-yestclose
+  price?: string; // 当前价格
+  volume?: string; // 成交量
+  amount?: string; // 成交额
   isStock?: boolean;
 }
 
@@ -76,6 +86,9 @@ export class FundService {
     const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=24`;
     return fundUrl;
   }
+  private stockUrl(codes: Array<string>): string {
+    return `https://hq.sinajs.cn/list=${codes.join(',')}`;
+  }
 
   singleFund(code: string): Promise<FundInfo> {
     const url = this.fundUrl(code);
@@ -132,7 +145,116 @@ export class FundService {
     }
   }
 
-  async fetchStockData(
+  async getStockData(
+    codes: Array<string>,
+    order: number
+  ): Promise<Array<FundTreeItem>> {
+    console.log('fetching stock data…');
+    try {
+      const url = this.stockUrl(codes);
+      const resp = await axios.get(url, {
+        // axios 乱码解决
+        responseType: 'arraybuffer',
+        transformResponse: [
+          (data) => {
+            const body = iconv.decode(data, 'GB18030');
+            return body;
+          },
+        ],
+        headers: randHeader(),
+      });
+      // console.log(resp.data);
+      if (/FAILED/.test(resp.data)) {
+        window.showErrorMessage(
+          `fail: error Stock code in ${codes.join(
+            ','
+          )}, please delete error Stock code`
+        );
+        return [];
+      }
+      const splitData = resp.data.split(';\n');
+      const stockList: Array<FundTreeItem> = [];
+      let sz: FundTreeItem | null = null;
+      for (let i = 0; i < splitData.length - 1; i++) {
+        const code = splitData[i].split('="')[0].split('var hq_str_')[1];
+        const params = splitData[i].split('="')[1].split(',');
+        console.log(code, typeof code);
+        let type = code.substr(0, 2) || 'sh';
+        let symbol = code.substr(2);
+        let stockItem: any;
+        if (params.length > 1) {
+          if (/^(sh|sz)/.test(code)) {
+            stockItem = {
+              code,
+              name: params[0],
+              open: formatNumber(params[1], 2, false),
+              yestclose: formatNumber(params[2], 2, false),
+              highStop: formatNumber(params[2] * 1.1, 2, false),
+              lowStop: formatNumber(params[2] * 0.9, 2, false),
+              price: formatNumber(params[3], 2, false),
+              low: formatNumber(params[5], 2, false),
+              high: formatNumber(params[4], 2, false),
+              volume: formatNumber(params[8], 2),
+              amount: formatNumber(params[9], 2),
+              percent: '',
+            };
+          } else if (/^hk/.test(code)) {
+            stockItem = {
+              code,
+              name: params[1],
+              open: formatNumber(params[2], 2, false),
+              yestclose: formatNumber(params[3], 2, false),
+              price: formatNumber(params[6], 2, false),
+              low: formatNumber(params[5], 2, false),
+              high: formatNumber(params[4], 2, false),
+              volume: formatNumber(params[12], 2),
+              amount: formatNumber(params[11], 2),
+              percent: '',
+            };
+          } else if (/^gb_/.test(code)) {
+            symbol = code.substr(3);
+            stockItem = {
+              code,
+              name: params[0],
+              open: formatNumber(params[5], 2, false),
+              yestclose: formatNumber(params[26], 2, false),
+              price: formatNumber(params[1], 2, false),
+              low: formatNumber(params[7], 2, false),
+              high: formatNumber(params[6], 2, false),
+              volume: formatNumber(params[10], 2),
+              percent: '',
+            };
+          }
+          if (stockItem) {
+            const { yestclose, price } = stockItem;
+            stockItem.type = type;
+            stockItem.symbol = symbol;
+            stockItem.updown = formatNumber(+price - +yestclose, 2, false);
+            stockItem.percent =
+              (stockItem.updown >= 0 ? '+' : '-') +
+              formatNumber(
+                (Math.abs(stockItem.updown) / +yestclose) * 100,
+                2,
+                false
+              ) +
+              '%';
+            if (code === 'sh000001') {
+              sz = new FundTreeItem(stockItem, this.context);
+            }
+            stockList.push(new FundTreeItem(stockItem, this.context));
+          }
+        }
+      }
+      this.szItem = sz || stockList[0];
+      const res = sortData(stockList, order);
+      return res;
+    } catch (err) {
+      window.showErrorMessage(`fail: Stock error `);
+      return [];
+    }
+  }
+
+  /* async fetchStockData(
     codes: Array<string>,
     order: number
   ): Promise<Array<FundTreeItem>> {
@@ -170,5 +292,5 @@ export class FundService {
       console.log(err);
       return [];
     }
-  }
+  } */
 }

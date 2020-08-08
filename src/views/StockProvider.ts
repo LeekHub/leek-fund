@@ -13,7 +13,7 @@ export class StockProvider implements TreeDataProvider<FundTreeItem> {
 
   constructor(service: FundService) {
     this.service = service;
-    this.order = 0;
+    this.order = 1;
     this.model = new FundModel();
   }
 
@@ -23,7 +23,7 @@ export class StockProvider implements TreeDataProvider<FundTreeItem> {
 
   getChildren(): FundTreeItem[] | Thenable<FundTreeItem[]> {
     const stockCodes = this.model.getCfg('leek-fund.stocks') || [];
-    const children = this.service.fetchStockData(stockCodes, this.order);
+    const children = this.service.getStockData(stockCodes, this.order);
     return children;
   }
 

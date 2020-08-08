@@ -126,3 +126,19 @@ export const isStockTime = () => {
   const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
   return (hours >= stockTime[0] && hours <= stockTime[1]) || delay;
 };
+
+export const formatNumber = (
+  val: number = 0,
+  fixed: number = 2,
+  format = true
+): string => {
+  const num = +val;
+  if (format) {
+    if (num > 1000 * 10000) {
+      return +(num / (10000 * 10000)).toFixed(fixed) + '亿';
+    } else if (num > 1000) {
+      return +(num / 10000).toFixed(fixed) + '万';
+    }
+  }
+  return `${+num.toFixed(fixed)}`;
+};

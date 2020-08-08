@@ -20,9 +20,8 @@ http://fundgz.1234567.com.cn/js/001632.js?rt=1596338178723
 // 历史净值
 http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=001632&page=1&&sdate=2020-07-31
 
-或网易的api （股票实时数据，但基金无实时数据）
-比如上证指数：
-https://api.money.126.net/data/feed/0000001?callback=a
+股票实时数据，比如腾讯股票：
+https://hq.sinajs.cn/list=hk00700
 
 // 基金实时数据（有几分钟延迟，插件基金数据使用的是此接口）
 // 比如诺安成长混合
