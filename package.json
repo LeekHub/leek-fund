@@ -2,13 +2,13 @@
   "name": "leek-fund",
   "displayName": "韭菜基金",
   "description": "VSCode 插件（韭菜基金），VSCode 里也可以看股票 & 基金实时数据",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "publisher": "giscafer",
   "license": "MIT",
   "keywords": [
     "stock",
-    "fund",
     "股票",
+    "fund",
     "基金",
     "韭菜基金",
     "同花顺",
@@ -18,7 +18,7 @@
   ],
   "icon": "https://ww1.sinaimg.cn/large/940e68eegy1ghic1q9f9wj20dw0dw75d.jpg",
   "engines": {
-    "vscode": "^1.29.0"
+    "vscode": "^1.41.0"
   },
   "categories": [
     "Other"
@@ -147,7 +147,7 @@
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
-    "@types/vscode": "^1.47.0",
+    "@types/vscode": "1.41.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",

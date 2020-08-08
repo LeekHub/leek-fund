@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { join } from 'path';
 import * as iconv from 'iconv-lite';
+import { join } from 'path';
 import {
   ExtensionContext,
   TreeItem,
   TreeItemCollapsibleState,
   window,
 } from 'vscode';
-import { keepDecimal, randHeader, sortData, formatNumber } from './utils';
+import { formatNumber, randHeader, sortData } from './utils';
 
 interface FundInfo {
   percent: any;
