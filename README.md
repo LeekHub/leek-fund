@@ -28,11 +28,11 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ##### 新增
 
-![GUI新增操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/add.png)
+![GUI新增操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/add1.png)
 
 ##### 删除
 
-![GUI删除操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/delete.png)
+![GUI删除操作](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/del.png)
 
 ##### 排序
 
