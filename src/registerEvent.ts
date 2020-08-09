@@ -93,23 +93,36 @@ export function registerViewEvent(
             // retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
           }
         );
-        panel.webview.html = `<html><body>
+        const timestamp = new Date().getTime();
+        let sszsImg = code;
+        let imageName = stockCode.toLowerCase();
+        let timeK = `https://image.sinajs.cn/newchart/min/n/${imageName}.gif`;
+        let dailyK = `https://image.sinajs.cn/newchart/daily/n/${imageName}.gif`;
+        let weeklyK = `https://image.sinajs.cn/newchart/weekly/n/${imageName}.gif`;
+        let monthlyK = `https://image.sinajs.cn/newchart/monthly/n/${imageName}.gif`;
+        if (stockCode.indexOf('gb_') === 0) {
+          imageName = stockCode.replace('gb_', '.');
+          sszsImg = imageName;
+          timeK = `https://image.sinajs.cn/newchart/v5/usstock/min/${sszsImg}.gif?${timestamp}`;
+          dailyK = `https://image.sinajs.cn/newchart/v5/usstock/daily/${sszsImg}.gif?${timestamp}`;
+          weeklyK = `https://image.sinajs.cn/newchart/v5/usstock/weekly/${sszsImg}.gif?${timestamp}`;
+          monthlyK = `https://image.sinajs.cn/newchart/v5/usstock/monthly/${sszsImg}.gif?${timestamp}`;
+        }
+
+        // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173
+        panel.webview.html = `<html><body style="background:#eee;color:#333">
           <br/>
           <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">${name}」趋势图、K线图</p>
           <hr />
-          <br/>
           <h3>实时走势图</3> <br/>
-          <img src="http://img1.money.126.net/chart/hs/time/210x140/${code}.png" width="420"/>
-          <br/>
-          <h3>时分K线图</3> <br/>
-          <img src="https://image.sinajs.cn/newchart/min/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <div style="width: 710px;margin:0 auto"><img src="${timeK}" width="700"/></div>
           <br/>
           <h3>日K线图</3> <br/>
-          <img src="http://image.sinajs.cn/newchart/daily/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <div style="width: 710px;margin:0 auto"><img src="${dailyK}" width="700"/></div>
           <h3>周K线图</3> <br/>
-          <img src="http://image.sinajs.cn/newchart/weekly/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <div style="width: 710px;margin:0 auto"><img src="${weeklyK}" width="700"/></div>
           <h3>月K线图</3> <br/>
-          <img src="https://image.sinajs.cn/newchart/monthly/n/${stockCode.toLowerCase()}.gif" width="420"/>
+          <div style="width: 710px;margin:0 auto"><img src="${monthlyK}" width="700"/></div>
         </body></html>`;
       }
     )
