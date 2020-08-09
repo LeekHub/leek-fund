@@ -3,6 +3,7 @@ import { FundModel } from './views/model';
 import { FundService } from './service';
 import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
+import { fundRankHtmlTemp } from './utils';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -82,7 +83,6 @@ export function registerViewEvent(
     commands.registerCommand(
       'leetfund.stockItemClick',
       (code, name, text, stockCode) => {
-        console.log('stockCode=', stockCode);
         // 创建webview
         const panel = window.createWebviewPanel(
           'stockWebview', // viewType
@@ -95,7 +95,7 @@ export function registerViewEvent(
         );
         panel.webview.html = `<html><body>
           <br/>
-          <p style="margin-left:20px;font-size:18px">${text}</p>
+          <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">${name}」趋势图、K线图</p>
           <hr />
           <br/>
           <h3>实时走势图</3> <br/>
@@ -143,7 +143,7 @@ export function registerViewEvent(
           </style>
           <body>
             <br/>
-            <p style="margin-left:20px;font-size:18px">${text}</p>
+            <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
             <hr />
             <br/>
            ${res.content}
@@ -151,4 +151,70 @@ export function registerViewEvent(
       }
     )
   );
+
+  commands.registerCommand('fund.rank', async () => {
+    const list = await service.getRankFund();
+    // 创建webview
+    const panel = window.createWebviewPanel(
+      'fundWebview',
+      '基金排行榜',
+      ViewColumn.One
+    );
+    const content = fundRankHtmlTemp(list);
+    panel.webview.html = `<html>
+        <style>
+        .bg{
+          background-color:#fff;
+          color:#333;
+        }
+        .red {
+          color: Red;
+        }
+        table{
+          width:100%;
+          min-width:700px;
+          border-collapse: collapse;
+        }
+        .name {
+          display: block;
+          width: 140px;
+          height: 30px;
+          overflow: hidden;
+        }
+        .fblue:visited, .fblue a:visited {
+            color: #800080;
+            text-decoration: none;
+        }
+        a {
+          outline: none;
+          text-decoration: none;
+        }
+        .table{
+          padding:32px 24px;
+        }
+        .table thead th{
+          font-size:15px;
+        }
+        .table tbody td, .table tbody th {
+          height: 30px;
+          line-height: 30px;
+          border-bottom: 1px dashed #afafaf;
+          text-align: center;
+        }
+        tbody .colorize {
+            color: #333;
+        }
+        tbody .sort_up, tbody .sort_down {
+          background-color: #EAF1FF;
+        }
+        </style>
+        <body class="bg">
+          <br/>
+          <p style="text-align: center; font-size:18px; width: 200px;margin: 0 auto;">基金回报排行榜前40</p>
+          <p style="text-align: center; font-size:14px; width: 200px;margin: 0 auto;margin-top:6px"><a href="http://vip.stock.finance.sina.com.cn/fund_center/index.html#hbphall" target="_blank">查看更多</a></p>
+          <div class="table">
+            ${content}
+          </div>
+        </body></html>`;
+  });
 }

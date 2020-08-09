@@ -23,7 +23,6 @@ export class StatusBar {
     this.createFundStatusBar();
   }
   createStockStatusBar(item: LeekTreeItem) {
-    console.log(item);
     if (!item) return;
     const {
       type,
