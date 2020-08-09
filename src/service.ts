@@ -123,7 +123,7 @@ export class FundService {
     });
   }
 
-  async fetchFundData(
+  async getFundData(
     fundCodes: Array<string>,
     order: number
   ): Promise<Array<LeekTreeItem>> {

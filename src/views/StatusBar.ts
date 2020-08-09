@@ -23,6 +23,7 @@ export class StatusBar {
     this.createFundStatusBar();
   }
   createStockStatusBar(item: LeekTreeItem) {
+    console.log(item);
     if (!item) return;
     const {
       type,
@@ -38,7 +39,7 @@ export class StatusBar {
     const deLow = percent.indexOf('-') === -1;
     this.stockBarItem.text = `「${item.info.name}」${price}  ${
       deLow ? '📈' : '📉'
-    }（${percent}）`;
+    }（${percent}%）`;
 
     this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     this.stockBarItem.color = deLow ? this.riseColor : this.fallColor;

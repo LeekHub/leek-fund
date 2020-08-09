@@ -11,6 +11,7 @@ import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
+import { FundModel } from './views/model';
 
 let intervalTimer: NodeJS.Timeout | null = null;
 
@@ -34,12 +35,21 @@ export function activate(context: ExtensionContext) {
   const nodeStockProvider = new StockProvider(fundService);
   nodeStockProvider.refresh();
 
+  const model = new FundModel();
   // status bar
   const statusBar = new StatusBar(fundService);
-  statusBar.refresh();
+
+  // 第一次主动获取一次数据，因为面板需要点击才触发查询（闭市的时候）
+  fundService.getFundData(model.getCfg('leek-fund.funds'), 0).then(() => {
+    statusBar.refresh();
+  });
+  fundService.getStockData(model.getCfg('leek-fund.stocks'), 0).then(() => {
+    statusBar.refresh();
+  });
+
   // interval
   intervalTimer = setInterval(() => {
-    if (isStockTime()) {
+    if (isStockTime() || fundService.szItem === undefined) {
       nodeFundProvider.refresh();
       nodeStockProvider.refresh();
       statusBar.refresh();

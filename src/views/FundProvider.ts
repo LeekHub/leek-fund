@@ -23,7 +23,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
 
   getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     const fundCodes = this.model.getCfg('leek-fund.funds') || [];
-    return this.service.fetchFundData(fundCodes, this.order);
+    return this.service.getFundData(fundCodes, this.order);
   }
 
   getParent(element: LeekTreeItem): LeekTreeItem | null {
