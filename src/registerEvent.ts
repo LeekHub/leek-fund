@@ -15,7 +15,10 @@ export function registerViewEvent(
   // Fund operation
   commands.registerCommand('fund.refresh', () => {
     fundPorvider.refresh();
-    window.showInformationMessage(`基金数据刷新`);
+    const handler = window.setStatusBarMessage(`基金数据已刷新`);
+    setTimeout(() => {
+      handler.dispose();
+    }, 1000);
   });
   commands.registerCommand('fund.delete', (target) => {
     fundModel.removeFundCfg(target.id, () => {
@@ -44,7 +47,10 @@ export function registerViewEvent(
   // Stock operation
   commands.registerCommand('stock.refresh', () => {
     stockPorvider.refresh();
-    window.showInformationMessage(`股票数据刷新`);
+    const handler = window.setStatusBarMessage(`股票数据已刷新`);
+    setTimeout(() => {
+      handler.dispose();
+    }, 1000);
   });
   commands.registerCommand('stock.delete', (target) => {
     fundModel.removeStockCfg(target.id, () => {
