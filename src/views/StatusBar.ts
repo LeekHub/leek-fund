@@ -1,5 +1,5 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
-import { FundService, FundTreeItem } from '../service';
+import { FundService, LeekTreeItem } from '../service';
 import { FundModel } from './model';
 
 export class StatusBar {
@@ -22,7 +22,7 @@ export class StatusBar {
     this.createStockStatusBar(this.fundSrv.szItem);
     this.createFundStatusBar();
   }
-  createStockStatusBar(item: FundTreeItem) {
+  createStockStatusBar(item: LeekTreeItem) {
     if (!item) return;
     const {
       type,
@@ -40,7 +40,7 @@ export class StatusBar {
       deLow ? '📈' : '📉'
     }（${percent}）`;
 
-    this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
+    this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     this.stockBarItem.color = deLow ? this.riseColor : this.fallColor;
     this.stockBarItem.show();
     return this.stockBarItem;

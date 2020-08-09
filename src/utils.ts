@@ -1,4 +1,4 @@
-import { FundTreeItem } from './service';
+import { LeekTreeItem } from './service';
 
 /**
  * 数组去重
@@ -49,7 +49,7 @@ export const formatNumber = (
   return `${+num.toFixed(fixed)}`;
 };
 
-export const sortData = (data: FundTreeItem[] = [], order = 0) => {
+export const sortData = (data: LeekTreeItem[] = [], order = 0) => {
   return data.sort((a: any, b: any) => {
     const aValue = +a.info.percent;
     const bValue = +b.info.percent;

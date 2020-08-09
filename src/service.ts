@@ -29,52 +29,70 @@ interface FundInfo {
   isStock?: boolean;
 }
 
-export class FundTreeItem extends TreeItem {
+export class LeekTreeItem extends TreeItem {
   info: FundInfo;
   constructor(info: FundInfo, context: ExtensionContext) {
-    super(
-      info.isStock
-        ? `${info.percent}%   ${info.price}    「${info.name}」${info.type}${info.symbol}`
-        : `${info.percent}%   「${info.name}」(${info.code})`,
-      TreeItemCollapsibleState.None
-    );
+    super('', TreeItemCollapsibleState.None);
     this.info = info;
-    const text = info.isStock
-      ? `${info.percent}%   ${info.price}    「${info.name}」${info.type}${info.symbol}`
-      : `${info.percent}%   「${info.name}」(${info.code})`;
-    const grow = info.percent.indexOf('-') === 0 ? false : true;
+    const {
+      isStock,
+      name,
+      code,
+      type,
+      symbol,
+      price,
+      percent,
+      open,
+      yestclose,
+      high,
+      low,
+      updown,
+      volume,
+      amount,
+    } = info;
+    const grow = percent.indexOf('-') === 0 ? false : true;
     this.iconPath = context.asAbsolutePath(
       join('resources', `${grow ? 'up-arrow' : 'down-arrow'}.svg`)
     );
-    this.id = info.code; // 基金/股票编码
+
+    const text = isStock
+      ? `${percent}%   ${price}    「${name}」${type}${symbol}`
+      : `${percent}%   「${name}」(${code})`;
+
+    this.label = text;
+    this.id = code;
     this.command = {
-      title: info.name, // 标题
-      command: info.isStock
-        ? 'leetfund.stockItemClick'
-        : 'leetfund.fundItemClick', // 命令 ID
+      title: name, // 标题
+      command: isStock ? 'leetfund.stockItemClick' : 'leetfund.fundItemClick', // 命令 ID
       arguments: [
-        info.isStock ? '0' + info.symbol : info.code, // 基金/股票编码
-        info.name, // 基金/股票名称
+        isStock ? '0' + symbol : code, // 基金/股票编码
+        name, // 基金/股票名称
         text,
-        `${info.type}${info.symbol}`,
+        `${type}${symbol}`,
       ],
     };
+
+    if (isStock) {
+      this.tooltip = `【今日行情】${type}${symbol}\n 涨跌：${updown}   百分比：${percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+    } else {
+      this.tooltip = '点击查看详情';
+    }
   }
 }
 
 export class FundService {
-  private _fundList: Array<FundTreeItem> = [];
+  private _fundList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   szItem: any;
   constructor(context: ExtensionContext) {
     this.context = context;
   }
 
-  public get fundList(): Array<FundTreeItem> {
+  public get fundList(): Array<LeekTreeItem> {
     return this._fundList;
   }
 
-  public set fundList(value: Array<FundTreeItem>) {
+  public set fundList(value: Array<LeekTreeItem>) {
     this._fundList = value;
   }
 
@@ -108,7 +126,7 @@ export class FundService {
   async fetchFundData(
     fundCodes: Array<string>,
     order: number
-  ): Promise<Array<FundTreeItem>> {
+  ): Promise<Array<LeekTreeItem>> {
     console.log('fetching fund data……');
     const promiseAll = [];
     for (const fundCode of fundCodes) {
@@ -117,7 +135,7 @@ export class FundService {
     try {
       const result = await Promise.all(promiseAll);
       const data = result.map((item) => {
-        return new FundTreeItem(item, this.context);
+        return new LeekTreeItem(item, this.context);
       });
 
       this.fundList = sortData(data, order);
@@ -148,7 +166,7 @@ export class FundService {
   async getStockData(
     codes: Array<string>,
     order: number
-  ): Promise<Array<FundTreeItem>> {
+  ): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
     try {
       const url = this.stockUrl(codes);
@@ -173,8 +191,8 @@ export class FundService {
         return [];
       }
       const splitData = resp.data.split(';\n');
-      const stockList: Array<FundTreeItem> = [];
-      let sz: FundTreeItem | null = null;
+      const stockList: Array<LeekTreeItem> = [];
+      let sz: LeekTreeItem | null = null;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
@@ -221,8 +239,10 @@ export class FundService {
               low: formatNumber(params[7], 2, false),
               high: formatNumber(params[6], 2, false),
               volume: formatNumber(params[10], 2),
+              amount: '接口无数据',
               percent: '',
             };
+            type = code.substr(0, 3);
           }
           if (stockItem) {
             const { yestclose, price } = stockItem;
@@ -238,9 +258,9 @@ export class FundService {
                 false
               );
             if (code === 'sh000001') {
-              sz = new FundTreeItem(stockItem, this.context);
+              sz = new LeekTreeItem(stockItem, this.context);
             }
-            stockList.push(new FundTreeItem(stockItem, this.context));
+            stockList.push(new LeekTreeItem(stockItem, this.context));
           }
         }
       }

@@ -1,8 +1,8 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { FundService, FundTreeItem } from '../service';
+import { FundService, LeekTreeItem } from '../service';
 import { FundModel } from './model';
 
-export class FundProvider implements TreeDataProvider<FundTreeItem> {
+export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
 
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
@@ -21,16 +21,16 @@ export class FundProvider implements TreeDataProvider<FundTreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  getChildren(): FundTreeItem[] | Thenable<FundTreeItem[]> {
+  getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     const fundCodes = this.model.getCfg('leek-fund.funds') || [];
     return this.service.fetchFundData(fundCodes, this.order);
   }
 
-  getParent(element: FundTreeItem): FundTreeItem | null {
+  getParent(element: LeekTreeItem): LeekTreeItem | null {
     return null;
   }
 
-  getTreeItem(element: FundTreeItem): TreeItem {
+  getTreeItem(element: LeekTreeItem): TreeItem {
     return element;
   }
 
