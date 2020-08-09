@@ -13,6 +13,10 @@ export function registerViewEvent(
   const fundModel = new FundModel();
 
   // Fund operation
+  commands.registerCommand('fund.refresh', () => {
+    fundPorvider.refresh();
+    window.showInformationMessage(`基金数据刷新`);
+  });
   commands.registerCommand('fund.delete', (target) => {
     fundModel.removeFundCfg(target.id, () => {
       fundPorvider.refresh();
@@ -38,6 +42,10 @@ export function registerViewEvent(
   });
 
   // Stock operation
+  commands.registerCommand('stock.refresh', () => {
+    stockPorvider.refresh();
+    window.showInformationMessage(`股票数据刷新`);
+  });
   commands.registerCommand('stock.delete', (target) => {
     fundModel.removeStockCfg(target.id, () => {
       stockPorvider.refresh();

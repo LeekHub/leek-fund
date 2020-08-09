@@ -76,6 +76,14 @@
         "title": "删除基金"
       },
       {
+        "command": "fund.refresh",
+        "title": "刷新数据",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "stock.sort",
         "title": "升序/降序",
         "icon": {
@@ -92,12 +100,25 @@
         }
       },
       {
+        "command": "stock.refresh",
+        "title": "刷新数据",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "stock.delete",
         "title": "删除股票"
       }
     ],
     "menus": {
       "view/title": [
+        {
+          "command": "fund.refresh",
+          "when": "view == views.fund",
+          "group": "navigation"
+        },
         {
           "command": "fund.sort",
           "when": "view == views.fund",
@@ -106,6 +127,11 @@
         {
           "command": "fund.add",
           "when": "view == views.fund",
+          "group": "navigation"
+        },
+        {
+          "command": "stock.refresh",
+          "when": "view == views.stock",
           "group": "navigation"
         },
         {
