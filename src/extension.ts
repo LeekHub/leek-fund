@@ -9,9 +9,9 @@ import { registerViewEvent } from './registerEvent';
 import { FundService } from './service';
 import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
+import { FundModel } from './views/model';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
-import { FundModel } from './views/model';
 
 let intervalTimer: NodeJS.Timeout | null = null;
 
