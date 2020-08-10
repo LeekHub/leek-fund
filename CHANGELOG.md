@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.1.6]
+
+- feat: 新增基金历史走势图
+
 ## [1.1.5]
 
 - fix: 修复 ubuntu 系统插件初始化 bug

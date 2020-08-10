@@ -48,6 +48,13 @@ http://fund.eastmoney.com/js/fundcode_search.js
 http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=
 ```
 
+### 基金走势图
+
+```
+// 近期走势
+https://image.sinajs.cn/newchart/v5/fund/nav/ss/150206.gif
+```
+
 ## 开发
 
 ```

@@ -2,6 +2,7 @@
 .vscode-test/**
 out/test/**
 src/**
+demo/
 screenshot/
 .gitignore
 vsc-extension-quickstart.md

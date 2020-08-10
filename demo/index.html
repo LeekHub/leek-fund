@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>基金走势图</title>
+    <script src="./data.js"></script>
+    <style>
+      .header {
+        margin-left: 40px;
+        padding: 6px;
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px solid #e8e8e8;
+        width: 340px;
+        font-size: 18px;
+        font-weight: fold;
+      }
+      .list-items {
+        list-style: none;
+        width: 360px;
+      }
+      .list-item {
+        cursor: pointer;
+        height: 30px;
+        padding: 6px 8px;
+        line-height: 30px;
+        border-bottom: 1px solid #e8e8e8;
+      }
+      .flex {
+        display: flex;
+      }
+      .list {
+        display: inline-block;
+      }
+      .content {
+        display: inline-block;
+      }
+      img {
+        width: 800px;
+      }
+      .percent {
+        font-size: 24px;
+        font-weight: fond;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flex">
+      <div class="list">
+        <div class="header">
+          基金走势图
+        </div>
+        <ul class="list-items"></ul>
+      </div>
+      <div class="content">
+        <p>净值：<span class="percent">0.00%</span></p>
+        <img
+          class="fund-trend"
+          src="https://giscafer.gallerycdn.vsassets.io/extensions/giscafer/leek-fund/1.1.5/1597052433264/Microsoft.VisualStudio.Services.Icons.Default"
+          alt=""
+        />
+      </div>
+    </div>
+    <script>
+      var listEl = document.querySelector('.list');
+      var listItemUlEl = document.querySelector('.list-items');
+      var headerEl = document.querySelector('.header');
+      var childs = listEl.childNodes;
+      listEl.removeChild(listItemUlEl);
+      var listStr = '';
+
+      var firstFund = fundList[0].info;
+      for (var j = 0; j < fundList.length; j++) {
+        var info = fundList[j].info;
+        listStr +=
+          '<li class="list-item" data-code="' +
+          info.code +
+          '"  data-percent="' +
+          info.percent +
+          '">' +
+          info.name +
+          '（' +
+          info.code +
+          '）' +
+          '</li>';
+      }
+      headerEl.insertAdjacentHTML(
+        'afterend',
+        ' <ul class="list-items">' + listStr + '</ul>'
+      );
+      var trendImgEl = document.querySelector('.fund-trend');
+      var percentEl = document.querySelector('.percent');
+      handleClick(
+        info.code,
+        info.percent,
+        document.querySelector('.list-items').firstChild
+      );
+      document.querySelector('.list-items').onclick = function (event) {
+        var code = event.target.getAttribute('data-code');
+        var percent = event.target.getAttribute('data-percent');
+        handleClick(code, percent, event.target);
+      };
+
+      function handleClick(code, percent, target) {
+        document.querySelector('.list-items').childNodes.forEach((c) => {
+          c.style.background = '#fff';
+          c.style.color = '#333';
+        });
+        target.style.background = '#1890ff';
+        target.style.color = '#fff';
+        trendImgEl.src =
+          'https://image.sinajs.cn/newchart/v5/fund/nav/ss/' +
+          code +
+          '.gif?v=' +
+          new Date().getTime();
+        percentEl.innerHTML = percent + '%';
+        if (percent < 0) {
+          percentEl.style.color = 'green';
+        } else {
+          percentEl.style.color = 'red';
+        }
+      }
+    </script>
+  </body>
+</html>
