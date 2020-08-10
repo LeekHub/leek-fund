@@ -205,7 +205,6 @@ export function registerViewEvent(
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>基金走势图</title>
-        <script src="./data.js"></script>
         <style>
            body{background:#fff;color:#333}
           .header {

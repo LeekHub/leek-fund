@@ -1,4 +1,4 @@
-import { LeekTreeItem } from './service';
+import { LeekTreeItem } from './leekTreeItem';
 
 /**
  * 数组去重

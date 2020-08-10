@@ -1,5 +1,6 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { FundService, LeekTreeItem } from '../service';
+import { LeekTreeItem } from '../leekTreeItem';
+import { FundService } from '../service';
 import { FundModel } from './model';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
