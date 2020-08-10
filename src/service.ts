@@ -168,6 +168,7 @@ export class FundService {
     order: number
   ): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
+    if (codes.length === 0) return [];
     try {
       const url = this.stockUrl(codes);
       const resp = await axios.get(url, {
@@ -268,7 +269,8 @@ export class FundService {
       const res = sortData(stockList, order);
       return res;
     } catch (err) {
-      window.showErrorMessage(`fail: Stock error `);
+      console.error(err);
+      window.showErrorMessage(`fail: Stock error ` + JSON.stringify(err || {}));
       return [];
     }
   }
