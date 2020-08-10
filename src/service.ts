@@ -168,9 +168,9 @@ export class FundService {
     order: number
   ): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
-    if (codes.length === 0) return [];
+    if ((codes && codes.length === 0) || !codes) return [];
+    const url = this.stockUrl(codes);
     try {
-      const url = this.stockUrl(codes);
       const resp = await axios.get(url, {
         // axios 乱码解决
         responseType: 'arraybuffer',
@@ -269,8 +269,9 @@ export class FundService {
       const res = sortData(stockList, order);
       return res;
     } catch (err) {
+      console.info(url);
       console.error(err);
-      window.showErrorMessage(`fail: Stock error ` + JSON.stringify(err || {}));
+      window.showErrorMessage(`fail: Stock error ` + url);
       return [];
     }
   }
