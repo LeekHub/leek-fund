@@ -107,16 +107,20 @@ export class FundService {
         headers: randHeader(),
       });
       // console.log(resp.data);
+      var stockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
-        window.showErrorMessage(
-          `fail: error Stock code in ${codes.join(
-            ','
-          )}, please delete error Stock code`
-        );
-        return [];
+        if (codes.length===1){
+          window.showErrorMessage(
+            `fail: error Stock code in ${codes}, please delete error Stock code`
+          );
+          return [{id:codes[0],info:{code:codes[0],percent:'0',name:'错误代码'},label:codes[0]+' 错误代码，请查看是否缺少交易所信息'}]
+        }
+        for(const code of codes){
+          stockList = stockList.concat(await this.getStockData(new Array(code),order))
+        }
+        return stockList
       }
       const splitData = resp.data.split(';\n');
-      const stockList: Array<LeekTreeItem> = [];
       let sz: LeekTreeItem | null = null;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
