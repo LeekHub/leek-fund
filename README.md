@@ -25,8 +25,8 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ## 插件介绍
 
+- [韭菜盒子操作文档说明](https://github.com/giscafer/leek-fund/issues/23)
 - [VSCode 插件开发——韭菜盒子（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
-- [韭菜盒子操作文档说明](./document.md)
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
@@ -114,7 +114,7 @@ VSCode 最低版本要求：`v1.40.0+`
 
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
-- [Somin\_](https://github.com/as771788379)
+- [JayHuangTnT](https://github.com/JayHuangTnT)
 
 ## Github
 
