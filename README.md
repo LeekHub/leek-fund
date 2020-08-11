@@ -1,13 +1,15 @@
 # leek-fund
 
-VSCode 插件，在编码的时候随时关注实时股票&基金数据。因接口原因基金数据延迟 `2 分钟` 左右，股票数据是实时
+VSCode 插件，在编码的时候随时关注实时股票&基金数据。因接口原因基金数据延迟 `2 分钟` 左右，股票数据是实时。
 
-**投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
+插件由原来的 “韭菜基金” 改名为 **韭菜盒子**
 
 安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，
 VSCode 最低版本要求：`v1.40.0+`
 
-功能主要有：
+**投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
+
+## 功能
 
 - 基金涨跌查看，可自定义配置基金代码，支持查看基金历史净值详情
 - 股票涨跌查看，可自定义配置股票代码，支持查看股票实时 K 线图
@@ -21,9 +23,10 @@ VSCode 最低版本要求：`v1.40.0+`
 - 基金走势图（含实时走势） `v1.1.7`
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
-## 界面截图
+## 插件介绍
 
-- [VSCode 插件开发——韭菜基金（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
+- [VSCode 插件开发——韭菜盒子（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
+- [韭菜盒子操作文档说明](./document.md)
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 

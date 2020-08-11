@@ -2,26 +2,26 @@
 
 ## 目录
 
-* 序言
-* 支持环境
-* 功能介绍
-* 图文操作指引
-* 插件配置说明
-* 其他
+- 序言
+- 支持环境
+- 功能介绍
+- 图文操作指引
+- 插件配置说明
+- 其他
 
-### 序言
+## 序言
 
 **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
 
 今年开始学习养基，有一天想安装个 VSCode 插件，但没找到好用的 VSCode 基金插件，插件中大部分只有股票的功能，所以就决定开发**韭菜盒子**了……
 
-### 支持环境
+## 支持环境
 
-* 安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，
-VSCode 最低版本要求：`v1.40.0+`
-* Windows、Mac、Linux
+- 安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，
+  VSCode 最低版本要求：`v1.40.0+`
+- Windows、Mac、Linux
 
-### 功能介绍
+## 功能介绍
 
 - 基金涨跌查看，可自定义配置基金代码，支持查看基金历史净值详情
 - 股票涨跌查看，可自定义配置股票代码，支持查看股票实时 K 线图
@@ -35,7 +35,8 @@ VSCode 最低版本要求：`v1.40.0+`
 - 基金走势图（含实时走势） `v1.1.7`
 - 持续更新……
 
-### 图文操作指引
+#### 图文操作指引
+
 - [VSCode 插件开发——韭菜基金（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
@@ -60,7 +61,7 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ![基金历史净值](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/fund-history.png)
 
-### 插件配置说明
+## 插件配置说明
 
 支持 GUI 操作新增&删除基金，也可以手动修改用户插件配置，修改或添加你所需要监控的股票代码和基金代码，下面是配置说明：
 
@@ -116,24 +117,18 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ```
 
-### 其他
+## 问题
 
-* 如遇页面操作无法解决的问题，可点击左下角齿轮 setting 搜韭菜基金 可进入配置文件进行修改
+> 问题会逐渐修复和完善
 
-* 如遇添加基金后，显示基金名称为 `Null` 请先验证下 `http://fundgz.1234567.com.cn/js/xxxxx.js?callback=a`  行的话但是插件显示 `null` 麻烦进行群反馈问题，不行就是接口不支持，解决不了，除非有新接口。
+- 如遇页面操作无法解决的问题，可点击左下角齿轮 setting 搜韭菜基金 可进入配置文件进行修改
 
+- 如遇添加基金后，显示基金名称为 `Null` 请先验证下 `http://fundgz.1234567.com.cn/js/xxxxx.js?callback=a` 行的话但是插件显示 `null` 麻烦进行群反馈问题，不行就是接口不支持，解决不了，除非有新接口。
 
-### 问题反馈
+## 问题反馈
 
-使用有bug或者体验问题可以在 issues 反馈：https://github.com/giscafer/leek-fund/issues
+使用有 bug 或者体验问题可以在 issues 反馈：https://github.com/giscafer/leek-fund/issues
 
-### 交流群
+## 交流群
 
 [插件（养 🐥）微信交流群](https://github.com/giscafer/leek-fund/issues/19)
-
-
-
-
-
-
-

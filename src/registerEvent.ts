@@ -153,13 +153,29 @@ export function registerViewEvent(
           .grn{
             color:green;
           }
+          .history{padding: 32px 24px;}
+          .trend{
+            width: 700px;
+            margin: 10px auto;
+            text-align: center;
+          }
+          .fund-sstrend{
+            width:700px;
+          }
           </style>
           <body>
             <br/>
+            <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
+            <div class="trend"><img
+              class="fund-sstrend"
+              src="http://j4.dfcfw.com/charts/pic6/${code}.png?v=${new Date().getTime()}"
+              alt=""
+            />
+            </div>
             <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
             <hr />
             <br/>
-           ${res.content}
+            <div class="history">${res.content}</div>
           </body></html>`;
       }
     )
