@@ -113,6 +113,8 @@ VSCode 最低版本要求：`v1.40.0+`
 ## 感谢 PR
 
 - [zomixi](https://github.com/zomixi)
+- [httpcheck](https://github.com/httpcheck)
+- [Somin\_](https://github.com/as771788379)
 
 ## Github
 
