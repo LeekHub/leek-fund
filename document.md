@@ -1,16 +1,22 @@
-# 韭菜基金使用指南
+# 韭菜盒子使用指南
+
 ## 目录
+
 * 序言
 * 支持环境
 * 功能介绍
 * 图文操作指引
 * 插件配置说明
-* little Tips
+* 其他
 
 ### 序言
-* **投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
+
+**投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！**
+
+今年开始学习养基，有一天想安装个 VSCode 插件，但没找到好用的 VSCode 基金插件，插件中大部分只有股票的功能，所以就决定开发**韭菜盒子**了……
 
 ### 支持环境
+
 * 安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，
 VSCode 最低版本要求：`v1.40.0+`
 * Windows、Mac、Linux
@@ -110,27 +116,24 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ```
 
-### little Tips
+### 其他
+
 * 如遇页面操作无法解决的问题，可点击左下角齿轮 setting 搜韭菜基金 可进入配置文件进行修改
-* 如遇添加基金后，显示基金名称为Null 请先验证下 http://fundgz.1234567.com.cn/js/xxxxx.js?callback=a  行的话但是插件显示null麻烦进行群反馈问题，不行就是接口不支持，解决不了，除非有新接口。
+
+* 如遇添加基金后，显示基金名称为 `Null` 请先验证下 `http://fundgz.1234567.com.cn/js/xxxxx.js?callback=a`  行的话但是插件显示 `null` 麻烦进行群反馈问题，不行就是接口不支持，解决不了，除非有新接口。
 
 
+### 问题反馈
+
+使用有bug或者体验问题可以在 issues 反馈：https://github.com/giscafer/leek-fund/issues
 
 ### 交流群
 
 [插件（养 🐥）微信交流群](https://github.com/giscafer/leek-fund/issues/19)
 
-### 感谢 PR
 
-- [zomixi](https://github.com/zomixi)
 
-### Github
 
-https://github.com/giscafer/leek-fund
-
-### 问题反馈
-
-https://github.com/giscafer/leek-fund/issues
 
 
 
