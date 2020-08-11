@@ -242,11 +242,17 @@ export function registerViewEvent(
             padding-right:10px;
           }
           img {
-            width: 800px;
+            width: 700px;
           }
           .percent {
             font-size: 24px;
             font-weight: fond;
+          }
+          .title{
+            font-size:18px;
+            margin:6px 0;
+            color:#1890ff;
+            text-align: center;
           }
         </style>
       </head>
@@ -260,6 +266,14 @@ export function registerViewEvent(
           </div>
           <div class="content">
             <p>净值：<span class="percent">0.00%</span></p>
+            <p class="title">实时趋势图</p>
+            <img
+              class="fund-sstrend"
+              src="https://avatars0.githubusercontent.com/u/8676711?s=460&u=b88b7ee37574da3b6aef32da9a5986eb82bc4d11&v=4"
+              alt=""
+            />
+            <br />
+            <p class="title" style="margin-top:6px">历史趋势图</p>
             <img
               class="fund-trend"
               src="https://giscafer.gallerycdn.vsassets.io/extensions/giscafer/leek-fund/1.1.5/1597052433264/Microsoft.VisualStudio.Services.Icons.Default"
@@ -296,6 +310,7 @@ export function registerViewEvent(
             ' <ul class="list-items">' + listStr + '</ul>'
           );
           var trendImgEl = document.querySelector('.fund-trend');
+          var sstrendImgEl = document.querySelector('.fund-sstrend');
           var percentEl = document.querySelector('.percent');
           handleClick(
             info.code,
@@ -315,6 +330,10 @@ export function registerViewEvent(
             });
             target.style.background = '#1890ff';
             target.style.color = '#fff';
+            sstrendImgEl.src='http://j4.dfcfw.com/charts/pic6/' +
+            code +
+            '.png?v=' +
+            new Date().getTime();
             trendImgEl.src =
               'https://image.sinajs.cn/newchart/v5/fund/nav/ss/' +
               code +
