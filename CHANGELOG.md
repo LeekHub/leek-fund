@@ -7,11 +7,11 @@
 
 ## [1.1.8]
 
-插件由原来的 “韭菜基金” 改名为 **韭菜盒子**
+:bangbang: 插件由原来的 “韭菜基金” 改名为 **韭菜盒子**
 
-- fix: 股票错误代码需要手动改配置文件问题 PR by @httpcheck
+- fix: 股票错误代码需要手动改配置文件问题 :heart: PR by @httpcheck
 - feat: 点击基金也可以直接查看到实时走势图
-- chore: 新增操作手册 PR by @Somin
+- chore: 新增操作手册 :heart: PR by @Somin
 
 ## [1.1.7]
 
@@ -50,7 +50,9 @@
 
 ## [1.0.0]
 
-- refactor: 重构代码
+**:triangular_flag_on_post:重大改变，代码 100% 重构**
+
+- refactor: 重构代码，typescript 开发
 - feat: 替换股票数据为新浪 api
 - fix: 修复港股和美股数据无法获取问题
 
@@ -60,7 +62,7 @@
 
 ## [0.2.0]
 
-- feat: 支持 GUI 操作新增&删除基金
+- feat: 支持 GUI 操作新增&删除基金 :heart: PR by @zomixi
 
 ## [0.1.10]
 
