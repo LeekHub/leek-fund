@@ -54,12 +54,22 @@
         <ul class="list-items"></ul>
       </div>
       <div class="content">
-        <p>净值：<span class="percent">0.00%</span></p>
-        <img
-          class="fund-trend"
-          src="https://giscafer.gallerycdn.vsassets.io/extensions/giscafer/leek-fund/1.1.5/1597052433264/Microsoft.VisualStudio.Services.Icons.Default"
-          alt=""
-        />
+        <div class="content">
+          <p>净值：<span class="percent">0.00%</span></p>
+          <p class="title">实时趋势图</p>
+          <img
+            class="fund-sstrend"
+            src="https://avatars0.githubusercontent.com/u/8676711?s=460&u=b88b7ee37574da3b6aef32da9a5986eb82bc4d11&v=4"
+            alt=""
+          />
+          <br />
+          <p class="title" style="margin-top: 6px;">历史趋势图</p>
+          <img
+            class="fund-trend"
+            src="https://giscafer.gallerycdn.vsassets.io/extensions/giscafer/leek-fund/1.1.5/1597052433264/Microsoft.VisualStudio.Services.Icons.Default"
+            alt=""
+          />
+        </div>
       </div>
     </div>
     <script>
@@ -69,7 +79,7 @@
       var childs = listEl.childNodes;
       listEl.removeChild(listItemUlEl);
       var listStr = '';
-
+      var timer = null;
       var firstFund = fundList[0].info;
       for (var j = 0; j < fundList.length; j++) {
         var info = fundList[j].info;
@@ -89,19 +99,16 @@
         'afterend',
         ' <ul class="list-items">' + listStr + '</ul>'
       );
+      var sstrendImgEl = document.querySelector('.fund-sstrend');
       var trendImgEl = document.querySelector('.fund-trend');
       var percentEl = document.querySelector('.percent');
-      handleClick(
-        info.code,
-        info.percent,
-        document.querySelector('.list-items').firstChild
-      );
+
       document.querySelector('.list-items').onclick = function (event) {
         var code = event.target.getAttribute('data-code');
         var percent = event.target.getAttribute('data-percent');
         handleClick(code, percent, event.target);
       };
-
+      document.querySelector('.list-items').firstChild.click();
       function handleClick(code, percent, target) {
         document.querySelector('.list-items').childNodes.forEach((c) => {
           c.style.background = '#fff';
@@ -109,6 +116,11 @@
         });
         target.style.background = '#1890ff';
         target.style.color = '#fff';
+        sstrendImgEl.src =
+          'http://j4.dfcfw.com/charts/pic6/' +
+          code +
+          '.png?v=' +
+          new Date().getTime();
         trendImgEl.src =
           'https://image.sinajs.cn/newchart/v5/fund/nav/ss/' +
           code +
@@ -120,6 +132,19 @@
         } else {
           percentEl.style.color = 'red';
         }
+
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+        timer = setInterval(function () {
+          sstrendImgEl.src =
+            'http://j4.dfcfw.com/charts/pic6/' +
+            code +
+            '.png?v=' +
+            new Date().getTime();
+          console.log('刷新数据' + code);
+        }, 5000);
       }
     </script>
   </body>

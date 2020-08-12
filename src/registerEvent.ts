@@ -138,7 +138,10 @@ export function registerViewEvent(
         const panel = window.createWebviewPanel(
           'fundWebview',
           name,
-          ViewColumn.One
+          ViewColumn.One,
+          {
+            enableScripts: true, // 启用JS，默认禁用
+          }
         );
         panel.webview.html = `<html>
           <style>
@@ -172,10 +175,28 @@ export function registerViewEvent(
               alt=""
             />
             </div>
+            <div class="history">
             <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
             <hr />
-            <br/>
-            <div class="history">${res.content}</div>
+            ${res.content}
+            </div>
+            <script>
+            var sstrendImgEl = document.querySelector('.fund-sstrend');
+            var timer=null;
+            var code="${code}";
+            if (timer) {
+              clearInterval(timer);
+              timer = null;
+            }
+            timer = setInterval(function () {
+              sstrendImgEl.src =
+                'http://j4.dfcfw.com/charts/pic6/' +
+               code+
+                '.png?v=' +
+                new Date().getTime();
+              console.log('刷新数据' + code);
+            }, 20000);
+          </script>
           </body></html>`;
       }
     )
@@ -305,6 +326,7 @@ export function registerViewEvent(
           var childs = listEl.childNodes;
           listEl.removeChild(listItemUlEl);
           var listStr = '';
+          var timer=null
     
           var firstFund = fundList[0].info;
           for (var j = 0; j < fundList.length; j++) {
@@ -328,17 +350,12 @@ export function registerViewEvent(
           var trendImgEl = document.querySelector('.fund-trend');
           var sstrendImgEl = document.querySelector('.fund-sstrend');
           var percentEl = document.querySelector('.percent');
-          handleClick(
-            info.code,
-            info.percent,
-            document.querySelector('.list-items').firstChild
-          );
           document.querySelector('.list-items').onclick = function (event) {
             var code = event.target.getAttribute('data-code');
             var percent = event.target.getAttribute('data-percent');
             handleClick(code, percent, event.target);
           };
-    
+          document.querySelector('.list-items').firstChild.click();
           function handleClick(code, percent, target) {
             document.querySelector('.list-items').childNodes.forEach((c) => {
               c.style.background = '#fff';
@@ -361,6 +378,19 @@ export function registerViewEvent(
             } else {
               percentEl.style.color = 'red';
             }
+
+            if (timer) {
+              clearInterval(timer);
+              timer = null;
+            }
+            timer = setInterval(function () {
+              sstrendImgEl.src =
+                'http://j4.dfcfw.com/charts/pic6/' +
+                code +
+                '.png?v=' +
+                new Date().getTime();
+              console.log('刷新数据' + code);
+            }, 20000);
           }
         </script>
       </body>
