@@ -118,7 +118,7 @@ VSCode 最低版本要求：`v1.40.0+`
 
 ## Changelog
 
-![CHANGELOG](./CHANGELOG.md)
+[CHANGELOG](./CHANGELOG.md)
 
 ## Github
 
