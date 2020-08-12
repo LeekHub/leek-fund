@@ -116,6 +116,10 @@ VSCode 最低版本要求：`v1.40.0+`
 - [httpcheck](https://github.com/httpcheck)
 - [JayHuangTnT](https://github.com/JayHuangTnT)
 
+## Changelog
+
+![CHANGELOG](./CHANGELOG.md)
+
 ## Github
 
 https://github.com/giscafer/leek-fund

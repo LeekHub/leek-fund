@@ -1,4 +1,4 @@
-import { LeekTreeItem } from './leekTreeItem';
+import { LeekTreeItem, SortType } from './leekTreeItem';
 
 /**
  * 数组去重
@@ -49,16 +49,23 @@ export const formatNumber = (
   return `${+num.toFixed(fixed)}`;
 };
 
-export const sortData = (data: LeekTreeItem[] = [], order = 0) => {
-  return data.sort((a: any, b: any) => {
-    const aValue = +a.info.percent;
-    const bValue = +b.info.percent;
-    if (order) {
-      return aValue > bValue ? -1 : 1;
-    } else {
-      return aValue > bValue ? 1 : -1;
-    }
-  });
+export const sortData = (
+  data: LeekTreeItem[] = [],
+  order = SortType.NORMAL
+) => {
+  if (order === SortType.NORMAL) {
+    return data;
+  } else {
+    return data.sort((a: any, b: any) => {
+      const aValue = +a.info.percent;
+      const bValue = +b.info.percent;
+      if (order === SortType.DESC) {
+        return aValue > bValue ? -1 : 1;
+      } else {
+        return aValue > bValue ? 1 : -1;
+      }
+    });
+  }
 };
 
 export const randHeader = () => {

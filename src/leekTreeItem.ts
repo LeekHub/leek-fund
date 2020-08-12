@@ -1,6 +1,12 @@
 import { TreeItem, ExtensionContext, TreeItemCollapsibleState } from 'vscode';
 import { join } from 'path';
 
+export enum SortType {
+  NORMAL = 0,
+  ASC = 1,
+  DESC = -1,
+}
+
 export interface FundInfo {
   percent: any;
   name: string;
