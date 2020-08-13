@@ -111,7 +111,7 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。因接
 
 [插件（养 🐥）微信交流群](https://github.com/giscafer/leek-fund/issues/19)
 
-## Todo
+## Todo List
 
 - [版本迭代需求池（想法）](https://github.com/giscafer/leek-fund/projects)
 
@@ -120,6 +120,9 @@ VSCode 插件，在编码的时候随时关注实时股票&基金数据。因接
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
 - [JayHuangTnT](https://github.com/JayHuangTnT)
+- [yiliang114](https://github.com/yiliang114)
+
+更多贡献者[contributors](https://github.com/giscafer/leek-fund/graphs/contributors)
 
 ## Changelog
 
