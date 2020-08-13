@@ -13,7 +13,7 @@ import { FundModel } from './views/model';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
 
-let intervalTimer: NodeJS.Timeout | null = null;
+let intervalTimer: NodeJS.Timer | null = null;
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -38,6 +38,9 @@ export function activate(context: ExtensionContext) {
   const model = new FundModel();
   // status bar
   const statusBar = new StatusBar(fundService);
+
+  // 获取所有基金代码
+  fundService.getFundSuggestList();
 
   // 第一次主动获取一次数据，因为面板需要点击才触发查询（闭市的时候）
   fundService.getFundData(model.getCfg('leek-fund.funds'), 0).then(() => {

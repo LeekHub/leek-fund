@@ -5,12 +5,22 @@ import { FundInfo, LeekTreeItem } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
 
 export class FundService {
+  private _fundSuggestList: string[] = [];
   private _fundList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   szItem: any;
   constructor(context: ExtensionContext) {
     this.context = context;
   }
+
+  public get fundSuggestList(): string[] {
+    return this._fundSuggestList;
+  }
+
+  public set fundSuggestList(value) {
+    this._fundSuggestList = value;
+  }
+
 
   public get fundList(): Array<LeekTreeItem> {
     return this._fundList;
@@ -71,6 +81,19 @@ export class FundService {
     }
   }
 
+  getFundSuggestList() {
+    console.log('this.fundSuggestList: getting...');
+    axios
+      .get('https://m.1234567.com.cn/data/FundSuggestList.js', { headers: randHeader() })
+      .then((response) => {
+        this.fundSuggestList = JSON.parse(`[${response.data.split('[')[1].split(']')[0]}]`);
+        console.log('this.fundSuggestList length:', this.fundSuggestList.length);
+      })
+      .catch((error) => { 
+        console.log(error);
+      });
+  }
+
   async getFundHistoryByCode(code: string) {
     const response = await axios.get(this.fundHistoryUrl(code), {
       headers: randHeader(),
@@ -122,7 +145,7 @@ export class FundService {
       }
       const splitData = resp.data.split(';\n');
       let sz: LeekTreeItem | null = null;
-      for (let i = 0;i < splitData.length - 1;i++) {
+      for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
         let type = code.substr(0, 2) || 'sh';
