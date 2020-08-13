@@ -8,14 +8,14 @@ import { fundRankHtmlTemp } from './utils';
 export function registerViewEvent(
   context: ExtensionContext,
   service: FundService,
-  fundPorvider: FundProvider,
-  stockPorvider: StockProvider
+  fundProvider: FundProvider,
+  stockProvider: StockProvider
 ) {
   const fundModel = new FundModel();
 
   // Fund operation
   commands.registerCommand('fund.refresh', () => {
-    fundPorvider.refresh();
+    fundProvider.refresh();
     const handler = window.setStatusBarMessage(`基金数据已刷新`);
     setTimeout(() => {
       handler.dispose();
@@ -23,7 +23,7 @@ export function registerViewEvent(
   });
   commands.registerCommand('fund.delete', (target) => {
     fundModel.removeFundCfg(target.id, () => {
-      fundPorvider.refresh();
+      fundProvider.refresh();
     });
   });
   commands.registerCommand('fund.add', () => {
@@ -36,18 +36,18 @@ export function registerViewEvent(
           return;
         }
         fundModel.updateFundCfg(code.replace(/，/g, ','), () => {
-          fundPorvider.refresh();
+          fundProvider.refresh();
         });
       });
   });
   commands.registerCommand('fund.sort', () => {
-    fundPorvider.changeOrder();
-    fundPorvider.refresh();
+    fundProvider.changeOrder();
+    fundProvider.refresh();
   });
 
   // Stock operation
   commands.registerCommand('stock.refresh', () => {
-    stockPorvider.refresh();
+    stockProvider.refresh();
     const handler = window.setStatusBarMessage(`股票数据已刷新`);
     setTimeout(() => {
       handler.dispose();
@@ -55,7 +55,7 @@ export function registerViewEvent(
   });
   commands.registerCommand('stock.delete', (target) => {
     fundModel.removeStockCfg(target.id, () => {
-      stockPorvider.refresh();
+      stockProvider.refresh();
     });
   });
   commands.registerCommand('stock.add', () => {
@@ -68,13 +68,13 @@ export function registerViewEvent(
           return;
         }
         fundModel.updateStockCfg(code.replace(/，/g, ','), () => {
-          stockPorvider.refresh();
+          stockProvider.refresh();
         });
       });
   });
   commands.registerCommand('stock.sort', () => {
-    stockPorvider.changeOrder();
-    stockPorvider.refresh();
+    stockProvider.changeOrder();
+    stockProvider.refresh();
   });
 
   // Webview
