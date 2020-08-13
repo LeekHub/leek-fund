@@ -27,15 +27,18 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('fund.add', () => {
+    if (!service.fundSuggestList.length) {
+      window.showInformationMessage(`获取基金数据中，请稍后再试`);
+      return;
+    }
+    
     window
-      .showInputBox({
-        prompt: '请输入基金代码，多个用英文逗号隔开（回车保存）',
-      })
+      .showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' })
       .then((code) => {
         if (!code) {
           return;
         }
-        fundModel.updateFundCfg(code.replace(/，/g, ','), () => {
+        fundModel.updateFundCfg(code.split('|')[0], () => {
           fundProvider.refresh();
         });
       });
