@@ -31,7 +31,7 @@ export function registerViewEvent(
       window.showInformationMessage(`获取基金数据中，请稍后再试`);
       return;
     }
-    
+
     window
       .showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' })
       .then((code) => {

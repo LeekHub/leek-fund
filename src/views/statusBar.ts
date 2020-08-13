@@ -48,7 +48,7 @@ export class StatusBar {
   }
 
   createFundStatusBar() {
-    this.fundBarItem.text = `  「基金」详情`;
+    this.fundBarItem.text = `🐥$(pulse)`;
     this.fundBarItem.color = this.riseColor;
     this.fundBarItem.tooltip = this.getFundTooltipText();
     this.fundBarItem.show();
@@ -57,17 +57,19 @@ export class StatusBar {
 
   private getFundTooltipText() {
     let fundTemplate = '';
-    for (let fund of this.fundSrv.fundList) {
+    for (let fund of this.fundSrv.fundList.slice(0, 14)) {
       fundTemplate += `${
         fund.info.percent.indexOf('-') === 0
-          ? '↓ '
-          : fund.info.percent === '0.00%'
+          ? ' ↓ '
+          : fund.info.percent === '0.00'
           ? ''
-          : '↑ '
-      } ${fund.info.percent}   「${
+          : ' ↑ '
+      } ${fund.info.percent}%   「${
         fund.info.name
-      }」\n-------------------------------------\n`;
+      }」\n--------------------------------------------\n`;
     }
-    return `【基金详情】\n\n ${fundTemplate}`;
+    // tooltip 有限定高度，所以只展示最多14只基金
+    const tips = this.fundSrv.fundList.length >= 14 ? '（只展示前14只）' : '';
+    return `\n【基金详情】\n\n ${fundTemplate}${tips}`;
   }
 }

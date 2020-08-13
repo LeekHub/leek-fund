@@ -49,9 +49,14 @@ export class LeekTreeItem extends TreeItem {
       amount,
     } = info;
     const grow = percent.indexOf('-') === 0 ? false : true;
-    this.iconPath = context.asAbsolutePath(
-      join('resources', `${grow ? 'up-arrow' : 'down-arrow'}.svg`)
-    );
+    let icon = 'up';
+    const val = Math.abs(percent);
+    if (grow) {
+      icon = val >= 2 ? 'up' : 'up1';
+    } else {
+      icon = val >= 2 ? 'down' : 'down1';
+    }
+    this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
 
     const text = isStock
       ? `${percent}%   ${price}    「${name}」${type}${symbol}`

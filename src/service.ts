@@ -21,7 +21,6 @@ export class FundService {
     this._fundSuggestList = value;
   }
 
-
   public get fundList(): Array<LeekTreeItem> {
     return this._fundList;
   }
@@ -82,14 +81,18 @@ export class FundService {
   }
 
   getFundSuggestList() {
-    console.log('this.fundSuggestList: getting...');
+    console.log('fundSuggestList: getting...');
     axios
-      .get('https://m.1234567.com.cn/data/FundSuggestList.js', { headers: randHeader() })
-      .then((response) => {
-        this.fundSuggestList = JSON.parse(`[${response.data.split('[')[1].split(']')[0]}]`);
-        console.log('this.fundSuggestList length:', this.fundSuggestList.length);
+      .get('https://m.1234567.com.cn/data/FundSuggestList.js', {
+        headers: randHeader(),
       })
-      .catch((error) => { 
+      .then((response) => {
+        this.fundSuggestList = JSON.parse(
+          `[${response.data.split('[')[1].split(']')[0]}]`
+        );
+        console.log('fundSuggestList length:', this.fundSuggestList.length);
+      })
+      .catch((error) => {
         console.log(error);
       });
   }
@@ -115,7 +118,9 @@ export class FundService {
     order: number
   ): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
-    if ((codes && codes.length === 0) || !codes) { return []; }
+    if ((codes && codes.length === 0) || !codes) {
+      return [];
+    }
     const url = this.stockUrl(codes);
     try {
       const resp = await axios.get(url, {
@@ -136,10 +141,18 @@ export class FundService {
           window.showErrorMessage(
             `fail: error Stock code in ${codes}, please delete error Stock code`
           );
-          return [{ id: codes[0], info: { code: codes[0], percent: '0', name: '错误代码' }, label: codes[0] + ' 错误代码，请查看是否缺少交易所信息' }];
+          return [
+            {
+              id: codes[0],
+              info: { code: codes[0], percent: '0', name: '错误代码' },
+              label: codes[0] + ' 错误代码，请查看是否缺少交易所信息',
+            },
+          ];
         }
         for (const code of codes) {
-          stockList = stockList.concat(await this.getStockData(new Array(code), order));
+          stockList = stockList.concat(
+            await this.getStockData(new Array(code), order)
+          );
         }
         return stockList;
       }
