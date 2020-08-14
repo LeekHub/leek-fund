@@ -6,19 +6,23 @@ import { FundModel } from './model';
 export class StatusBar {
   private model: FundModel;
   private fundSrv: FundService;
-  private riseColor: string;
-  private fallColor: string;
   private stockBarItem: StatusBarItem;
   private fundBarItem: StatusBarItem;
 
   constructor(fundSrv: FundService) {
     this.model = new FundModel();
     this.fundSrv = fundSrv;
-    this.riseColor = this.model.getCfg('leek-fund.riseColor');
-    this.fallColor = this.model.getCfg('leek-fund.fallColor');
     this.stockBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
     this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 2);
   }
+
+  get riseColor(): string {
+    return this.model.getCfg('leek-fund.riseColor');
+  }
+  get fallColor(): string {
+    return this.model.getCfg('leek-fund.fallColor');
+  }
+
   refresh() {
     this.createStockStatusBar(this.fundSrv.szItem);
     this.createFundStatusBar();

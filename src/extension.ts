@@ -4,7 +4,12 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import { ExtensionContext, window, workspace } from 'vscode';
+import {
+  ConfigurationChangeEvent,
+  ExtensionContext,
+  window,
+  workspace,
+} from 'vscode';
 import { registerViewEvent } from './registerEvent';
 import { FundService } from './service';
 import { isStockTime } from './utils';
@@ -64,6 +69,13 @@ export function activate(context: ExtensionContext) {
   // views
   window.registerTreeDataProvider('views.fund', nodeFundProvider);
   window.registerTreeDataProvider('views.stock', nodeStockProvider);
+
+  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+    console.log('配置改变刷新数据');
+    nodeFundProvider.refresh();
+    nodeStockProvider.refresh();
+    statusBar.refresh();
+  });
 
   // register event
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider);
