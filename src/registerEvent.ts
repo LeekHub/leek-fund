@@ -97,19 +97,40 @@ export function registerViewEvent(
           }
         );
         const timestamp = new Date().getTime();
+        const codeByImgPath = {
+          normal: 'https://image.sinajs.cn/newchart',
+          usstock: 'https://image.sinajs.cn/newchart/v5/usstock',
+          hk_stock: 'http://image.sinajs.cn/newchart/hk_stock',
+        };
         let sszsImg = code;
         let imageName = stockCode.toLowerCase();
-        let timeK = `https://image.sinajs.cn/newchart/min/n/${imageName}.gif`;
-        let dailyK = `https://image.sinajs.cn/newchart/daily/n/${imageName}.gif`;
-        let weeklyK = `https://image.sinajs.cn/newchart/weekly/n/${imageName}.gif`;
-        let monthlyK = `https://image.sinajs.cn/newchart/monthly/n/${imageName}.gif`;
-        if (stockCode.indexOf('gb_') === 0) {
+        let timeK = `${codeByImgPath.normal}/min/n/${imageName}.gif`;
+        let dailyK = `${codeByImgPath.normal}/daily/n/${imageName}.gif`;
+        let weeklyK = `${codeByImgPath.normal}/weekly/n/${imageName}.gif`;
+        let monthlyK = `${codeByImgPath.normal}/monthly/n/${imageName}.gif`;
+        console.log(dailyK);
+        if (stockCode.indexOf('hk') === 0) {
+          imageName = stockCode.replace('hk', '');
+          sszsImg = imageName;
+          timeK = `${codeByImgPath.hk_stock}/min/${sszsImg}.gif?${timestamp}`;
+          dailyK = `${codeByImgPath.hk_stock}/daily/${sszsImg}.gif?${timestamp}`;
+          weeklyK = `${codeByImgPath.hk_stock}/weekly/${sszsImg}.gif?${timestamp}`;
+          monthlyK = `${codeByImgPath.hk_stock}/monthly/${sszsImg}.gif?${timestamp}`;
+        } else if (stockCode.indexOf('gb_') === 0) {
           imageName = stockCode.replace('gb_', '.');
           sszsImg = imageName;
-          timeK = `https://image.sinajs.cn/newchart/v5/usstock/min/${sszsImg}.gif?${timestamp}`;
-          dailyK = `https://image.sinajs.cn/newchart/v5/usstock/daily/${sszsImg}.gif?${timestamp}`;
-          weeklyK = `https://image.sinajs.cn/newchart/v5/usstock/weekly/${sszsImg}.gif?${timestamp}`;
-          monthlyK = `https://image.sinajs.cn/newchart/v5/usstock/monthly/${sszsImg}.gif?${timestamp}`;
+          timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
+          dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
+          weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
+          monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
+        } else if (stockCode.indexOf('usr_') === 0) {
+          imageName = stockCode.replace('usr_', '');
+          sszsImg = imageName;
+          timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
+          dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
+          weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
+          monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
+          console.log(dailyK);
         }
 
         // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173

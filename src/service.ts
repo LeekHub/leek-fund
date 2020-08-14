@@ -208,6 +208,21 @@ export class FundService {
               percent: '',
             };
             type = code.substr(0, 3);
+          } else if (/^usr_/.test(code)) {
+            symbol = code.substr(4);
+            stockItem = {
+              code,
+              name: params[0],
+              open: formatNumber(params[5], 2, false),
+              yestclose: formatNumber(params[26], 2, false),
+              price: formatNumber(params[1], 2, false),
+              low: formatNumber(params[7], 2, false),
+              high: formatNumber(params[6], 2, false),
+              volume: formatNumber(params[10], 2),
+              amount: '接口无数据',
+              percent: '',
+            };
+            type = code.substr(0, 4);
           }
           if (stockItem) {
             const { yestclose, price } = stockItem;
