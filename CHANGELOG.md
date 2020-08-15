@@ -1,5 +1,11 @@
 # ChangeLog
 
+## [1.2.0]
+
+- feat: 支持股票模糊搜索添加
+- fix: 股票支持前缀 `usr_` 美股 :heart: PR by @SubinY
+- fix: 美股详情里实时趋势图定时 `20s` 刷新一次
+
 ## [1.1.10]
 
 - feat: 基金 GUI 新增支持模糊匹配搜索 :heart: PR by @zomixi
