@@ -1,8 +1,8 @@
 {
   "name": "leek-fund",
   "displayName": "韭菜盒子",
-  "description": "VSCode 插件（韭菜盒子），VSCode 里也可以看股票 & 基金实时数据",
-  "version": "1.2.2",
+  "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
+  "version": "1.2.3",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -66,7 +66,7 @@
       },
       {
         "command": "fund.trend",
-        "title": "基金走势图",
+        "title": "基金走势一览",
         "icon": {
           "light": "resources/light/trend.svg",
           "dark": "resources/dark/trend.svg"
@@ -91,6 +91,10 @@
       {
         "command": "fund.delete",
         "title": "删除基金"
+      },
+      {
+        "command": "fund.history",
+        "title": "持仓信息&历史净值列表"
       },
       {
         "command": "fund.refresh",
@@ -174,8 +178,14 @@
       ],
       "view/item/context": [
         {
+          "command": "fund.history",
+          "when": "view == views.fund",
+          "group": "fundHistoryGroup"
+        },
+        {
           "command": "fund.delete",
-          "when": "view == views.fund"
+          "when": "view == views.fund",
+          "group": "fundDelGroup"
         },
         {
           "command": "stock.delete",
