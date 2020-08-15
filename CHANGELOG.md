@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.2.2]
+
+- fix: sz 股票类型遗漏 :heart: PR by @httpcheck
+
 ## [1.2.0]
 
 - feat: 支持股票模糊搜索添加
