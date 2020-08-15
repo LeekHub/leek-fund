@@ -92,8 +92,7 @@ export function registerViewEvent(
           name, // 视图标题
           ViewColumn.One, // 显示在编辑器的哪个部位
           {
-            // enableScripts: true, // 启用JS，默认禁用
-            // retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+            enableScripts: true, // 启用JS，默认禁用
           }
         );
         const timestamp = new Date().getTime();
@@ -108,7 +107,7 @@ export function registerViewEvent(
         let dailyK = `${codeByImgPath.normal}/daily/n/${imageName}.gif`;
         let weeklyK = `${codeByImgPath.normal}/weekly/n/${imageName}.gif`;
         let monthlyK = `${codeByImgPath.normal}/monthly/n/${imageName}.gif`;
-        console.log(dailyK);
+        // console.log(dailyK);
         if (stockCode.indexOf('hk') === 0) {
           imageName = stockCode.replace('hk', '');
           sszsImg = imageName;
@@ -130,7 +129,7 @@ export function registerViewEvent(
           dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
           weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
           monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
-          console.log(dailyK);
+          // console.log(dailyK);
         }
 
         // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173
@@ -139,7 +138,7 @@ export function registerViewEvent(
           <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">${name}」趋势图、K线图</p>
           <hr />
           <h3>实时走势图</3> <br/>
-          <div style="width: 710px;margin:0 auto"><img src="${timeK}" width="700"/></div>
+          <div style="width: 710px;margin:0 auto"><img class="sstrend" src="${timeK}" width="700"/></div>
           <br/>
           <h3>日K线图</3> <br/>
           <div style="width: 710px;margin:0 auto"><img src="${dailyK}" width="700"/></div>
@@ -147,7 +146,24 @@ export function registerViewEvent(
           <div style="width: 710px;margin:0 auto"><img src="${weeklyK}" width="700"/></div>
           <h3>月K线图</3> <br/>
           <div style="width: 710px;margin:0 auto"><img src="${monthlyK}" width="700"/></div>
-        </body></html>`;
+        </body>
+        <script>
+        var sstrendImgEl = document.querySelector('.sstrend');
+        var timer=null;
+        var timeK="${timeK}";
+        var index=timeK.indexOf('?')
+        var code="${code}";
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+        timer = setInterval(function () {
+          sstrendImgEl.src =timeK.substr(0,index) +'?v=' +
+            new Date().getTime();
+          console.log('刷新数据' + code);
+        }, 20000);
+      </script>
+        </html>`;
       }
     )
   );
