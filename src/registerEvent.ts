@@ -81,7 +81,9 @@ export function registerViewEvent(
       }, 100); // 简单防抖
     });
     qp.onDidChangeSelection((e) => {
-      code = e[0].label && e[0].label.split(' | ')[0];
+      if (e[0].description) {
+        code = e[0].label && e[0].label.split(' | ')[0];
+      }
     });
     qp.show();
     qp.onDidAccept(() => {
