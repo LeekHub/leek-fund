@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
-import { ExtensionContext, window } from 'vscode';
-import { FundInfo, LeekTreeItem } from './leekTreeItem';
+import { ExtensionContext, window, QuickPickItem } from 'vscode';
+import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
 
 export class FundService {
@@ -38,7 +38,7 @@ export class FundService {
     return fundUrl;
   }
   private stockUrl(codes: Array<string>): string {
-    return `https://hq.sinajs.cn/list=${codes.join(',')}`;
+    return `http://hq.sinajs.cn/list=${codes.join(',')}`;
   }
 
   singleFund(code: string): Promise<FundInfo> {
@@ -83,7 +83,7 @@ export class FundService {
   getFundSuggestList() {
     console.log('fundSuggestList: getting...');
     axios
-      .get('https://m.1234567.com.cn/data/FundSuggestList.js', {
+      .get('http://m.1234567.com.cn/data/FundSuggestList.js', {
         headers: randHeader(),
       })
       .then((response) => {
@@ -97,11 +97,53 @@ export class FundService {
       });
   }
 
-  async getFundHistoryByCode(code: string) {
-    const response = await axios.get(this.fundHistoryUrl(code), {
-      headers: randHeader(),
-    });
+  async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
+    if (!searchText) return [{ label: '请输入关键词查询，如：0000001' }];
+    const url = `http://suggest3.sinajs.cn/suggest/type=2&key=${encodeURIComponent(
+      searchText
+    )}`;
     try {
+      console.log('getStockSuggestList: getting...');
+      const response = await axios.get(url, {
+        responseType: 'arraybuffer',
+        transformResponse: [
+          (data) => {
+            const body = iconv.decode(data, 'GB18030');
+            return body;
+          },
+        ],
+        headers: randHeader(),
+      });
+      const text = response.data.slice(18, -1);
+      const tempArr = text.split(';');
+      const result: QuickPickItem[] = [];
+      tempArr.forEach((item: string) => {
+        const arr = item.split(',');
+        // 过滤多余的 us. 开头的股干扰
+        if (
+          STOCK_TYPE.includes(arr[0].substr(0, 2)) &&
+          !arr[0].startsWith('us.')
+        ) {
+          result.push({
+            label: `${arr[0]} | ${arr[4]}`,
+            description: arr[7] && arr[7].replace(/"/g, ''),
+          });
+        }
+      });
+      return result;
+    } catch (err) {
+      console.log(url);
+      console.error(err);
+      return [{ label: '查询失败，请重试' }];
+    }
+  }
+
+  async getFundHistoryByCode(code: string) {
+    try {
+      const response = await axios.get(this.fundHistoryUrl(code), {
+        headers: randHeader(),
+      });
+
       const idxs = response.data.indexOf('"<table');
       const lastIdx = response.data.indexOf('</table>"');
       const content = response.data.slice(idxs + 1, lastIdx);

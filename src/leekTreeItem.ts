@@ -7,6 +7,9 @@ export enum SortType {
   DESC = -1,
 }
 
+// 支持的股票类型
+export const STOCK_TYPE = ['sh', 'hk', 'gb', 'us'];
+
 export interface FundInfo {
   percent: any;
   name: string;

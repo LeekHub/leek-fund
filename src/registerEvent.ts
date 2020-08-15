@@ -62,18 +62,40 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('stock.add', () => {
-    window
-      .showInputBox({
-        prompt: '请输入股票代码，多个用英文逗号隔开（回车保存）',
-      })
-      .then((code) => {
-        if (!code) {
-          return;
-        }
-        fundModel.updateStockCfg(code.replace(/，/g, ','), () => {
-          stockProvider.refresh();
-        });
+    // vscode QuickPick 不支持动态查询，只能用此方式解决
+    // https://github.com/microsoft/vscode/issues/23633
+    const qp = window.createQuickPick();
+    qp.items = [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
+    let code: string | undefined;
+    let timer: NodeJS.Timer | null = null;
+    qp.onDidChangeValue((value) => {
+      qp.busy = true;
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+      timer = setTimeout(async () => {
+        const res = await service.getStockSuggestList(value);
+        qp.items = res;
+        qp.busy = false;
+      }, 100); // 简单防抖
+    });
+    qp.onDidChangeSelection((e) => {
+      code = e[0].label && e[0].label.split(' | ')[0];
+    });
+    qp.show();
+    qp.onDidAccept(() => {
+      if (!code) {
+        return;
+      }
+      // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
+      const newCode = code.replace('gb', 'gb_').replace('us', 'usr_');
+      fundModel.updateStockCfg(newCode, () => {
+        stockProvider.refresh();
       });
+      qp.hide();
+      qp.dispose();
+    });
   });
   commands.registerCommand('stock.sort', () => {
     stockProvider.changeOrder();
