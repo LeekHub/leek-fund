@@ -24,21 +24,13 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
+  let intervalTime = 3000;
   const model = new FundModel();
   const fundService = new FundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
   const statusBar = new StatusBar(fundService);
 
-  let intervalTime = 3000;
-  const setIntervalTime = () => {
-    intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
-
-    if (intervalTime < 3000) {
-      intervalTime = 3000;
-    }
-  };
-  setIntervalTime();
   // 获取所有基金代码
   fundService.getFundSuggestList();
 
@@ -48,14 +40,6 @@ export function activate(context: ExtensionContext) {
   });
   stockTreeView = window.createTreeView('views.stock', {
     treeDataProvider: nodeStockProvider,
-  });
-
-  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('🐥>>>Configuration changed');
-    setIntervalTime();
-    nodeFundProvider.refresh();
-    nodeStockProvider.refresh();
-    statusBar.refresh();
   });
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
@@ -71,8 +55,7 @@ export function activate(context: ExtensionContext) {
   manualRequest();
 
   // loop
-
-  intervalTimer = setInterval(() => {
+  const loopCallback = () => {
     if (isStockTime() || fundService.szItem === undefined) {
       if (fundTreeView?.visible) {
         nodeFundProvider.refresh();
@@ -84,7 +67,30 @@ export function activate(context: ExtensionContext) {
     } else {
       console.log('StockMarket Closed! Polling closed!');
     }
-  }, intervalTime);
+  };
+
+  const setIntervalTime = () => {
+    intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
+
+    if (intervalTime < 3000) {
+      intervalTime = 3000;
+    }
+    if (intervalTimer) {
+      clearInterval(intervalTimer);
+      intervalTimer = null;
+    }
+    intervalTimer = setInterval(loopCallback, intervalTime);
+  };
+
+  setIntervalTime();
+
+  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+    console.log('🐥>>>Configuration changed');
+    setIntervalTime();
+    nodeFundProvider.refresh();
+    nodeStockProvider.refresh();
+    statusBar.refresh();
+  });
 
   // register event
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider);

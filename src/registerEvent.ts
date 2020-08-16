@@ -4,6 +4,7 @@ import { FundService } from './service';
 import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
 import { fundRankHtmlTemp } from './utils';
+import { fundflow } from './webview/fundflow';
 
 // TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
@@ -13,6 +14,8 @@ export function registerViewEvent(
   stockProvider: StockProvider
 ) {
   const fundModel = new FundModel();
+
+  fundflow();
 
   // Fund operation
   commands.registerCommand('fund.refresh', () => {
@@ -33,16 +36,14 @@ export function registerViewEvent(
       return;
     }
 
-    window
-      .showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' })
-      .then((code) => {
-        if (!code) {
-          return;
-        }
-        fundModel.updateFundCfg(code.split('|')[0], () => {
-          fundProvider.refresh();
-        });
+    window.showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' }).then((code) => {
+      if (!code) {
+        return;
+      }
+      fundModel.updateFundCfg(code.split('|')[0], () => {
+        fundProvider.refresh();
       });
+    });
   });
   commands.registerCommand('fund.sort', () => {
     fundProvider.changeOrder();
@@ -108,57 +109,55 @@ export function registerViewEvent(
   // Webview
   context.subscriptions.push(
     // 股票点击
-    commands.registerCommand(
-      'leetfund.stockItemClick',
-      (code, name, text, stockCode) => {
-        // 创建webview
-        const panel = window.createWebviewPanel(
-          'stockWebview', // viewType
-          name, // 视图标题
-          ViewColumn.One, // 显示在编辑器的哪个部位
-          {
-            enableScripts: true, // 启用JS，默认禁用
-          }
-        );
-        const timestamp = new Date().getTime();
-        const codeByImgPath = {
-          normal: 'https://image.sinajs.cn/newchart',
-          usstock: 'https://image.sinajs.cn/newchart/v5/usstock',
-          hk_stock: 'http://image.sinajs.cn/newchart/hk_stock',
-        };
-        let sszsImg = code;
-        let imageName = stockCode.toLowerCase();
-        let timeK = `${codeByImgPath.normal}/min/n/${imageName}.gif`;
-        let dailyK = `${codeByImgPath.normal}/daily/n/${imageName}.gif`;
-        let weeklyK = `${codeByImgPath.normal}/weekly/n/${imageName}.gif`;
-        let monthlyK = `${codeByImgPath.normal}/monthly/n/${imageName}.gif`;
-        // console.log(dailyK);
-        if (stockCode.indexOf('hk') === 0) {
-          imageName = stockCode.replace('hk', '');
-          sszsImg = imageName;
-          timeK = `${codeByImgPath.hk_stock}/min/${sszsImg}.gif?${timestamp}`;
-          dailyK = `${codeByImgPath.hk_stock}/daily/${sszsImg}.gif?${timestamp}`;
-          weeklyK = `${codeByImgPath.hk_stock}/weekly/${sszsImg}.gif?${timestamp}`;
-          monthlyK = `${codeByImgPath.hk_stock}/monthly/${sszsImg}.gif?${timestamp}`;
-        } else if (stockCode.indexOf('gb_') === 0) {
-          imageName = stockCode.replace('gb_', '.');
-          sszsImg = imageName;
-          timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
-          dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
-          weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
-          monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
-        } else if (stockCode.indexOf('usr_') === 0) {
-          imageName = stockCode.replace('usr_', '');
-          sszsImg = imageName;
-          timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
-          dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
-          weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
-          monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
-          // console.log(dailyK);
+    commands.registerCommand('leetfund.stockItemClick', (code, name, text, stockCode) => {
+      // 创建webview
+      const panel = window.createWebviewPanel(
+        'stockWebview', // viewType
+        name, // 视图标题
+        ViewColumn.One, // 显示在编辑器的哪个部位
+        {
+          enableScripts: true, // 启用JS，默认禁用
         }
+      );
+      const timestamp = new Date().getTime();
+      const codeByImgPath = {
+        normal: 'https://image.sinajs.cn/newchart',
+        usstock: 'https://image.sinajs.cn/newchart/v5/usstock',
+        hk_stock: 'http://image.sinajs.cn/newchart/hk_stock',
+      };
+      let sszsImg = code;
+      let imageName = stockCode.toLowerCase();
+      let timeK = `${codeByImgPath.normal}/min/n/${imageName}.gif`;
+      let dailyK = `${codeByImgPath.normal}/daily/n/${imageName}.gif`;
+      let weeklyK = `${codeByImgPath.normal}/weekly/n/${imageName}.gif`;
+      let monthlyK = `${codeByImgPath.normal}/monthly/n/${imageName}.gif`;
+      // console.log(dailyK);
+      if (stockCode.indexOf('hk') === 0) {
+        imageName = stockCode.replace('hk', '');
+        sszsImg = imageName;
+        timeK = `${codeByImgPath.hk_stock}/min/${sszsImg}.gif?${timestamp}`;
+        dailyK = `${codeByImgPath.hk_stock}/daily/${sszsImg}.gif?${timestamp}`;
+        weeklyK = `${codeByImgPath.hk_stock}/weekly/${sszsImg}.gif?${timestamp}`;
+        monthlyK = `${codeByImgPath.hk_stock}/monthly/${sszsImg}.gif?${timestamp}`;
+      } else if (stockCode.indexOf('gb_') === 0) {
+        imageName = stockCode.replace('gb_', '.');
+        sszsImg = imageName;
+        timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
+        dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
+        weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
+        monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
+      } else if (stockCode.indexOf('usr_') === 0) {
+        imageName = stockCode.replace('usr_', '');
+        sszsImg = imageName;
+        timeK = `${codeByImgPath.usstock}/min/${sszsImg}.gif?${timestamp}`;
+        dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
+        weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
+        monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
+        // console.log(dailyK);
+      }
 
-        // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173
-        panel.webview.html = `<html><body style="background:#eee;color:#333">
+      // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173
+      panel.webview.html = `<html><body style="background:#eee;color:#333">
           <br/>
           <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">${name}」趋势图、K线图</p>
           <hr />
@@ -189,25 +188,17 @@ export function registerViewEvent(
         }, 20000);
       </script>
         </html>`;
-      }
-    )
+    })
   );
 
   // 基金点击
   context.subscriptions.push(
-    commands.registerCommand(
-      'leetfund.fundItemClick',
-      async (code, name, text) => {
-        // 创建webview
-        const panel = window.createWebviewPanel(
-          'fundWebview.trend',
-          name,
-          ViewColumn.One,
-          {
-            enableScripts: true, // 启用JS，默认禁用
-          }
-        );
-        panel.webview.html = `<html>
+    commands.registerCommand('leetfund.fundItemClick', async (code, name, text) => {
+      // 创建webview
+      const panel = window.createWebviewPanel('fundWebview.trend', name, ViewColumn.One, {
+        enableScripts: true, // 启用JS，默认禁用
+      });
+      panel.webview.html = `<html>
           <style>
           .lsjz{
             width: 100%;
@@ -264,8 +255,7 @@ export function registerViewEvent(
             }, 20000);
           </script>
           </body></html>`;
-      }
-    )
+    })
   );
   // 基金右键历史信息点击
   context.subscriptions.push(
@@ -273,14 +263,9 @@ export function registerViewEvent(
       const { code, name } = item.info;
       const res = await service.getFundHistoryByCode(code);
       // 创建webview
-      const panel = window.createWebviewPanel(
-        'fundWebview.history',
-        name,
-        ViewColumn.One,
-        {
-          enableScripts: true, // 启用JS，默认禁用
-        }
-      );
+      const panel = window.createWebviewPanel('fundWebview.history', name, ViewColumn.One, {
+        enableScripts: true, // 启用JS，默认禁用
+      });
       panel.webview.html = `<html>
           <style>
           .lsjz{
@@ -324,11 +309,7 @@ export function registerViewEvent(
 
   commands.registerCommand('fund.rank', async () => {
     const list = await service.getRankFund();
-    const panel = window.createWebviewPanel(
-      'fundRankWebview',
-      '基金排行榜',
-      ViewColumn.One
-    );
+    const panel = window.createWebviewPanel('fundRankWebview', '基金排行榜', ViewColumn.One);
     const content = fundRankHtmlTemp(list);
     panel.webview.html = `<html>
         <style>
@@ -347,15 +328,10 @@ export function registerViewEvent(
   // 基金走势图
   commands.registerCommand('fund.trend', async () => {
     const fundList = service.fundList;
-    const panel = window.createWebviewPanel(
-      'fundTrendWebview',
-      '基金走势',
-      ViewColumn.One,
-      {
-        enableScripts: true, // 启用JS，默认禁用
-        retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
-      }
-    );
+    const panel = window.createWebviewPanel('fundTrendWebview', '基金走势', ViewColumn.One, {
+      enableScripts: true, // 启用JS，默认禁用
+      retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+    });
     panel.webview.html = `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -447,7 +423,7 @@ export function registerViewEvent(
           listEl.removeChild(listItemUlEl);
           var listStr = '';
           var timer=null
-    
+
           var firstFund = fundList[0].info;
           for (var j = 0; j < fundList.length; j++) {
             var info = fundList[j].info;
