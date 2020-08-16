@@ -107,3 +107,4 @@ export function deactivate() {
     intervalTimer = null;
   }
 }
+
