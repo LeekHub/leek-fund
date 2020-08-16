@@ -28,10 +28,17 @@ export function activate(context: ExtensionContext) {
   const fundService = new FundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
-
-  // status bar
   const statusBar = new StatusBar(fundService);
 
+  let intervalTime = 3000;
+  const setIntervalTime = () => {
+    intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
+
+    if (intervalTime < 3000) {
+      intervalTime = 3000;
+    }
+  };
+  setIntervalTime();
   // 获取所有基金代码
   fundService.getFundSuggestList();
 
@@ -44,7 +51,8 @@ export function activate(context: ExtensionContext) {
   });
 
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('>>>Configuration changed');
+    console.log('🐥>>>Configuration changed');
+    setIntervalTime();
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     statusBar.refresh();
@@ -63,11 +71,6 @@ export function activate(context: ExtensionContext) {
   manualRequest();
 
   // loop
-  let intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
-
-  if (intervalTime < 3000) {
-    intervalTime = 3000;
-  }
 
   intervalTimer = setInterval(() => {
     if (isStockTime() || fundService.szItem === undefined) {
