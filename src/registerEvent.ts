@@ -5,6 +5,7 @@ import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
 import { fundRankHtmlTemp } from './utils';
 
+// TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
   context: ExtensionContext,
   service: FundService,
