@@ -17,7 +17,8 @@
 - 支持升序/降序排序
 - 支持 GUI 操作新增&删除 基金 和 股票
 - 基金实时走势图和历史走势图
-- 基金排行榜功能
+- 基金排行榜
+- 基金持仓信息
 - 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
@@ -98,6 +99,7 @@
 - [JayHuangTnT](https://github.com/JayHuangTnT)
 - [yiliang114](https://github.com/yiliang114)
 - [SubinY](https://github.com/SubinY)
+- [gordongxm](https://github.com/gordongxm)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)
 

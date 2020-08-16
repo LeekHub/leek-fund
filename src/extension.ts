@@ -4,13 +4,7 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import {
-  ConfigurationChangeEvent,
-  ExtensionContext,
-  window,
-  workspace,
-  TreeView,
-} from 'vscode';
+import { ConfigurationChangeEvent, ExtensionContext, window, workspace, TreeView } from 'vscode';
 import { registerViewEvent } from './registerEvent';
 import { FundService } from './service';
 import { isStockTime } from './utils';
@@ -58,24 +52,18 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService
-      .getFundData(model.getCfg('leek-fund.funds'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
-    fundService
-      .getStockData(model.getCfg('leek-fund.stocks'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
+    fundService.getFundData(model.getCfg('leek-fund.funds'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
+    fundService.getStockData(model.getCfg('leek-fund.stocks'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
   };
 
   manualRequest();
 
   // loop
-  let intervalTime = workspace
-    .getConfiguration()
-    .get('leek-fund.interval', 10000);
+  let intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
 
   if (intervalTime < 3000) {
     intervalTime = 3000;
@@ -107,4 +95,3 @@ export function deactivate() {
     intervalTimer = null;
   }
 }
-
