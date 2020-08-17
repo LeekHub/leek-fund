@@ -62,8 +62,8 @@ export function fundflow() {
         padding-left: 4px;
         color: red !important;
       }
-      .grn,
-      a:link.grn {
+      .green,
+      a:link.green {
         padding-left: 4px;
         color: green !important;
       }
