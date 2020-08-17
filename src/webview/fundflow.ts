@@ -546,11 +546,7 @@ export function fundflow() {
       var tr3 = jQuery('#zjlx_sgt td');
       var tr4 = jQuery('#zjlx_ggts td');
       var trs = [tr1, tr2, tr3, tr4];
-      //主程序入口--首页
-      function setHsgtInterval(time) {
-        newUpdateZjlx();
-        setInterval(newUpdateZjlx, time);
-      }
+
       function newUpdateZjlx() {
         jQuery.ajax({
           type: 'get',
@@ -959,10 +955,19 @@ export function fundflow() {
           return b == 0 ? '' : b > 0 ? 'red' : 'green';
         }
       }
-
-      ImgIeLoad();
-      loaddrzjlxchartdata();
-      setHsgtInterval(5000);
+      //主程序入口--首页
+      function setHsgtInterval(time) {
+        newUpdateZjlx();
+        ImgIeLoad();
+        loaddrzjlxchartdata();
+        setInterval(function(){
+          newUpdateZjlx();
+          ImgIeLoad();
+          loaddrzjlxchartdata();
+        },time)
+      }
+      // 20秒轮询一次
+      setHsgtInterval(20000);
     </script>
   </body>
 </html>
