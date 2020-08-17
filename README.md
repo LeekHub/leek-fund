@@ -123,10 +123,11 @@
 
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
-- [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Design）
+- [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Designer）
 - [yiliang114](https://github.com/yiliang114)
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
+- [chen86860](https://github.com/chen86860)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)
 

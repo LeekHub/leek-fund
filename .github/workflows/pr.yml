@@ -1,0 +1,37 @@
+# This is a basic workflow to help you get started with Actions
+
+name: PULL REQUEST
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  pull_request:
+    branches: [master]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Install
+        run: |
+          yarn install
+
+      # - name: Testing
+      #   run: yarn test:ci
+
+      - name: Build
+        run: yarn pretest
