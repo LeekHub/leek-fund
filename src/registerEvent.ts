@@ -4,7 +4,7 @@ import { FundService } from './service';
 import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
 import { fundRankHtmlTemp } from './utils';
-import { fundflow } from './webview/fundflow';
+import fundFlow from './webview/fundFlow';
 
 // TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
@@ -15,22 +15,20 @@ export function registerViewEvent(
 ) {
   const fundModel = new FundModel();
 
-  fundflow();
-
   // Fund operation
-  commands.registerCommand('fund.refresh', () => {
+  commands.registerCommand('leek-fund.refreshFund', () => {
     fundProvider.refresh();
     const handler = window.setStatusBarMessage(`基金数据已刷新`);
     setTimeout(() => {
       handler.dispose();
     }, 1000);
   });
-  commands.registerCommand('fund.delete', (target) => {
+  commands.registerCommand('leek-fund.deleteFund', (target) => {
     fundModel.removeFundCfg(target.id, () => {
       fundProvider.refresh();
     });
   });
-  commands.registerCommand('fund.add', () => {
+  commands.registerCommand('leek-fund.addFund', () => {
     if (!service.fundSuggestList.length) {
       window.showInformationMessage(`获取基金数据中，请稍后再试`);
       return;
@@ -45,25 +43,25 @@ export function registerViewEvent(
       });
     });
   });
-  commands.registerCommand('fund.sort', () => {
+  commands.registerCommand('leek-fund.sortFund', () => {
     fundProvider.changeOrder();
     fundProvider.refresh();
   });
 
   // Stock operation
-  commands.registerCommand('stock.refresh', () => {
+  commands.registerCommand('leek-fund.refreshStock', () => {
     stockProvider.refresh();
     const handler = window.setStatusBarMessage(`股票数据已刷新`);
     setTimeout(() => {
       handler.dispose();
     }, 1000);
   });
-  commands.registerCommand('stock.delete', (target) => {
+  commands.registerCommand('leek-fund.deleteStock', (target) => {
     fundModel.removeStockCfg(target.id, () => {
       stockProvider.refresh();
     });
   });
-  commands.registerCommand('stock.add', () => {
+  commands.registerCommand('leek-fund.addStock', () => {
     // vscode QuickPick 不支持动态查询，只能用此方式解决
     // https://github.com/microsoft/vscode/issues/23633
     const qp = window.createQuickPick();
@@ -101,7 +99,7 @@ export function registerViewEvent(
       qp.dispose();
     });
   });
-  commands.registerCommand('stock.sort', () => {
+  commands.registerCommand('leek-fund.sortStock', () => {
     stockProvider.changeOrder();
     stockProvider.refresh();
   });
@@ -259,7 +257,7 @@ export function registerViewEvent(
   );
   // 基金右键历史信息点击
   context.subscriptions.push(
-    commands.registerCommand('fund.history', async (item) => {
+    commands.registerCommand('leek-fund.viewFundHistory', async (item) => {
       const { code, name } = item.info;
       const res = await service.getFundHistoryByCode(code);
       // 创建webview
@@ -307,7 +305,7 @@ export function registerViewEvent(
     })
   );
 
-  commands.registerCommand('fund.rank', async () => {
+  commands.registerCommand('leek-fund.viewFundRank', async () => {
     const list = await service.getRankFund();
     const panel = window.createWebviewPanel('fundRankWebview', '基金排行榜', ViewColumn.One);
     const content = fundRankHtmlTemp(list);
@@ -326,7 +324,7 @@ export function registerViewEvent(
         </body></html>`;
   });
   // 基金走势图
-  commands.registerCommand('fund.trend', async () => {
+  commands.registerCommand('leek-fund.viewFundTrend', async () => {
     const fundList = service.fundList;
     const panel = window.createWebviewPanel('fundTrendWebview', '基金走势', ViewColumn.One, {
       enableScripts: true, // 启用JS，默认禁用
@@ -493,4 +491,8 @@ export function registerViewEvent(
     </html>
     `;
   });
+
+
+  // 资金流向
+  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow())
 }
