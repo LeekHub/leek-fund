@@ -4,13 +4,7 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import {
-  ConfigurationChangeEvent,
-  ExtensionContext,
-  window,
-  workspace,
-  TreeView,
-} from 'vscode';
+import { ConfigurationChangeEvent, ExtensionContext, window, workspace, TreeView } from 'vscode';
 import { registerViewEvent } from './registerEvent';
 import { FundService } from './service';
 import { isStockTime } from './utils';
@@ -30,12 +24,11 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
+  let intervalTime = 3000;
   const model = new FundModel();
   const fundService = new FundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
-
-  // status bar
   const statusBar = new StatusBar(fundService);
 
   // 获取所有基金代码
@@ -49,41 +42,22 @@ export function activate(context: ExtensionContext) {
     treeDataProvider: nodeStockProvider,
   });
 
-  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('>>>Configuration changed');
-    nodeFundProvider.refresh();
-    nodeStockProvider.refresh();
-    statusBar.refresh();
-  });
-
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService
-      .getFundData(model.getCfg('leek-fund.funds'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
-    fundService
-      .getStockData(model.getCfg('leek-fund.stocks'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
+    fundService.getFundData(model.getCfg('leek-fund.funds'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
+    fundService.getStockData(model.getCfg('leek-fund.stocks'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
   };
 
   manualRequest();
 
   // loop
-  let intervalTime = workspace
-    .getConfiguration()
-    .get('leek-fund.interval', 10000);
-
-  if (intervalTime < 3000) {
-    intervalTime = 3000;
-  }
-
-  intervalTimer = setInterval(() => {
+  const loopCallback = () => {
     if (isStockTime() || fundService.szItem === undefined) {
-      if (fundTreeView?.visible) {
+      if (fundTreeView?.visible || stockTreeView?.visible) {
         nodeFundProvider.refresh();
         nodeStockProvider.refresh();
         statusBar.refresh();
@@ -93,7 +67,30 @@ export function activate(context: ExtensionContext) {
     } else {
       console.log('StockMarket Closed! Polling closed!');
     }
-  }, intervalTime);
+  };
+
+  const setIntervalTime = () => {
+    intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
+
+    if (intervalTime < 3000) {
+      intervalTime = 3000;
+    }
+    if (intervalTimer) {
+      clearInterval(intervalTimer);
+      intervalTimer = null;
+    }
+    intervalTimer = setInterval(loopCallback, intervalTime);
+  };
+
+  setIntervalTime();
+
+  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+    console.log('🐥>>>Configuration changed');
+    setIntervalTime();
+    nodeFundProvider.refresh();
+    nodeStockProvider.refresh();
+    statusBar.refresh();
+  });
 
   // register event
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider);
@@ -107,4 +104,3 @@ export function deactivate() {
     intervalTimer = null;
   }
 }
-

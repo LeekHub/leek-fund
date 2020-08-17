@@ -56,10 +56,7 @@ export class FundService {
     });
   }
 
-  async getFundData(
-    fundCodes: Array<string>,
-    order: number
-  ): Promise<Array<LeekTreeItem>> {
+  async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching fund data……');
     const promiseAll = [];
     for (const fundCode of fundCodes) {
@@ -87,9 +84,7 @@ export class FundService {
         headers: randHeader(),
       })
       .then((response) => {
-        this.fundSuggestList = JSON.parse(
-          `[${response.data.split('[')[1].split(']')[0]}]`
-        );
+        this.fundSuggestList = JSON.parse(`[${response.data.split('[')[1].split(']')[0]}]`);
         console.log('fundSuggestList length:', this.fundSuggestList.length);
       })
       .catch((error) => {
@@ -99,9 +94,7 @@ export class FundService {
 
   async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
     if (!searchText) return [{ label: '请输入关键词查询，如：0000001' }];
-    const url = `http://suggest3.sinajs.cn/suggest/type=2&key=${encodeURIComponent(
-      searchText
-    )}`;
+    const url = `http://suggest3.sinajs.cn/suggest/type=2&key=${encodeURIComponent(searchText)}`;
     try {
       console.log('getStockSuggestList: getting...');
       const response = await axios.get(url, {
@@ -120,10 +113,7 @@ export class FundService {
       tempArr.forEach((item: string) => {
         const arr = item.split(',');
         // 过滤多余的 us. 开头的股干扰
-        if (
-          STOCK_TYPE.includes(arr[0].substr(0, 2)) &&
-          !arr[0].startsWith('us.')
-        ) {
+        if (STOCK_TYPE.includes(arr[0].substr(0, 2)) && !arr[0].startsWith('us.')) {
           result.push({
             label: `${arr[0]} | ${arr[4]}`,
             description: arr[7] && arr[7].replace(/"/g, ''),
@@ -155,10 +145,7 @@ export class FundService {
     }
   }
 
-  async getStockData(
-    codes: Array<string>,
-    order: number
-  ): Promise<Array<LeekTreeItem>> {
+  async getStockData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
@@ -180,9 +167,7 @@ export class FundService {
       var stockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
-          window.showErrorMessage(
-            `fail: error Stock code in ${codes}, please delete error Stock code`
-          );
+          window.showErrorMessage(`fail: error Stock code in ${codes}, please delete error Stock code`);
           return [
             {
               id: codes[0],
@@ -192,9 +177,7 @@ export class FundService {
           ];
         }
         for (const code of codes) {
-          stockList = stockList.concat(
-            await this.getStockData(new Array(code), order)
-          );
+          stockList = stockList.concat(await this.getStockData(new Array(code), order));
         }
         return stockList;
       }
@@ -273,12 +256,7 @@ export class FundService {
             stockItem.symbol = symbol;
             stockItem.updown = formatNumber(+price - +yestclose, 2, false);
             stockItem.percent =
-              (stockItem.updown >= 0 ? '+' : '-') +
-              formatNumber(
-                (Math.abs(stockItem.updown) / +yestclose) * 100,
-                2,
-                false
-              );
+              (stockItem.updown >= 0 ? '+' : '-') + formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
             if (code === 'sh000001') {
               sz = new LeekTreeItem(stockItem, this.context);
             }
