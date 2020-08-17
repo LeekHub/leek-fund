@@ -1,13 +1,16 @@
-import { window, commands, ViewColumn } from 'vscode';
+import { window, ViewColumn } from "vscode";
 
-export function fundflow() {
-  // 资金流向
-  commands.registerCommand('leekfund.fundflow', () => {
-    const panel = window.createWebviewPanel('fundWebview.fundflow', '资金流向', ViewColumn.One, {
+export default function () {
+  const panel = window.createWebviewPanel(
+    "leek-fund.fundFlow",
+    "资金流向",
+    ViewColumn.One,
+    {
       enableScripts: true,
       retainContextWhenHidden: true,
-    });
-    panel.webview.html = `
+    }
+  );
+  panel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -972,5 +975,4 @@ export function fundflow() {
   </body>
 </html>
     `;
-  });
 }

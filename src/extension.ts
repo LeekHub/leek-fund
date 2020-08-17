@@ -35,10 +35,10 @@ export function activate(context: ExtensionContext) {
   fundService.getFundSuggestList();
 
   // create fund & stock side views
-  fundTreeView = window.createTreeView('views.fund', {
+  fundTreeView = window.createTreeView('leekFundView.fund', {
     treeDataProvider: nodeFundProvider,
   });
-  stockTreeView = window.createTreeView('views.stock', {
+  stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
   });
 

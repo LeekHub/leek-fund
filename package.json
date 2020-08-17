@@ -38,7 +38,7 @@
       "activitybar": [
         {
           "id": "leekFundMenu",
-          "title": "LeetFund 🐥🐥🐥",
+          "title": "LeekFund 🐥🐥🐥",
           "icon": "resources/fund.svg"
         }
       ]
@@ -52,26 +52,18 @@
     "views": {
       "leekFundMenu": [
         {
-          "id": "views.fund",
-          "name": "Fund"
+          "id": "leekFundView.fund",
+          "name": "自选基金"
         },
         {
-          "id": "views.stock",
-          "name": "Stock"
+          "id": "leekFundView.stock",
+          "name": "自选股票"
         }
       ]
     },
     "commands": [
       {
-        "command": "leekfund.fundflow",
-        "title": "资金流向",
-        "icon": {
-          "light": "resources/light/fundflow.svg",
-          "dark": "resources/dark/fundflow.svg"
-        }
-      },
-      {
-        "command": "fund.rank",
+        "command": "leek-fund.viewFundRank",
         "title": "基金排行榜",
         "icon": {
           "light": "resources/light/rank.svg",
@@ -79,7 +71,7 @@
         }
       },
       {
-        "command": "fund.trend",
+        "command": "leek-fund.viewFundTrend",
         "title": "基金走势一览",
         "icon": {
           "light": "resources/light/trend.svg",
@@ -87,7 +79,7 @@
         }
       },
       {
-        "command": "fund.sort",
+        "command": "leek-fund.sortFund",
         "title": "升序/降序/不排序",
         "icon": {
           "light": "resources/light/sort.svg",
@@ -95,7 +87,7 @@
         }
       },
       {
-        "command": "fund.add",
+        "command": "leek-fund.addFund",
         "title": "添加基金",
         "icon": {
           "light": "resources/light/add.svg",
@@ -103,15 +95,15 @@
         }
       },
       {
-        "command": "fund.delete",
+        "command": "leek-fund.deleteFund",
         "title": "删除基金"
       },
       {
-        "command": "fund.history",
-        "title": "持仓信息&历史净值列表"
+        "command": "leek-fund.viewFundHistory",
+        "title": "持仓信息&历史净值"
       },
       {
-        "command": "fund.refresh",
+        "command": "leek-fund.refreshFund",
         "title": "刷新数据",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -119,7 +111,7 @@
         }
       },
       {
-        "command": "stock.sort",
+        "command": "leek-fund.sortStock",
         "title": "升序/降序/不排序",
         "icon": {
           "light": "resources/light/sort.svg",
@@ -127,7 +119,7 @@
         }
       },
       {
-        "command": "stock.add",
+        "command": "leek-fund.addStock",
         "title": "添加股票",
         "icon": {
           "light": "resources/light/add.svg",
@@ -135,7 +127,7 @@
         }
       },
       {
-        "command": "stock.refresh",
+        "command": "leek-fund.refreshStock",
         "title": "刷新数据",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -143,72 +135,78 @@
         }
       },
       {
-        "command": "stock.delete",
+        "command": "leek-fund.deleteStock",
         "title": "删除股票"
+      },
+      {
+        "command": "leek-fund.viewFundFlow",
+        "title": "资金流向",
+        "icon": {
+          "light": "resources/light/flow.svg",
+          "dark": "resources/dark/flow.svg"
+        }
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "leekfund.fundflow",
-          "when": "view == views.stock",
-          "group": "navigation@0"
-        },
-        {
-          "command": "fund.trend",
-          "when": "view == views.fund",
+          "command": "leek-fund.viewFundTrend",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.rank",
-          "when": "view == views.fund",
+          "command": "leek-fund.viewFundRank",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.refresh",
-          "when": "view == views.fund",
+          "command": "leek-fund.refreshFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.sort",
-          "when": "view == views.fund",
+          "command": "leek-fund.sortFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.add",
-          "when": "view == views.fund",
+          "command": "leek-fund.addFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "stock.refresh",
-          "when": "view == views.stock",
+          "command": "leek-fund.refreshStock",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         },
         {
-          "command": "stock.sort",
-          "when": "view == views.stock",
+          "command": "leek-fund.sortStock",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         },
         {
-          "command": "stock.add",
-          "when": "view == views.stock",
+          "command": "leek-fund.addStock",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.viewFundFlow",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "fund.history",
-          "when": "view == views.fund",
-          "group": "fundHistoryGroup"
+          "command": "leek-fund.viewFundHistory",
+          "when": "view == leekFundView.fund"
         },
         {
-          "command": "fund.delete",
-          "when": "view == views.fund",
-          "group": "fundDelGroup"
+          "command": "leek-fund.deleteFund",
+          "when": "view == leekFundView.fund"
         },
         {
-          "command": "stock.delete",
-          "when": "view == views.stock"
+          "command": "leek-fund.deleteStock",
+          "when": "view == leekFundView.stock"
         }
       ]
     },
@@ -275,7 +273,8 @@
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "deploy": "vsce publish --yarn"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -288,6 +287,7 @@
     "glob": "^7.1.6",
     "mocha": "^7.1.2",
     "typescript": "^3.8.3",
+    "vsce": "^1.78.0",
     "vscode-test": "^1.3.0"
   },
   "dependencies": {

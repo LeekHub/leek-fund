@@ -49,7 +49,7 @@
 
 - fix: 股票错误代码需要手动改配置文件问题 :heart: PR by @httpcheck
 - feat: 点击基金也可以直接查看到实时走势图
-- chore: 新增操作手册 :heart: PR by @Somin
+- chore: 新增操作手册 :heart: PR by @JayHuangTnT
 
 ## [1.1.7]
 
