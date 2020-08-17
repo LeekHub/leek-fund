@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/logo.png" alt="韭菜盒子" width="256"/>
+<img src="https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
 # leek-fund（韭菜盒子）
 
