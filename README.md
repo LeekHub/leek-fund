@@ -56,7 +56,7 @@
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
-![概览](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/overview1.png)
+![概览](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/overview.png)
 
 ## 插件配置说明
 
