@@ -1,6 +1,6 @@
 ---
 name: 🙋 Feature Request
-about: Want us to add something to Ledge?
+about: Want us to add something to LeekFund?
 ---
 
 <!--
@@ -41,11 +41,10 @@ Provide code samples of how the API would work once implemented.
 请描述一下你期望这个新功能的 API 是如何使用的，并提供一些代码示例。
 -->
 
-## Other reference  [Optional]
+## Other reference [Optional]
 
 <!---
 If there are other links or screenshots, it is also a good choice
 
 如果有其他链接或截图，也是一个不错的选择
 -->
-
