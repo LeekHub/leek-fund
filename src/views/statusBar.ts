@@ -28,7 +28,7 @@ export class StatusBar {
     this.createFundStatusBar();
   }
   createStockStatusBar(item: LeekTreeItem) {
-    if (!item) return;
+    if (!item) { return; }
     const {
       type,
       symbol,
@@ -43,7 +43,7 @@ export class StatusBar {
     const deLow = percent.indexOf('-') === -1;
     this.stockBarItem.text = `「${item.info.name}」${price}  ${
       deLow ? '📈' : '📉'
-    }（${percent}%）`;
+      }（${percent}%）`;
 
     this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     this.stockBarItem.color = deLow ? this.riseColor : this.fallColor;
@@ -66,11 +66,11 @@ export class StatusBar {
         fund.info.percent.indexOf('-') === 0
           ? ' ↓ '
           : fund.info.percent === '0.00'
-          ? ''
-          : ' ↑ '
-      } ${fund.info.percent}%   「${
+            ? ''
+            : ' ↑ '
+        } ${fund.info.percent}%   「${
         fund.info.name
-      }」\n--------------------------------------------\n`;
+        }」\n--------------------------------------------\n`;
     }
     // tooltip 有限定高度，所以只展示最多14只基金
     const tips = this.fundSrv.fundList.length >= 14 ? '（只展示前14只）' : '';
