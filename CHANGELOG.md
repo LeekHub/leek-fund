@@ -2,7 +2,7 @@
 
 ## [1.2.6]
 
-- 更换插件 LOGO，Design By @JayHuangTnT
+- 更换插件 LOGO，:heart: Design By @JayHuangTnT
 - fix: 折叠基金 panel 时，股票数据不刷新 bug
 - chore: 资金流向流出数据绿色显示
 

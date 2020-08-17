@@ -126,7 +126,7 @@
 
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
-- [JayHuangTnT](https://github.com/JayHuangTnT)
+- [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Design）
 - [yiliang114](https://github.com/yiliang114)
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
