@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.2.7]
+
+- fix: 资金流向 img 重复添加 bug
+
 ## [1.2.6]
 
 - 更换插件 LOGO，:heart: Design By @JayHuangTnT

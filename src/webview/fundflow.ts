@@ -722,28 +722,28 @@ export function fundflow() {
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTH&imageType=NSZJ2'
         );
-        jQuery('#emchart-bxzj').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-bxzj').html(imgDom.prop('outerHTML'));
         //南向当日资金流向
         imgDom.attr('id', 'zljx_img_n');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTH&imageType=NSZJ2'
         );
-        jQuery('#emchart-nxzj').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-nxzj').html(imgDom.prop('outerHTML'));
         //北向当日资金余额
         imgDom.attr('id', 'zlye_img_b');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTHREMAIN&imageType=NSZJ2'
         );
-        jQuery('#emchart-bxzj_drzjye').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-bxzj_drzjye').html(imgDom.prop('outerHTML'));
         //南向当日资金余额
         imgDom.attr('id', 'zlye_img_n');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTHREMAIN&imageType=NSZJ2'
         );
-        jQuery('#emchart-nxzj_drzjye').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-nxzj_drzjye').html(imgDom.prop('outerHTML'));
       }
 
       function makedata(data) {

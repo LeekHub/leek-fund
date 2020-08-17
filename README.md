@@ -1,10 +1,7 @@
 <div align="center">
-
 <img src="https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/logo.png" alt="韭菜盒子" width="256"/>
 
-韭菜盒子
-
-# leek-fund
+# leek-fund（韭菜盒子）
 
 **韭菜盒子**——VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件。
 
