@@ -1,12 +1,37 @@
+<div align="center">
+
+<img src="https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/logo.png" alt="韭菜盒子" width="256"/>
+
+韭菜盒子
+
 # leek-fund
 
 **韭菜盒子**——VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件。
 
+[![Marketplace](https://img.shields.io/visual-studio-marketplace/v/giscafer.leek-fund.svg?label=Marketplace&style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
+[![Rating](https://img.shields.io/visual-studio-marketplace/stars/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
+
+</div>
+
+## Table of contents
+
+- [功能特性](#功能特性)
+- [安装使用](#安装使用)
+- [插件介绍](#插件介绍)
+- [插件配置说明](#插件配置说明)
+- [交流群](#交流群)
+- [Todo List](#todo-list)
+- [感谢 PR](#感谢-pr)
+- [Changelog](#changelog)
+- [Github](#github)
+- [License](#license)
+
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
 
-安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，VSCode 最低版本要求：`v1.40.0+`
+## 功能特性
 
-## 功能介绍
+本插件具有以下特点：
 
 - 基金涨跌（因接口原因基金数据延迟 `2 分钟` 左右）
 - 股票涨跌，支持 A 股、港股、美股（实时数据）
@@ -22,6 +47,10 @@
 - 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 股市资金流向（沪深港通资金流向、北向资金、南向资金）
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
+
+## 安装使用
+
+安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，VSCode 最低版本要求：`v1.40.0+`
 
 ## 插件介绍
 
@@ -114,4 +143,4 @@ https://github.com/giscafer/leek-fund
 
 ## License
 
-MIT
+[LICENSE](./LICENSE)
