@@ -93,8 +93,10 @@ export class FundService {
   }
 
   async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
-    if (!searchText) { return [{ label: '请输入关键词查询，如：0000001' }]; }
-    const url = `http://suggest3.sinajs.cn/suggest/type=2&key=${encodeURIComponent(searchText)}`;
+    if (!searchText) {
+      return [{ label: '请输入关键词查询，如：0000001' }];
+    }
+    const url = `http://suggest3.sinajs.cn/suggest/type=&key=${encodeURIComponent(searchText)}`;
     try {
       console.log('getStockSuggestList: getting...');
       const response = await axios.get(url, {
