@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.2.10]
+
+- 优化 webview 打开，复用窗口，同类型窗口只展示一个 :heart: PR By @zomixi
+
 ## [1.2.7]
 
 - fix: 资金流向 img 重复添加 bug
