@@ -1,7 +1,8 @@
-import { window, ViewColumn } from "vscode";
+import { ViewColumn } from "vscode";
+import ReusedWebviewPanel from "../ReusedWebviewPanel";
 
 export default function () {
-  const panel = window.createWebviewPanel(
+  const panel = ReusedWebviewPanel.create(
     "leek-fund.fundFlow",
     "资金流向",
     ViewColumn.One,
