@@ -5,6 +5,7 @@ import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
 import { fundRankHtmlTemp } from './utils';
 import fundFlow from './webview/fundFlow';
+import ReusedWebviewPanel from "./ReusedWebviewPanel";
 
 // TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
@@ -109,9 +110,9 @@ export function registerViewEvent(
     // 股票点击
     commands.registerCommand('leetfund.stockItemClick', (code, name, text, stockCode) => {
       // 创建webview
-      const panel = window.createWebviewPanel(
+      const panel = ReusedWebviewPanel.create(
         'stockWebview', // viewType
-        name, // 视图标题
+        '股票实时走势', // 视图标题
         ViewColumn.One, // 显示在编辑器的哪个部位
         {
           enableScripts: true, // 启用JS，默认禁用
@@ -193,7 +194,7 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leetfund.fundItemClick', async (code, name, text) => {
       // 创建webview
-      const panel = window.createWebviewPanel('fundWebview.trend', name, ViewColumn.One, {
+      const panel = ReusedWebviewPanel.create('fundWebview.trend', '基金实时走势', ViewColumn.One, {
         enableScripts: true, // 启用JS，默认禁用
       });
       panel.webview.html = `<html>
@@ -261,7 +262,7 @@ export function registerViewEvent(
       const { code, name } = item.info;
       const res = await service.getFundHistoryByCode(code);
       // 创建webview
-      const panel = window.createWebviewPanel('fundWebview.history', name, ViewColumn.One, {
+      const panel = ReusedWebviewPanel.create('fundWebview.history', '基金持仓信息和历史净值', ViewColumn.One, {
         enableScripts: true, // 启用JS，默认禁用
       });
       panel.webview.html = `<html>
@@ -307,7 +308,7 @@ export function registerViewEvent(
 
   commands.registerCommand('leek-fund.viewFundRank', async () => {
     const list = await service.getRankFund();
-    const panel = window.createWebviewPanel('fundRankWebview', '基金排行榜', ViewColumn.One);
+    const panel = ReusedWebviewPanel.create('fundRankWebview', '基金排行榜', ViewColumn.One);
     const content = fundRankHtmlTemp(list);
     panel.webview.html = `<html>
         <style>
@@ -326,7 +327,7 @@ export function registerViewEvent(
   // 基金走势图
   commands.registerCommand('leek-fund.viewFundTrend', async () => {
     const fundList = service.fundList;
-    const panel = window.createWebviewPanel('fundTrendWebview', '基金走势', ViewColumn.One, {
+    const panel = ReusedWebviewPanel.create('fundTrendWebview', '基金走势一览', ViewColumn.One, {
       enableScripts: true, // 启用JS，默认禁用
       retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
     });
@@ -494,5 +495,5 @@ export function registerViewEvent(
 
 
   // 资金流向
-  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow())
+  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
 }
