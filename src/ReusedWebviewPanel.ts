@@ -1,10 +1,4 @@
-import {
-  window,
-  ViewColumn,
-  WebviewPanel,
-  WebviewPanelOptions,
-  WebviewOptions,
-} from "vscode";
+import { window, ViewColumn, WebviewPanel, WebviewPanelOptions, WebviewOptions } from 'vscode';
 
 module ReusedWebviewPanel {
   const webviewPanelsPool: Map<string, WebviewPanel> = new Map(); // webviewPanel池
@@ -30,17 +24,12 @@ module ReusedWebviewPanel {
       return oldPanel;
     }
 
-    const newPanel = window.createWebviewPanel(
-      viewType,
-      title,
-      showOptions,
-      options
-    );
+    const newPanel = window.createWebviewPanel(viewType, title, showOptions, options);
 
     newPanel.onDidDispose(() => webviewPanelsPool.delete(viewType));
     webviewPanelsPool.set(viewType, newPanel);
 
-    console.log("webviewPanelsPool.size:", webviewPanelsPool.size);
+    console.log('webviewPanelsPool.size:', webviewPanelsPool.size);
 
     return newPanel;
   }
@@ -54,7 +43,6 @@ module ReusedWebviewPanel {
 
     if (target) {
       webviewPanelsPool.delete(viewType);
-
       // createWebviewPanel是异步的，setTimeout避免创建未完成时调用dispose报错
       setTimeout(() => target.dispose(), 0);
     }
