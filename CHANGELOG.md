@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.2.11]
+
+- chore: 优化界面样式
+
 ## [1.2.10]
 
 - 优化 webview 打开，复用窗口，同类型窗口只展示一个 :heart: PR By @zomixi

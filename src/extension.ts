@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------
  *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
- *  Licensed under the MIT License.
+ *  Licensed under the BSD-3-Clause License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
@@ -31,7 +31,7 @@ export function activate(context: ExtensionContext) {
   const nodeStockProvider = new StockProvider(fundService);
   const statusBar = new StatusBar(fundService);
 
-  // 获取所有基金代码
+  // prefetch all fund data for searching
   fundService.getFundSuggestList();
 
   // create fund & stock side views
