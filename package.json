@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -53,11 +53,11 @@
       "leekFundMenu": [
         {
           "id": "leekFundView.fund",
-          "name": "自选基金"
+          "name": "Fund"
         },
         {
           "id": "leekFundView.stock",
-          "name": "自选股票"
+          "name": "Stock"
         }
       ]
     },

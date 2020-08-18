@@ -5,7 +5,7 @@ import { FundProvider } from './views/fundProvider';
 import { StockProvider } from './views/stockProvider';
 import { fundRankHtmlTemp } from './utils';
 import fundFlow from './webview/fundFlow';
-import ReusedWebviewPanel from "./ReusedWebviewPanel";
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 // TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
@@ -35,14 +35,16 @@ export function registerViewEvent(
       return;
     }
 
-    window.showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' }).then((code) => {
-      if (!code) {
-        return;
-      }
-      fundModel.updateFundCfg(code.split('|')[0], () => {
-        fundProvider.refresh();
+    window
+      .showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' })
+      .then((code) => {
+        if (!code) {
+          return;
+        }
+        fundModel.updateFundCfg(code.split('|')[0], () => {
+          fundProvider.refresh();
+        });
       });
-    });
   });
   commands.registerCommand('leek-fund.sortFund', () => {
     fundProvider.changeOrder();
@@ -158,7 +160,7 @@ export function registerViewEvent(
       // https://image.sinajs.cn/newchart/v5/usstock/min/.dji.gif?1596987568173
       panel.webview.html = `<html><body style="background:#eee;color:#333">
           <br/>
-          <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">${name}」趋势图、K线图</p>
+          <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」趋势图、K线图</p>
           <hr />
           <h3>实时走势图</3> <br/>
           <div style="width: 710px;margin:0 auto"><img class="sstrend" src="${timeK}" width="700"/></div>
@@ -262,9 +264,14 @@ export function registerViewEvent(
       const { code, name } = item.info;
       const res = await service.getFundHistoryByCode(code);
       // 创建webview
-      const panel = ReusedWebviewPanel.create('fundWebview.history', '基金持仓信息和历史净值', ViewColumn.One, {
-        enableScripts: true, // 启用JS，默认禁用
-      });
+      const panel = ReusedWebviewPanel.create(
+        'fundWebview.history',
+        '基金持仓信息和历史净值',
+        ViewColumn.One,
+        {
+          enableScripts: true, // 启用JS，默认禁用
+        }
+      );
       panel.webview.html = `<html>
           <style>
           .lsjz{
@@ -492,7 +499,6 @@ export function registerViewEvent(
     </html>
     `;
   });
-
 
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());

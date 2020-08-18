@@ -8,9 +8,7 @@ export const uniq = (elements: Array<string | number>) => {
     return [];
   }
 
-  return elements.filter(
-    (element, index) => index === elements.indexOf(element)
-  );
+  return elements.filter((element, index) => index === elements.indexOf(element));
 };
 
 /**
@@ -33,11 +31,7 @@ export const isStockTime = () => {
   return (hours >= stockTime[0] && hours <= stockTime[1]) || delay;
 };
 
-export const formatNumber = (
-  val: number = 0,
-  fixed: number = 2,
-  format = true
-): string => {
+export const formatNumber = (val: number = 0, fixed: number = 2, format = true): string => {
   const num = +val;
   if (format) {
     if (num > 1000 * 10000) {
@@ -49,10 +43,7 @@ export const formatNumber = (
   return `${+num.toFixed(fixed)}`;
 };
 
-export const sortData = (
-  data: LeekTreeItem[] = [],
-  order = SortType.NORMAL
-) => {
+export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => {
   if (order === SortType.NORMAL) {
     return data;
   } else {
@@ -66,6 +57,13 @@ export const sortData = (
       }
     });
   }
+};
+
+export const formatTreeText = (text = '', num = 10) => {
+  const str = text + '';
+  const lenx = num - str.length;
+  console.log(str + '&nbsp;'.repeat(lenx), lenx);
+  return str + ' '.repeat(lenx);
 };
 
 export const randHeader = () => {
