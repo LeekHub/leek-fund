@@ -20,7 +20,7 @@ export class BaseModel {
   removeConfig(cfgKey: string, code: string) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get(cfgKey, []);
-    const newCfg = sourceCfg.filter((item) => item != code);
+    const newCfg = sourceCfg.filter((item) => item !== code);
     return config.update(cfgKey, newCfg, true);
   }
 }
