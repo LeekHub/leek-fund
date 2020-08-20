@@ -62,7 +62,7 @@ export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => 
 export const formatTreeText = (text = '', num = 10) => {
   const str = text + '';
   const lenx = num - str.length;
-  console.log(str + '&nbsp;'.repeat(lenx), lenx);
+  // console.log(str + '&nbsp;'.repeat(lenx), lenx);
   return str + ' '.repeat(lenx);
 };
 

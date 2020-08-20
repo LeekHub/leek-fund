@@ -9,6 +9,7 @@ export class FundService {
   private _fundList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   szItem: any;
+  searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
   constructor(context: ExtensionContext) {
     this.context = context;
   }
@@ -92,11 +93,13 @@ export class FundService {
       });
   }
 
-  async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
+  async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
     if (!searchText) {
-      return [{ label: '请输入关键词查询，如：0000001' }];
+      return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
-    const url = `http://suggest3.sinajs.cn/suggest/type=&key=${encodeURIComponent(searchText)}`;
+    const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
+      searchText
+    )}`;
     try {
       console.log('getStockSuggestList: getting...');
       const response = await axios.get(url, {
@@ -110,6 +113,12 @@ export class FundService {
         headers: randHeader(),
       });
       const text = response.data.slice(18, -1);
+      if (text.length <= 1 && !this.searchStockKeyMap[searchText]) {
+        this.searchStockKeyMap[searchText] = true;
+        // 兼容一些查询不到的股票，如sz123044
+        return this.getStockSuggestList(searchText, '');
+      }
+      this.searchStockKeyMap = {};
       const tempArr = text.split(';');
       const result: QuickPickItem[] = [];
       tempArr.forEach((item: string) => {
@@ -169,7 +178,9 @@ export class FundService {
       var stockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
-          window.showErrorMessage(`fail: error Stock code in ${codes}, please delete error Stock code`);
+          window.showErrorMessage(
+            `fail: error Stock code in ${codes}, please delete error Stock code`
+          );
           return [
             {
               id: codes[0],
@@ -258,7 +269,8 @@ export class FundService {
             stockItem.symbol = symbol;
             stockItem.updown = formatNumber(+price - +yestclose, 2, false);
             stockItem.percent =
-              (stockItem.updown >= 0 ? '+' : '-') + formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+              (stockItem.updown >= 0 ? '+' : '-') +
+              formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
             if (code === 'sh000001') {
               sz = new LeekTreeItem(stockItem, this.context);
             }
