@@ -1,16 +1,11 @@
-import { ViewColumn } from "vscode";
-import ReusedWebviewPanel from "../ReusedWebviewPanel";
+import { ViewColumn } from 'vscode';
+import ReusedWebviewPanel from '../ReusedWebviewPanel';
 
-export default function () {
-  const panel = ReusedWebviewPanel.create(
-    "leek-fund.fundFlow",
-    "资金流向",
-    ViewColumn.One,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    }
-  );
+function fundFlow() {
+  const panel = ReusedWebviewPanel.create('leek-fund.fundFlow', '资金流向', ViewColumn.One, {
+    enableScripts: true,
+    retainContextWhenHidden: true,
+  });
   panel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
@@ -977,3 +972,5 @@ export default function () {
 </html>
     `;
 }
+
+export default fundFlow;

@@ -73,7 +73,7 @@ export class LeekTreeItem extends TreeItem {
     this.id = code;
     this.command = {
       title: name, // 标题
-      command: isStock ? 'leetfund.stockItemClick' : 'leetfund.fundItemClick', // 命令 ID
+      command: isStock ? 'leet-fund.stockItemClick' : 'leet-fund.fundItemClick', // 命令 ID
       arguments: [
         isStock ? '0' + symbol : code, // 基金/股票编码
         name, // 基金/股票名称
