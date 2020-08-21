@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, window } from 'vscode';
+import { commands, ExtensionContext, window, Uri, env } from 'vscode';
 import { FundService } from './service';
 import { FundProvider } from './views/fundProvider';
 import { FundModel } from './views/model';
@@ -9,8 +9,8 @@ import fundHistory from './webview/fundHistory';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
 import stockTrend from './webview/stockTrend';
+import donate from './webview/donate';
 
-// TODO: webview 不多开实例，重复使用
 export function registerViewEvent(
   context: ExtensionContext,
   service: FundService,
@@ -131,4 +131,14 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(service));
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
+
+  /**
+   * Settings command
+   */
+  context.subscriptions.push(
+    commands.registerCommand(`COMMAND`, () =>
+      env.openExternal(Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html'))
+    )
+  );
+  context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate()));
 }

@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.2.13]
+
+- refactor: webview 相关代码重构
+
 ## [1.2.12]
 
 - fix: 修复股票搜索，支持中英文
