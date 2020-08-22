@@ -54,7 +54,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "欢迎使用韭菜盒子^_^，使用前请查看[使用手册](https://github.com/giscafer/leek-fund/issues/23)。\n[显示/隐藏文本](command:leek-fund.hideText)\n[设置涨跌颜色](command:leek-fund.hideText)\n[设置转态栏股票](command:leek-fund.hideText)\n[打赏作者@giscafer](command:leek-fund.donate)\n 插件评分，[给个5星好评](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)"
+        "contents": "欢迎使用韭菜盒子^_^，使用前请查看[使用手册](https://github.com/giscafer/leek-fund/issues/23)。\n[显示/隐藏文本](command:leek-fund.hideText) \n [设置涨跌颜色](command:leek-fund.hideText)\n[设置状态栏股票](command:leek-fund.hideText)\n[打赏作者@giscafer](command:leek-fund.donate)\n 插件好评[给个5星](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)"
       }
     ],
     "views": {

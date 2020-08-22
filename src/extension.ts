@@ -6,7 +6,7 @@
 
 import { ConfigurationChangeEvent, ExtensionContext, window, workspace, TreeView } from 'vscode';
 import { registerViewEvent } from './registerEvent';
-import { FundService } from './service';
+import { LeekFundService } from './service';
 import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { FundModel } from './views/model';
@@ -26,7 +26,7 @@ export function activate(context: ExtensionContext) {
 
   let intervalTime = 3000;
   const model = new FundModel();
-  const fundService = new FundService(context);
+  const fundService = new LeekFundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
   const statusBar = new StatusBar(fundService);
@@ -56,7 +56,7 @@ export function activate(context: ExtensionContext) {
 
   // loop
   const loopCallback = () => {
-    if (isStockTime() || fundService.szItem === undefined) {
+    if (isStockTime() || fundService.szItem === null) {
       if (fundTreeView?.visible || stockTreeView?.visible) {
         nodeFundProvider.refresh();
         nodeStockProvider.refresh();

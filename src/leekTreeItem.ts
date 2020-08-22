@@ -15,6 +15,7 @@ export interface FundInfo {
   percent: any;
   name: string;
   code: string;
+  showLabel?: boolean;
   symbol?: string;
   type?: string;
   yestclose?: string | number; // 昨日净值
@@ -37,6 +38,7 @@ export class LeekTreeItem extends TreeItem {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
     const {
+      showLabel,
       isStock,
       name,
       code,
@@ -53,21 +55,30 @@ export class LeekTreeItem extends TreeItem {
       amount,
     } = info;
     let _percent = Math.abs(percent).toFixed(2);
-    const grow = percent.indexOf('-') === 0 ? false : true;
-    let icon = 'up';
-    const val = Math.abs(percent);
-    if (grow) {
-      icon = val >= 2 ? 'up' : 'up1';
-      _percent = '+' + _percent;
-    } else {
-      icon = val >= 2 ? 'down' : 'down1';
-      _percent = '-' + _percent;
-    }
-    this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
 
-    const text = isStock
-      ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)}「${name}」`
-      : `${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
+    if (showLabel) {
+      let icon = 'up';
+      const grow = percent.indexOf('-') === 0 ? false : true;
+      const val = Math.abs(percent);
+      if (grow) {
+        icon = val >= 2 ? 'up' : 'up1';
+        _percent = '+' + _percent;
+      } else {
+        icon = val >= 2 ? 'down' : 'down1';
+        _percent = '-' + _percent;
+      }
+      this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
+    }
+    let text = '';
+    if (showLabel) {
+      text = isStock
+        ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)}「${name}」`
+        : `${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
+    } else {
+      text = isStock
+        ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
+        : `${formatTreeText(`${_percent}%`)}「${code}」`;
+    }
 
     this.label = text;
     this.id = code;
@@ -83,9 +94,11 @@ export class LeekTreeItem extends TreeItem {
     };
 
     if (isStock) {
-      this.tooltip = `【今日行情】${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+      this.tooltip = `【今日行情】${
+        !showLabel ? name : ''
+      }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
     } else {
-      this.tooltip = '点击查看详情';
+      this.tooltip = `${!showLabel ? name : '点击查看详情'}`;
     }
   }
 }

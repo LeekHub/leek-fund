@@ -1,9 +1,9 @@
 import { ViewColumn } from 'vscode';
 import { LeekTreeItem } from '../leekTreeItem';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { FundService } from '../service';
+import { LeekFundService } from '../service';
 
-async function fundHistory(service: FundService, item: LeekTreeItem) {
+async function fundHistory(service: LeekFundService, item: LeekTreeItem) {
   const { code, name } = item.info;
   const res = await service.getFundHistoryByCode(code);
   const panel = ReusedWebviewPanel.create(

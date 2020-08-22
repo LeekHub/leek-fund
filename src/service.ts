@@ -4,14 +4,24 @@ import { ExtensionContext, window, QuickPickItem } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
 
-export class FundService {
+export class LeekFundService {
+  private _showLabel: boolean = true;
   private _fundSuggestList: string[] = [];
   private _fundList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
-  szItem: any;
+  szItem: LeekTreeItem | null = null;
   searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
+
   constructor(context: ExtensionContext) {
     this.context = context;
+  }
+
+  public get showLabel(): boolean {
+    return this._showLabel;
+  }
+
+  public set showLabel(value: boolean) {
+    this._showLabel = value;
   }
 
   public get fundSuggestList(): string[] {
@@ -42,6 +52,11 @@ export class FundService {
     return `http://hq.sinajs.cn/list=${codes.join(',')}`;
   }
 
+  toggleLabel() {
+    this.showLabel = !this.showLabel;
+    console.log(this.showLabel);
+  }
+
   singleFund(code: string): Promise<FundInfo> {
     const url = this.fundUrl(code);
     return new Promise((resolve) => {
@@ -66,6 +81,7 @@ export class FundService {
     try {
       const result = await Promise.all(promiseAll);
       const data = result.map((item) => {
+        item.showLabel = this.showLabel;
         return new LeekTreeItem(item, this.context);
       });
 
@@ -194,6 +210,7 @@ export class FundService {
         }
         return stockList;
       }
+
       const splitData = resp.data.split(';\n');
       let sz: LeekTreeItem | null = null;
       for (let i = 0; i < splitData.length - 1; i++) {
@@ -264,6 +281,7 @@ export class FundService {
           }
           if (stockItem) {
             const { yestclose, price } = stockItem;
+            stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;
             stockItem.symbol = symbol;

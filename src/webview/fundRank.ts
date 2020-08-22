@@ -1,9 +1,9 @@
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { FundService } from '../service';
+import { LeekFundService } from '../service';
 import { fundRankHtmlTemp } from '../utils';
 
-async function fundRank(service: FundService) {
+async function fundRank(service: LeekFundService) {
   const list = await service.getRankFund();
   const content = fundRankHtmlTemp(list);
   const panel = ReusedWebviewPanel.create('fundRankWebview', '基金排行榜', ViewColumn.One, {

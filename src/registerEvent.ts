@@ -1,5 +1,5 @@
 import { commands, ExtensionContext, window, Uri, env } from 'vscode';
-import { FundService } from './service';
+import { LeekFundService } from './service';
 import { FundProvider } from './views/fundProvider';
 import { FundModel } from './views/model';
 import { StockProvider } from './views/stockProvider';
@@ -13,7 +13,7 @@ import donate from './webview/donate';
 
 export function registerViewEvent(
   context: ExtensionContext,
-  service: FundService,
+  service: LeekFundService,
   fundProvider: FundProvider,
   stockProvider: StockProvider
 ) {
@@ -136,9 +136,18 @@ export function registerViewEvent(
    * Settings command
    */
   context.subscriptions.push(
-    commands.registerCommand(`COMMAND`, () =>
+    commands.registerCommand(`leek-fund.hideText`, () => {
+      console.log('hideText');
+      service.toggleLabel();
+      console.log('hideText=', service.showLabel);
+      fundProvider.refresh();
+      stockProvider.refresh();
+    })
+  );
+  /*  context.subscriptions.push(
+    commands.registerCommand(`leek-fund.hideText`, () =>
       env.openExternal(Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html'))
     )
-  );
+  ); */
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate()));
 }
