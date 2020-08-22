@@ -1,15 +1,16 @@
-import { commands, ExtensionContext, window, Uri, env } from 'vscode';
+import { commands, ExtensionContext, window } from 'vscode';
+import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
 import { FundProvider } from './views/fundProvider';
-import { FundModel } from './views/model';
+import { LeekFundModel } from './views/model';
 import { StockProvider } from './views/stockProvider';
 import allFundTrend from './webview/allFundTrend';
+import donate from './webview/donate';
 import fundFlow from './webview/fundFlow';
 import fundHistory from './webview/fundHistory';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
 import stockTrend from './webview/stockTrend';
-import donate from './webview/donate';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -17,7 +18,7 @@ export function registerViewEvent(
   fundProvider: FundProvider,
   stockProvider: StockProvider
 ) {
-  const fundModel = new FundModel();
+  const fundModel = new LeekFundModel();
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
@@ -136,14 +137,46 @@ export function registerViewEvent(
    * Settings command
    */
   context.subscriptions.push(
-    commands.registerCommand(`leek-fund.hideText`, () => {
-      console.log('hideText');
+    commands.registerCommand('leek-fund.hideText', () => {
       service.toggleLabel();
-      console.log('hideText=', service.showLabel);
       fundProvider.refresh();
       stockProvider.refresh();
     })
   );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.setStockStatusBar', () => {
+      const stockList = service.stockList;
+      const stockNameList = stockList.map((item: LeekTreeItem) => {
+        return {
+          label: `${item.info.name}`,
+          description: `${item.info.code}`,
+        };
+      });
+      window
+        .showQuickPick(stockNameList, {
+          placeHolder: '输入过滤选择，支持多选（限4个）',
+          canPickMany: true,
+        })
+        .then((res) => {
+          if (!res?.length) {
+            return;
+          }
+          let codes = res.map((item) => item.description);
+          if (codes.length > 4) {
+            codes = codes.slice(0, 4);
+          }
+          console.log(codes.length);
+          fundModel.updateStatusBarStockCfg(codes, () => {
+            const handler = window.setStatusBarMessage(`下次数据刷新见效`);
+            setTimeout(() => {
+              handler.dispose();
+            }, 1500);
+          });
+        });
+    })
+  );
+
   /*  context.subscriptions.push(
     commands.registerCommand(`leek-fund.hideText`, () =>
       env.openExternal(Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html'))

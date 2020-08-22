@@ -1,7 +1,7 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { LeekTreeItem, SortType } from '../leekTreeItem';
 import { LeekFundService } from '../service';
-import { FundModel } from './model';
+import { LeekFundModel } from './model';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
@@ -10,12 +10,12 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   private service: LeekFundService;
   private order: SortType;
-  private model: FundModel;
+  private model: LeekFundModel;
 
   constructor(service: LeekFundService) {
     this.service = service;
     this.order = SortType.NORMAL;
-    this.model = new FundModel();
+    this.model = new LeekFundModel();
   }
 
   refresh(): any {

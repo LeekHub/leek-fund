@@ -9,7 +9,7 @@ import { registerViewEvent } from './registerEvent';
 import { LeekFundService } from './service';
 import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
-import { FundModel } from './views/model';
+import { LeekFundModel } from './views/model';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
 import { SortType } from './leekTreeItem';
@@ -25,8 +25,8 @@ export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
   let intervalTime = 3000;
-  const model = new FundModel();
-  const fundService = new LeekFundService(context);
+  const model = new LeekFundModel();
+  const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
   const statusBar = new StatusBar(fundService);

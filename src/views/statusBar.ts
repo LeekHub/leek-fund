@@ -1,19 +1,19 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { LeekTreeItem } from '../leekTreeItem';
 import { LeekFundService } from '../service';
-import { FundModel } from './model';
+import { LeekFundModel } from './model';
 
 export class StatusBar {
-  private model: FundModel;
-  private fundSrv: LeekFundService;
-  private stockBarItem: StatusBarItem;
+  private model: LeekFundModel;
+  private service: LeekFundService;
   private fundBarItem: StatusBarItem;
-
-  constructor(fundSrv: LeekFundService) {
-    this.model = new FundModel();
-    this.fundSrv = fundSrv;
-    this.stockBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
-    this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 2);
+  private statusBarList: StatusBarItem[] = [];
+  constructor(service: LeekFundService) {
+    this.model = new LeekFundModel();
+    this.service = service;
+    this.statusBarList = [];
+    this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 4);
+    this.refreshStockStatusBar();
   }
 
   get riseColor(): string {
@@ -24,26 +24,50 @@ export class StatusBar {
   }
 
   refresh() {
-    this.createStockStatusBar(this.fundSrv.szItem);
-    this.createFundStatusBar();
+    this.refreshFundStatusBar();
+    // this.statusBarList.forEach((bar) => bar.hide());
+    this.refreshStockStatusBar();
   }
 
-  createStockStatusBar(item: LeekTreeItem | null) {
+  refreshStockStatusBar() {
+    const statusBarStockList = this.service.statusBarStockList;
+    let count = statusBarStockList.length - this.statusBarList.length;
+    if (count > 0) {
+      while (--count >= 0) {
+        const stockBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
+        this.statusBarList.push(stockBarItem);
+      }
+    } else if (count < 0) {
+      let num = Math.abs(count);
+      while (--num >= 0) {
+        const bar = this.statusBarList.pop();
+        bar?.hide();
+        bar?.dispose();
+      }
+    }
+    statusBarStockList.forEach((stock, index) => {
+      this.udpateBarInfo(this.statusBarList[index], stock);
+    });
+  }
+
+  udpateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
     if (!item) {
       return;
     }
     const { type, symbol, price, percent, open, yestclose, high, low, updown } = item.info;
     const deLow = percent.indexOf('-') === -1;
-    this.stockBarItem.text = `「${item.info.name}」${price}  ${deLow ? '📈' : '📉'}（${percent}%）`;
+    stockBarItem.text = `「${this.service.showLabel ? item.info.name : item.id}」${price}  ${
+      deLow ? '📈' : '📉'
+    }（${percent}%）`;
 
-    this.stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
-    this.stockBarItem.color = deLow ? this.riseColor : this.fallColor;
-    this.stockBarItem.show();
-    return this.stockBarItem;
+    stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
+    stockBarItem.color = deLow ? this.riseColor : this.fallColor;
+    stockBarItem.show();
+    return stockBarItem;
   }
 
-  createFundStatusBar() {
-    this.fundBarItem.text = `🐥$(pulse)`;
+  refreshFundStatusBar() {
+    this.fundBarItem.text = `🐥🐥🐥$(pulse)`;
     this.fundBarItem.color = this.riseColor;
     this.fundBarItem.tooltip = this.getFundTooltipText();
     this.fundBarItem.show();
@@ -52,7 +76,7 @@ export class StatusBar {
 
   private getFundTooltipText() {
     let fundTemplate = '';
-    for (let fund of this.fundSrv.fundList.slice(0, 14)) {
+    for (let fund of this.service.fundList.slice(0, 14)) {
       fundTemplate += `${
         fund.info.percent.indexOf('-') === 0 ? ' ↓ ' : fund.info.percent === '0.00' ? '' : ' ↑ '
       } ${fund.info.percent}%   「${
@@ -60,7 +84,7 @@ export class StatusBar {
       }」\n--------------------------------------------\n`;
     }
     // tooltip 有限定高度，所以只展示最多14只基金
-    const tips = this.fundSrv.fundList.length >= 14 ? '（只展示前14只）' : '';
+    const tips = this.service.fundList.length >= 14 ? '（只展示前14只）' : '';
     return `\n【基金详情】\n\n ${fundTemplate}${tips}`;
   }
 }

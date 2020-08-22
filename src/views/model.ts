@@ -1,4 +1,4 @@
-import { workspace, window } from 'vscode';
+import { window, workspace } from 'vscode';
 import { clean, uniq } from '../utils';
 
 export class BaseModel {
@@ -7,6 +7,11 @@ export class BaseModel {
   getCfg(key: string): any {
     const config = workspace.getConfiguration();
     return config.get(key);
+  }
+
+  setConfig(cfgKey: string, cfgValue: Array<any> | string | number) {
+    const config = workspace.getConfiguration();
+    return config.update(cfgKey, cfgValue, true);
   }
 
   updateConfig(cfgKey: string, codes: Array<any>) {
@@ -25,7 +30,7 @@ export class BaseModel {
   }
 }
 
-export class FundModel extends BaseModel {
+export class LeekFundModel extends BaseModel {
   constructor() {
     super();
   }
@@ -61,6 +66,15 @@ export class FundModel extends BaseModel {
       window.showInformationMessage(`Stock Successfully delete.`);
       if (cb && typeof cb === 'function') {
         cb(code);
+      }
+    });
+  }
+
+  updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
+    this.setConfig('leek-fund.statusBarStock', codes).then(() => {
+      window.showInformationMessage(`Status Bar Stock Successfully update.`);
+      if (cb && typeof cb === 'function') {
+        cb(codes);
       }
     });
   }

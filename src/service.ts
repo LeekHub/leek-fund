@@ -1,19 +1,25 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
-import { ExtensionContext, window, QuickPickItem } from 'vscode';
+import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
+import { LeekFundModel } from './views/model';
 
 export class LeekFundService {
   private _showLabel: boolean = true;
   private _fundSuggestList: string[] = [];
   private _fundList: Array<LeekTreeItem> = [];
+  private _stockList: Array<LeekTreeItem> = [];
+  private _barStockList: Array<LeekTreeItem> = [];
+
   private context: ExtensionContext;
+  private model: LeekFundModel;
   szItem: LeekTreeItem | null = null;
   searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
 
-  constructor(context: ExtensionContext) {
+  constructor(context: ExtensionContext, model: LeekFundModel) {
     this.context = context;
+    this.model = model;
   }
 
   public get showLabel(): boolean {
@@ -40,6 +46,22 @@ export class LeekFundService {
     this._fundList = value;
   }
 
+  public get stockList(): Array<LeekTreeItem> {
+    return this._stockList;
+  }
+
+  public set stockList(value: Array<LeekTreeItem>) {
+    this._stockList = value;
+  }
+
+  public get statusBarStockList(): Array<LeekTreeItem> {
+    return this._barStockList;
+  }
+
+  public set statusBarStockList(value: Array<LeekTreeItem>) {
+    this._barStockList = value;
+  }
+
   private fundUrl(code: string): string {
     const fundUrl = `http://fundgz.1234567.com.cn/js/${code}.js?rt="${new Date().getTime()}`;
     return fundUrl;
@@ -54,7 +76,6 @@ export class LeekFundService {
 
   toggleLabel() {
     this.showLabel = !this.showLabel;
-    console.log(this.showLabel);
   }
 
   singleFund(code: string): Promise<FundInfo> {
@@ -177,6 +198,7 @@ export class LeekFundService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
+    const statusBarStocks = this.model.getCfg('leek-fund.statusBarStock');
     const url = this.stockUrl(codes);
     try {
       const resp = await axios.get(url, {
@@ -190,8 +212,8 @@ export class LeekFundService {
         ],
         headers: randHeader(),
       });
-      // console.log(resp.data);
-      var stockList: Array<LeekTreeItem> = [];
+      let stockList: Array<LeekTreeItem> = [];
+      const barStockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
           window.showErrorMessage(
@@ -289,15 +311,22 @@ export class LeekFundService {
             stockItem.percent =
               (stockItem.updown >= 0 ? '+' : '-') +
               formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+
+            const treeItem = new LeekTreeItem(stockItem, this.context);
             if (code === 'sh000001') {
-              sz = new LeekTreeItem(stockItem, this.context);
+              sz = treeItem;
             }
-            stockList.push(new LeekTreeItem(stockItem, this.context));
+            if (statusBarStocks.includes(code)) {
+              barStockList.push(treeItem);
+            }
+            stockList.push(treeItem);
           }
         }
       }
       this.szItem = sz || stockList[0];
       const res = sortData(stockList, order);
+      this.stockList = res;
+      this.statusBarStockList = sortData(barStockList, order);
       return res;
     } catch (err) {
       console.info(url);

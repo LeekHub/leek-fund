@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.2.12",
+  "version": "1.3.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -43,20 +43,6 @@
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "leekFundView.fund",
-        "contents": "无数据，请点击添加按钮添加基金"
-      },
-      {
-        "view": "leekFundView.stock",
-        "contents": "无数据，请点击添加按钮添加股票"
-      },
-      {
-        "view": "leekFundView.settings",
-        "contents": "欢迎使用韭菜盒子^_^，使用前请查看[使用手册](https://github.com/giscafer/leek-fund/issues/23)。\n[显示/隐藏文本](command:leek-fund.hideText) \n [设置涨跌颜色](command:leek-fund.hideText)\n[设置状态栏股票](command:leek-fund.hideText)\n[打赏作者@giscafer](command:leek-fund.donate)\n 插件好评[给个5星](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)"
-      }
-    ],
     "views": {
       "leekFundMenu": [
         {
@@ -231,16 +217,13 @@
             "sh000300",
             "sh000016",
             "sh000688",
-            "sh000913",
-            "sh000905",
             "hk03690",
             "hk00700",
-            "hk09988",
-            "gb_ixic",
-            "gb_dji",
-            "gb_inx"
+            "usr_ixic",
+            "usr_dji",
+            "usr_inx"
           ],
-          "description": "配置需要监控的股票代码"
+          "description": "配置需要监控的股票代码（建议通过界面新增）"
         },
         "leek-fund.funds": {
           "type": "array",
@@ -252,14 +235,16 @@
             "001102",
             "003885",
             "001071",
-            "005963",
-            "005223",
-            "002316",
-            "161726",
-            "161028",
-            "161725"
+            "005963"
           ],
-          "description": "配置需要监控的基金代码"
+          "description": "配置需要监控的基金代码（建议通过界面新增）"
+        },
+        "leek-fund.statusBarStock": {
+          "type": "array",
+          "default": [
+            "sh000001"
+          ],
+          "description": "状态栏展示的股票（建议通过界面选择设置）"
         },
         "leek-fund.interval": {
           "type": "number",
@@ -277,7 +262,21 @@
           "description": "股票跌的颜色"
         }
       }
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "leekFundView.fund",
+        "contents": "无数据，请点击添加按钮添加基金"
+      },
+      {
+        "view": "leekFundView.stock",
+        "contents": "无数据，请点击添加按钮添加股票"
+      },
+      {
+        "view": "leekFundView.settings",
+        "contents": "欢迎使用韭菜盒子^_^，使用前请查看[使用手册](https://github.com/giscafer/leek-fund/issues/23)。\n[显示/隐藏文本](command:leek-fund.hideText) \n [设置涨跌颜色](command:leek-fund.hideText)\n[设置状态栏股票](command:leek-fund.setStockStatusBar)\n[打赏作者@giscafer](command:leek-fund.donate)\n 插件好评[给个5星](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
