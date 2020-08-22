@@ -133,6 +133,18 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(service));
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
+  // 基金置顶
+  commands.registerCommand('leek-fund.setFundTop', (target) => {
+    fundModel.setFundTopCfg(target.id, () => {
+      fundProvider.refresh();
+    });
+  });
+  // 股票置顶
+  commands.registerCommand('leek-fund.setStockTop', (target) => {
+    fundModel.setStockTopCfg(target.id, () => {
+      fundProvider.refresh();
+    });
+  });
 
   /**
    * Settings command
