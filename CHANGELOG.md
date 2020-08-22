@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.3.1]
+
+- feat: 新增基金和股票置顶功能 :heart: PR By @gordongxm
+- fix: 断网时重启 VSCode，第一次获取不到数据时，会不停的请求数据报错弹窗问题
+
 ## [1.3.0]
 
 :rocket:

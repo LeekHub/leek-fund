@@ -14,7 +14,7 @@ export class LeekFundService {
 
   private context: ExtensionContext;
   private model: LeekFundModel;
-  szItem: LeekTreeItem | null = null;
+  defaultBarStock: LeekTreeItem | null = null;
   searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
 
   constructor(context: ExtensionContext, model: LeekFundModel) {
@@ -323,9 +323,13 @@ export class LeekFundService {
           }
         }
       }
-      this.szItem = sz || stockList[0];
+      this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
       this.stockList = res;
+      if (barStockList.length === 0) {
+        // 用户没有设置股票时，默认展示上证或第一个
+        barStockList.push(this.defaultBarStock);
+      }
       this.statusBarStockList = sortData(barStockList, order);
       return res;
     } catch (err) {

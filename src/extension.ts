@@ -56,7 +56,7 @@ export function activate(context: ExtensionContext) {
 
   // loop
   const loopCallback = () => {
-    if (isStockTime() || fundService.szItem === null) {
+    if (isStockTime()) {
       if (fundTreeView?.visible || stockTreeView?.visible) {
         nodeFundProvider.refresh();
         nodeStockProvider.refresh();
