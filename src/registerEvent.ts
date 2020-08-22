@@ -1,6 +1,7 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
+import { colorOptionList, randomColor } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { LeekFundModel } from './views/model';
 import { StockProvider } from './views/stockProvider';
@@ -174,6 +175,51 @@ export function registerViewEvent(
             }, 1500);
           });
         });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.setRiseAndFallColor', () => {
+      const colorList = colorOptionList();
+      window
+        .showQuickPick(
+          [
+            { label: '📈股票涨的颜色', description: 'rise' },
+            { label: '📉股票跌的颜色', description: 'fall' },
+          ],
+          {
+            placeHolder: '第一步：选择设置对象',
+          }
+        )
+        .then((item: any) => {
+          if (!item) {
+            return;
+          }
+
+          window
+            .showQuickPick(colorList, {
+              placeHolder: `第二步：设置颜色（${item.label}）`,
+            })
+            .then((colorItem: any) => {
+              if (!colorItem) {
+                return;
+              }
+              let color = colorItem.description;
+              if (color === 'random') {
+                color = randomColor();
+              }
+              fundModel.setConfig(
+                item.description === 'rise' ? 'leek-fund.riseColor' : 'leek-fund.fallColor',
+                color
+              );
+            });
+        });
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.configSetting', () => {
+      commands.executeCommand('workbench.action.openSettings', '@ext:giscafer.leek-fund');
     })
   );
 

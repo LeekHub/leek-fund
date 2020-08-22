@@ -37,12 +37,13 @@
 - 手动刷新
 - 自动刷新（每天 9~15 点之间轮询刷新数据）
 - 支持升序/降序排序
-- 支持 GUI 操作新增&删除 基金 和 股票
 - 基金实时走势图和历史走势图
 - 基金排行榜
 - 基金持仓信息
-- 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 股市资金流向（沪深港通资金流向、北向资金、南向资金）
+- 支持 GUI 操作新增&删除 基金 和 股票
+- 通过 GUI 添加基金和股票时，支持模糊搜索匹配
+- 支持 GUI 设置涨跌颜色、状态栏股票自定义等
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
@@ -65,49 +66,70 @@
 下面是插件配置说明：
 
 ```
-  // 配置需要监控的股票代码（新浪接口，所以去新浪找股票代码比较合适）
-  // 深股股，上证指数：sh000001
-  // 港股股票代码，如阿里巴巴：hk09988，腾讯：hk00700，美团：hk03690
-  // 美股指数代码，如道琼斯指数: usr_dji，纳斯达克: usr_ixic，标普500: usr_inx
-  // 如配置后没有数据，可以用这个链接测试一下是否有返回数据：https://hq.sinajs.cn/list=hk00700
+"configuration": {
+      "properties": {
 
-  "leek-fund.stocks": [
-    "sh000001",
-    "sh000300",
-    "sh000016",
-    "sh000688",
-    "sh000913",
-    "sh000905",
-    "hk03690",
-    "hk00700",
-    "hk09988",
-    "usr_ixic",
-    "usr_dji",
-    "usr_inx"
-  ],
+        // 配置需要监控的股票代码（新浪接口，所以去新浪找股票代码比较合适）
+        // 深股股，上证指数：sh000001
+        // 港股股票代码，如阿里巴巴：hk09988，腾讯：hk00700，美团：hk03690
+        // 美股指数代码，如道琼斯指数: usr_dji，纳斯达克: usr_ixic，标普500: usr_inx
+        // 如配置后没有数据，可以用这个链接测试一下是否有返回数据：https://hq.sinajs.cn/list=hk00700
 
-  // 配置需要监控的基金代码
+        "leek-fund.stocks": {
+          "type": "array",
+          "default": [
+            "sh000001",
+            "sh000300",
+            "sh000016",
+            "sh000688",
+            "hk03690",
+            "hk00700",
+            "usr_ixic",
+            "usr_dji",
+            "usr_inx"
+          ],
+          "description": "配置需要监控的股票代码（建议通过界面新增）"
+        },
 
-  "leek-fund.funds": [
-    "001632",
-    "420009",
-    "320007",
-    "003096",
-    "001102",
-    "003885",
-    "001071",
-    "005963",
-    "005223",
-  ],
-
-  // 配置轮询请求最新数据的时间间隔 （单位毫秒ms，为了避免无意义的轮询请求，程序限制配置<3000ms时，用3000ms时间轮询）
-  "leek-fund.interval": 5000
-
-  // 配置股票涨的颜色，默认为 white。
-  "leek-fund.riseColor": "white"
-
-  // 配置股票跌的颜色，默认为 green
-  "leek-fund.fallColor": "black"
+        // 配置需要监控的基金代码
+        "leek-fund.funds": {
+          "type": "array",
+          "default": [
+            "001632",
+            "420009",
+            "320007",
+            "003096",
+            "001102",
+            "003885",
+            "001071",
+            "005963"
+          ],
+          "description": "配置需要监控的基金代码（建议通过界面新增）"
+        },
+        "leek-fund.statusBarStock": {
+          "type": "array",
+          "default": [
+            "sh000001"
+          ],
+          "description": "状态栏展示的股票（建议通过界面选择设置，必须是在股票代码已设置存在）"
+        },
+        "leek-fund.interval": {
+          "type": "number",
+          "default": 5000,
+          "description": "配置轮询请求最新数据的时间间隔，单位：毫秒（最小轮询间隔是3秒）"
+        },
+        "leek-fund.riseColor": {
+          "type": "string",
+          "default": "white",
+          "description": "股票涨的颜色"
+        },
+        "leek-fund.fallColor": {
+          "type": "string",
+          "default": "#C9AD06",
+          "description": "股票跌的颜色"
+        }
+      }
+    }
 
 ```
 

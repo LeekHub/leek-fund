@@ -1,3 +1,4 @@
+import { QuickPickItem } from 'vscode';
 import { LeekTreeItem, SortType } from './leekTreeItem';
 
 /**
@@ -62,8 +63,68 @@ export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => 
 export const formatTreeText = (text = '', num = 10) => {
   const str = text + '';
   const lenx = num - str.length;
-  // console.log(str + '&nbsp;'.repeat(lenx), lenx);
   return str + ' '.repeat(lenx);
+};
+
+export const colorOptionList = (): QuickPickItem[] => {
+  const list = [
+    {
+      label: '🔴Red Color',
+      description: 'red',
+    },
+    {
+      label: '💹Green Color',
+      description: 'green',
+    },
+    {
+      label: '⚪White Color',
+      description: 'white',
+    },
+    {
+      label: '⚫Black Color',
+      description: 'black',
+    },
+    {
+      label: '🌕Yellow Color',
+      description: 'black',
+    },
+    {
+      label: '🔵Blue Color',
+      description: 'blue',
+    },
+    {
+      label: 'Gray Color',
+      description: '#888888',
+    },
+    {
+      label: 'Random Color',
+      description: 'random',
+    },
+  ];
+  return list;
+};
+
+export const randomColor = (): string => {
+  const colors = [
+    '#E74B84',
+    '#11FB23',
+    '#F79ADA',
+    '#C9AD06',
+    '#82D3A6',
+    '#C6320D',
+    '#83C06A',
+    '#54A0EB',
+    '#85AB66',
+    '#53192F',
+    '#6CD2D7',
+    '#6C6725',
+    '#7B208B',
+    '#B832A5',
+    '#C1FDCD',
+  ];
+
+  const num = Math.ceil(Math.random() * 10);
+  return colors[num];
 };
 
 export const randHeader = () => {

@@ -244,7 +244,7 @@
           "default": [
             "sh000001"
           ],
-          "description": "状态栏展示的股票（建议通过界面选择设置）"
+          "description": "状态栏展示的股票（建议通过界面选择设置，必须是在股票代码已设置存在）"
         },
         "leek-fund.interval": {
           "type": "number",
@@ -274,7 +274,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "欢迎使用韭菜盒子^_^，使用前请查看[使用手册](https://github.com/giscafer/leek-fund/issues/23)。\n[显示/隐藏文本](command:leek-fund.hideText) \n [设置涨跌颜色](command:leek-fund.hideText)\n[设置状态栏股票](command:leek-fund.setStockStatusBar)\n[打赏作者@giscafer](command:leek-fund.donate)\n 插件好评[给个5星](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)"
+        "contents": "\n[👀显示/隐藏文本](command:leek-fund.hideText) \n [🎨设置涨跌颜色](command:leek-fund.setRiseAndFallColor)\n[📈设置状态栏股票](command:leek-fund.setStockStatusBar)\n[🛠打开配置页](command:leek-fund.configSetting)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；评分[给个5星✨](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)，源码[Github](https://github.com/giscafer/leek-fund)"
       }
     ]
   },

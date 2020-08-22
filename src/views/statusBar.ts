@@ -12,7 +12,7 @@ export class StatusBar {
     this.model = new LeekFundModel();
     this.service = service;
     this.statusBarList = [];
-    this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 4);
+    this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
     this.refreshStockStatusBar();
   }
 
