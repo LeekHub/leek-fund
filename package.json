@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -94,7 +94,11 @@
       },
       {
         "command": "leek-fund.setFundTop",
-        "title": "基金置顶"
+        "title": "基金置顶",
+        "icon": {
+          "light": "resources/light/top.svg",
+          "dark": "resources/dark/top.svg"
+        }
       },
       {
         "command": "leek-fund.deleteFund",
@@ -138,7 +142,11 @@
       },
       {
         "command": "leek-fund.setStockTop",
-        "title": "股票置顶"
+        "title": "股票置顶",
+        "icon": {
+          "light": "resources/light/top.svg",
+          "dark": "resources/dark/top.svg"
+        }
       },
       {
         "command": "leek-fund.deleteStock",
@@ -213,6 +221,11 @@
           "group": "group2"
         },
         {
+          "command": "leek-fund.setFundTop",
+          "when": "view == leekFundView.fund",
+          "group": "inline"
+        },
+        {
           "command": "leek-fund.deleteFund",
           "when": "view == leekFundView.fund",
           "group": "group4"
@@ -221,6 +234,11 @@
           "command": "leek-fund.setStockTop",
           "when": "view == leekFundView.stock",
           "group": "group1"
+        },
+        {
+          "command": "leek-fund.setStockTop",
+          "when": "view == leekFundView.stock",
+          "group": "inline"
         },
         {
           "command": "leek-fund.deleteStock",
