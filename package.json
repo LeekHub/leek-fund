@@ -287,11 +287,11 @@
     "viewsWelcome": [
       {
         "view": "leekFundView.fund",
-        "contents": "无数据，请点击添加按钮添加基金"
+        "contents": "无数据，请检查网络或点击添加按钮添加基金"
       },
       {
         "view": "leekFundView.stock",
-        "contents": "无数据，请点击添加按钮添加股票"
+        "contents": "无数据，请检查网络或点击添加按钮添加股票"
       },
       {
         "view": "leekFundView.settings",
