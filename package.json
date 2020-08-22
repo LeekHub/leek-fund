@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "vscode"
   ],
   "publisher": "giscafer",
-  "icon": "resources/logo.jpg",
+  "icon": "resources/logo.png",
   "engines": {
     "vscode": "^1.41.0"
   },
@@ -38,40 +38,30 @@
       "activitybar": [
         {
           "id": "leekFundMenu",
-          "title": "LeetFund 🐥🐥🐥",
+          "title": "LeekFund 🐥🐥🐥",
           "icon": "resources/fund.svg"
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "leekFundMenu",
-        "contents": "无数据，请点击添加"
-      }
-    ],
     "views": {
       "leekFundMenu": [
         {
-          "id": "views.fund",
+          "id": "leekFundView.fund",
           "name": "Fund"
         },
         {
-          "id": "views.stock",
+          "id": "leekFundView.stock",
           "name": "Stock"
+        },
+        {
+          "id": "leekFundView.settings",
+          "name": "Setting"
         }
       ]
     },
     "commands": [
       {
-        "command": "leekfund.fundflow",
-        "title": "资金流向",
-        "icon": {
-          "light": "resources/light/fundflow.svg",
-          "dark": "resources/dark/fundflow.svg"
-        }
-      },
-      {
-        "command": "fund.rank",
+        "command": "leek-fund.viewFundRank",
         "title": "基金排行榜",
         "icon": {
           "light": "resources/light/rank.svg",
@@ -79,7 +69,7 @@
         }
       },
       {
-        "command": "fund.trend",
+        "command": "leek-fund.viewFundTrend",
         "title": "基金走势一览",
         "icon": {
           "light": "resources/light/trend.svg",
@@ -87,7 +77,7 @@
         }
       },
       {
-        "command": "fund.sort",
+        "command": "leek-fund.sortFund",
         "title": "升序/降序/不排序",
         "icon": {
           "light": "resources/light/sort.svg",
@@ -95,7 +85,7 @@
         }
       },
       {
-        "command": "fund.add",
+        "command": "leek-fund.addFund",
         "title": "添加基金",
         "icon": {
           "light": "resources/light/add.svg",
@@ -103,15 +93,15 @@
         }
       },
       {
-        "command": "fund.delete",
+        "command": "leek-fund.deleteFund",
         "title": "删除基金"
       },
       {
-        "command": "fund.history",
-        "title": "持仓信息&历史净值列表"
+        "command": "leek-fund.viewFundHistory",
+        "title": "持仓信息&历史净值"
       },
       {
-        "command": "fund.refresh",
+        "command": "leek-fund.refreshFund",
         "title": "刷新数据",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -119,7 +109,7 @@
         }
       },
       {
-        "command": "stock.sort",
+        "command": "leek-fund.sortStock",
         "title": "升序/降序/不排序",
         "icon": {
           "light": "resources/light/sort.svg",
@@ -127,7 +117,7 @@
         }
       },
       {
-        "command": "stock.add",
+        "command": "leek-fund.addStock",
         "title": "添加股票",
         "icon": {
           "light": "resources/light/add.svg",
@@ -135,7 +125,7 @@
         }
       },
       {
-        "command": "stock.refresh",
+        "command": "leek-fund.refreshStock",
         "title": "刷新数据",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -143,72 +133,78 @@
         }
       },
       {
-        "command": "stock.delete",
+        "command": "leek-fund.deleteStock",
         "title": "删除股票"
+      },
+      {
+        "command": "leek-fund.viewFundFlow",
+        "title": "资金流向",
+        "icon": {
+          "light": "resources/light/flow.svg",
+          "dark": "resources/dark/flow.svg"
+        }
       }
     ],
     "menus": {
       "view/title": [
         {
-          "command": "leekfund.fundflow",
-          "when": "view == views.stock",
-          "group": "navigation@0"
-        },
-        {
-          "command": "fund.trend",
-          "when": "view == views.fund",
+          "command": "leek-fund.viewFundTrend",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.rank",
-          "when": "view == views.fund",
+          "command": "leek-fund.viewFundRank",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.refresh",
-          "when": "view == views.fund",
+          "command": "leek-fund.refreshFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.sort",
-          "when": "view == views.fund",
+          "command": "leek-fund.sortFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "fund.add",
-          "when": "view == views.fund",
+          "command": "leek-fund.addFund",
+          "when": "view == leekFundView.fund",
           "group": "navigation"
         },
         {
-          "command": "stock.refresh",
-          "when": "view == views.stock",
+          "command": "leek-fund.refreshStock",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         },
         {
-          "command": "stock.sort",
-          "when": "view == views.stock",
+          "command": "leek-fund.sortStock",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         },
         {
-          "command": "stock.add",
-          "when": "view == views.stock",
+          "command": "leek-fund.addStock",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.viewFundFlow",
+          "when": "view == leekFundView.stock",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "fund.history",
-          "when": "view == views.fund",
-          "group": "fundHistoryGroup"
+          "command": "leek-fund.viewFundHistory",
+          "when": "view == leekFundView.fund"
         },
         {
-          "command": "fund.delete",
-          "when": "view == views.fund",
-          "group": "fundDelGroup"
+          "command": "leek-fund.deleteFund",
+          "when": "view == leekFundView.fund"
         },
         {
-          "command": "stock.delete",
-          "when": "view == views.stock"
+          "command": "leek-fund.deleteStock",
+          "when": "view == leekFundView.stock"
         }
       ]
     },
@@ -221,16 +217,13 @@
             "sh000300",
             "sh000016",
             "sh000688",
-            "sh000913",
-            "sh000905",
             "hk03690",
             "hk00700",
-            "hk09988",
-            "gb_ixic",
-            "gb_dji",
-            "gb_inx"
+            "usr_ixic",
+            "usr_dji",
+            "usr_inx"
           ],
-          "description": "配置需要监控的股票代码"
+          "description": "配置需要监控的股票代码（建议通过界面新增）"
         },
         "leek-fund.funds": {
           "type": "array",
@@ -242,14 +235,16 @@
             "001102",
             "003885",
             "001071",
-            "005963",
-            "005223",
-            "002316",
-            "161726",
-            "161028",
-            "161725"
+            "005963"
           ],
-          "description": "配置需要监控的基金代码"
+          "description": "配置需要监控的基金代码（建议通过界面新增）"
+        },
+        "leek-fund.statusBarStock": {
+          "type": "array",
+          "default": [
+            "sh000001"
+          ],
+          "description": "状态栏展示的股票（建议通过界面选择设置，必须是在股票代码已设置存在）"
         },
         "leek-fund.interval": {
           "type": "number",
@@ -267,7 +262,21 @@
           "description": "股票跌的颜色"
         }
       }
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "leekFundView.fund",
+        "contents": "无数据，请点击添加按钮添加基金"
+      },
+      {
+        "view": "leekFundView.stock",
+        "contents": "无数据，请点击添加按钮添加股票"
+      },
+      {
+        "view": "leekFundView.settings",
+        "contents": "\n[👀显示/隐藏文本](command:leek-fund.hideText) \n [🎨设置涨跌颜色](command:leek-fund.setRiseAndFallColor)\n[📈设置状态栏股票](command:leek-fund.setStockStatusBar)\n[🛠打开配置页](command:leek-fund.configSetting)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；评分[给个5星✨](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)，源码[Github](https://github.com/giscafer/leek-fund)"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
@@ -275,7 +284,8 @@
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "deploy": "vsce publish --yarn"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -288,6 +298,7 @@
     "glob": "^7.1.6",
     "mocha": "^7.1.2",
     "typescript": "^3.8.3",
+    "vsce": "^1.78.0",
     "vscode-test": "^1.3.0"
   },
   "dependencies": {

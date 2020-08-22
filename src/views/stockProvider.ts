@@ -1,21 +1,21 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
 import { LeekTreeItem, SortType } from '../leekTreeItem';
-import { FundService } from '../service';
-import { FundModel } from './model';
+import { LeekFundService } from '../service';
+import { LeekFundModel } from './model';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
 
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
-  private service: FundService;
+  private service: LeekFundService;
   private order: SortType;
-  private model: FundModel;
+  private model: LeekFundModel;
 
-  constructor(service: FundService) {
+  constructor(service: LeekFundService) {
     this.service = service;
     this.order = SortType.NORMAL;
-    this.model = new FundModel();
+    this.model = new LeekFundModel();
   }
 
   refresh(): any {

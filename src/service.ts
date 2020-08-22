@@ -1,16 +1,33 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
-import { ExtensionContext, window, QuickPickItem } from 'vscode';
+import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
+import { LeekFundModel } from './views/model';
 
-export class FundService {
+export class LeekFundService {
+  private _showLabel: boolean = true;
   private _fundSuggestList: string[] = [];
   private _fundList: Array<LeekTreeItem> = [];
+  private _stockList: Array<LeekTreeItem> = [];
+  private _barStockList: Array<LeekTreeItem> = [];
+
   private context: ExtensionContext;
-  szItem: any;
-  constructor(context: ExtensionContext) {
+  private model: LeekFundModel;
+  szItem: LeekTreeItem | null = null;
+  searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
+
+  constructor(context: ExtensionContext, model: LeekFundModel) {
     this.context = context;
+    this.model = model;
+  }
+
+  public get showLabel(): boolean {
+    return this._showLabel;
+  }
+
+  public set showLabel(value: boolean) {
+    this._showLabel = value;
   }
 
   public get fundSuggestList(): string[] {
@@ -29,6 +46,22 @@ export class FundService {
     this._fundList = value;
   }
 
+  public get stockList(): Array<LeekTreeItem> {
+    return this._stockList;
+  }
+
+  public set stockList(value: Array<LeekTreeItem>) {
+    this._stockList = value;
+  }
+
+  public get statusBarStockList(): Array<LeekTreeItem> {
+    return this._barStockList;
+  }
+
+  public set statusBarStockList(value: Array<LeekTreeItem>) {
+    this._barStockList = value;
+  }
+
   private fundUrl(code: string): string {
     const fundUrl = `http://fundgz.1234567.com.cn/js/${code}.js?rt="${new Date().getTime()}`;
     return fundUrl;
@@ -39,6 +72,10 @@ export class FundService {
   }
   private stockUrl(codes: Array<string>): string {
     return `http://hq.sinajs.cn/list=${codes.join(',')}`;
+  }
+
+  toggleLabel() {
+    this.showLabel = !this.showLabel;
   }
 
   singleFund(code: string): Promise<FundInfo> {
@@ -65,6 +102,7 @@ export class FundService {
     try {
       const result = await Promise.all(promiseAll);
       const data = result.map((item) => {
+        item.showLabel = this.showLabel;
         return new LeekTreeItem(item, this.context);
       });
 
@@ -92,9 +130,13 @@ export class FundService {
       });
   }
 
-  async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
-    if (!searchText) return [{ label: '请输入关键词查询，如：0000001' }];
-    const url = `http://suggest3.sinajs.cn/suggest/type=2&key=${encodeURIComponent(searchText)}`;
+  async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
+    if (!searchText) {
+      return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
+    }
+    const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
+      searchText
+    )}`;
     try {
       console.log('getStockSuggestList: getting...');
       const response = await axios.get(url, {
@@ -108,6 +150,12 @@ export class FundService {
         headers: randHeader(),
       });
       const text = response.data.slice(18, -1);
+      if (text.length <= 1 && !this.searchStockKeyMap[searchText]) {
+        this.searchStockKeyMap[searchText] = true;
+        // 兼容一些查询不到的股票，如sz123044
+        return this.getStockSuggestList(searchText, '');
+      }
+      this.searchStockKeyMap = {};
       const tempArr = text.split(';');
       const result: QuickPickItem[] = [];
       tempArr.forEach((item: string) => {
@@ -150,6 +198,7 @@ export class FundService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
+    const statusBarStocks = this.model.getCfg('leek-fund.statusBarStock');
     const url = this.stockUrl(codes);
     try {
       const resp = await axios.get(url, {
@@ -163,11 +212,13 @@ export class FundService {
         ],
         headers: randHeader(),
       });
-      // console.log(resp.data);
-      var stockList: Array<LeekTreeItem> = [];
+      let stockList: Array<LeekTreeItem> = [];
+      const barStockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
-          window.showErrorMessage(`fail: error Stock code in ${codes}, please delete error Stock code`);
+          window.showErrorMessage(
+            `fail: error Stock code in ${codes}, please delete error Stock code`
+          );
           return [
             {
               id: codes[0],
@@ -181,6 +232,7 @@ export class FundService {
         }
         return stockList;
       }
+
       const splitData = resp.data.split(';\n');
       let sz: LeekTreeItem | null = null;
       for (let i = 0; i < splitData.length - 1; i++) {
@@ -251,21 +303,30 @@ export class FundService {
           }
           if (stockItem) {
             const { yestclose, price } = stockItem;
+            stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;
             stockItem.symbol = symbol;
             stockItem.updown = formatNumber(+price - +yestclose, 2, false);
             stockItem.percent =
-              (stockItem.updown >= 0 ? '+' : '-') + formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+              (stockItem.updown >= 0 ? '+' : '-') +
+              formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+
+            const treeItem = new LeekTreeItem(stockItem, this.context);
             if (code === 'sh000001') {
-              sz = new LeekTreeItem(stockItem, this.context);
+              sz = treeItem;
             }
-            stockList.push(new LeekTreeItem(stockItem, this.context));
+            if (statusBarStocks.includes(code)) {
+              barStockList.push(treeItem);
+            }
+            stockList.push(treeItem);
           }
         }
       }
       this.szItem = sz || stockList[0];
       const res = sortData(stockList, order);
+      this.stockList = res;
+      this.statusBarStockList = sortData(barStockList, order);
       return res;
     } catch (err) {
       console.info(url);

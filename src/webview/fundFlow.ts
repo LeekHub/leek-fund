@@ -1,13 +1,12 @@
-import { window, commands, ViewColumn } from 'vscode';
+import { ViewColumn } from 'vscode';
+import ReusedWebviewPanel from '../ReusedWebviewPanel';
 
-export function fundflow() {
-  // 资金流向
-  commands.registerCommand('leekfund.fundflow', () => {
-    const panel = window.createWebviewPanel('fundWebview.fundflow', '资金流向', ViewColumn.One, {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    });
-    panel.webview.html = `
+function fundFlow() {
+  const panel = ReusedWebviewPanel.create('leek-fund.fundFlow', '资金流向', ViewColumn.One, {
+    enableScripts: true,
+    retainContextWhenHidden: true,
+  });
+  panel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -722,28 +721,28 @@ export function fundflow() {
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTH&imageType=NSZJ2'
         );
-        jQuery('#emchart-bxzj').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-bxzj').html(imgDom.prop('outerHTML'));
         //南向当日资金流向
         imgDom.attr('id', 'zljx_img_n');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTH&imageType=NSZJ2'
         );
-        jQuery('#emchart-nxzj').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-nxzj').html(imgDom.prop('outerHTML'));
         //北向当日资金余额
         imgDom.attr('id', 'zlye_img_b');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTHREMAIN&imageType=NSZJ2'
         );
-        jQuery('#emchart-bxzj_drzjye').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-bxzj_drzjye').html(imgDom.prop('outerHTML'));
         //南向当日资金余额
         imgDom.attr('id', 'zlye_img_n');
         imgDom.attr(
           'src',
           'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTHREMAIN&imageType=NSZJ2'
         );
-        jQuery('#emchart-nxzj_drzjye').append(imgDom.prop('outerHTML'));
+        jQuery('#emchart-nxzj_drzjye').html(imgDom.prop('outerHTML'));
       }
 
       function makedata(data) {
@@ -972,5 +971,6 @@ export function fundflow() {
   </body>
 </html>
     `;
-  });
 }
+
+export default fundFlow;

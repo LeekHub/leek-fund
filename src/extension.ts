@@ -1,15 +1,15 @@
 /*--------------------------------------------------------------
  *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
- *  Licensed under the MIT License.
+ *  Licensed under the BSD-3-Clause License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
 import { ConfigurationChangeEvent, ExtensionContext, window, workspace, TreeView } from 'vscode';
 import { registerViewEvent } from './registerEvent';
-import { FundService } from './service';
+import { LeekFundService } from './service';
 import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
-import { FundModel } from './views/model';
+import { LeekFundModel } from './views/model';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
 import { SortType } from './leekTreeItem';
@@ -25,20 +25,20 @@ export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
   let intervalTime = 3000;
-  const model = new FundModel();
-  const fundService = new FundService(context);
+  const model = new LeekFundModel();
+  const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
   const statusBar = new StatusBar(fundService);
 
-  // 获取所有基金代码
+  // prefetch all fund data for searching
   fundService.getFundSuggestList();
 
   // create fund & stock side views
-  fundTreeView = window.createTreeView('views.fund', {
+  fundTreeView = window.createTreeView('leekFundView.fund', {
     treeDataProvider: nodeFundProvider,
   });
-  stockTreeView = window.createTreeView('views.stock', {
+  stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
   });
 
@@ -56,7 +56,7 @@ export function activate(context: ExtensionContext) {
 
   // loop
   const loopCallback = () => {
-    if (isStockTime() || fundService.szItem === undefined) {
+    if (isStockTime() || fundService.szItem === null) {
       if (fundTreeView?.visible || stockTreeView?.visible) {
         nodeFundProvider.refresh();
         nodeStockProvider.refresh();

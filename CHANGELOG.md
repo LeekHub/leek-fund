@@ -1,5 +1,38 @@
 # ChangeLog
 
+## [1.3.0]
+
+:rocket:
+
+- feat: 新增设置面板，提供 GUI 功能操作
+- feat: 支持 GUI 显示/隐藏股票和基金文本设置
+- feat: 支持 GUI 状态栏多股票设置（限制 4 个）
+- feat: 支持 GUI 设置股票涨跌颜色
+- feat: 按钮快速打开配置页面
+- refactor: webview 相关代码重构
+
+## [1.2.12]
+
+- fix: 修复股票搜索，支持中英文
+
+## [1.2.11]
+
+- chore: 优化界面样式
+
+## [1.2.10]
+
+- 优化 webview 打开，复用窗口，同类型窗口只展示一个 :heart: PR By @zomixi
+
+## [1.2.7]
+
+- fix: 资金流向 img 重复添加 bug
+
+## [1.2.6]
+
+- 更换插件 LOGO，:heart: Design By @JayHuangTnT
+- fix: 折叠基金 panel 时，股票数据不刷新 bug
+- chore: 资金流向流出数据绿色显示
+
 ## [1.2.5]
 
 - feat: 股市资金流向（北向资金、南向资金）
@@ -39,7 +72,7 @@
 
 - fix: 股票错误代码需要手动改配置文件问题 :heart: PR by @httpcheck
 - feat: 点击基金也可以直接查看到实时走势图
-- chore: 新增操作手册 :heart: PR by @Somin
+- chore: 新增操作手册 :heart: PR by @JayHuangTnT
 
 ## [1.1.7]
 
