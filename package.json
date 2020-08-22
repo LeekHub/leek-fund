@@ -204,23 +204,28 @@
       "view/item/context": [
         {
           "command": "leek-fund.viewFundHistory",
-          "when": "view == leekFundView.fund"
+          "when": "view == leekFundView.fund",
+          "group": "group1"
         },
         {
           "command": "leek-fund.setFundTop",
-          "when": "view == leekFundView.fund"
+          "when": "view == leekFundView.fund",
+          "group": "group2"
         },
         {
           "command": "leek-fund.deleteFund",
-          "when": "view == leekFundView.fund"
+          "when": "view == leekFundView.fund",
+          "group": "group4"
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock"
+          "when": "view == leekFundView.stock",
+          "group": "group1"
         },
         {
           "command": "leek-fund.deleteStock",
-          "when": "view == leekFundView.stock"
+          "when": "view == leekFundView.stock",
+          "group": "group2"
         }
       ]
     },
