@@ -34,6 +34,8 @@ export class LeekFundModel extends BaseModel {
   constructor() {
     super();
   }
+
+  // Fund Begin
   updateFundCfg(codes: string, cb?: Function) {
     this.updateConfig('leek-fund.funds', codes.split(',')).then(() => {
       window.showInformationMessage(`Fund Successfully add.`);
@@ -52,6 +54,21 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
+  setFundTopCfg(code: string, cb?: Function) {
+    let configArr: string[] = this.getCfg('leek-fund.funds');
+
+    configArr = [code, ...configArr.filter((item) => item !== code)];
+
+    this.setConfig('leek-fund.funds', configArr).then(() => {
+      window.showInformationMessage(`Fund successfully set to top.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
+  }
+  // Fund End
+
+  // Stock Begin
   updateStockCfg(codes: string, cb?: Function) {
     this.updateConfig('leek-fund.stocks', codes.split(',')).then(() => {
       window.showInformationMessage(`Stock Successfully add.`);
@@ -70,6 +87,22 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
+  setStockTopCfg(code: string, cb?: Function) {
+    let configArr: string[] = this.getCfg('leek-fund.stocks');
+
+    configArr = [code, ...configArr.filter((item) => item !== code)];
+
+    this.setConfig('leek-fund.stocks', configArr).then(() => {
+      window.showInformationMessage(`Stock successfully set to top.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
+  }
+
+  // Stock End
+
+  // StatusBar Begin
   updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
     this.setConfig('leek-fund.statusBarStock', codes).then(() => {
       window.showInformationMessage(`Status Bar Stock Successfully update.`);
@@ -78,4 +111,6 @@ export class LeekFundModel extends BaseModel {
       }
     });
   }
+
+  // StatusBar End
 }

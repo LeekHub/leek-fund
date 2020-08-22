@@ -93,6 +93,10 @@
         }
       },
       {
+        "command": "leek-fund.setFundTop",
+        "title": "基金置顶"
+      },
+      {
         "command": "leek-fund.deleteFund",
         "title": "删除基金"
       },
@@ -131,6 +135,10 @@
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
         }
+      },
+      {
+        "command": "leek-fund.setStockTop",
+        "title": "股票置顶"
       },
       {
         "command": "leek-fund.deleteStock",
@@ -199,8 +207,16 @@
           "when": "view == leekFundView.fund"
         },
         {
+          "command": "leek-fund.setFundTop",
+          "when": "view == leekFundView.fund"
+        },
+        {
           "command": "leek-fund.deleteFund",
           "when": "view == leekFundView.fund"
+        },
+        {
+          "command": "leek-fund.setStockTop",
+          "when": "view == leekFundView.stock"
         },
         {
           "command": "leek-fund.deleteStock",
