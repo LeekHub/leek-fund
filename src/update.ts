@@ -9,7 +9,6 @@ export default () => {
   // tags 没找到分页查询，数据大的时候考虑删除过旧的tags
   console.log('检查版本……');
   axios.get('https://api.github.com/repos/giscafer/leek-fund/tags').then((res) => {
-    console.log(res.data);
     const newTag = res.data[0];
     const latestVerion = newTag.name.slice(1);
     console.log('latestVerion=', latestVerion);
