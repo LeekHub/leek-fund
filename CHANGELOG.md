@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.3.2]
+
+- feat: 新增版本检查更新提示
+
 ## [1.3.1]
 
 - feat: 新增基金和股票置顶功能 :heart: PR By @gordongxm

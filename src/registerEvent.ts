@@ -1,6 +1,7 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
+import checkForUpdate from './update';
 import { colorOptionList, randomColor } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { LeekFundModel } from './views/model';
@@ -235,10 +236,7 @@ export function registerViewEvent(
     })
   );
 
-  /*  context.subscriptions.push(
-    commands.registerCommand(`leek-fund.hideText`, () =>
-      env.openExternal(Uri.parse('https://unicode.org/emoji/charts-12.0/full-emoji-list.html'))
-    )
-  ); */
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate()));
+
+  checkForUpdate();
 }
