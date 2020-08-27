@@ -138,7 +138,7 @@ export class LeekFundService {
       searchText
     )}`;
     try {
-      console.log('getStockSuggestList: getting...');
+      console.log('getStockSuggestList: getting...', url);
       const response = await axios.get(url, {
         responseType: 'arraybuffer',
         transformResponse: [

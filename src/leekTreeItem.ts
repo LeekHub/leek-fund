@@ -56,17 +56,17 @@ export class LeekTreeItem extends TreeItem {
     } = info;
     let _percent = Math.abs(percent).toFixed(2);
 
+    let icon = 'up';
+    const grow = percent.indexOf('-') === 0 ? false : true;
+    const val = Math.abs(percent);
+    if (grow) {
+      icon = val >= 2 ? 'up' : 'up1';
+      _percent = '+' + _percent;
+    } else {
+      icon = val >= 2 ? 'down' : 'down1';
+      _percent = '-' + _percent;
+    }
     if (showLabel) {
-      let icon = 'up';
-      const grow = percent.indexOf('-') === 0 ? false : true;
-      const val = Math.abs(percent);
-      if (grow) {
-        icon = val >= 2 ? 'up' : 'up1';
-        _percent = '+' + _percent;
-      } else {
-        icon = val >= 2 ? 'down' : 'down1';
-        _percent = '-' + _percent;
-      }
       this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
     }
     let text = '';
@@ -75,6 +75,7 @@ export class LeekTreeItem extends TreeItem {
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)}「${name}」`
         : `${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
     } else {
+      console.log(_percent);
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
         : `${formatTreeText(`${_percent}%`)}「${code}」`;
