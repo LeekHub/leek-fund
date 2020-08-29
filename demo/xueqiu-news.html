@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News</title>
+    <style>
+      html {
+        font-family: sans-serif;
+        line-height: 1.15;
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+      }
+      .profiles__timeline__container {
+        margin-bottom: 50px;
+      }
+
+      .timeline__item {
+        border-bottom: 1px solid #edf0f5;
+        padding: 15px 0 5px;
+        position: relative;
+        -webkit-animation: fadeIn 0.5s linear;
+        animation: fadeIn 0.5s linear;
+      }
+
+      .timeline__item:after {
+        content: '';
+        display: table;
+        clear: both;
+      }
+
+      .timeline__item > .avatar {
+        float: left;
+      }
+
+      .timeline__item:last-child {
+        border: 0;
+      }
+
+      .timeline__item .fake-anchor {
+        display: none;
+      }
+
+      .timeline__item:hover .timeline__item__stock__unlike {
+        display: block;
+      }
+
+      .timeline__item__main {
+        position: relative;
+        margin-left: 58px;
+      }
+
+      .comment__wrap {
+        margin-bottom: 5px;
+      }
+
+      .timeline__item__info {
+        margin-bottom: 6px;
+      }
+
+      .timeline__item__info .user-name {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .timeline__item__info .date-and-source {
+        font-size: 13px;
+        color: #666c72;
+      }
+
+      .timeline__item__info .date-and-source:hover {
+        color: #33353c;
+      }
+
+      .timeline__item__info .user-auth {
+        margin-left: 4px;
+        width: 15px;
+        height: 15px;
+        vertical-align: middle;
+        vertical-align: -2px;
+      }
+
+      .timeline__item__content .ke_img,
+      .timeline__item__forward .ke_img {
+        display: block;
+        max-width: 100%;
+        margin: 24px auto;
+      }
+
+      .timeline__item__content .content,
+      .timeline__item__forward .content {
+        line-height: 1.6;
+        word-break: break-all;
+        color: #33353c;
+        font-size: 15px;
+      }
+
+      .timeline__item__content .content a,
+      .timeline__item__forward .content a {
+        color: #06c;
+        margin: 0 2px;
+      }
+
+      .timeline__item__content .content a:hover,
+      .timeline__item__forward .content a:hover {
+        color: #07d;
+      }
+
+      .timeline__item__content .content--description > div,
+      .timeline__item__forward .content--description > div {
+        display: inline;
+        word-break: break-word;
+      }
+
+      .timeline__item__content .content--detail .ke_img,
+      .timeline__item__forward .content--detail .ke_img {
+        cursor: -webkit-zoom-out;
+        cursor: zoom-out;
+      }
+      .timeline__item__comment .lite-editor--comment {
+        margin-top: 5px;
+      }
+
+      .timeline__item__comment,
+      .timeline__item__main {
+        position: relative;
+        margin-left: 58px;
+      }
+
+      .timeline__item__content .content--detail > div,
+      .timeline__item__forward .content--detail > div {
+        display: inline-block;
+      }
+
+      .timeline__item__content .fund-visible-tag,
+      .timeline__item__forward .fund-visible-tag {
+        color: #d6b785;
+        margin-left: 4px;
+      }
+
+      .timeline__item__bd .content__addition {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      .timeline__item__content + .timeline__item__forward,
+      .timeline__item__content + .timeline__item__quote {
+        margin-top: 10px;
+      }
+
+      .timeline__item__ft {
+        margin-top: 10px;
+        color: #666c72;
+        font-size: 13px;
+      }
+      .timeline__item > .avatar {
+        float: left;
+      }
+      a.avatar {
+        display: inline-block;
+        overflow: hidden;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        line-height: 1;
+      }
+      a.avatar img {
+        width: 100%;
+        height: 100%;
+        vertical-align: middle;
+      }
+      .avatar.avatar-md {
+        width: 48px;
+        height: 48px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="profiles__timeline__bd">
+      <article class="timeline__item">
+        <a
+          href="https://xueqiu.com/5124430882"
+          target="_blank"
+          data-tooltip="5124430882"
+          class="avatar avatar-md"
+          ><img
+            src="https://xavatar.imedao.com/community/201910/1572938191109-1572938194100.png!180x180.png"
+        /></a>
+        <div class="timeline__item__top__right"></div>
+        <div class="timeline__item__main">
+          <!---->
+          <div class="timeline__item__info">
+            <div>
+              <a
+                href="https://xueqiu.com/5124430882"
+                target="_blank"
+                data-tooltip="5124430882"
+                class="user-name"
+                >7X24快讯</a
+              ><!---->
+            </div>
+            <a
+              href="https://xueqiu.com/5124430882/157971116"
+              target="_blank"
+              data-id="157971116"
+              class="date-and-source"
+              >6分钟前 · 来自雪球</a
+            ><!---->
+          </div>
+          <div class="timeline__item__bd">
+            <div class="timeline__item__content">
+              <!---->
+              <div class="content content--description">
+                <!---->
+                <div class="">
+                  【长江中下游干流即将全面退出警戒】据长江水利委员会消息，初步预计，长江中下游干流目前超警的监利和莲花塘江段将分别于30日和31日前后退至警戒水位以下。至此，长江中下游干流将全面退出警戒。
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      <div style="width: 200px; margin: 10px auto">
+        <p>----只展示最新10条信息----</p>
+      </div>
+    </div>
+    <script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.js"></script>
+    <script>
+      //    let newsList=${}
+      main();
+      function main() {
+        const htmlArr = [];
+        for (let article of newsList) {
+          htmlArr.push(genHtml(article));
+        }
+        document
+          .querySelector('.timeline__item')
+          .insertAdjacentHTML('beforeBegin', htmlArr.join('\n'));
+      }
+
+      function genHtml(info) {
+        const images = info.user.profile_image_url.split(',');
+        const img = `https:${user.photo_domain}${images[images.length - 1]}`;
+        let articleStr = `
+                <article class="timeline__item">
+            <a
+              href="https://xueqiu.com/${info.userId}"
+              target="_blank"
+              data-tooltip="${info.userId}"
+              class="avatar avatar-md"
+              ><img
+                src="${img}"
+            /></a>
+            <div class="timeline__item__top__right"></div>
+            <div class="timeline__item__main">
+              <!---->
+              <div class="timeline__item__info">
+                <div>
+                  <a
+                    href="https://xueqiu.com/${info.userId}"
+                    target="_blank"
+                    data-tooltip="${info.userId}"
+                    class="user-name"
+                    >${info.user.screen_name}</a
+                  ><!---->
+                </div>
+                <a
+                  href="https://xueqiu.com/${info.userId}/${info.id}"
+                  target="_blank"
+                  data-id="157971116"
+                  class="date-and-source"
+                  >${info.timeBefore} · 来自${info.source}</a
+                ><!---->
+              </div>
+              <div class="timeline__item__bd">
+                <div class="timeline__item__content">
+                  <!---->
+                  <div class="content content--description">
+                    <!---->
+                    <div class="">
+                      ${info.text}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+          `;
+
+        return articleStr;
+      }
+    </script>
+  </body>
+</html>

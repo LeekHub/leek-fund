@@ -13,6 +13,7 @@ import { LeekFundModel } from './views/model';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
 import { SortType } from './leekTreeItem';
+import { NewsProvider } from './views/newsProvider';
 
 let intervalTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
@@ -29,6 +30,7 @@ export function activate(context: ExtensionContext) {
   const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
+  const newsProvider = new NewsProvider();
   const statusBar = new StatusBar(fundService);
 
   // prefetch all fund data for searching
@@ -40,6 +42,9 @@ export function activate(context: ExtensionContext) {
   });
   stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
+  });
+  stockTreeView = window.createTreeView('leekFundView.news', {
+    treeDataProvider: newsProvider,
   });
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
@@ -89,6 +94,7 @@ export function activate(context: ExtensionContext) {
     setIntervalTime();
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
+    newsProvider.refresh();
     statusBar.refresh();
   });
 

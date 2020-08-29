@@ -54,6 +54,11 @@
           "name": "Stock"
         },
         {
+          "id": "leekFundView.news",
+          "visibility": "collapsed",
+          "name": "News"
+        },
+        {
           "id": "leekFundView.settings",
           "name": "Setting"
         }
@@ -111,10 +116,7 @@
       {
         "command": "leek-fund.refreshFund",
         "title": "刷新数据",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "leek-fund.sortStock",
@@ -299,6 +301,14 @@
           "type": "string",
           "default": "green",
           "description": "股票跌的颜色"
+        },
+        "leek-fund.newsUserId": {
+          "type": "array",
+          "default": [
+            "5124430882",
+            "3079173340"
+          ],
+          "description": "雪球用户id（进入雪球用户首页，复制/u/后的数字即可，比如 https://xueqiu.com/u/5124430882 链接的 5124430882）"
         }
       }
     },

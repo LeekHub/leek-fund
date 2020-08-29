@@ -5,6 +5,7 @@ import checkForUpdate from './update';
 import { colorOptionList, randomColor } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { LeekFundModel } from './views/model';
+import { NewsService } from './views/newsService';
 import { StockProvider } from './views/stockProvider';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
@@ -12,6 +13,7 @@ import fundFlow from './webview/fundFlow';
 import fundHistory from './webview/fundHistory';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
+import openNews from './webview/news';
 import stockTrend from './webview/stockTrend';
 
 export function registerViewEvent(
@@ -21,6 +23,7 @@ export function registerViewEvent(
   stockProvider: StockProvider
 ) {
   const fundModel = new LeekFundModel();
+  const newService = new NewsService();
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
@@ -145,6 +148,14 @@ export function registerViewEvent(
     fundModel.setStockTopCfg(target.id, () => {
       fundProvider.refresh();
     });
+  });
+
+  /**
+   * News command
+   */
+  commands.registerCommand('leek-fund.newItemClick', async (userName, userId) => {
+    const newsList: any | never = await newService.getNewsData(userId);
+    openNews(userName, newsList);
   });
 
   /**
