@@ -1,3 +1,9 @@
+/**
+ * @author: giscafer ,https://github.com/giscafer
+ * @date: 2020-08-30 00:29:29
+ * @description: 雪球用户动态
+ */
+
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
 import { xuqiuArticleTemp } from '../utils';

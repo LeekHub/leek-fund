@@ -99,7 +99,7 @@ export function activate(context: ExtensionContext) {
   });
 
   // register event
-  registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider);
+  registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
 }
 
 // this method is called when your extension is deactivated

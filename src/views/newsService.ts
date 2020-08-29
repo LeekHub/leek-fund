@@ -7,7 +7,7 @@ export class NewsTreeItem extends TreeItem {}
 export class NewsService {
   constructor() {}
 
-  async getNewsUserList(userIds: string): Promise<NewsTreeItem[]> {
+  async getNewsUserList(userIds: string[]): Promise<NewsTreeItem[]> {
     const treeItems = [];
     const promiseList = [];
     const headers = {};
@@ -24,6 +24,7 @@ export class NewsService {
           data: { user },
         } = item;
         const treeItem = new NewsTreeItem(user.screen_name);
+        treeItem.id = `${user.id}`;
         treeItem.tooltip = user.description;
         const images = user.profile_image_url.split(',');
         treeItem.iconPath = Uri.parse(`https:${user.photo_domain}${images[images.length - 1]}`);

@@ -5,6 +5,7 @@ import checkForUpdate from './update';
 import { colorOptionList, randomColor } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { LeekFundModel } from './views/model';
+import { NewsProvider } from './views/newsProvider';
 import { NewsService } from './views/newsService';
 import { StockProvider } from './views/stockProvider';
 import allFundTrend from './webview/allFundTrend';
@@ -20,10 +21,11 @@ export function registerViewEvent(
   context: ExtensionContext,
   service: LeekFundService,
   fundProvider: FundProvider,
-  stockProvider: StockProvider
+  stockProvider: StockProvider,
+  newsProvider: NewsProvider
 ) {
-  const fundModel = new LeekFundModel();
-  const newService = new NewsService();
+  const leekModel = new LeekFundModel();
+  const newsService = new NewsService();
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
@@ -34,7 +36,7 @@ export function registerViewEvent(
     }, 1000);
   });
   commands.registerCommand('leek-fund.deleteFund', (target) => {
-    fundModel.removeFundCfg(target.id, () => {
+    leekModel.removeFundCfg(target.id, () => {
       fundProvider.refresh();
     });
   });
@@ -50,7 +52,7 @@ export function registerViewEvent(
         if (!code) {
           return;
         }
-        fundModel.updateFundCfg(code.split('|')[0], () => {
+        leekModel.updateFundCfg(code.split('|')[0], () => {
           fundProvider.refresh();
         });
       });
@@ -69,7 +71,7 @@ export function registerViewEvent(
     }, 1000);
   });
   commands.registerCommand('leek-fund.deleteStock', (target) => {
-    fundModel.removeStockCfg(target.id, () => {
+    leekModel.removeStockCfg(target.id, () => {
       stockProvider.refresh();
     });
   });
@@ -104,7 +106,7 @@ export function registerViewEvent(
       }
       // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
       const newCode = code.replace('gb', 'gb_').replace('us', 'usr_');
-      fundModel.updateStockCfg(newCode, () => {
+      leekModel.updateStockCfg(newCode, () => {
         stockProvider.refresh();
       });
       qp.hide();
@@ -139,13 +141,13 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
-    fundModel.setFundTopCfg(target.id, () => {
+    leekModel.setFundTopCfg(target.id, () => {
       fundProvider.refresh();
     });
   });
   // 股票置顶
   commands.registerCommand('leek-fund.setStockTop', (target) => {
-    fundModel.setStockTopCfg(target.id, () => {
+    leekModel.setStockTopCfg(target.id, () => {
       fundProvider.refresh();
     });
   });
@@ -154,8 +156,46 @@ export function registerViewEvent(
    * News command
    */
   commands.registerCommand('leek-fund.newItemClick', async (userName, userId) => {
-    const newsList: any | never = await newService.getNewsData(userId);
+    const newsList: any | never = await newsService.getNewsData(userId);
     openNews(userName, newsList);
+  });
+  commands.registerCommand('leek-fund.addNews', () => {
+    if (!service.fundSuggestList.length) {
+      window.showInformationMessage(`获取基金数据中，请稍后再试`);
+      return;
+    }
+
+    window
+      .showInputBox({ placeHolder: '请输入雪球用户ID（进入用户首页复制最后的数字串）' })
+      .then(async (id) => {
+        if (!id) {
+          return;
+        }
+        const newsUserIds = leekModel.getCfg('leek-fund.newsUserIds') || [];
+        if (newsUserIds.includes(id)) {
+          window.showInformationMessage(`ID为 ${id} 的用户已存在，无需添加`);
+          return;
+        }
+        try {
+          const list = await newsService.getNewsUserList([id]);
+          if (list.length === 1) {
+            newsUserIds.push(id);
+            leekModel.setConfig('leek-fund.newsUserIds', newsUserIds).then(() => {
+              newsProvider.refresh();
+            });
+          }
+        } catch (e) {
+          window.showErrorMessage(`获取用户（${id}）信息失败`);
+        }
+      });
+  });
+
+  commands.registerCommand('leek-fund.deleteUser', (target) => {
+    const newsUserIds = leekModel.getCfg('leek-fund.newsUserIds') || [];
+    const newIds = newsUserIds.filter((id: string) => id !== target.id);
+    leekModel.setConfig('leek-fund.newsUserIds', newIds).then(() => {
+      newsProvider.refresh();
+    });
   });
 
   /**
@@ -192,7 +232,7 @@ export function registerViewEvent(
             codes = codes.slice(0, 4);
           }
           console.log(codes.length);
-          fundModel.updateStatusBarStockCfg(codes, () => {
+          leekModel.updateStatusBarStockCfg(codes, () => {
             const handler = window.setStatusBarMessage(`下次数据刷新见效`);
             setTimeout(() => {
               handler.dispose();
@@ -232,7 +272,7 @@ export function registerViewEvent(
               if (color === 'random') {
                 color = randomColor();
               }
-              fundModel.setConfig(
+              leekModel.setConfig(
                 item.description === 'rise' ? 'leek-fund.riseColor' : 'leek-fund.fallColor',
                 color
               );

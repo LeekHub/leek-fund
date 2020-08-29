@@ -44,6 +44,7 @@
 - 支持 GUI 操作新增&删除 基金 和 股票
 - 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 支持 GUI 设置涨跌颜色、状态栏股票自定义等
+- 雪球用户动态关注 `v1.4.0`
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
