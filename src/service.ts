@@ -71,7 +71,7 @@ export class LeekFundService {
     return fundUrl;
   }
   private stockUrl(codes: Array<string>): string {
-    return `http://hq.sinajs.cn/list=${codes.join(',')}`;
+    return `https://hq.sinajs.cn/list=${codes.join(',')}`;
   }
 
   toggleLabel() {
