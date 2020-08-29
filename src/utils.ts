@@ -214,6 +214,7 @@ export const xuqiuArticleTemp = (newsList = []) => {
   const htmlArr = [];
   for (let article of newsList) {
     const info = article as any;
+    info.userId = info.user.id;
     const images = info.user.profile_image_url.split(',');
     const img = `https:${info.user.photo_domain}${images[images.length - 1]}`;
     let articleStr = `
