@@ -176,22 +176,13 @@ export const fundRankHtmlTemp = (list: any[] = []) => {
     const {
       symbol,
       name,
-      per_nav,
-      total_nav,
       three_month,
       six_month,
       one_year,
       form_year,
       form_start,
-      sname,
-      zmjgm,
-      clrq,
-      jjjl,
       dwjz,
       ljjz,
-      jzrq,
-      zjzfe,
-      jjglr_code,
     } = item;
     tbody += `<tr class="red">
     <td class="colorize">${i + 1}</td>
@@ -217,6 +208,7 @@ export const xuqiuArticleTemp = (newsList = []) => {
     info.userId = info.user.id;
     const images = info.user.profile_image_url.split(',');
     const img = `https:${info.user.photo_domain}${images[images.length - 1]}`;
+    const description = info.description.replace(/\/\/assets/g, 'https://assets');
     let articleStr = `
     <article class="timeline__item">
         <a
@@ -253,7 +245,7 @@ export const xuqiuArticleTemp = (newsList = []) => {
               <div class="content content--description">
                 <!---->
                 <div class="">
-                  ${info.text}
+                  ${description}
                 </div>
               </div>
             </div>
