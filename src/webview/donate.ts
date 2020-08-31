@@ -14,8 +14,8 @@ async function donate() {
     <title>打赏</title>
     <style type="text/css">
       .content {
-        width: 80%;
-        margin: 200px auto;
+        width: 540px;
+        margin: 100px auto;
       }
       .hide_box {
         z-index: 999;
@@ -36,14 +36,11 @@ async function donate() {
         padding: 10px;
         background-color: #fff;
         border-radius: 10px;
-        position: fixed;
+        border-radius: 10px;
+        position: relative;
         z-index: 1000;
-        left: 50%;
-        top: 50%;
-        margin-left: -280px;
-        margin-top: -280px;
+        margin: 0 auto;
         border: 1px dotted #dedede;
-        display: none;
       }
       .shang_box img {
         border: none;
@@ -93,7 +90,7 @@ async function donate() {
         margin-bottom: 22px;
       }
       .shang_tit p {
-        color: #a3a3a3;
+        color: #696666;
         text-align: center;
         font-size: 16px;
       }
@@ -147,16 +144,40 @@ async function donate() {
       }
       .shang_info p,
       .shang_info a {
-        color: #c3c3c3;
+        color: #696666;
         text-align: center;
         font-size: 12px;
         text-decoration: none;
         line-height: 2em;
       }
+      .like-author-list {
+        color: #696666;
+        text-align: center;
+      }
+      .like-author-list .list {
+        list-style: none;
+        font-size: 14px;
+      }
+      .description {
+        font-size: 14px;
+      }
+      .update-time {
+        font-size: 12px;
+      }
     </style>
   </head>
 
   <body>
+    <div style="display: none">
+      <img
+        src="http://ww1.sinaimg.cn/large/940e68eegy1ghyyag1d02j20dc0d077j.jpg"
+        alt="alipay"
+      />
+      <img
+        src="http://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpgg"
+        alt="wechat"
+      />
+    </div>
     <div class="content">
       <div class="shang_box" style="display: block">
         <div class="shang_tit">
@@ -194,6 +215,11 @@ async function donate() {
           </p>
         </div>
       </div>
+      <div class="like-author-list">
+        <p class="description">加载中……</p>
+        <span class="update-time"></span>
+        <ul class="list"></ul>
+      </div>
     </div>
     <script type="text/javascript">
       var alipayImageData =
@@ -214,11 +240,29 @@ async function donate() {
           }
           $('#shang_pay_txt').text(dataid == 'alipay' ? '支付宝' : '微信');
         });
+        var likeParent = $('.like-author-list');
+        var timestramp = new Date().getTime();
+        $.get(
+          'https://raw.githubusercontent.com/giscafer/leek-fund/master/resources/donate.json?v=' +
+            timestramp,
+          function (res) {
+            res = JSON.parse(res);
+            var list = res.likeTheAuthors || [];
+            likeParent.find('.description').text(res.description);
+            likeParent.find('.update-time').text(res.updatedTime);
+            var liStr = '';
+            list.forEach(function (item) {
+              liStr +=
+                '<li class="user">' + item.name + '（' + item.from + '）</li>';
+            });
+            console.log(liStr);
+            likeParent.find('.list').html(liStr);
+          }
+        );
       });
     </script>
   </body>
 </html>
-
   `;
 }
 
