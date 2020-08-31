@@ -159,6 +159,12 @@ export function registerViewEvent(
     const newsList: any | never = await newsService.getNewsData(userId);
     openNews(userName, newsList);
   });
+  commands.registerCommand('leek-fund.viewUserTimeline', async (target) => {
+    const userName = target.label;
+    const userId = target.id;
+    const newsList: any | never = await newsService.getNewsData(userId);
+    openNews(userName, newsList, true);
+  });
   commands.registerCommand('leek-fund.addNews', () => {
     if (!service.fundSuggestList.length) {
       window.showInformationMessage(`获取基金数据中，请稍后再试`);

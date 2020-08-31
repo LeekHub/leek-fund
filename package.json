@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -171,6 +171,10 @@
         }
       },
       {
+        "command": "leek-fund.viewUserTimeline",
+        "title": "查看动态（无头像）"
+      },
+      {
         "command": "leek-fund.deleteUser",
         "title": "取消关注"
       }
@@ -263,6 +267,11 @@
           "command": "leek-fund.deleteStock",
           "when": "view == leekFundView.stock",
           "group": "group2"
+        },
+        {
+          "command": "leek-fund.viewUserTimeline",
+          "when": "view == leekFundView.news",
+          "group": "group0"
         },
         {
           "command": "leek-fund.deleteUser",

@@ -8,12 +8,12 @@ import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
 import { xuqiuArticleTemp } from '../utils';
 
-async function openNews(userName: string, newsList = []) {
+async function openNews(userName: string, newsList = [], hideAvatar = false) {
   const panel = ReusedWebviewPanel.create('newsWebview', `News(${userName})`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
-  const newsListHTML = xuqiuArticleTemp(newsList);
+  const newsListHTML = xuqiuArticleTemp(newsList, hideAvatar);
   panel.webview.html = `
   <!DOCTYPE html>
 <html lang="en">
@@ -141,8 +141,7 @@ async function openNews(userName: string, newsList = []) {
         margin-top: 5px;
       }
 
-      .timeline__item__comment,
-      .timeline__item__main {
+      .timeline__item__comment
         position: relative;
         margin-left: 58px;
       }

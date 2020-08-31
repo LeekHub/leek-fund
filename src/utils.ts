@@ -201,7 +201,7 @@ export const fundRankHtmlTemp = (list: any[] = []) => {
   return `<table boder="0">${thead}<tbody>${tbody} </tbody></table>`;
 };
 
-export const xuqiuArticleTemp = (newsList = []) => {
+export const xuqiuArticleTemp = (newsList = [], hideAvatar = false) => {
   const htmlArr = [];
   for (let article of newsList) {
     const info = article as any;
@@ -209,18 +209,23 @@ export const xuqiuArticleTemp = (newsList = []) => {
     const images = info.user.profile_image_url.split(',');
     const img = `https:${info.user.photo_domain}${images[images.length - 1]}`;
     const description = info.description.replace(/\/\/assets/g, 'https://assets');
+
     let articleStr = `
     <article class="timeline__item">
-        <a
-          href="https://xueqiu.com/${info.userId}"
-          target="_blank"
-          data-tooltip="${info.userId}"
-          class="avatar avatar-md"
-          ><img
-            src="${img}"
-        /></a>
+        ${
+          hideAvatar
+            ? ''
+            : `<a
+        href="https://xueqiu.com/${info.userId}"
+        target="_blank"
+        data-tooltip="${info.userId}"
+        class="avatar avatar-md"
+        ><img
+          src="${img}"
+      /></a>`
+        }
         <div class="timeline__item__top__right"></div>
-        <div class="timeline__item__main">
+        <div class="timeline__item__main" ${hideAvatar ? 'style="margin-left:0;"' : ''}>
           <div class="timeline__item__info">
             <div>
               <a
@@ -255,6 +260,5 @@ export const xuqiuArticleTemp = (newsList = []) => {
       `;
     htmlArr.push(articleStr);
   }
-
   return htmlArr;
 };
