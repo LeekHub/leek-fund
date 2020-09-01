@@ -24,8 +24,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     const stockCodes = this.model.getCfg('leek-fund.stocks') || [];
-    const children = this.service.getStockData(stockCodes, this.order);
-    return children;
+    return this.service.getStockData(stockCodes, this.order);
   }
 
   getParent(element: LeekTreeItem): LeekTreeItem | null {

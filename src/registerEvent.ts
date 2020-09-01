@@ -1,4 +1,5 @@
 import { commands, ExtensionContext, window } from 'vscode';
+import fundSuggestList from './data/FundSuggestList';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
 import checkForUpdate from './update';
@@ -41,21 +42,20 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.addFund', () => {
-    if (!service.fundSuggestList.length) {
+    /* if (!service.fundSuggestList.length) {
+      service.getFundSuggestList();
       window.showInformationMessage(`获取基金数据中，请稍后再试`);
       return;
-    }
+    } */
 
-    window
-      .showQuickPick(service.fundSuggestList, { placeHolder: '请输入基金代码' })
-      .then((code) => {
-        if (!code) {
-          return;
-        }
-        leekModel.updateFundCfg(code.split('|')[0], () => {
-          fundProvider.refresh();
-        });
+    window.showQuickPick(fundSuggestList, { placeHolder: '请输入基金代码' }).then((code) => {
+      if (!code) {
+        return;
+      }
+      leekModel.updateFundCfg(code.split('|')[0], () => {
+        fundProvider.refresh();
       });
+    });
   });
   commands.registerCommand('leek-fund.sortFund', () => {
     fundProvider.changeOrder();
@@ -165,12 +165,8 @@ export function registerViewEvent(
     const newsList: any | never = await newsService.getNewsData(userId);
     openNews(userName, newsList, true);
   });
-  commands.registerCommand('leek-fund.addNews', () => {
-    if (!service.fundSuggestList.length) {
-      window.showInformationMessage(`获取基金数据中，请稍后再试`);
-      return;
-    }
 
+  commands.registerCommand('leek-fund.addNews', () => {
     window
       .showInputBox({ placeHolder: '请输入雪球用户ID（进入用户首页复制最后的数字串）' })
       .then(async (id) => {

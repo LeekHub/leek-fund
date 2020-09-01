@@ -34,7 +34,7 @@ export function activate(context: ExtensionContext) {
   const statusBar = new StatusBar(fundService);
 
   // prefetch all fund data for searching
-  fundService.getFundSuggestList();
+  // fundService.getFundSuggestList();
 
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
@@ -62,9 +62,9 @@ export function activate(context: ExtensionContext) {
   // loop
   const loopCallback = () => {
     if (isStockTime()) {
-      if (fundTreeView?.visible || stockTreeView?.visible) {
-        nodeFundProvider.refresh();
+      if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
+        nodeFundProvider.refresh();
         statusBar.refresh();
       } else {
         manualRequest();

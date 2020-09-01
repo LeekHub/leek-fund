@@ -4,6 +4,7 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { formatNumber, randHeader, sortData } from './utils';
 import { LeekFundModel } from './views/model';
+const fs = require('fs');
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -115,7 +116,7 @@ export class LeekFundService {
     }
   }
 
-  getFundSuggestList() {
+  /*   getFundSuggestList() {
     console.log('fundSuggestList: getting...');
     axios
       .get('http://m.1234567.com.cn/data/FundSuggestList.js', {
@@ -123,13 +124,14 @@ export class LeekFundService {
       })
       .then((response) => {
         this.fundSuggestList = JSON.parse(`[${response.data.split('[')[1].split(']')[0]}]`);
+        fs.writeFileSync('./FundSuggestList.ts', JSON.stringify(this.fundSuggestList));
         console.log('fundSuggestList length:', this.fundSuggestList.length);
       })
       .catch((error) => {
         console.log(error);
       });
   }
-
+ */
   async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
