@@ -67,7 +67,7 @@ export class StatusBar {
   }
 
   refreshFundStatusBar() {
-    this.fundBarItem.text = `🐥🐥🐥$(pulse)`;
+    this.fundBarItem.text = `🐥$(pulse)`;
     this.fundBarItem.color = this.riseColor;
     this.fundBarItem.tooltip = this.getFundTooltipText();
     this.fundBarItem.show();
