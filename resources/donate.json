@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-08-31 20:39:58",
+  "updatedTime": "2020-09-02 20:34:33",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -17,6 +17,10 @@
     {
       "name": "**雄",
       "from": "支付宝"
+    },
+    {
+      "name": "匿名",
+      "from": "微信"
     }
   ]
 }

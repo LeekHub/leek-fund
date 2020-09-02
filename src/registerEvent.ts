@@ -250,8 +250,8 @@ export function registerViewEvent(
       window
         .showQuickPick(
           [
-            { label: '📈股票涨的颜色', description: 'rise' },
-            { label: '📉股票跌的颜色', description: 'fall' },
+            { label: '📈状态栏股票涨的颜色', description: 'rise' },
+            { label: '📉状态栏股票跌的颜色', description: 'fall' },
           ],
           {
             placeHolder: '第一步：选择设置对象',

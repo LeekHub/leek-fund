@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
         {
           "id": "leekFundMenu",
           "title": "LeekFund 🐥🐥🐥",
-          "icon": "resources/fund.svg"
+          "icon": "resources/leekfund.svg"
         }
       ]
     },
@@ -330,15 +330,14 @@
         },
         "leek-fund.fallColor": {
           "type": "string",
-          "default": "green",
+          "default": "#C9AD06",
           "description": "股票跌的颜色"
         },
         "leek-fund.newsUserIds": {
           "type": "array",
           "default": [
             "5124430882",
-            "1287305957",
-            "3079173340"
+            "1287305957"
           ],
           "description": "雪球用户id（进入雪球用户首页，复制/u/后的数字即可，比如 https://xueqiu.com/u/5124430882 链接的 5124430882）"
         }
@@ -359,7 +358,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n[👀显示/隐藏文本](command:leek-fund.hideText) \n [🎨设置涨跌颜色](command:leek-fund.setRiseAndFallColor)\n[📈设置状态栏股票](command:leek-fund.setStockStatusBar)\n[🛠打开配置页](command:leek-fund.configSetting)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；评分[给个5星✨](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)，源码[Github](https://github.com/giscafer/leek-fund)，加群交流[微信群](https://github.com/giscafer/leek-fund/issues/19)"
+        "contents": "\n[👀显示/隐藏文本](command:leek-fund.hideText) \n [🎨状态栏字体颜色](command:leek-fund.setRiseAndFallColor)\n[📈设置状态栏股票](command:leek-fund.setStockStatusBar)\n[🛠打开配置页](command:leek-fund.configSetting)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；评分[给个5星✨](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)，源码[Github](https://github.com/giscafer/leek-fund)，加群交流[微信群](https://github.com/giscafer/leek-fund/issues/19)"
       }
     ]
   },
