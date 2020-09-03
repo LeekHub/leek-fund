@@ -160,10 +160,17 @@ export class LeekFundService {
       const result: QuickPickItem[] = [];
       tempArr.forEach((item: string) => {
         const arr = item.split(',');
+        let code = arr[0];
+        if (code.substr(0, 2) === 'of') {
+          // 修改lof以及etf的前缀，防止被过滤
+          // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
+          // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
+          code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
+        }
         // 过滤多余的 us. 开头的股干扰
-        if (STOCK_TYPE.includes(arr[0].substr(0, 2)) && !arr[0].startsWith('us.')) {
+        if (STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) {
           result.push({
-            label: `${arr[0]} | ${arr[4]}`,
+            label: `${code} | ${arr[4]}`,
             description: arr[7] && arr[7].replace(/"/g, ''),
           });
         }
