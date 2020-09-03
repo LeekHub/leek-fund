@@ -90,7 +90,7 @@ export class LeekFundService {
           const { gszzl, gztime, name } = data;
           resolve({ percent: gszzl, code, time: gztime, name });
         })
-        .catch(() => resolve({ percent: 'NaN', name: '基金代码错误', code }));
+        .catch(() => resolve({ percent: 'NaN', name: '接口不支持该基金实时信息', code }));
     });
   }
 
