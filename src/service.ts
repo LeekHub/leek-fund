@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
-import { formatNumber, randHeader, sortData } from './utils';
+import { calcFixedPirceNumber, formatNumber, randHeader, sortData } from './utils';
 import { LeekFundModel } from './views/model';
 const fs = require('fs');
 
@@ -243,45 +243,62 @@ export class LeekFundService {
         let type = code.substr(0, 2) || 'sh';
         let symbol = code.substr(2);
         let stockItem: any;
+        let fixedNumber = 2;
         if (params.length > 1) {
           if (/^(sh|sz)/.test(code)) {
+            let open = params[1];
+            let yestclose = params[2];
+            let price = params[3];
+            let high = params[4];
+            let low = params[5];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[1], 2, false),
-              yestclose: formatNumber(params[2], 2, false),
-              highStop: formatNumber(params[2] * 1.1, 2, false),
-              lowStop: formatNumber(params[2] * 0.9, 2, false),
-              price: formatNumber(params[3], 2, false),
-              low: formatNumber(params[5], 2, false),
-              high: formatNumber(params[4], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[8], 2),
               amount: formatNumber(params[9], 2),
               percent: '',
             };
           } else if (/^hk/.test(code)) {
+            let open = params[2];
+            let yestclose = params[3];
+            let price = params[6];
+            let high = params[4];
+            let low = params[5];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[1],
-              open: formatNumber(params[2], 2, false),
-              yestclose: formatNumber(params[3], 2, false),
-              price: formatNumber(params[6], 2, false),
-              low: formatNumber(params[5], 2, false),
-              high: formatNumber(params[4], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[12], 2),
               amount: formatNumber(params[11], 2),
               percent: '',
             };
           } else if (/^gb_/.test(code)) {
             symbol = code.substr(3);
+            let open = params[5];
+            let yestclose = params[26];
+            let price = params[1];
+            let high = params[6];
+            let low = params[7];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[5], 2, false),
-              yestclose: formatNumber(params[26], 2, false),
-              price: formatNumber(params[1], 2, false),
-              low: formatNumber(params[7], 2, false),
-              high: formatNumber(params[6], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[10], 2),
               amount: '接口无数据',
               percent: '',
@@ -289,14 +306,20 @@ export class LeekFundService {
             type = code.substr(0, 3);
           } else if (/^usr_/.test(code)) {
             symbol = code.substr(4);
+            let open = params[5];
+            let yestclose = params[26];
+            let price = params[1];
+            let high = params[6];
+            let low = params[7];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[5], 2, false),
-              yestclose: formatNumber(params[26], 2, false),
-              price: formatNumber(params[1], 2, false),
-              low: formatNumber(params[7], 2, false),
-              high: formatNumber(params[6], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[10], 2),
               amount: '接口无数据',
               percent: '',
@@ -309,7 +332,7 @@ export class LeekFundService {
             stockItem.isStock = true;
             stockItem.type = type;
             stockItem.symbol = symbol;
-            stockItem.updown = formatNumber(+price - +yestclose, 2, false);
+            stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
             stockItem.percent =
               (stockItem.updown >= 0 ? '+' : '-') +
               formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
