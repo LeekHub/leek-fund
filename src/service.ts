@@ -4,7 +4,6 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { calcFixedPirceNumber, formatNumber, randHeader, sortData } from './utils';
 import { LeekFundModel } from './views/model';
-const fs = require('fs');
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -124,7 +123,6 @@ export class LeekFundService {
       })
       .then((response) => {
         this.fundSuggestList = JSON.parse(`[${response.data.split('[')[1].split(']')[0]}]`);
-        fs.writeFileSync('./FundSuggestList.ts', JSON.stringify(this.fundSuggestList));
         console.log('fundSuggestList length:', this.fundSuggestList.length);
       })
       .catch((error) => {

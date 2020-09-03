@@ -151,6 +151,7 @@
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
+- [iporer](https://github.com/iporer)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)
 

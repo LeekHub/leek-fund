@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.4.5]
+
+- chore: 根据个股自适应小数位的有效位数 :heart: PR By @iporer
+
 ## [1.4.4]
 
 - chore: 修改基金错误时文本信息
