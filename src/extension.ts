@@ -48,7 +48,7 @@ export function activate(context: ExtensionContext) {
   stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
   });
-  stockTreeView = window.createTreeView('leekFundView.news', {
+  window.createTreeView('leekFundView.news', {
     treeDataProvider: newsProvider,
   });
 

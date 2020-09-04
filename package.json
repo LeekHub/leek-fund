@@ -55,11 +55,11 @@
         },
         {
           "id": "leekFundView.news",
-          "visibility": "collapsed",
           "name": "XueQiu News"
         },
         {
           "id": "leekFundView.settings",
+          "visibility": "collapsed",
           "name": "Setting"
         }
       ]
