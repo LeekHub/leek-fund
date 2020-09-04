@@ -1,5 +1,6 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/FundSuggestList';
+import global from './global';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
 import checkForUpdate from './update';
@@ -245,46 +246,81 @@ export function registerViewEvent(
   );
 
   context.subscriptions.push(
-    commands.registerCommand('leek-fund.setRiseAndFallColor', () => {
+    commands.registerCommand('leek-fund.customSetting', () => {
       const colorList = colorOptionList();
       window
         .showQuickPick(
           [
-            { label: '📈状态栏股票涨的颜色', description: 'rise' },
-            { label: '📉状态栏股票跌的颜色', description: 'fall' },
+            { label: '状态栏股票设置', description: 'statusbar-stock' },
+            { label: '状态栏股票涨📈的文字颜色', description: 'statusbar-rise' },
+            { label: '状态栏股票跌📉的文字颜色', description: 'statusbar-fall' },
+            { label: '基金&股票涨跌图标更换', description: 'icontype' },
           ],
           {
-            placeHolder: '第一步：选择设置对象',
+            placeHolder: '第一步：选择设置项',
           }
         )
         .then((item: any) => {
           if (!item) {
             return;
           }
-
-          window
-            .showQuickPick(colorList, {
-              placeHolder: `第二步：设置颜色（${item.label}）`,
-            })
-            .then((colorItem: any) => {
-              if (!colorItem) {
-                return;
-              }
-              let color = colorItem.description;
-              if (color === 'random') {
-                color = randomColor();
-              }
-              leekModel.setConfig(
-                item.description === 'rise' ? 'leek-fund.riseColor' : 'leek-fund.fallColor',
-                color
-              );
-            });
+          const type = item.description;
+          // 状态栏颜色设置
+          if (type === 'statusbar-rise' || type === 'statusbar-fall') {
+            window
+              .showQuickPick(colorList, {
+                placeHolder: `第二步：设置颜色（${item.label}）`,
+              })
+              .then((colorItem: any) => {
+                if (!colorItem) {
+                  return;
+                }
+                let color = colorItem.description;
+                if (color === 'random') {
+                  color = randomColor();
+                }
+                leekModel.setConfig(
+                  type === 'statusbar-rise' ? 'leek-fund.riseColor' : 'leek-fund.fallColor',
+                  color
+                );
+              });
+          } else if (type === 'statusbar-stock') {
+            // 状态栏股票设置
+            commands.executeCommand('leek-fund.setStockStatusBar');
+          } else if (type === 'icontype') {
+            // 基金&股票涨跌图标
+            window
+              .showQuickPick(
+                [
+                  {
+                    label: '箭头',
+                    description: 'arrow',
+                  },
+                  {
+                    label: '食物',
+                    description: 'food',
+                  },
+                ],
+                {
+                  placeHolder: `第二步：选择基金&股票涨跌图标`,
+                }
+              )
+              .then((iconItem: any) => {
+                if (!iconItem) {
+                  return;
+                }
+                if (global.iconType !== iconItem.description) {
+                  leekModel.setConfig('leek-fund.iconType', iconItem.description);
+                  global.iconType = iconItem.description;
+                }
+              });
+          }
         });
     })
   );
 
   context.subscriptions.push(
-    commands.registerCommand('leek-fund.configSetting', () => {
+    commands.registerCommand('leek-fund.openConfigPage', () => {
       commands.executeCommand('workbench.action.openSettings', '@ext:giscafer.leek-fund');
     })
   );

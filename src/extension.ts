@@ -4,16 +4,17 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import { ConfigurationChangeEvent, ExtensionContext, window, workspace, TreeView } from 'vscode';
+import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
+import global from './global';
+import { SortType } from './leekTreeItem';
 import { registerViewEvent } from './registerEvent';
 import { LeekFundService } from './service';
 import { isStockTime } from './utils';
 import { FundProvider } from './views/fundProvider';
 import { LeekFundModel } from './views/model';
+import { NewsProvider } from './views/newsProvider';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
-import { SortType } from './leekTreeItem';
-import { NewsProvider } from './views/newsProvider';
 
 let intervalTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
@@ -27,6 +28,10 @@ export function activate(context: ExtensionContext) {
 
   let intervalTime = 3000;
   const model = new LeekFundModel();
+
+  const iconType = model.getCfg('leek-fund.iconType') || 'arrow';
+  global.iconType = iconType;
+
   const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);

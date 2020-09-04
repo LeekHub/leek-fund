@@ -1,11 +1,17 @@
 import { TreeItem, ExtensionContext, TreeItemCollapsibleState } from 'vscode';
 import { join } from 'path';
 import { formatTreeText } from './utils';
+import global from './global';
 
 export enum SortType {
   NORMAL = 0,
   ASC = 1,
   DESC = -1,
+}
+
+export enum IconType {
+  ARROW = 'arrow',
+  FOOD = 'food',
 }
 
 // 支持的股票类型
@@ -60,10 +66,18 @@ export class LeekTreeItem extends TreeItem {
     const grow = percent.indexOf('-') === 0 ? false : true;
     const val = Math.abs(percent);
     if (grow) {
-      icon = val >= 2 ? 'up' : 'up1';
+      if (IconType.ARROW === global.iconType) {
+        icon = val >= 2 ? 'up' : 'up1';
+      } else {
+        icon = 'meat2';
+      }
       _percent = '+' + _percent;
     } else {
-      icon = val >= 2 ? 'down' : 'down1';
+      if (IconType.ARROW === global.iconType) {
+        icon = val >= 2 ? 'down' : 'down1';
+      } else {
+        icon = 'noodles';
+      }
       _percent = '-' + _percent;
     }
     if (showLabel) {
