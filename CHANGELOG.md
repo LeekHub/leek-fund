@@ -2,6 +2,7 @@
 
 ## [1.4.5]
 
+- feat: 股票支持 LOF 和 ETF :heart: PR By @iporer
 - chore: 根据个股自适应小数位的有效位数 :heart: PR By @iporer
 
 ## [1.4.4]
