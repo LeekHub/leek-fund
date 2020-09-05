@@ -6,15 +6,25 @@
 
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { xuqiuArticleTemp } from '../utils';
 
 async function openNews(userName: string, newsList = [], hideAvatar = false) {
   const panel = ReusedWebviewPanel.create('newsWebview', `News(${userName})`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
-  const newsListHTML = xuqiuArticleTemp(newsList, hideAvatar);
-  panel.webview.html = `
+
+  const updateWebview = () => {
+    const newsListHTML = xuqiuArticleTemp(newsList, hideAvatar);
+    panel.webview.html = getWebviewContent(newsListHTML);
+  };
+  updateWebview();
+
+  // And schedule updates to the content every 20 seconds
+  setInterval(updateWebview, 20000);
+}
+
+function getWebviewContent(newsListHTML: string[] = []) {
+  return `
   <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -204,6 +214,68 @@ async function openNews(userName: string, newsList = [], hideAvatar = false) {
   </body>
 </html>
 `;
+}
+
+function xuqiuArticleTemp(newsList = [], hideAvatar = false) {
+  const htmlArr = [];
+  for (let article of newsList) {
+    const info = article as any;
+    info.userId = info.user.id;
+    const images = info.user.profile_image_url.split(',');
+    const img = `https:${info.user.photo_domain}${images[images.length - 1]}`;
+    const description = info.description.replace(/\/\/assets/g, 'https://assets');
+
+    let articleStr = `
+    <article class="timeline__item">
+        ${
+          hideAvatar
+            ? ''
+            : `<a
+        href="https://xueqiu.com/${info.userId}"
+        target="_blank"
+        data-tooltip="${info.userId}"
+        class="avatar avatar-md"
+        ><img
+          src="${img}"
+      /></a>`
+        }
+        <div class="timeline__item__top__right"></div>
+        <div class="timeline__item__main" ${hideAvatar ? 'style="margin-left:0;"' : ''}>
+          <div class="timeline__item__info">
+            <div>
+              <a
+                href="https://xueqiu.com/${info.userId}"
+                target="_blank"
+                data-tooltip="${info.userId}"
+                class="user-name"
+                >${info.user.screen_name}</a
+              >
+            </div>
+            <a
+              href="https://xueqiu.com/${info.userId}/${info.id}"
+              target="_blank"
+              data-id="157971116"
+              class="date-and-source"
+              >${info.timeBefore} · 来自${info.source}</a
+            >
+          </div>
+          <div class="timeline__item__bd">
+            <div class="timeline__item__content">
+              <!---->
+              <div class="content content--description">
+                <!---->
+                <div class="">
+                  ${description}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+      `;
+    htmlArr.push(articleStr);
+  }
+  return htmlArr;
 }
 
 export default openNews;

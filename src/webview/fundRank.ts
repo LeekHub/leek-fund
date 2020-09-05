@@ -1,7 +1,40 @@
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
 import { LeekFundService } from '../service';
-import { fundRankHtmlTemp } from '../utils';
+
+const fundRankHtmlTemp = (list: any[] = []) => {
+  let tbody = '';
+  const thead = `
+  <thead><tr ><th class="colorize">序号</th><th class="colorize">基金代码</th><th class="colorize">基金名称</th><th class="r_20 colorize">单位净值</th><th class="r_20 colorize">累计净值</th><th class="r_20">近三个月(%)</th><th class="r_20">近六个月(%)</th><th class=" r_20">近一年(%)</th><th class="sort_down r_20">今年以来(%)</th><th class=" r_20">成立以来(%)</th></tr></thead>`;
+  for (let i = 0; i < list.length; i++) {
+    const item = list[i];
+    const {
+      symbol,
+      name,
+      three_month,
+      six_month,
+      one_year,
+      form_year,
+      form_start,
+      dwjz,
+      ljjz,
+    } = item;
+    tbody += `<tr class="red">
+    <td class="colorize">${i + 1}</td>
+    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank">${symbol}</a></td>
+    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank" title="${name}" class="name">${name}</a></td>
+    <td class="r_20 colorize">${dwjz}</td>
+    <td class="r_20 colorize">${ljjz}</td>
+    <td class="r_20">${three_month}</td>
+    <td class="r_20">${six_month}</td>
+    <td class="r_20">${one_year}</td>
+    <td class="r_20 sort_down r_20">${form_year}</td>
+    <td class="r_20">${form_start}</td>
+    </tr>`;
+  }
+
+  return `<table boder="0">${thead}<tbody>${tbody} </tbody></table>`;
+};
 
 async function fundRank(service: LeekFundService) {
   const list = await service.getRankFund();
