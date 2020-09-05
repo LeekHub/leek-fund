@@ -78,6 +78,10 @@
     <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
 
     <script>
+      const vscode = acquireVsCodeApi();
+      const deviceId =
+        Math.random().toString(16).substr(2) +
+        Math.random().toString(32).substr(2);
       $(function () {
         const fundList = [
           { name: '诺安成长混合', code: '320007' },
@@ -98,13 +102,6 @@
         ];
         const list = $('.list');
 
-        $('#save').click(() => {
-          fundList.forEach((item) => {
-            const amount = $('#' + item.code).val();
-            item.amount = isNaN(Number(amount)) ? 0 : Number(amount);
-          });
-          console.log(fundList);
-        });
         let listStr = '';
         fundList.forEach((item) => {
           const str =
@@ -128,7 +125,84 @@
             e.target.value = value.slice(0, 7);
           }
         });
+
+        $('#save').click(() => {
+          const ammountObj = {};
+          fundList.forEach((item) => {
+            const amount = $('#' + item.code).val();
+            item.amount = isNaN(Number(amount)) ? 0 : Number(amount);
+            ammountObj[item.code] = amount;
+          });
+
+          fetchInfo(fundList, ({ Expansion, Datas }) => {
+            const dates = [
+              Expansion.FSRQ.substr(5, 5),
+              Expansion.GZTIME.substr(5, 5),
+            ];
+            const result = [];
+            Datas.forEach((item) => {
+              const obj = {
+                code: item.FCODE,
+                name: item.SHORTNAME,
+                amount: ammountObj[item.FCODE],
+                price: item.NAV, // 净值
+                // 净值时间
+                priceDate: item.PDATE,
+                isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
+              };
+              result.push(obj);
+            });
+            // 和vscode webview 通信
+            vscode.postMessage({
+              command: 'success',
+              text: JSON.stringify(result),
+            });
+          });
+        });
       });
+
+      function fetchInfo(fundList, cb) {
+        const params = {
+          pageIndex: 1,
+          pageSize: fundList.length,
+          plat: 'Android',
+          appType: 'ttjj',
+          product: 'EFund',
+          Version: 1,
+          deviceid: deviceId,
+          Fcodes: fundList
+            .reduce((arr, item) => [...arr, item.code], [])
+            .join(','),
+        };
+        if (!params.deviceid || !params.Fcodes) return;
+
+        const paramsArr = [];
+        for (let key in params) {
+          if (key && params[key]) {
+            paramsArr.push(key + '=' + params[key]);
+          }
+        }
+
+        window
+          .fetch(
+            'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' +
+              paramsArr.join('&')
+          )
+          .then((res) => {
+            if (res.status !== 200) {
+              console.log('获取数据失败');
+              vscode.postMessage({
+                command: 'alert',
+                text: '获取数据失败',
+              });
+              return;
+            }
+            res.json().then(function (d) {
+              console.log(d);
+              cb(d);
+            });
+          });
+      }
     </script>
   </body>
 </html>

@@ -63,8 +63,12 @@ export class LeekTreeItem extends TreeItem {
       volume,
       amount,
     } = info;
-    let _percent = Math.abs(percent).toFixed(2);
-
+    let _percent: number | string = Math.abs(percent);
+    if (isNaN(_percent)) {
+      _percent = '--';
+    } else {
+      _percent = _percent.toFixed(2);
+    }
     let icon = 'up';
     const grow = percent.indexOf('-') === 0 ? false : true;
     const val = Math.abs(percent);

@@ -161,14 +161,21 @@ export function registerViewEvent(
         name: item.info.name,
         code: item.id,
         percent: item.percent,
-        amount: amountObj[item.code] || 0,
+        amount: amountObj[item.code]?.amount || 0,
       };
     });
     setAmount(list, (data: any) => {
       const cfg: any = {};
+      console.log(data);
       data.forEach((item: any) => {
-        cfg[item.code] = item.amount;
+        cfg[item.code] = {
+          name: item.name,
+          amount: +item.amount || 0,
+          price: item.price,
+          priceDate: item.priceDate,
+        };
       });
+      console.log(cfg);
       leekModel.setConfig('leek-fund.fundAmount', cfg);
     });
   });

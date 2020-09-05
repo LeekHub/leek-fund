@@ -1,7 +1,8 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
-import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
+import global from './global';
+import { LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
 import { calcFixedPirceNumber, formatNumber, randHeader, sortData } from './utils';
 import { LeekFundModel } from './views/model';
 
@@ -78,6 +79,8 @@ export class LeekFundService {
     this.showLabel = !this.showLabel;
   }
 
+  /*
+  // 老接口
   singleFund(code: string): Promise<FundInfo> {
     const url = this.fundUrl(code);
     return new Promise((resolve) => {
@@ -93,7 +96,7 @@ export class LeekFundService {
     });
   }
 
-  async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+  async getFundData2(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching fund data……');
     const promiseAll = [];
     for (const fundCode of fundCodes) {
@@ -108,6 +111,58 @@ export class LeekFundService {
 
       this.fundList = sortData(data, order);
       // console.log(data);
+      return this.fundList;
+    } catch (err) {
+      console.log(err);
+      return this.fundList;
+    }
+  }
+   */
+  async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+    console.log('fetching fund data……');
+    const params: any = {
+      pageIndex: 1,
+      pageSize: fundCodes.length,
+      plat: 'Android',
+      appType: 'ttjj',
+      product: 'EFund',
+      Version: 1,
+      deviceid: global.deviceId,
+      Fcodes: fundCodes.join(','),
+    };
+    if (!params.deviceid || !params.Fcodes) {
+      return this.fundList;
+    }
+
+    const paramsArr = [];
+    for (let key in params) {
+      if (key && params[key]) {
+        paramsArr.push(key + '=' + params[key]);
+      }
+    }
+
+    try {
+      const { Datas = [] } = await axios
+        .get('https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' + paramsArr.join('&'), {
+          headers: randHeader(),
+        })
+        .then((resp) => {
+          return resp.data;
+        });
+      // console.log(Datas);
+      const data = Datas.map((item: any) => {
+        const obj = {
+          name: item.SHORTNAME,
+          code: item.FCODE,
+          price: item.GSZ,
+          percent: item.GSZZL,
+          showLabel: this.showLabel,
+          // time: item.GZTIME,
+        };
+        return new LeekTreeItem(obj, this.context);
+      });
+
+      this.fundList = sortData(data, order);
       return this.fundList;
     } catch (err) {
       console.log(err);
