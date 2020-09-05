@@ -293,12 +293,20 @@ export function registerViewEvent(
               .showQuickPick(
                 [
                   {
-                    label: '箭头',
+                    label: '箭头图标',
                     description: 'arrow',
                   },
                   {
-                    label: '食物',
-                    description: 'food',
+                    label: '食物图标1(面、鸡腿)',
+                    description: 'food1',
+                  },
+                  {
+                    label: '食物图标2(烤韭菜、烤肉)',
+                    description: 'food2',
+                  },
+                  {
+                    label: '食物字体图标(面、鸡腿)',
+                    description: 'iconfood',
                   },
                 ],
                 {

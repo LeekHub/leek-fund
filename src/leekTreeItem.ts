@@ -1,7 +1,7 @@
-import { TreeItem, ExtensionContext, TreeItemCollapsibleState } from 'vscode';
 import { join } from 'path';
-import { formatTreeText } from './utils';
+import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import global from './global';
+import { formatTreeText } from './utils';
 
 export enum SortType {
   NORMAL = 0,
@@ -11,7 +11,9 @@ export enum SortType {
 
 export enum IconType {
   ARROW = 'arrow',
-  FOOD = 'food',
+  FOOD1 = 'food1',
+  FOOD2 = 'food2',
+  ICON_FOOD = 'iconfood',
 }
 
 // 支持的股票类型
@@ -68,28 +70,46 @@ export class LeekTreeItem extends TreeItem {
     if (grow) {
       if (IconType.ARROW === global.iconType) {
         icon = val >= 2 ? 'up' : 'up1';
-      } else {
+      } else if (IconType.FOOD1 === global.iconType) {
         icon = 'meat2';
+      } else if (IconType.FOOD2 === global.iconType) {
+        icon = 'kabob';
+      } else if (IconType.ICON_FOOD === global.iconType) {
+        icon = '🍗';
       }
       _percent = '+' + _percent;
     } else {
       if (IconType.ARROW === global.iconType) {
         icon = val >= 2 ? 'down' : 'down1';
-      } else {
+      } else if (IconType.FOOD1 === global.iconType) {
         icon = 'noodles';
+      } else if (IconType.FOOD2 === global.iconType) {
+        icon = 'bakeleek';
+      } else if (IconType.ICON_FOOD === global.iconType) {
+        icon = '🍜';
       }
       _percent = '-' + _percent;
     }
+    let iconPath = '';
     if (showLabel) {
-      this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
+      iconPath =
+        global.iconType !== IconType.ICON_FOOD
+          ? context.asAbsolutePath(join('resources', `${icon}.svg`))
+          : icon;
+    }
+    const isIconPath = iconPath.lastIndexOf('.svg') !== -1;
+    if (isIconPath) {
+      this.iconPath = iconPath;
     }
     let text = '';
     if (showLabel) {
       text = isStock
-        ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)}「${name}」`
-        : `${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
+        ? `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`, 11)}${formatTreeText(
+            price,
+            15
+          )}「${name}」`
+        : `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
     } else {
-      console.log(_percent);
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
         : `${formatTreeText(`${_percent}%`)}「${code}」`;
