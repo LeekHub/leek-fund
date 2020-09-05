@@ -317,15 +317,19 @@ export function registerViewEvent(
                     description: 'arrow',
                   },
                   {
-                    label: '食物图标1(面、鸡腿)',
+                    label: '食物图标1（吃面、吃鸡腿）',
                     description: 'food1',
                   },
                   {
-                    label: '食物图标2(烤韭菜、烤肉)',
+                    label: '食物图标2（烤韭菜、烤肉）',
                     description: 'food2',
                   },
                   {
-                    label: '食物字体图标(面、鸡腿)',
+                    label: '食物图标3（吃面、喝酒）',
+                    description: 'food3',
+                  },
+                  {
+                    label: '食物字体图标（吃面、吃鸡腿）',
                     description: 'iconfood',
                   },
                 ],

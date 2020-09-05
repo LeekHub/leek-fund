@@ -13,6 +13,7 @@ export enum IconType {
   ARROW = 'arrow',
   FOOD1 = 'food1',
   FOOD2 = 'food2',
+  FOOD3 = 'food3',
   ICON_FOOD = 'iconfood',
 }
 
@@ -74,6 +75,8 @@ export class LeekTreeItem extends TreeItem {
         icon = 'meat2';
       } else if (IconType.FOOD2 === global.iconType) {
         icon = 'kabob';
+      } else if (IconType.FOOD3 === global.iconType) {
+        icon = 'wine';
       } else if (IconType.ICON_FOOD === global.iconType) {
         icon = '🍗';
       }
@@ -85,6 +88,8 @@ export class LeekTreeItem extends TreeItem {
         icon = 'noodles';
       } else if (IconType.FOOD2 === global.iconType) {
         icon = 'bakeleek';
+      } else if (IconType.FOOD3 === global.iconType) {
+        icon = 'noodles';
       } else if (IconType.ICON_FOOD === global.iconType) {
         icon = '🍜';
       }
