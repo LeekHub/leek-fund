@@ -108,7 +108,7 @@ function getWebviewContent(list: any[] = []) {
 
     <body ontouchstart>
       <div class="main">
-        <h2 style="text-align: center;color:#409EFF;">持仓金额</h2>
+        <h2 style="text-align: center;color:#409EFF;">持仓金额 <span id="totalMoney"></span></h2>
         <div class="list">
           <div class="item">
             <div class="name">诺安基金</div>
@@ -138,9 +138,11 @@ function getWebviewContent(list: any[] = []) {
           const fundList = ${JSON.stringify(list)};
           const list = $('.list');
 
-          let listStr = '';
           let totalEarnings = 0;
+          let totalMoney = 0;
+          let listStr = '';
           fundList.forEach((item) => {
+            const amount = item.amount || 0;
             const str =
               '<div class="item"><div class="name">' +
               item.name +
@@ -149,15 +151,19 @@ function getWebviewContent(list: any[] = []) {
               '<input type="number" class="amountInput el-input__inner" id="' +
               item.code +
               '" value="' +
-              item.amount +
+              amount +
               '" /> <span class="unit">元</span> </div>' +
               '</div>';
 
             listStr += str;
             const earnings = item.earnings || 0;
+
+            totalMoney += amount;
             totalEarnings += earnings;
           });
           list.html(listStr);
+          $('#totalMoney').html(totalMoney.toFixed(2));
+
           $('.amountInput').on('input', function (e) {
             const value = e.target.value;
             if (value.length > 7) {
@@ -184,18 +190,22 @@ function getWebviewContent(list: any[] = []) {
                 Expansion.GZTIME.substr(5, 5),
               ];
               const result = [];
+              totalMoney = 0;
               Datas.forEach((item) => {
+                const amount = ammountObj[item.FCODE].amount;
                 const obj = {
                   code: item.FCODE,
                   name: item.SHORTNAME,
-                  amount: ammountObj[item.FCODE].amount,
+                  amount: amount,
                   earnings: ammountObj[item.FCODE].earnings,
                   price: item.NAV, // 净值
                   priceDate: item.PDATE, // 净值时间
                   isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
                 };
+                totalMoney += amount;
                 result.push(obj);
               });
+              $('#totalMoney').html(totalMoney.toFixed(2));
               // 和 vscode webview 通信
               vscode.postMessage({
                 command: 'success',
@@ -205,7 +215,6 @@ function getWebviewContent(list: any[] = []) {
 
           });
 
-          console.log(totalEarnings)
           if (totalEarnings !== 0) {
             const color = totalEarnings > 0 ? '#f55151' : 'green';
             let str =
@@ -273,8 +282,6 @@ function getWebviewContent(list: any[] = []) {
       </script>
     </body>
   </html>
-
-
 `;
 }
 
