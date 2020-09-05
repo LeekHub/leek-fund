@@ -155,29 +155,7 @@ export function registerViewEvent(
   });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
-    const amountObj = leekModel.getCfg('leek-fund.fundAmount') || {};
-    const list = service.fundList.map((item: any) => {
-      return {
-        name: item.info.name,
-        code: item.id,
-        percent: item.percent,
-        amount: amountObj[item.code]?.amount || 0,
-      };
-    });
-    setAmount(list, (data: any) => {
-      const cfg: any = {};
-      console.log(data);
-      data.forEach((item: any) => {
-        cfg[item.code] = {
-          name: item.name,
-          amount: +item.amount || 0,
-          price: item.price,
-          priceDate: item.priceDate,
-        };
-      });
-      console.log(cfg);
-      leekModel.setConfig('leek-fund.fundAmount', cfg);
-    });
+    setAmount(service.fundList, leekModel);
   });
 
   /**

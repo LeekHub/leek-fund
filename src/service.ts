@@ -125,37 +125,48 @@ export class LeekFundService {
     }
   }
    */
-  async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
-    console.log('fetching fund data……');
-    const params: any = {
-      pageIndex: 1,
-      pageSize: fundCodes.length,
-      plat: 'Android',
-      appType: 'ttjj',
-      product: 'EFund',
-      Version: 1,
-      deviceid: global.deviceId,
-      Fcodes: fundCodes.join(','),
-    };
-    if (!params.deviceid || !params.Fcodes) {
-      return this.fundList;
-    }
 
-    const paramsArr = [];
-    for (let key in params) {
-      if (key && params[key]) {
-        paramsArr.push(key + '=' + params[key]);
+  static qryFundMNFInfo(fundCodes: string[]): Promise<any> {
+    return new Promise((resolve) => {
+      const params: any = {
+        pageIndex: 1,
+        pageSize: fundCodes.length,
+        plat: 'Android',
+        appType: 'ttjj',
+        product: 'EFund',
+        Version: 1,
+        deviceid: global.deviceId,
+        Fcodes: fundCodes.join(','),
+      };
+      if (!params.deviceid || !params.Fcodes) {
+        resolve([]);
       }
-    }
 
-    try {
-      const { Datas = [] } = await axios
+      const paramsArr = [];
+      for (let key in params) {
+        if (key && params[key]) {
+          paramsArr.push(key + '=' + params[key]);
+        }
+      }
+
+      axios
         .get('https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' + paramsArr.join('&'), {
           headers: randHeader(),
         })
         .then((resp) => {
-          return resp.data;
+          resolve(resp.data);
+        })
+        .catch((err) => {
+          console.error(err);
+          resolve([]);
         });
+    });
+  }
+
+  async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+    console.log('fetching fund data……');
+    try {
+      const { Datas = [] } = await LeekFundService.qryFundMNFInfo(fundCodes);
       // console.log(Datas);
       const fundAmountObj: any = global.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
@@ -168,10 +179,15 @@ export class LeekFundService {
         if (keyLength) {
           const money = fundAmountObj[FCODE]?.amount || 0;
           const price = fundAmountObj[FCODE]?.price || 0;
-          const priceDate = fundAmountObj[FCODE]?.priceDate || '';
-
+          // const priceDate = fundAmountObj[FCODE]?.priceDate || '';
+          const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
+          // 闭市的时候显示上一次盈亏
           earnings =
-            money === 0 || time === priceDate ? 0 : toFixed(caculateEarnings(money, price, GSZ));
+            money === 0
+              ? 0
+              : isUpdated
+              ? yestEarnings
+              : toFixed(caculateEarnings(money, price, GSZ));
         }
 
         const obj = {
@@ -180,10 +196,10 @@ export class LeekFundService {
           price: GSZ, // 今日估值
           percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
           yestclose: NAV, // 昨日净值
-          earnings,
           showLabel: this.showLabel,
-          t2: GSZZL == '--' ? true : false, // 海外基金t2
+          earnings,
           isUpdated,
+          t2: GSZZL == '--' ? true : false, // 海外基金t2
           showEarnings: keyLength > 0,
           // time: item.GZTIME,
         };

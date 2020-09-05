@@ -49,7 +49,7 @@ export const clean = (elements: Array<string | number>) => {
  * '0.015'.toFixed(2)结果位0.01
  * 1121.1/100 = 11.210999999999999
  */
-export const toFixed = (value = 0, precision = 1) => {
+export const toFixed = (value = 0, precision = 2) => {
   const num = Number(value);
   if (Number.isNaN(num)) return 0;
   if (num < Math.pow(-2, 31) || num > Math.pow(2, 31) - 1) {

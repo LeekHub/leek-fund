@@ -20,6 +20,13 @@ export enum IconType {
 // 支持的股票类型
 export const STOCK_TYPE = ['sh', 'sz', 'hk', 'gb', 'us'];
 
+export interface IAmount {
+  name: string;
+  price: number | string;
+  amount: number;
+  priceDate: string;
+  earnings: number;
+}
 export interface FundInfo {
   percent: any;
   name: string;

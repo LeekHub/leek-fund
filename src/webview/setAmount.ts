@@ -1,7 +1,23 @@
-import { ViewColumn, window } from 'vscode';
+import { ViewColumn, window, commands } from 'vscode';
+import global from '../global';
+import { LeekTreeItem, IAmount } from '../leekTreeItem';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import { LeekFundService } from '../service';
+import { toFixed } from '../utils';
+import { LeekFundModel } from '../views/model';
 
-async function setAmount(list: any[] = [], cb: Function) {
+async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel) {
+  const amountObj: any = global.fundAmount || {};
+  const list = fundList.map((item: LeekTreeItem) => {
+    return {
+      name: item.info.name,
+      code: item.id,
+      percent: item.info.percent,
+      amount: amountObj[item.info.code]?.amount || 0,
+      earnings: amountObj[item.info.code]?.earnings || 0,
+    };
+  });
+  // console.log(JSON.stringify(list, null, 2));
   const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
@@ -10,11 +26,13 @@ async function setAmount(list: any[] = [], cb: Function) {
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
       case 'success':
-        cb(JSON.parse(message.text));
-        window.showInformationMessage('保存成功！');
+        setAmountCfgCb(leekModel, JSON.parse(message.text));
         return;
       case 'alert':
         window.showErrorMessage('保存失败！');
+        return;
+      case 'donate':
+        commands.executeCommand('leek-fund.donate');
         return;
     }
   }, undefined);
@@ -56,6 +74,9 @@ function getWebviewContent(list: any[] = []) {
         .amount {
           float: right;
         }
+        .name {
+          font-size: 14px;
+        }
         .item {
           margin-top: 10px;
         }
@@ -77,12 +98,17 @@ function getWebviewContent(list: any[] = []) {
           margin: 30px auto;
           text-align: center;
         }
+        .footer .info {
+          font-size: 12px;
+          margin-top: 20px;
+          color: #696666;
+        }
       </style>
     </head>
 
     <body ontouchstart>
       <div class="main">
-        <h3 style="text-align: center">持仓金额</h3>
+        <h2 style="text-align: center;color:#409EFF;">持仓金额</h2>
         <div class="list">
           <div class="item">
             <div class="name">诺安基金</div>
@@ -98,6 +124,7 @@ function getWebviewContent(list: any[] = []) {
           >
             保存
           </button>
+          <div class="info"></div>
         </div>
       </div>
       <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
@@ -112,6 +139,7 @@ function getWebviewContent(list: any[] = []) {
           const list = $('.list');
 
           let listStr = '';
+          let totalEarnings = 0;
           fundList.forEach((item) => {
             const str =
               '<div class="item"><div class="name">' +
@@ -126,6 +154,8 @@ function getWebviewContent(list: any[] = []) {
               '</div>';
 
             listStr += str;
+            const earnings = item.earnings || 0;
+            totalEarnings += earnings;
           });
           list.html(listStr);
           $('.amountInput').on('input', function (e) {
@@ -138,9 +168,14 @@ function getWebviewContent(list: any[] = []) {
           $('#save').click(() => {
             const ammountObj = {};
             fundList.forEach((item) => {
-              const amount = $('#' + item.code).val();
-              item.amount = isNaN(Number(amount)) ? 0 : Number(amount);
-              ammountObj[item.code] = amount;
+              let amount = $('#' + item.code).val();
+              amount = isNaN(Number(amount)) ? 0 : Number(amount);
+              if (typeof ammountObj[item.code] !== 'object') {
+                ammountObj[item.code] = {};
+              }
+              ammountObj[item.code].amount = amount;
+              const earnings = item.earnings || 0;
+              ammountObj[item.code].earnings = earnings;
             });
 
             fetchInfo(fundList, ({ Expansion, Datas }) => {
@@ -153,21 +188,45 @@ function getWebviewContent(list: any[] = []) {
                 const obj = {
                   code: item.FCODE,
                   name: item.SHORTNAME,
-                  amount: ammountObj[item.FCODE],
+                  amount: ammountObj[item.FCODE].amount,
+                  earnings: ammountObj[item.FCODE].earnings,
                   price: item.NAV, // 净值
-                  // 净值时间
-                  priceDate: item.PDATE,
+                  priceDate: item.PDATE, // 净值时间
                   isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
                 };
                 result.push(obj);
               });
-              // 和vscode webview 通信
+              // 和 vscode webview 通信
               vscode.postMessage({
                 command: 'success',
                 text: JSON.stringify(result),
               });
             });
+
           });
+
+          console.log(totalEarnings)
+          if (totalEarnings !== 0) {
+            const color = totalEarnings > 0 ? '#f55151' : 'green';
+            let str =
+              '估算收益为： <span style="font-size:16px;color:' +
+              color +
+              '">' +
+              totalEarnings +
+              '</span>，继续加油💪！';
+            if (totalEarnings >= 666) {
+              str +=
+                '&nbsp;恭喜吃肉，老板 <span style="color:#409EFF;cursor:pointer" id="donate">打赏</span> 一下！';
+            }
+            $('.footer .info').html(str);
+
+            $('#donate').click(function () {
+              vscode.postMessage({
+                command: 'donate',
+                text: '打赏',
+              });
+            });
+          }
         });
 
         function fetchInfo(fundList, cb) {
@@ -217,6 +276,72 @@ function getWebviewContent(list: any[] = []) {
 
 
 `;
+}
+
+function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
+  const cfg: any = {};
+  data.forEach((item: any) => {
+    cfg[item.code] = {
+      name: item.name,
+      amount: item.amount || 0,
+      price: item.price,
+      earnings: item.earnings,
+      priceDate: item.priceDate,
+    };
+  });
+  leekModel.setConfig('leek-fund.fundAmount', cfg).then(() => {
+    global.fundAmount = cfg;
+    window.showInformationMessage('保存成功！（没开市的时候添加的持仓盈亏为0，开市时会自动计算）');
+  });
+}
+
+/**
+ * 更新持仓金额
+ * @param leekModel
+ */
+export async function updateAmount(leekModel: LeekFundModel) {
+  const amountObj: any = global.fundAmount;
+  const codes = Object.keys(amountObj);
+  if (codes.length === 0) {
+    return;
+  }
+  const filterCodes = [];
+  for (const code of codes) {
+    const amount = amountObj[code]?.amount;
+    if (amount > 0) {
+      filterCodes.push(code);
+    }
+  }
+  try {
+    const { Datas = [], Expansion } = await LeekFundService.qryFundMNFInfo(filterCodes);
+    Datas.forEach((item: any) => {
+      const { FCODE, NAV } = item;
+      const time = item.GZTIME.substr(0, 10);
+      const pdate = item.PDATE.substr(0, 10);
+      const isUpdated = pdate === time; // 判断闭市的时候
+      const money = amountObj[FCODE]?.amount || 0;
+      const price = amountObj[FCODE]?.price || 0;
+      const priceDate = amountObj[FCODE]?.priceDate || '';
+      if (priceDate !== pdate) {
+        const currentMoney = (money / price) * NAV;
+        amountObj[FCODE].amount = toFixed(currentMoney);
+        if (isUpdated) {
+          // 闭市的时候保留上一次盈亏值
+          amountObj[FCODE].earnings = toFixed(currentMoney - money);
+        }
+        amountObj[FCODE].priceDate = pdate;
+        amountObj[FCODE].price = NAV;
+      }
+    });
+    if (Datas.length > 0) {
+      leekModel.setConfig('leek-fund.fundAmount', amountObj).then(() => {
+        global.fundAmount = amountObj;
+        console.log('🐥fundAmount has Updated ');
+      });
+    }
+  } catch (e) {
+    return [];
+  }
 }
 
 export default setAmount;

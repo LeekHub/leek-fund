@@ -15,6 +15,7 @@ import { LeekFundModel } from './views/model';
 import { NewsProvider } from './views/newsProvider';
 import { StatusBar } from './views/statusBar';
 import { StockProvider } from './views/stockProvider';
+import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
@@ -29,6 +30,7 @@ export function activate(context: ExtensionContext) {
   let intervalTime = 3000;
   const model = new LeekFundModel();
   setGlobalVariable(model);
+  updateAmount(model);
 
   const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);

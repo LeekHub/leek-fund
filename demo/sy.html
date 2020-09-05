@@ -31,6 +31,9 @@
       .amount {
         float: right;
       }
+      .name {
+        font-size: 14px;
+      }
       .item {
         margin-top: 10px;
       }
@@ -52,12 +55,17 @@
         margin: 30px auto;
         text-align: center;
       }
+      .footer .info {
+        font-size: 12px;
+        margin-top: 10px;
+        color: #696666;
+      }
     </style>
   </head>
 
   <body ontouchstart>
     <div class="main">
-      <h3 style="text-align: center">持仓金额</h3>
+      <h2 style="text-align: center">持仓金额</h2>
       <div class="list">
         <div class="item">
           <div class="name">诺安基金</div>
@@ -73,6 +81,7 @@
         >
           保存
         </button>
+        <div class="info"></div>
       </div>
     </div>
     <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
@@ -101,7 +110,7 @@
           { name: '天弘中证食品饮料指数C', code: '001632' },
         ];
         const list = $('.list');
-
+        let totalEarnings = 0;
         let listStr = '';
         fundList.forEach((item) => {
           const str =
@@ -117,6 +126,8 @@
             '</div>';
 
           listStr += str;
+          const earnings = item.earnings || 0;
+          totalEarnings += earnings;
         });
         list.html(listStr);
         $('.amountInput').on('input', function (e) {
@@ -129,9 +140,14 @@
         $('#save').click(() => {
           const ammountObj = {};
           fundList.forEach((item) => {
-            const amount = $('#' + item.code).val();
-            item.amount = isNaN(Number(amount)) ? 0 : Number(amount);
-            ammountObj[item.code] = amount;
+            let amount = $('#' + item.code).val();
+            amount = isNaN(Number(amount)) ? 0 : Number(amount);
+            if (typeof ammountObj[item.code] !== 'object') {
+              ammountObj[item.code] = {};
+            }
+            ammountObj[item.code].amount = amount;
+            const earnings = item.earnings || 0;
+            ammountObj[item.code].earnings = earnings;
           });
 
           fetchInfo(fundList, ({ Expansion, Datas }) => {
@@ -144,21 +160,43 @@
               const obj = {
                 code: item.FCODE,
                 name: item.SHORTNAME,
-                amount: ammountObj[item.FCODE],
+                amount: ammountObj[item.FCODE].amount,
+                earnings: ammountObj[item.FCODE].earnings,
                 price: item.NAV, // 净值
-                // 净值时间
-                priceDate: item.PDATE,
+                priceDate: item.PDATE, // 净值时间
                 isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
               };
               result.push(obj);
             });
-            // 和vscode webview 通信
+            // 和 vscode webview 通信
             vscode.postMessage({
               command: 'success',
               text: JSON.stringify(result),
             });
           });
         });
+
+        if (totalEarnings !== 0) {
+          const color = totalEarnings > 0 ? 'red' : 'green';
+          let str =
+            '估算收益为： <span style="font-size:16px;color:' +
+            color +
+            '">' +
+            totalEarnings +
+            '</span>，继续加油';
+          if (totalEarnings > 500) {
+            str +=
+              '&nbsp;恭喜吃肉，老板<span style="color:blue" id="donate">打赏</a>一下！';
+          }
+          $('.footer .info').html(str);
+
+          $('#donate').click(function () {
+            vscode.postMessage({
+              command: 'donate',
+              text: '打赏',
+            });
+          });
+        }
       });
 
       function fetchInfo(fundList, cb) {
