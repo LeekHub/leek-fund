@@ -359,6 +359,11 @@
           "default": "{}",
           "description": "基金持仓金额（不建议手填，格式错误影响功能）"
         },
+        "leek-fund.showEarnings": {
+          "type": "number",
+          "default": 1,
+          "description": "显示/隐藏盈亏（1显示，0隐藏）"
+        },
         "leek-fund.iconType": {
           "type": "string",
           "default": "arrow",

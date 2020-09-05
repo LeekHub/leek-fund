@@ -3,7 +3,14 @@ import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import global from './global';
 import { LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
-import { calcFixedPirceNumber, formatNumber, randHeader, sortData } from './utils';
+import {
+  calcFixedPirceNumber,
+  formatNumber,
+  randHeader,
+  sortData,
+  toFixed,
+  caculateEarnings,
+} from './utils';
 import { LeekFundModel } from './views/model';
 
 export class LeekFundService {
@@ -150,13 +157,34 @@ export class LeekFundService {
           return resp.data;
         });
       // console.log(Datas);
+      const fundAmountObj: any = global.fundAmount;
+      const keyLength = Object.keys(fundAmountObj).length;
       const data = Datas.map((item: any) => {
+        const { SHORTNAME, FCODE, GSZ, NAV, GSZZL, NAVCHGRT } = item;
+        const time = item.GZTIME.substr(0, 10);
+        const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
+        let earnings = 0;
+        // 不填写的时候不计算
+        if (keyLength) {
+          const money = fundAmountObj[FCODE]?.amount || 0;
+          const price = fundAmountObj[FCODE]?.price || 0;
+          const priceDate = fundAmountObj[FCODE]?.priceDate || '';
+
+          earnings =
+            money === 0 || time === priceDate ? 0 : toFixed(caculateEarnings(money, price, GSZ));
+        }
+
         const obj = {
-          name: item.SHORTNAME,
-          code: item.FCODE,
-          price: item.GSZ,
-          percent: item.GSZZL,
+          name: SHORTNAME,
+          code: FCODE,
+          price: GSZ, // 今日估值
+          percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
+          yestclose: NAV, // 昨日净值
+          earnings,
           showLabel: this.showLabel,
+          t2: GSZZL == '--' ? true : false, // 海外基金t2
+          isUpdated,
+          showEarnings: keyLength > 0,
           // time: item.GZTIME,
         };
         return new LeekTreeItem(obj, this.context);

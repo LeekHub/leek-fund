@@ -282,6 +282,7 @@ export function registerViewEvent(
             { label: '状态栏股票涨📈的文字颜色', description: 'statusbar-rise' },
             { label: '状态栏股票跌📉的文字颜色', description: 'statusbar-fall' },
             { label: '基金&股票涨跌图标更换', description: 'icontype' },
+            { label: global.showEarnings ? '隐藏盈亏' : '显示盈亏', description: 'earnings' },
           ],
           {
             placeHolder: '第一步：选择设置项',
@@ -353,6 +354,10 @@ export function registerViewEvent(
                   global.iconType = iconItem.description;
                 }
               });
+          } else if (type === 'earnings') {
+            const newValue = global.showEarnings === 1 ? 0 : 1;
+            leekModel.setConfig('leek-fund.showEarnings', newValue);
+            global.showEarnings = newValue;
           }
         });
     })

@@ -28,9 +28,7 @@ export function activate(context: ExtensionContext) {
 
   let intervalTime = 3000;
   const model = new LeekFundModel();
-
-  const iconType = model.getCfg('leek-fund.iconType') || 'arrow';
-  global.iconType = iconType;
+  setGlobalVariable(model);
 
   const fundService = new LeekFundService(context, model);
   const nodeFundProvider = new FundProvider(fundService);
@@ -97,6 +95,7 @@ export function activate(context: ExtensionContext) {
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
     setIntervalTime();
+    setGlobalVariable(model);
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
@@ -105,6 +104,15 @@ export function activate(context: ExtensionContext) {
 
   // register event
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
+}
+
+function setGlobalVariable(model: LeekFundModel) {
+  const iconType = model.getCfg('leek-fund.iconType') || 'arrow';
+  global.iconType = iconType;
+  const fundAmount = model.getCfg('leek-fund.fundAmount') || {};
+  global.fundAmount = fundAmount;
+  const showEarnings = model.getCfg('leek-fund.showEarnings');
+  global.showEarnings = showEarnings;
 }
 
 // this method is called when your extension is deactivated

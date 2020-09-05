@@ -38,6 +38,10 @@ export interface FundInfo {
   price?: string; // 当前价格
   volume?: string; // 成交量
   amount?: string; // 成交额
+  earnings?: number;
+  t2?: boolean;
+  isUpdated?: boolean;
+  showEarnings?: boolean;
   isStock?: boolean;
 }
 
@@ -62,6 +66,9 @@ export class LeekTreeItem extends TreeItem {
       updown,
       volume,
       amount,
+      earnings,
+      showEarnings,
+      t2,
     } = info;
     let _percent: number | string = Math.abs(percent);
     if (isNaN(_percent)) {
@@ -117,7 +124,9 @@ export class LeekTreeItem extends TreeItem {
             price,
             15
           )}「${name}」`
-        : `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
+        : `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
+            t2 || !global.showEarnings ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
+          }`;
     } else {
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
@@ -142,7 +151,7 @@ export class LeekTreeItem extends TreeItem {
         !showLabel ? name : ''
       }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
     } else {
-      this.tooltip = `${!showLabel ? name : '点击查看详情'}`;
+      this.tooltip = `「${name}」(${code})`;
     }
   }
 }
