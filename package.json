@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.4.6",
+  "version": "1.5.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -95,6 +95,14 @@
         "icon": {
           "light": "resources/light/add.svg",
           "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "leek-fund.setFundAmount",
+        "title": "设置基金持仓金额",
+        "icon": {
+          "light": "resources/light/amount.svg",
+          "dark": "resources/dark/amount.svg"
         }
       },
       {
@@ -203,6 +211,11 @@
         },
         {
           "command": "leek-fund.addFund",
+          "when": "view == leekFundView.fund",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.setFundAmount",
           "when": "view == leekFundView.fund",
           "group": "navigation"
         },
@@ -340,6 +353,11 @@
             "1287305957"
           ],
           "description": "雪球用户id（进入雪球用户首页，复制/u/后的数字即可，比如 https://xueqiu.com/u/5124430882 链接的 5124430882）"
+        },
+        "leek-fund.fundAmount": {
+          "type": "object",
+          "default": "{}",
+          "description": "基金持仓金额（不建议手填，格式错误影响功能）"
         },
         "leek-fund.iconType": {
           "type": "string",

@@ -27,6 +27,9 @@ https://hq.sinajs.cn/list=hk00700
 // 比如诺安成长混合
 http://fundgz.1234567.com.cn/js/320007.js?callback=a
 
+// 天天基金app
+https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=50&plat=Android&appType=ttjj&product=EFund&Version=1&deviceid=ssdfsdfsdf&Fcodes=320007,161726
+
 ```
 
 ### 图片

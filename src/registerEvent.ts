@@ -17,6 +17,7 @@ import fundHistory from './webview/fundHistory';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
 import openNews from './webview/news';
+import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 
 export function registerViewEvent(
@@ -150,6 +151,25 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.setStockTop', (target) => {
     leekModel.setStockTopCfg(target.id, () => {
       fundProvider.refresh();
+    });
+  });
+  // 设置基金持仓金额
+  commands.registerCommand('leek-fund.setFundAmount', () => {
+    const amountObj = leekModel.getCfg('leek-fund.fundAmount') || {};
+    const list = service.fundList.map((item: any) => {
+      return {
+        name: item.info.name,
+        code: item.id,
+        percent: item.percent,
+        amount: amountObj[item.code] || 0,
+      };
+    });
+    setAmount(list, (data: any) => {
+      const cfg: any = {};
+      data.forEach((item: any) => {
+        cfg[item.code] = item.amount;
+      });
+      leekModel.setConfig('leek-fund.fundAmount', cfg);
     });
   });
 

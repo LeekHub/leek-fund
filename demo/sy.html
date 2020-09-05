@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>韭菜盒子</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        height: 100%;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      div {
+        margin-left: 20px;
+        line-height: 28px;
+      }
+      .list .name,
+      .amount {
+        display: inline-block;
+      }
+      .unit,
+      .amount {
+        float: right;
+      }
+      .item {
+        margin-top: 10px;
+      }
+      .el-input {
+        width: 160px;
+        height: 28px;
+      }
+      .el-input__inner {
+        height: 28px;
+        width: 90%;
+        background-color: #eee;
+      }
+      .main {
+        margin: 30px auto;
+        width: 520px;
+      }
+      .footer {
+        width: 520px;
+        margin: 30px auto;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body ontouchstart>
+    <div class="main">
+      <h3 style="text-align: center">持仓金额</h3>
+      <div class="list">
+        <div class="item">
+          <div class="name">诺安基金</div>
+          <div class="amount el-input">
+            <input type="number" class="el-input__inner" id="320007" />
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <button
+          class="el-button el-button--primary el-button--medium"
+          id="save"
+        >
+          保存
+        </button>
+      </div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+
+    <script>
+      $(function () {
+        const fundList = [
+          { name: '诺安成长混合', code: '320007' },
+          { name: '国联安中证半导体ETF联接C', code: '007301' },
+          { name: '华安媒体互联网混合', code: '001071' },
+          { name: '前海开源金银珠宝混合C', code: '002207' },
+          { name: '天弘安康颐养混合A', code: '420009' },
+          { name: '长江汇聚量化多因子', code: '005757' },
+          { name: '招商国证生物医药指数分级', code: '161726' },
+          { name: '中欧潜力价值灵活配置混合A', code: '001810' },
+          { name: '广发中证全指建筑材料指数C', code: '004857' },
+          { name: '华宝科技ETF联接C', code: '007874' },
+          { name: '富国中证新能源汽车指数分级', code: '161028' },
+          { name: '上投摩根新兴动力混合A', code: '377240' },
+          { name: '大成消费主题混合', code: '090016' },
+          { name: '招商中证白酒指数分级', code: '161725' },
+          { name: '天弘中证食品饮料指数C', code: '001632' },
+        ];
+        const list = $('.list');
+
+        $('#save').click(() => {
+          fundList.forEach((item) => {
+            const amount = $('#' + item.code).val();
+            item.amount = isNaN(Number(amount)) ? 0 : Number(amount);
+          });
+          console.log(fundList);
+        });
+        let listStr = '';
+        fundList.forEach((item) => {
+          const str =
+            '<div class="item"><div class="name">' +
+            item.name +
+            '</div>' +
+            '<div class="amount el-input">' +
+            '<input type="number" class="amountInput el-input__inner" id="' +
+            item.code +
+            '" value="' +
+            item.amount +
+            '" /> <span class="unit">元</span> </div>' +
+            '</div>';
+
+          listStr += str;
+        });
+        list.html(listStr);
+        $('.amountInput').on('input', function (e) {
+          const value = e.target.value;
+          if (value.length > 7) {
+            e.target.value = value.slice(0, 7);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

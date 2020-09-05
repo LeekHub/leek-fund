@@ -20,7 +20,12 @@ async function openNews(userName: string, newsList = [], hideAvatar = false) {
   updateWebview();
 
   // And schedule updates to the content every 20 seconds
-  setInterval(updateWebview, 20000);
+  const interval = setInterval(updateWebview, 20000);
+
+  panel.onDidDispose(() => {
+    // When the panel is closed, cancel any future updates to the webview content
+    clearInterval(interval);
+  }, null);
 }
 
 function getWebviewContent(newsListHTML: string[] = []) {
