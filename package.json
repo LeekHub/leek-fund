@@ -356,7 +356,7 @@
         },
         "leek-fund.fundAmount": {
           "type": "object",
-          "default": "{}",
+          "default": {},
           "description": "基金持仓金额（不建议手填，格式错误影响功能）"
         },
         "leek-fund.showEarnings": {
@@ -371,12 +371,12 @@
         },
         "leek-fund.fundSortType": {
           "type": "number",
-          "default": "0",
+          "default": 0,
           "description": "基金排序方式(0正常、1升序、-1倒序)"
         },
         "leek-fund.stockSortType": {
           "type": "number",
-          "default": "0",
+          "default": 0,
           "description": "股票排序方式(0正常、1升序、-1倒序)"
         }
       }
