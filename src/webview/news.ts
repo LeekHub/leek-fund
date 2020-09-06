@@ -6,6 +6,7 @@
 
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import global from '../global';
 
 async function openNews(userName: string, newsList = [], hideAvatar = false) {
   const panel = ReusedWebviewPanel.create('newsWebview', `News(${userName})`, ViewColumn.One, {
@@ -20,11 +21,16 @@ async function openNews(userName: string, newsList = [], hideAvatar = false) {
   updateWebview();
 
   // And schedule updates to the content every 20 seconds
-  const interval = setInterval(updateWebview, 20000);
+  if (global.newsIntervalTimer) {
+    clearInterval(global.newsIntervalTimer);
+    global.newsIntervalTimer = null;
+  }
+  global.newsIntervalTimer = setInterval(updateWebview, global.newsIntervalTime);
 
   panel.onDidDispose(() => {
     // When the panel is closed, cancel any future updates to the webview content
-    clearInterval(interval);
+    clearInterval(global.newsIntervalTimer);
+    global.newsIntervalTimer = null;
   }, null);
 }
 
@@ -213,8 +219,8 @@ function getWebviewContent(newsListHTML: string[] = []) {
     <div class="profiles__timeline__bd">
       ${newsListHTML.join('\n')}
     </div>
-    <div style="width: 200px; margin: 10px auto">
-        <p>----只展示最新10条信息----</p>
+    <div style="width: 230px; margin: 10px auto">
+        <p style="color:#888">----最新10条信息(每20s自动刷新)----</p>
       </div>
   </body>
 </html>
