@@ -171,7 +171,7 @@ export class LeekFundService {
       const fundAmountObj: any = global.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
       const data = Datas.map((item: any) => {
-        const { SHORTNAME, FCODE, GSZ, NAV, GSZZL, NAVCHGRT } = item;
+        const { SHORTNAME, FCODE, GSZ, NAV, PDATE, GZTIME, GSZZL, NAVCHGRT } = item;
         const time = item.GZTIME.substr(0, 10);
         const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
@@ -200,8 +200,8 @@ export class LeekFundService {
           earnings,
           isUpdated,
           t2: GSZZL == '--' ? true : false, // 海外基金t2
+          time: GSZZL == '--' ? PDATE : GZTIME, // 更新时间
           showEarnings: keyLength > 0,
-          // time: item.GZTIME,
         };
         return new LeekTreeItem(obj, this.context);
       });

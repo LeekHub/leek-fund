@@ -74,7 +74,7 @@ export class LeekTreeItem extends TreeItem {
       volume,
       amount,
       earnings,
-      showEarnings,
+      time,
       t2,
     } = info;
     let _percent: number | string = Math.abs(percent);
@@ -133,7 +133,7 @@ export class LeekTreeItem extends TreeItem {
           )}「${name}」`
         : `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !global.showEarnings ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
-          }`;
+          }` + `${t2 ? `(${time})` : ''}`;
     } else {
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
