@@ -46,7 +46,7 @@ function fundTrend(code: string, name: string) {
     <p class="title" style="text-align: center; font-size:18px; width: 400px;margin: 20px auto;">历史趋势图</p>
     <img
     class="fund-sstrend"
-      src="https://image.sinajs.cn/newchart/v5/fund/nav/ss/${code}.gif"
+      src="http://j3.dfcfw.com/images/JJJZ1/${code}.png"
       alt=""
     />
     </div>
