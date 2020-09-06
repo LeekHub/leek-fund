@@ -1,5 +1,5 @@
 import { commands, ExtensionContext, window } from 'vscode';
-import fundSuggestList from './data/FundSuggestList';
+import fundSuggestList from './data/fundSuggestData';
 import global from './global';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './service';
