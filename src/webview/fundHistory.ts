@@ -46,6 +46,9 @@ async function fundHistory(service: LeekFundService, item: LeekTreeItem) {
       src="http://j6.dfcfw.com/charts/StockPos/${code}.png?rt=${new Date().getTime()}"
       alt="「${name}」- ${code}"
     />
+    <p>
+    <a href="http://fundf10.eastmoney.com/ccmx_${code}.html" target="_blank">查看全部持仓明细>></a>
+    </p>
     </div>
     <div class="history">
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
