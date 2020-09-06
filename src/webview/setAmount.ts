@@ -109,6 +109,7 @@ function getWebviewContent(list: any[] = []) {
     <body ontouchstart>
       <div class="main">
         <h2 style="text-align: center;color:#409EFF;">持仓金额 <span id="totalMoney"></span></h2>
+        <p style="font-size: 12px; color: #696666;text-align:center">现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额</p>
         <div class="list">
 
         </div>
