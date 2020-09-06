@@ -110,12 +110,7 @@ function getWebviewContent(list: any[] = []) {
       <div class="main">
         <h2 style="text-align: center;color:#409EFF;">持仓金额 <span id="totalMoney"></span></h2>
         <div class="list">
-          <div class="item">
-            <div class="name">诺安基金</div>
-            <div class="amount el-input">
-              <input type="number" class="el-input__inner" id="320007" />
-            </div>
-          </div>
+
         </div>
         <div class="footer">
           <button

@@ -155,6 +155,10 @@ export function registerViewEvent(
   });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
+    if (service.fundList.length === 0) {
+      window.showWarningMessage('数据刷新中，请重试！');
+      return;
+    }
     setAmount(service.fundList, leekModel);
   });
 
