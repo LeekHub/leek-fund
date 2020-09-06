@@ -51,32 +51,65 @@ function stockTrend(code: string, name: string, text: string, stockCode: string)
   panel.webview.html = panel.webview.html = `<html><body style="background:#eee;color:#333">
   <br/>
   <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」趋势图、K线图</p>
+  <a style="position: absolute;right: 22px;top: 22px;font-size: 12px;" href="http://quote.eastmoney.com/${imageName}.html#fullScreenChart">网页全屏查看>></a>
   <hr />
-  <h3>实时走势图</3> <br/>
+  <h3 style="display:inline-block">实时走势图</h3><span style="margin-left:10px;color:#888;font-size:12px;" id="refreshtime">&nbsp;</span>
+  <br/><br/>
   <div style="width: 710px;margin:0 auto"><img class="sstrend" src="${timeK}" width="700"/></div>
   <br/>
-  <h3>日K线图</3> <br/>
+  <h3>日K线图</h3> <br/>
   <div style="width: 710px;margin:0 auto"><img src="${dailyK}" width="700"/></div>
-  <h3>周K线图</3> <br/>
+  <h3>周K线图</h3> <br/>
   <div style="width: 710px;margin:0 auto"><img src="${weeklyK}" width="700"/></div>
-  <h3>月K线图</3> <br/>
-  <div style="width: 710px;margin:0 auto"><img src="${monthlyK}" width="700"/></div>
+  <h3>月K线图</h3> <br/>
+  <div style="width: 710px;margin:0 auto;margin-bottom:20px"><img src="${monthlyK}" width="700"/></div>
 </body>
 <script>
 var sstrendImgEl = document.querySelector('.sstrend');
 var timer=null;
 var timeK="${timeK}";
 var index=timeK.indexOf('?')
+index=index===-1?timeK.length:index;
+
 var code="${code}";
 if (timer) {
   clearInterval(timer);
   timer = null;
 }
+var timeElement=document.querySelector('#refreshtime');
+timeElement.innerText='刷新时间：'+formatDateTime(new Date());
+
 timer = setInterval(function () {
-  sstrendImgEl.src =timeK.substr(0,index) +'?v=' +
-    new Date().getTime();
+  var refreshTime = new Date();
+  sstrendImgEl.src =timeK.substr(0,index) +'?v=' + refreshTime.getTime();
+  document.querySelector('#refreshtime').innerText='刷新时间：'+formatDateTime(refreshTime);
   console.log('刷新数据' + code);
 }, 20000);
+
+function formatDateTime(date) {
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+  var hour = date.getHours();
+  var minute = date.getMinutes();
+  var second = date.getSeconds();
+
+  return (
+    [year, month, day]
+      .map((n) => {
+        var m = n.toString();
+        return m[1] ? m : '0' + m;
+      })
+      .join('-') +
+    ' ' +
+    [hour, minute, second]
+      .map((n) => {
+        var m = n.toString();
+        return m[1] ? m : '0' + m;
+      })
+      .join(':')
+  );
+}
 </script>
 </html>`;
 }
