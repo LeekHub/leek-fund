@@ -7,16 +7,25 @@
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
 import global from '../global';
+import { NewsService } from '../views/newsService';
+import { formatDateTime } from '../utils';
 
-async function openNews(userName: string, newsList = [], hideAvatar = false) {
+async function openNews(
+  newsService: NewsService,
+  userId: string,
+  userName: string,
+  hideAvatar = false
+) {
   const panel = ReusedWebviewPanel.create('newsWebview', `News(${userName})`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
 
-  const updateWebview = () => {
+  const updateWebview = async () => {
+    const newsList: any | never = await newsService.getNewsData(userId);
     const newsListHTML = xuqiuArticleTemp(newsList, hideAvatar);
     panel.webview.html = getWebviewContent(newsListHTML);
+    console.log('updateWebview');
   };
   updateWebview();
 
@@ -213,10 +222,18 @@ function getWebviewContent(newsListHTML: string[] = []) {
         width: 48px;
         height: 48px;
       }
+      .timer{
+        position: fixed;
+        top:10px;
+        right:10px;
+        font-size:12px;
+        color:#888;
+      }
     </style>
   </head>
   <body>
     <div class="profiles__timeline__bd">
+      <span class="timer">数据时间：${formatDateTime(new Date())}</span>
       ${newsListHTML.join('\n')}
     </div>
     <div style="width: 230px; margin: 10px auto">

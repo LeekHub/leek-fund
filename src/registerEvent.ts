@@ -161,15 +161,13 @@ export function registerViewEvent(
   /**
    * News command
    */
-  commands.registerCommand('leek-fund.newItemClick', async (userName, userId) => {
-    const newsList: any | never = await newsService.getNewsData(userId);
-    openNews(userName, newsList);
+  commands.registerCommand('leek-fund.newItemClick', (userName, userId) => {
+    openNews(newsService, userId, userName);
   });
-  commands.registerCommand('leek-fund.viewUserTimeline', async (target) => {
+  commands.registerCommand('leek-fund.viewUserTimeline', (target) => {
     const userName = target.label;
     const userId = target.id;
-    const newsList: any | never = await newsService.getNewsData(userId);
-    openNews(userName, newsList, true);
+    openNews(newsService, userId, userName, true);
   });
 
   commands.registerCommand('leek-fund.addNews', () => {
