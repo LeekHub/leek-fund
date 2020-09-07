@@ -68,14 +68,10 @@
       <h2 style="text-align: center; color: #409eff">
         持仓金额 <span id="totalMoney"></span>
       </h2>
-      <div class="list">
-        <div class="item">
-          <div class="name">诺安基金</div>
-          <div class="amount el-input">
-            <input type="number" class="el-input__inner" id="320007" />
-          </div>
-        </div>
-      </div>
+      <p style="font-size: 12px; color: #696666; text-align: center">
+        现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额
+      </p>
+      <div class="list"></div>
       <div class="footer">
         <button
           class="el-button el-button--primary el-button--medium"
@@ -121,7 +117,7 @@
           totalEarnings += earnings;
         });
         list.html(listStr);
-        $('#totalMoney').html(totalMoney);
+        $('#totalMoney').html(totalMoney.toFixed(2));
 
         $('.amountInput').on('input', function (e) {
           const value = e.target.value;
@@ -164,6 +160,7 @@
               totalMoney += amount;
               result.push(obj);
             });
+            $('#totalMoney').html(totalMoney.toFixed(2));
             // 和 vscode webview 通信
             vscode.postMessage({
               command: 'success',

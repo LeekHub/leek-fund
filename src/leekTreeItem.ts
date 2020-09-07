@@ -26,6 +26,7 @@ export interface IAmount {
   amount: number;
   priceDate: string;
   earnings: number;
+  yestEarnings?: number;
 }
 export interface FundInfo {
   percent: any;

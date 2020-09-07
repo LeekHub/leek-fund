@@ -14,10 +14,11 @@ async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel
       code: item.id,
       percent: item.info.percent,
       amount: amountObj[item.info.code]?.amount || 0,
-      earnings: amountObj[item.info.code]?.earnings || 0,
+      earnings: item.info.earnings || 0,
+      yestEarnings: amountObj[item.info.code]?.earnings || 0,
     };
   });
-  // console.log(JSON.stringify(list, null, 2));
+  console.log(JSON.stringify(list, null, 2));
   const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
@@ -217,8 +218,8 @@ function getWebviewContent(list: any[] = []) {
               '估算收益为： <span style="font-size:16px;color:' +
               color +
               '">' +
-              totalEarnings +
-              '</span>，继续加油💪！';
+              totalEarnings.toFixed(2) +
+              '</span> 元，'+(totalEarnings>0?'继续加油💪！':'在A股，守住才会有收益，加油💪');
             if (totalEarnings >= 666) {
               str +=
                 '&nbsp;恭喜吃肉，老板 <span style="color:#409EFF;cursor:pointer" id="donate">打赏</span> 一下！';
