@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-09-05 16:17:15",
+  "updatedTime": "2020-09-07 12:50:44",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -25,6 +25,10 @@
     {
       "name": "**宽",
       "from": "支付宝"
+    },
+    {
+      "name": "zhjie",
+      "from": "微信"
     }
   ]
 }
