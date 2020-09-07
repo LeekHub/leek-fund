@@ -15,7 +15,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   constructor(service: LeekFundService) {
     this.service = service;
     this.model = new LeekFundModel();
-    this.order = this.model.getCfg('leek-fund.fundSortType') || SortType.NORMAL;
+    this.order = this.model.getCfg('leek-fund.fundSort') || SortType.NORMAL;
   }
 
   refresh(): any {
@@ -45,7 +45,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
-    this.model.setConfig('leek-fund.fundSortType', this.order);
+    this.model.setConfig('leek-fund.fundSort', this.order);
     this.refresh();
   }
 }

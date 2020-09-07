@@ -369,12 +369,12 @@
           "default": "arrow",
           "description": "基金&股票涨跌图标（目前支持两种：arrow 和 food）"
         },
-        "leek-fund.fundSortType": {
+        "leek-fund.fundSort": {
           "type": "number",
           "default": 0,
           "description": "基金排序方式(0正常、1升序、-1倒序)"
         },
-        "leek-fund.stockSortType": {
+        "leek-fund.stockSort": {
           "type": "number",
           "default": 0,
           "description": "股票排序方式(0正常、1升序、-1倒序)"
