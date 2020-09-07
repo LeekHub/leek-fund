@@ -48,7 +48,7 @@ function stockTrend(code: string, name: string, text: string, stockCode: string)
     // console.log(dailyK);
   }
 
-  panel.webview.html = panel.webview.html = `<html><body style="background:#eee;color:#333">
+  panel.webview.html = panel.webview.html = `<html><body style="background:#000;color:#fff">
   <br/>
   <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」趋势图、K线图</p>
   <hr />
