@@ -162,7 +162,7 @@ async function donate() {
         font-size: 14px;
       }
       .update-time {
-        font-size: 12px;
+        font-size: 11px;
       }
     </style>
   </head>
