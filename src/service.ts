@@ -431,7 +431,10 @@ export class LeekFundService {
             type = code.substr(0, 4);
           }
           if (stockItem) {
-            const { yestclose, price } = stockItem;
+            const { yestclose, price, open } = stockItem;
+            if (open === price && price === '0.00') {
+              stockItem.isStop = true;
+            }
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;

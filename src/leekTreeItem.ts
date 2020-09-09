@@ -47,6 +47,7 @@ export interface FundInfo {
   volume?: string; // 成交量
   amount?: string; // 成交额
   earnings?: number;
+  isStop?: boolean; // 停牌
   t2?: boolean;
   isUpdated?: boolean;
   showEarnings?: boolean;
@@ -76,6 +77,7 @@ export class LeekTreeItem extends TreeItem {
       amount,
       earnings,
       time,
+      isStop,
       t2,
     } = info;
     let _percent: number | string = Math.abs(percent);
@@ -114,6 +116,9 @@ export class LeekTreeItem extends TreeItem {
       }
       _percent = '-' + _percent;
     }
+    if (isStop) {
+      icon = 'stop';
+    }
     let iconPath = '';
     if (showLabel) {
       iconPath =
@@ -127,14 +132,20 @@ export class LeekTreeItem extends TreeItem {
     }
     let text = '';
     if (showLabel) {
-      text = isStock
-        ? `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`, 11)}${formatTreeText(
-            price,
-            15
-          )}「${name}」`
-        : `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
+      if (isStock) {
+        const risePercent = isStop
+          ? formatTreeText('停牌', 11)
+          : formatTreeText(`${_percent}%`, 11);
+        text = `${!isIconPath ? iconPath : ''}${risePercent}${formatTreeText(
+          price,
+          15
+        )}「${name}」`;
+      } else {
+        text =
+          `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !global.showEarnings ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
           }` + `${t2 ? `(${time})` : ''}`;
+      }
     } else {
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
