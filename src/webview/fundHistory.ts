@@ -1,14 +1,36 @@
+import Axios from 'axios';
 import { ViewColumn } from 'vscode';
 import { LeekTreeItem } from '../leekTreeItem';
 import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { LeekFundService } from '../service';
+import { randHeader } from '../utils';
 
-async function fundHistory(service: LeekFundService, item: LeekTreeItem) {
+const fundHistoryUrl = (code: string): string => {
+  return `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=49`;
+};
+
+async function getFundHistoryByCode(code: string) {
+  try {
+    const response = await Axios.get(fundHistoryUrl(code), {
+      headers: randHeader(),
+    });
+
+    const idxs = response.data.indexOf('"<table');
+    const lastIdx = response.data.indexOf('</table>"');
+    const content = response.data.slice(idxs + 1, lastIdx);
+    // console.log(idxs, lastIdx, content);
+    return { code, content };
+  } catch (err) {
+    console.log(err);
+    return { code, content: '历史净值获取失败' };
+  }
+}
+
+async function fundHistory(item: LeekTreeItem) {
   const { code, name } = item.info;
-  const res = await service.getFundHistoryByCode(code);
+  const res = await getFundHistoryByCode(code);
   const panel = ReusedWebviewPanel.create(
-    'fundRankWebview',
-    `基金持仓&历史净值(${code})`,
+    'fundHistoryWebview',
+    `基金历史净值(${code})`,
     ViewColumn.One,
     {
       enableScripts: true,
@@ -37,23 +59,19 @@ async function fundHistory(service: LeekFundService, item: LeekTreeItem) {
   .fund-sstrend{
     width:700px;
   }
+  .box {
+    border-top: 1px solid #bababa;
+    padding: 10px;
+    margin-top:20px;
+  }
   </style>
   <body>
-    <br/>
-    <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」持仓信息</p>
-    <div class="trend"><img
-      class="fund-sstrend"
-      src="http://j6.dfcfw.com/charts/StockPos/${code}.png?rt=${new Date().getTime()}"
-      alt="「${name}」- ${code}"
-    />
-    <p>
-    <a href="http://fundf10.eastmoney.com/ccmx_${code}.html" target="_blank">查看全部持仓明细>></a>
-    </p>
-    </div>
+
     <div class="history">
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
-    <hr />
+    <div class="box">
     ${res.content}
+    </div>
     </div>
   </body></html>`;
 }

@@ -71,61 +71,9 @@ export class LeekFundService {
     this._barStockList = value;
   }
 
-  private fundUrl(code: string): string {
-    const fundUrl = `http://fundgz.1234567.com.cn/js/${code}.js?rt="${new Date().getTime()}`;
-    return fundUrl;
-  }
-  private fundHistoryUrl(code: string): string {
-    const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=24`;
-    return fundUrl;
-  }
-  private stockUrl(codes: Array<string>): string {
-    return `https://hq.sinajs.cn/list=${codes.join(',')}`;
-  }
-
   toggleLabel() {
     this.showLabel = !this.showLabel;
   }
-
-  /*
-  // 老接口
-  singleFund(code: string): Promise<FundInfo> {
-    const url = this.fundUrl(code);
-    return new Promise((resolve) => {
-      axios
-        // @ts-ignore
-        .get(url, { headers: randHeader() })
-        .then((rep) => {
-          const data = JSON.parse(rep.data.slice(8, -2));
-          const { gszzl, gztime, name } = data;
-          resolve({ percent: gszzl, code, time: gztime, name });
-        })
-        .catch(() => resolve({ percent: 'NaN', name: '接口不支持该基金实时信息', code }));
-    });
-  }
-
-  async getFundData2(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
-    console.log('fetching fund data……');
-    const promiseAll = [];
-    for (const fundCode of fundCodes) {
-      promiseAll.push(this.singleFund(fundCode));
-    }
-    try {
-      const result = await Promise.all(promiseAll);
-      const data = result.map((item) => {
-        item.showLabel = this.showLabel;
-        return new LeekTreeItem(item, this.context);
-      });
-
-      this.fundList = sortData(data, order);
-      // console.log(data);
-      return this.fundList;
-    } catch (err) {
-      console.log(err);
-      return this.fundList;
-    }
-  }
-   */
 
   static qryFundMNFInfo(fundCodes: string[]): Promise<any> {
     const params: any = {
@@ -279,30 +227,14 @@ export class LeekFundService {
     }
   }
 
-  async getFundHistoryByCode(code: string) {
-    try {
-      const response = await axios.get(this.fundHistoryUrl(code), {
-        headers: randHeader(),
-      });
-
-      const idxs = response.data.indexOf('"<table');
-      const lastIdx = response.data.indexOf('</table>"');
-      const content = response.data.slice(idxs + 1, lastIdx);
-      // console.log(idxs, lastIdx, content);
-      return { code, content };
-    } catch (err) {
-      console.log(err);
-      return { code, content: '历史净值获取失败' };
-    }
-  }
-
   async getStockData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
     const statusBarStocks = this.model.getCfg('leek-fund.statusBarStock');
-    const url = this.stockUrl(codes);
+
+    const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {
       const resp = await axios.get(url, {
         // axios 乱码解决

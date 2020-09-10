@@ -124,7 +124,7 @@ function getWebviewContent(list: any[] = []) {
           <div class="info"></div>
         </div>
       </div>
-      <script src="https://cdn.bootcss.com/jquery/1.11.0/jquery.min.js"></script>
+      <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
       <script>
         const vscode = acquireVsCodeApi();

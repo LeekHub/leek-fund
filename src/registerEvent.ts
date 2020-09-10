@@ -19,6 +19,7 @@ import fundTrend from './webview/fundTrend';
 import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
+import fundPosition from './webview/fundPosition';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -134,7 +135,9 @@ export function registerViewEvent(
     commands.registerCommand('leet-fund.fundItemClick', (code, name) => fundTrend(code, name))
   );
   // 基金右键历史信息点击
-  commands.registerCommand('leek-fund.viewFundHistory', (item) => fundHistory(service, item));
+  commands.registerCommand('leek-fund.viewFundHistory', (item) => fundHistory(item));
+  // 基金持仓
+  commands.registerCommand('leek-fund.viewFundPosition', (item) => fundPosition(item));
   // 基金排行
   commands.registerCommand('leek-fund.viewFundRank', () => fundRank(service));
   // 基金走势图
