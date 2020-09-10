@@ -432,9 +432,9 @@ export class LeekFundService {
           }
           if (stockItem) {
             const { yestclose, price, open } = stockItem;
-            if (open === price && price === '0.00') {
+            /*  if (open === price && price === '0.00') {
               stockItem.isStop = true;
-            }
+            } */
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;
