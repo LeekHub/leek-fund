@@ -9,6 +9,16 @@ const formatNum = (n: number) => {
   return m[1] ? m : '0' + m;
 };
 
+export const objectToQueryString = (queryParameters: Object): string => {
+  return queryParameters
+    ? Object.entries(queryParameters).reduce((queryString, [key, val], index) => {
+        const symbol = queryString.length === 0 ? '?' : '&';
+        queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
+        return queryString;
+      }, '')
+    : '';
+};
+
 export const formatDate = (date: Date, seperator = '-') => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;

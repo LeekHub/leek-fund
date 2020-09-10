@@ -10,6 +10,7 @@ import {
   sortData,
   toFixed,
   caculateEarnings,
+  objectToQueryString,
 } from './utils';
 import { LeekFundModel } from './views/model';
 
@@ -127,39 +128,35 @@ export class LeekFundService {
    */
 
   static qryFundMNFInfo(fundCodes: string[]): Promise<any> {
+    const params: any = {
+      pageIndex: 1,
+      pageSize: fundCodes.length,
+      appType: 'ttjj',
+      product: 'EFund',
+      plat: 'Android',
+      deviceid: global.deviceId,
+      Version: 1,
+      Fcodes: fundCodes.join(','),
+    };
+
     return new Promise((resolve) => {
-      const params: any = {
-        pageIndex: 1,
-        pageSize: fundCodes.length,
-        plat: 'Android',
-        appType: 'ttjj',
-        product: 'EFund',
-        Version: 1,
-        deviceid: global.deviceId,
-        Fcodes: fundCodes.join(','),
-      };
       if (!params.deviceid || !params.Fcodes) {
         resolve([]);
+      } else {
+        const url =
+          'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo' + objectToQueryString(params);
+        axios
+          .get(url, {
+            headers: randHeader(),
+          })
+          .then((resp) => {
+            resolve(resp.data);
+          })
+          .catch((err) => {
+            console.error(err);
+            resolve([]);
+          });
       }
-
-      const paramsArr = [];
-      for (let key in params) {
-        if (key && params[key]) {
-          paramsArr.push(key + '=' + params[key]);
-        }
-      }
-
-      axios
-        .get('https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' + paramsArr.join('&'), {
-          headers: randHeader(),
-        })
-        .then((resp) => {
-          resolve(resp.data);
-        })
-        .catch((err) => {
-          console.error(err);
-          resolve([]);
-        });
     });
   }
 
