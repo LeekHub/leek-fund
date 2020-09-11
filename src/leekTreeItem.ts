@@ -45,7 +45,7 @@ export interface FundInfo {
   updown?: string; // 涨跌值 price-yestclose
   price?: string; // 当前价格
   volume?: string; // 成交量
-  amount?: string; // 成交额
+  amount?: string | number; // 成交额
   earnings?: number;
   isStop?: boolean; // 停牌
   t2?: boolean;
@@ -74,7 +74,7 @@ export class LeekTreeItem extends TreeItem {
       low,
       updown,
       volume,
-      amount,
+      amount = 0,
       earnings,
       time,
       isStop,
@@ -143,7 +143,7 @@ export class LeekTreeItem extends TreeItem {
       } else {
         text =
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
-            t2 || !global.showEarnings ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
+            t2 || !(global.showEarnings && amount > 0) ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
           }` + `${t2 ? `(${time})` : ''}`;
       }
     } else {

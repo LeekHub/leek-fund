@@ -120,19 +120,20 @@ export class LeekFundService {
         const time = item.GZTIME.substr(0, 10);
         const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
+        let amount = 0;
         // 不填写的时候不计算
         if (keyLength) {
-          const money = fundAmountObj[FCODE]?.amount || 0;
+          amount = fundAmountObj[FCODE]?.amount || 0;
           const price = fundAmountObj[FCODE]?.price || 0;
           // const priceDate = fundAmountObj[FCODE]?.priceDate || '';
           const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
           // 闭市的时候显示上一次盈亏
           earnings =
-            money === 0
+            amount === 0
               ? 0
               : isUpdated
               ? yestEarnings
-              : toFixed(caculateEarnings(money, price, GSZ));
+              : toFixed(caculateEarnings(amount, price, GSZ));
         }
 
         const obj = {
@@ -144,9 +145,10 @@ export class LeekFundService {
           showLabel: this.showLabel,
           earnings,
           isUpdated,
+          amount,
           t2: GSZZL == '--' ? true : false, // 海外基金t2
           time: GSZZL == '--' ? PDATE : GZTIME, // 更新时间
-          showEarnings: keyLength > 0,
+          showEarnings: keyLength > 0 && amount !== 0,
         };
         return new LeekTreeItem(obj, this.context);
       });
