@@ -163,8 +163,8 @@ function getWebviewContent(list: any[] = []) {
 
           $('.amountInput').on('input', function (e) {
             const value = e.target.value;
-            if (value.length > 7) {
-              e.target.value = value.slice(0, 7);
+            if (value.length > 12) {
+              e.target.value = value.slice(0, 12);
             }
           });
 
