@@ -318,6 +318,10 @@ table.jlchg .tor {
   text-align: center;
     margin-top: 10px;
 }
+#container{
+  width:100%;
+  height:450px
+}
   </style>
   <body>
     <br/>
@@ -327,15 +331,15 @@ table.jlchg .tor {
       src="http://j6.dfcfw.com/charts/StockPos/${code}.png?rt=${new Date().getTime()}"
       alt="「${name}」- ${code}"
     />
-    <p>
-    <a href="http://fundf10.eastmoney.com/ccmx_${code}.html" target="_blank">查看全部持仓明细>></a>
-    </p>
     </div>
+    <div id="container"></div>
     <div class="history">
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」持仓明细</p>
     ${content}
     </div>
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
     <script>
     // 好垃圾的代码，从天天基金拔下来的
     $(function(){
@@ -357,12 +361,13 @@ table.jlchg .tor {
   }
     function GpzdData(e, a) {
       var t = "https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f12,f14,f9&cb=?&ut=267f9ad526dbe6b0262ab19316f5a25b&secids=" + e[a];
-      console.log(t)
+      // console.log(t)
       jQuery.getJSON(t, function(e) {
-        console.log(e)
+        // console.log(e)
           var a, t = new Array, n = new Array, l = new Array, r = new Array;
           if (null != e && null != e.data && null != e.data.diff) {
               a = e.data.diff;
+              rectChart(a);
               for (var i = 0; i < a.length; i++) {
                   if (null != a[i]) {
                       var s = a[i]
@@ -411,6 +416,134 @@ table.jlchg .tor {
       setTimeout(function() {
           setClass2(e, t)
       }, 900)
+  }
+
+  var chart;
+  function rectChart(arr) {
+    if(chart && !chart.destroyed){
+      chart.destroy();
+    }
+    let valueArr = [];
+    if(arr.length===0) return;
+    const { DataView } = DataSet;
+    const relationMap = arr.map((item) => {
+      const { f2, f3, f9, f12, f14 } = item;
+      return {
+        name: f14 + '  ' + f3 + '%',
+        code: f12,
+        price: f2,
+        percent: f3,
+        value: Math.ceil(f2 * f9),
+      };
+    });
+    const data = {
+      name: 'root',
+      children: relationMap,
+    };
+    const dv = new DataView();
+    dv.source(data, {
+      type: 'hierarchy',
+    }).transform({
+      field: 'value',
+      type: 'hierarchy.treemap',
+      tile: 'treemapResquarify',
+      as: ['x', 'y'],
+    });
+
+    // 将 DataSet 处理后的结果转换为 G2 接受的数据
+    const nodes = [];
+    for (const node of dv.getAllNodes()) {
+      if (node.data.name === 'root') {
+        continue;
+      }
+      valueArr.push(node.data.value);
+      const eachNode = {
+        name: node.data.name,
+        x: node.x,
+        y: node.y,
+        code: node.data.code,
+        value: node.data.value,
+        price: node.data.price,
+        percent: node.data.percent,
+      };
+
+      nodes.push(eachNode);
+    }
+    valueArr = valueArr.sort((a, b) => a - b);
+    const middleIndex = Math.ceil(valueArr.length / 2);
+     chart = new G2.Chart({
+      container: 'container',
+      autoFit: true,
+      height: 400,
+    });
+    chart.data(nodes);
+    chart.scale({
+      x: {
+        nice: true,
+      },
+      y: {
+        nice: true,
+      },
+    });
+
+    chart.axis(false);
+    chart.legend(false);
+    chart.tooltip({
+      showTitle: false,
+      showMarkers: false,
+      itemTpl:
+        '<li style="list-style: none;">' +
+        '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+        '{name}<br/><br/>' +
+        '<span style="padding-left: 16px;margin-top:4px">股票代码：{code}</span><br/>' +
+        '<span style="padding-left: 16px;margin-top:4px">最新价格：{price}</span><br/>' +
+        '</li><br/><br/>',
+    });
+    chart
+      .polygon()
+      .position('x*y')
+      .color('value*percent', (value, percent) => {
+        if (percent > 0) {
+          return '#F44336';
+        }
+        return 'green';
+      })
+      .tooltip('name*price*code', (name, price, code) => {
+        return {
+          name,
+          price,
+          code,
+        };
+      })
+      .style({
+        lineWidth: 2,
+        stroke: '#fff',
+      })
+      .label('name*value', (name, value) => {
+        let labelStyle = {
+          offset: 0,
+          style: {
+            textBaseline: 'middle',
+            fontSize: 12,
+          },
+          content: (obj) => {
+            if (obj.name !== 'root') {
+              return obj.name;
+            }
+          },
+        };
+        // console.log(value, valueArr[middleIndex]);
+        if (value > valueArr[middleIndex]) {
+          console.log(value, middleIndex);
+          labelStyle.style.fontSize = 20;
+          return labelStyle;
+        }
+        return labelStyle;
+      });
+
+    chart.interaction('element-active');
+
+    chart.render();
   }
     </script>
   </body></html>`;
