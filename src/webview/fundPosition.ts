@@ -492,12 +492,18 @@ table.jlchg .tor {
       showTitle: false,
       showMarkers: false,
       itemTpl:
+        '<ul style="padding-bottom: 10px;margin-left:-30px"><li style="list-style: none;">' +
+        '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+        '{name}' +
+        '</li>' +
         '<li style="list-style: none;">' +
         '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
-        '{name}<br/><br/>' +
-        '<span style="padding-left: 16px;margin-top:4px">股票代码：{code}</span><br/>' +
-        '<span style="padding-left: 16px;margin-top:4px">最新价格：{price}</span><br/>' +
-        '</li><br/><br/>',
+        '<span style="margin-top:4px">股票代码：{code}</span><br/>' +
+        '</li>' +
+        '<li style="list-style: none;">' +
+        '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+        '<span style="margin-top:4px">最新价格：{price}</span><br/>' +
+        '</li></ul>',
     });
     chart
       .polygon()
