@@ -127,7 +127,7 @@ export function registerViewEvent(
   // 股票点击
   context.subscriptions.push(
     commands.registerCommand('leet-fund.stockItemClick', (code, name, text, stockCode) =>
-      stockTrend(code, name, text, stockCode)
+      stockTrend(code, name, stockCode)
     )
   );
   // 基金点击
@@ -244,7 +244,7 @@ export function registerViewEvent(
           if (codes.length > 4) {
             codes = codes.slice(0, 4);
           }
-          console.log(codes.length);
+          // console.log(codes.length);
           leekModel.updateStatusBarStockCfg(codes, () => {
             const handler = window.setStatusBarMessage(`下次数据刷新见效`);
             setTimeout(() => {
