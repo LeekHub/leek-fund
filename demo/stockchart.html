@@ -1,94 +1,28 @@
-import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
-
-function fundTrend(code: string, name: string) {
-  const panel = ReusedWebviewPanel.create(
-    'fundTrendWebview',
-    `基金实时走势(${code})`,
-    ViewColumn.One,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    }
-  );
-  panel.webview.html = `<html>
-  <style>
-  .lsjz{
-    width: 100%;
-    min-width:600px;
-    text-align: center;
-  }
-  .red{
-    color:red;
-  }
-  .grn{
-    color:green;
-  }
-  .history{padding: 32px 24px;}
-  .trend{
-    width: 700px;
-    margin: 10px auto;
-    text-align: center;
-  }
-  .fund-sstrend{
-    width:700px;
-    background: #f1f0f0;
-  }
-  .title{
-    text-align:center;
-    font-size:18px;
-  }
-  .chart{
-    margin-bottom:30px;
-    width:100%;
-  }
-  </style>
-  <script src="http://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=${new Date().getTime()}"></script>
-  <script src="http://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=${new Date().getTime()}"></script>
-  <script src="http://fund.eastmoney.com/pingzhongdata/${code}.js?v=${new Date().getTime()}"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="http://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=20200912101443"></script>
+    <script src="http://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=20200912101443"></script>
+    <script src="http://fund.eastmoney.com/pingzhongdata/519674.js?v=20200912101443"></script>
+  </head>
   <body>
-    <br/>
-    <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
-    <div class="trend"><img
-      class="fund-sstrend"
-      src="http://j4.dfcfw.com/charts/pic6/${code}.png?v=${new Date().getTime()}"
-      alt=""
-    />
-   <!-- <p class="title" style="text-align: center; font-size:18px; width: 400px;margin: 20px auto;">历史趋势图</p>
-    <img
-    class="fund-sstrend"
-      src="http://j3.dfcfw.com/images/JJJZ1/${code}.png"
-      alt=""
-    /> -->
-    </div>
+    <p class="title">单位净值走势</p>
     <div
       id="netWorthTrend"
-      class="netWorthTrend chart"
-      style="height: 420px;margin-top:30px;"
+      class="netWorthTrend hasLoading"
+      style="width: 700px; height: 420px"
     ></div>
+    <p class="title">累计收益率走势</p>
     <div
       id="grandTotalCharsWrap"
-      class="grandTotalCharsWrap chart"
-      style=" height: 420px;"
+      class="grandTotalCharsWrap hasLoading"
+      style="width: 700px; height: 420px; margin-top: 40px"
     ></div>
+
     <script>
-    var sstrendImgEl = document.querySelector('.fund-sstrend');
-    var timer=null;
-    var code="${code}";
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-    timer = setInterval(function () {
-      sstrendImgEl.src =
-        'http://j4.dfcfw.com/charts/pic6/' +
-       code+
-        '.png?v=' +
-        new Date().getTime();
-      console.log('刷新数据' + code);
-    }, 20000);
-  </script>
-  <script>
       var highcharsConfig = {
         global: {
           useUTC: true,
@@ -133,9 +67,6 @@ function fundTrend(code: string, name: string) {
             chart: {
               marginRight: 20,
             },
-            title: {
-              text: '「${name}」单位净值走势'
-           },
             tooltip: {
               xDateFormat: '%Y-%m-%d',
               pointFormat: '<p>单位净值：{point.y:.4f}元</p>',
@@ -253,6 +184,9 @@ function fundTrend(code: string, name: string) {
               opposite: false,
               reversed: false,
             },
+            title: {
+              text: '',
+            },
             xAxis: {
               endOnTick: true,
               maxPadding: 0.05,
@@ -344,9 +278,6 @@ function fundTrend(code: string, name: string) {
           chart: {
             marginRight: 20,
           },
-          title: {
-            text: '「${name}」累计收益率走势'
-         },
           noData: {
             style: {
               fontSize: '14px',
@@ -472,7 +403,5 @@ function fundTrend(code: string, name: string) {
       defineNetWorthTrend.prototype.init(Data_netWorthTrend);
       addGrandTotalMap(Data_grandTotal, 'y');
     </script>
-  </body></html>`;
-}
-
-export default fundTrend;
+  </body>
+</html>
