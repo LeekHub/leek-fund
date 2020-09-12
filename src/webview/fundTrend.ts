@@ -142,7 +142,7 @@ function fundTrend(code: string, name: string) {
             },
             credits: {
               text:
-                '<span style="font-size:16px;color:#999999;font-family: Microsoft YaHei;">天天基金网</span>',
+                '<span style="font-size:16px;color:#999999;font-family: Microsoft YaHei;">韭菜盒子</span>',
               href: 'javascript:;',
               position: {
                 align: 'center',
@@ -356,7 +356,7 @@ function fundTrend(code: string, name: string) {
           //   colors: ['#4c74b1', '#a44949', '#666'],
           credits: {
             text:
-              '<span style="font-size:16px;color:#999999;font-family: Microsoft YaHei;">天天基金网</span>',
+              '<span style="font-size:16px;color:#999999;font-family: Microsoft YaHei;">韭菜盒子</span>',
             href: 'javascript:;',
             position: {
               align: 'center',
