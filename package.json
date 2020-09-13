@@ -167,6 +167,10 @@
         "title": "删除股票"
       },
       {
+        "command": "leek-fund.stockTrendPic",
+        "title": "股票走势（图片版）"
+      },
+      {
         "command": "leek-fund.viewFundFlow",
         "title": "资金流向",
         "icon": {
@@ -281,6 +285,11 @@
           "group": "group1"
         },
         {
+          "command": "leek-fund.stockTrendPic",
+          "when": "view == leekFundView.stock",
+          "group": "group2"
+        },
+        {
           "command": "leek-fund.setStockTop",
           "when": "view == leekFundView.stock",
           "group": "inline"
@@ -288,7 +297,7 @@
         {
           "command": "leek-fund.deleteStock",
           "when": "view == leekFundView.stock",
-          "group": "group2"
+          "group": "group3"
         },
         {
           "command": "leek-fund.viewUserTimeline",

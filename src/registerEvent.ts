@@ -20,6 +20,7 @@ import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import fundPosition from './webview/fundPosition';
+import stockTrendPic from './webview/stockTrendPic';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -126,13 +127,13 @@ export function registerViewEvent(
    */
   // 股票点击
   context.subscriptions.push(
-    commands.registerCommand('leet-fund.stockItemClick', (code, name, text, stockCode) =>
+    commands.registerCommand('leek-fund.stockItemClick', (code, name, text, stockCode) =>
       stockTrend(code, name, stockCode)
     )
   );
   // 基金点击
   context.subscriptions.push(
-    commands.registerCommand('leet-fund.fundItemClick', (code, name) => fundTrend(code, name))
+    commands.registerCommand('leek-fund.fundItemClick', (code, name) => fundTrend(code, name))
   );
   // 基金右键历史信息点击
   commands.registerCommand('leek-fund.viewFundHistory', (item) => fundHistory(item));
@@ -163,6 +164,10 @@ export function registerViewEvent(
       return;
     }
     setAmount(service.fundList, leekModel);
+  });
+  commands.registerCommand('leek-fund.stockTrendPic', (target) => {
+    const { code, name, type, symbol } = target.info;
+    stockTrendPic(code, name, `${type}${symbol}`);
   });
 
   /**
