@@ -10,6 +10,22 @@
     <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
     <script>
+      var stockPercentMap = {};
+      getStockPercent();
+      function getStockPercent() {
+        var table = document.querySelector('.comm');
+        var tbody = table.querySelector('tbody');
+        var trList = tbody.children;
+        stockPercentMap = {};
+        for (var i = 0; i < trList.length; i++) {
+          var tds = trList[i].children;
+          stockPercentMap[
+            tds[1].firstChild.innerText
+          ] = +tds[6].innerText.replace('%', '');
+        }
+      }
+    </script>
+    <script>
       rectChart();
       var chart;
       function rectChart() {

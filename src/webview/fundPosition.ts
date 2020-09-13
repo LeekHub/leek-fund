@@ -29,7 +29,6 @@ async function getFundPositionByCode(code: string) {
         "onclick='LoadMore(this,3,LoadStockPos)'",
         `href='http://fundf10.eastmoney.com/ccmx_${code}.html'`
       );
-    console.log(data);
     return JSON.parse(data).content;
   } catch (err) {
     console.log(err);
@@ -319,8 +318,8 @@ table.jlchg .tor {
     margin-top: 10px;
 }
 #container{
-  width:100%;
-  height:450px
+  width:800px;
+  margin:0 auto;
 }
   </style>
   <body>
@@ -341,6 +340,20 @@ table.jlchg .tor {
     <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
     <script>
+    var stockPercentMap = {};
+
+      function getStockPercent() {
+        var table = document.querySelector('.comm');
+        var tbody = table.querySelector('tbody');
+        var trList = tbody.children;
+        stockPercentMap = {};
+        for (var i = 0; i < trList.length; i++) {
+          var tds = trList[i].children;
+          stockPercentMap[
+            tds[1].firstChild.innerText
+          ] = +tds[6].innerText.replace('%', '');
+        }
+      }
     // 好垃圾的代码，从天天基金拔下来的
     $(function(){
       var d=document.getElementById("gpdmList").innerHTML
@@ -348,6 +361,8 @@ table.jlchg .tor {
      setInterval(function(){
       LoadGpzd(d);
      },20000)
+
+     getStockPercent();
     })
     function LoadGpzd(e) {
       if ("" != e) {
@@ -384,7 +399,7 @@ table.jlchg .tor {
                               c.className = "ping") : (t.push("zhang"),
                               c.className = "zhang")
                           } catch (p) {
-                            console.log(p)
+                            // console.log(p)
                               t.push("ping"),
                               c.className = "zhang"
                           }
@@ -433,7 +448,7 @@ table.jlchg .tor {
         code: f12,
         price: f2,
         percent: f3,
-        value: Math.ceil(f2 * f9),
+        value: stockPercentMap[f12] || Math.ceil(f2 * f9),
       };
     });
     const data = {
@@ -473,7 +488,8 @@ table.jlchg .tor {
     const middleIndex = Math.ceil(valueArr.length / 2);
      chart = new G2.Chart({
       container: 'container',
-      autoFit: true,
+      autoFit: false,
+      width: 800,
       height: 400,
     });
     chart.data(nodes);
@@ -540,7 +556,6 @@ table.jlchg .tor {
         };
         // console.log(value, valueArr[middleIndex]);
         if (value > valueArr[middleIndex]) {
-          console.log(value, middleIndex);
           labelStyle.style.fontSize = 20;
           return labelStyle;
         }
