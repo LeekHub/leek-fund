@@ -144,7 +144,7 @@ export function registerViewEvent(
   // 基金走势图
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(service));
   // 资金流向
-  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
+  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow(context));
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
     leekModel.setFundTopCfg(target.id, () => {
@@ -360,7 +360,7 @@ export function registerViewEvent(
     })
   );
 
-  context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate()));
+  context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
 
   checkForUpdate();
 }
