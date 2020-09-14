@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -372,6 +372,11 @@
           ],
           "description": "雪球用户id（进入雪球用户首页，复制/u/后的数字即可，比如 https://xueqiu.com/u/5124430882 链接的 5124430882）"
         },
+        "leek-fund.xueqiuCookie": {
+          "type": "string",
+          "default": "",
+          "description": "由于防爬虫机制，需要用户设置雪球网站cookie"
+        },
         "leek-fund.fundAmount": {
           "type": "object",
           "default": {},
@@ -410,7 +415,7 @@
       },
       {
         "view": "leekFundView.news",
-        "contents": "无数据，请检查网络或添加关注用户"
+        "contents": "无数据，请检查网络或添加关注用户\n [设置cookie](command:leek-fund.setXueqiuCookie)"
       },
       {
         "view": "leekFundView.settings",

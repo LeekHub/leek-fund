@@ -216,6 +216,24 @@ export function registerViewEvent(
     });
   });
 
+  commands.registerCommand('leek-fund.setXueqiuCookie', (target) => {
+    window
+      .showInputBox({
+        placeHolder:
+          '由于防爬虫机制，需要用户设置雪球网站 Cookie（进入雪球网站按F12——>NetWork 复制请求头的 Cookie 值）',
+      })
+      .then(async (cookieString = '') => {
+        const cookie = cookieString.trim();
+        if (!cookie) {
+          return;
+        }
+        console.log(cookie);
+        leekModel.setConfig('leek-fund.xueqiuCookie', cookie).then(() => {
+          newsProvider.refresh();
+        });
+      });
+  });
+
   /**
    * Settings command
    */

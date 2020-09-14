@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { TreeItem, Uri } from 'vscode';
-import { randHeader, XUEQIU_COOKIE } from '../utils';
+import { TreeItem, Uri, workspace } from 'vscode';
+import { randHeader } from '../utils';
 
 export class NewsTreeItem extends TreeItem {}
 
@@ -11,7 +11,9 @@ export class NewsService {
     const treeItems = [];
     const promiseList = [];
     const headers = {};
-    Object.assign(headers, randHeader(), { Cookie: XUEQIU_COOKIE });
+    const config = workspace.getConfiguration();
+    const xueqiuCookie = config.get('leek-fund.xueqiuCookie');
+    Object.assign(headers, randHeader(), { Cookie: xueqiuCookie });
     for (let userId of userIds) {
       const url = `https://xueqiu.com/statuses/original/show.json?user_id=${userId}`;
       const p = axios.get(url, { headers });
@@ -43,7 +45,9 @@ export class NewsService {
     let newsList: any[] = [];
     const url = `https://xueqiu.com/v4/statuses/user_timeline.json?page=1&user_id=${userId}`;
     const headers = {};
-    Object.assign(headers, randHeader(), { Cookie: XUEQIU_COOKIE });
+    const config = workspace.getConfiguration();
+    const xueqiuCookie = config.get('leek-fund.xueqiuCookie');
+    Object.assign(headers, randHeader(), { Cookie: xueqiuCookie });
     const result = await axios.get(url, { headers }).catch((err) => console.error(err));
     if (result && result.status === 200) {
       const {
