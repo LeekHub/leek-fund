@@ -6,9 +6,13 @@ import { formatTreeText } from './utils';
 
 export class LeekTreeItem extends TreeItem {
   info: FundInfo;
-  constructor(info: FundInfo, context: ExtensionContext) {
+  type: string | undefined;
+  isCategory: boolean;
+  contextValue: string | undefined;
+  constructor(info: FundInfo, context: ExtensionContext | undefined, isCategory = false) {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
+    this.isCategory = isCategory;
     const {
       showLabel,
       isStock,
@@ -29,7 +33,10 @@ export class LeekTreeItem extends TreeItem {
       time,
       isStop,
       t2,
+      contextValue,
     } = info;
+    this.type = type;
+    this.contextValue = contextValue;
     let _percent: number | string = Math.abs(percent);
     if (isNaN(_percent)) {
       _percent = '--';
@@ -69,14 +76,14 @@ export class LeekTreeItem extends TreeItem {
     if (isStop) {
       icon = 'stop';
     }
-    let iconPath = '';
+    let iconPath: string | undefined = '';
     if (showLabel) {
       iconPath =
         globalState.iconType !== IconType.ICON_FOOD
-          ? context.asAbsolutePath(join('resources', `${icon}.svg`))
+          ? context?.asAbsolutePath(join('resources', `${icon}.svg`))
           : icon;
     }
-    const isIconPath = iconPath.lastIndexOf('.svg') !== -1;
+    const isIconPath = iconPath?.lastIndexOf('.svg') !== -1;
     if (isIconPath) {
       this.iconPath = iconPath;
     }
@@ -105,7 +112,7 @@ export class LeekTreeItem extends TreeItem {
     }
 
     this.label = text;
-    this.id = code;
+    this.id = info.id || code;
     this.command = {
       title: name, // 标题
       command: isStock ? 'leek-fund.stockItemClick' : 'leek-fund.fundItemClick', // 命令 ID

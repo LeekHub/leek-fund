@@ -1,8 +1,9 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
-import { LeekFundService } from './service';
-import { SortType } from '../shared';
+import { defaultFundInfo, SortType, StockCategory } from '../shared';
 import { LeekFundModel } from './model';
+import { LeekFundService } from './service';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
@@ -23,17 +24,112 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
-    const stockCodes = this.model.getConfig('leek-fund.stocks') || [];
-    return this.service.getStockData(stockCodes, this.order);
+  getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    if (!element) {
+      // Root view
+      return this.getRootNodes();
+    } else {
+      const stockCodes = this.model.getConfig('leek-fund.stocks') || [];
+      const resultPromise = this.service.getStockData(stockCodes, this.order);
+      // console.log(element.id);
+      switch (
+        element.id // First-level
+      ) {
+        case StockCategory.A:
+          return this.getAStockNodes(resultPromise);
+        case StockCategory.HK:
+          return this.getHkStockNodes(resultPromise);
+        case StockCategory.US:
+          return this.getUsStockNodes(resultPromise);
+        default:
+          return [];
+        // return this.getChildrenNodesById(element.id);
+      }
+    }
   }
 
-  getParent(element: LeekTreeItem): LeekTreeItem | null {
-    return null;
+  getParent(element: LeekTreeItem): LeekTreeItem | undefined {
+    return undefined;
   }
 
   getTreeItem(element: LeekTreeItem): TreeItem {
-    return element;
+    if (!element.isCategory) {
+      return element;
+    } else {
+      return {
+        id: element.id,
+        label: element.info.name,
+        // tooltip: this.getSubCategoryTooltip(element),
+        collapsibleState:
+          element.id === StockCategory.A
+            ? TreeItemCollapsibleState.Expanded
+            : TreeItemCollapsibleState.Collapsed,
+        // iconPath: this.parseIconPathFromProblemState(element),
+        command: undefined,
+        contextValue: element.contextValue,
+      };
+    }
+  }
+
+  getRootNodes(): LeekTreeItem[] {
+    return [
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.A,
+          name: `${StockCategory.A}${
+            globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : 0
+          }`,
+        }),
+        undefined,
+        true
+      ),
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.HK,
+          name: `${StockCategory.HK}${
+            globalState.hkStockCount > 0 ? `(${globalState.hkStockCount})` : 0
+          }`,
+        }),
+        undefined,
+        true
+      ),
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.US,
+          name: `${StockCategory.US}${
+            globalState.usStockCount > 0 ? `(${globalState.usStockCount})` : 0
+          }`,
+        }),
+        undefined,
+        true
+      ),
+      /*     new LeekTreeItem(
+        Object.assign({}, defaultFundInfo, {
+          id: StockCategory.Other,
+          name: `${StockCategory.Other}(${globalState.otherStockCount})`,
+        }),
+        undefined,
+        true
+      ), */
+    ];
+  }
+  getAStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    const aStocks: Promise<LeekTreeItem[]> = stocks.then((res: LeekTreeItem[]) => {
+      const arr = res.filter((item: LeekTreeItem) => /^(sh|sz)/.test(item.type || ''));
+      return arr;
+    });
+
+    return aStocks;
+  }
+  getHkStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    return stocks.then((res: LeekTreeItem[]) =>
+      res.filter((item: LeekTreeItem) => /^(hk)/.test(item.type || ''))
+    );
+  }
+  getUsStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    return stocks.then((res: LeekTreeItem[]) =>
+      res.filter((item: LeekTreeItem) => /^(usr_)/.test(item.type || ''))
+    );
   }
 
   changeOrder(): void {

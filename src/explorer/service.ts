@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
-import { LeekFundModel } from './model';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
 import { STOCK_TYPE } from '../shared';
@@ -14,6 +13,7 @@ import {
   sortData,
   toFixed,
 } from '../utils';
+import { LeekFundModel } from './model';
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -185,7 +185,7 @@ export class LeekFundService {
       searchText
     )}`;
     try {
-      console.log('getStockSuggestList: getting...', url);
+      console.log('getStockSuggestList: getting...');
       const response = await axios.get(url, {
         responseType: 'arraybuffer',
         transformResponse: [
@@ -260,6 +260,9 @@ export class LeekFundService {
           return [
             {
               id: codes[0],
+              type: '',
+              contextValue: 'failed',
+              isCategory: false,
               info: { code: codes[0], percent: '0', name: '错误代码' },
               label: codes[0] + ' 错误代码，请查看是否缺少交易所信息',
             },
@@ -273,6 +276,10 @@ export class LeekFundService {
 
       const splitData = resp.data.split(';\n');
       let sz: LeekTreeItem | null = null;
+      let aStockCount = 0;
+      let usStockCount = 0;
+      let hkStockCount = 0;
+      let otherStockCount = 0;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
@@ -300,6 +307,7 @@ export class LeekFundService {
               amount: formatNumber(params[9], 2),
               percent: '',
             };
+            aStockCount += 1;
           } else if (/^hk/.test(code)) {
             let open = params[2];
             let yestclose = params[3];
@@ -319,6 +327,7 @@ export class LeekFundService {
               amount: formatNumber(params[11], 2),
               percent: '',
             };
+            hkStockCount += 1;
           } else if (/^gb_/.test(code)) {
             symbol = code.substr(3);
             let open = params[5];
@@ -340,6 +349,7 @@ export class LeekFundService {
               percent: '',
             };
             type = code.substr(0, 3);
+            otherStockCount += 1;
           } else if (/^usr_/.test(code)) {
             symbol = code.substr(4);
             let open = params[5];
@@ -361,6 +371,7 @@ export class LeekFundService {
               percent: '',
             };
             type = code.substr(0, 4);
+            usStockCount += 1;
           }
           if (stockItem) {
             const { yestclose, price, open } = stockItem;
@@ -395,6 +406,10 @@ export class LeekFundService {
         barStockList.push(this.defaultBarStock);
       }
       this.statusBarStockList = sortData(barStockList, order);
+      globalState.aStockCount = aStockCount;
+      globalState.hkStockCount = hkStockCount;
+      globalState.usStockCount = usStockCount;
+      globalState.otherStockCount = otherStockCount;
       return res;
     } catch (err) {
       console.info(url);

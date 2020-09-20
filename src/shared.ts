@@ -29,6 +29,8 @@ export interface FundInfo {
   name: string;
   code: string;
   showLabel?: boolean;
+  id?: string;
+  contextValue?: string;
   symbol?: string;
   type?: string;
   yestclose?: string | number; // 昨日净值
@@ -48,4 +50,19 @@ export interface FundInfo {
   isUpdated?: boolean;
   showEarnings?: boolean;
   isStock?: boolean;
+}
+
+export const defaultFundInfo: FundInfo = {
+  id: '',
+  name: '',
+  percent: '',
+  code: '',
+  showLabel: true,
+};
+
+export enum StockCategory {
+  A = 'A Stock',
+  US = 'US Stock',
+  HK = 'HK Stock',
+  Other = 'Other Stock',
 }
