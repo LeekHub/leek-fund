@@ -1,25 +1,25 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/fundSuggestData';
-import global from './global';
+import { FundProvider } from './explorer/fundProvider';
+import { LeekFundModel } from './explorer/model';
+import { NewsProvider } from './explorer/newsProvider';
+import { NewsService } from './explorer/newsService';
+import { StockProvider } from './explorer/stockProvider';
+import globalState from './globalState';
 import { LeekTreeItem } from './leekTreeItem';
-import { LeekFundService } from './service';
+import { LeekFundService } from './explorer/service';
 import checkForUpdate from './update';
 import { colorOptionList, randomColor } from './utils';
-import { FundProvider } from './views/fundProvider';
-import { LeekFundModel } from './views/model';
-import { NewsProvider } from './views/newsProvider';
-import { NewsService } from './views/newsService';
-import { StockProvider } from './views/stockProvider';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
 import fundFlow from './webview/fundFlow';
 import fundHistory from './webview/fundHistory';
+import fundPosition from './webview/fundPosition';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
 import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
-import fundPosition from './webview/fundPosition';
 import stockTrendPic from './webview/stockTrendPic';
 
 export function registerViewEvent(
@@ -289,7 +289,10 @@ export function registerViewEvent(
             { label: '状态栏股票跌📉的文字颜色', description: 'statusbar-fall' },
             { label: '基金&股票涨跌图标更换', description: 'icontype' },
             { label: '👀显示/隐藏文本', description: 'hideText' },
-            { label: global.showEarnings ? '隐藏盈亏' : '👀显示盈亏', description: 'earnings' },
+            {
+              label: globalState.showEarnings ? '隐藏盈亏' : '👀显示盈亏',
+              description: 'earnings',
+            },
           ],
           {
             placeHolder: '第一步：选择设置项',
@@ -356,15 +359,15 @@ export function registerViewEvent(
                 if (!iconItem) {
                   return;
                 }
-                if (global.iconType !== iconItem.description) {
+                if (globalState.iconType !== iconItem.description) {
                   leekModel.setConfig('leek-fund.iconType', iconItem.description);
-                  global.iconType = iconItem.description;
+                  globalState.iconType = iconItem.description;
                 }
               });
           } else if (type === 'earnings') {
-            const newValue = global.showEarnings === 1 ? 0 : 1;
+            const newValue = globalState.showEarnings === 1 ? 0 : 1;
             leekModel.setConfig('leek-fund.showEarnings', newValue);
-            global.showEarnings = newValue;
+            globalState.showEarnings = newValue;
           } else if (type === 'hideText') {
             commands.executeCommand('leek-fund.hideText');
           }

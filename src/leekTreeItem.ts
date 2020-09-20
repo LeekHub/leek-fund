@@ -1,58 +1,8 @@
 import { join } from 'path';
 import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import global from './global';
+import globalState from './globalState';
+import { FundInfo, IconType } from './shared';
 import { formatTreeText } from './utils';
-
-export enum SortType {
-  NORMAL = 0,
-  ASC = 1,
-  DESC = -1,
-}
-
-export enum IconType {
-  ARROW = 'arrow',
-  FOOD1 = 'food1',
-  FOOD2 = 'food2',
-  FOOD3 = 'food3',
-  ICON_FOOD = 'iconfood',
-}
-
-// 支持的股票类型
-export const STOCK_TYPE = ['sh', 'sz', 'hk', 'gb', 'us'];
-
-export interface IAmount {
-  name: string;
-  price: number | string;
-  amount: number;
-  priceDate: string;
-  earnings: number;
-  yestEarnings?: number;
-}
-export interface FundInfo {
-  percent: any;
-  name: string;
-  code: string;
-  showLabel?: boolean;
-  symbol?: string;
-  type?: string;
-  yestclose?: string | number; // 昨日净值
-  open?: string | number;
-  highStop?: string | number;
-  high?: string | number;
-  lowStop?: string | number;
-  low?: string | number;
-  time?: string;
-  updown?: string; // 涨跌值 price-yestclose
-  price?: string; // 当前价格
-  volume?: string; // 成交量
-  amount?: string | number; // 成交额
-  earnings?: number;
-  isStop?: boolean; // 停牌
-  t2?: boolean;
-  isUpdated?: boolean;
-  showEarnings?: boolean;
-  isStock?: boolean;
-}
 
 export class LeekTreeItem extends TreeItem {
   info: FundInfo;
@@ -90,28 +40,28 @@ export class LeekTreeItem extends TreeItem {
     const grow = percent.indexOf('-') === 0 ? false : true;
     const val = Math.abs(percent);
     if (grow) {
-      if (IconType.ARROW === global.iconType) {
+      if (IconType.ARROW === globalState.iconType) {
         icon = val >= 2 ? 'up' : 'up1';
-      } else if (IconType.FOOD1 === global.iconType) {
+      } else if (IconType.FOOD1 === globalState.iconType) {
         icon = 'meat2';
-      } else if (IconType.FOOD2 === global.iconType) {
+      } else if (IconType.FOOD2 === globalState.iconType) {
         icon = 'kabob';
-      } else if (IconType.FOOD3 === global.iconType) {
+      } else if (IconType.FOOD3 === globalState.iconType) {
         icon = 'wine';
-      } else if (IconType.ICON_FOOD === global.iconType) {
+      } else if (IconType.ICON_FOOD === globalState.iconType) {
         icon = '🍗';
       }
       _percent = '+' + _percent;
     } else {
-      if (IconType.ARROW === global.iconType) {
+      if (IconType.ARROW === globalState.iconType) {
         icon = val >= 2 ? 'down' : 'down1';
-      } else if (IconType.FOOD1 === global.iconType) {
+      } else if (IconType.FOOD1 === globalState.iconType) {
         icon = 'noodles';
-      } else if (IconType.FOOD2 === global.iconType) {
+      } else if (IconType.FOOD2 === globalState.iconType) {
         icon = 'bakeleek';
-      } else if (IconType.FOOD3 === global.iconType) {
+      } else if (IconType.FOOD3 === globalState.iconType) {
         icon = 'noodles';
-      } else if (IconType.ICON_FOOD === global.iconType) {
+      } else if (IconType.ICON_FOOD === globalState.iconType) {
         icon = '🍜';
       }
       _percent = '-' + _percent;
@@ -122,7 +72,7 @@ export class LeekTreeItem extends TreeItem {
     let iconPath = '';
     if (showLabel) {
       iconPath =
-        global.iconType !== IconType.ICON_FOOD
+        globalState.iconType !== IconType.ICON_FOOD
           ? context.asAbsolutePath(join('resources', `${icon}.svg`))
           : icon;
     }
@@ -143,7 +93,9 @@ export class LeekTreeItem extends TreeItem {
       } else {
         text =
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
-            t2 || !(global.showEarnings && amount > 0) ? '' : `(${grow ? '盈' : '亏'}：${earnings})`
+            t2 || !(globalState.showEarnings && amount > 0)
+              ? ''
+              : `(${grow ? '盈' : '亏'}：${earnings})`
           }` + `${t2 ? `(${time})` : ''}`;
       }
     } else {

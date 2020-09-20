@@ -5,9 +5,9 @@
  */
 
 import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import global from '../global';
-import { NewsService } from '../views/newsService';
+import { NewsService } from '../explorer/newsService';
+import globalState from '../globalState';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 import { formatDateTime } from '../utils';
 
 async function openNews(
@@ -30,16 +30,16 @@ async function openNews(
   updateWebview();
 
   // And schedule updates to the content every 20 seconds
-  if (global.newsIntervalTimer) {
-    clearInterval(global.newsIntervalTimer);
-    global.newsIntervalTimer = null;
+  if (globalState.newsIntervalTimer) {
+    clearInterval(globalState.newsIntervalTimer);
+    globalState.newsIntervalTimer = null;
   }
-  global.newsIntervalTimer = setInterval(updateWebview, global.newsIntervalTime);
+  globalState.newsIntervalTimer = setInterval(updateWebview, globalState.newsIntervalTime);
 
   panel.onDidDispose(() => {
     // When the panel is closed, cancel any future updates to the webview content
-    clearInterval(global.newsIntervalTimer);
-    global.newsIntervalTimer = null;
+    clearInterval(globalState.newsIntervalTimer);
+    globalState.newsIntervalTimer = null;
   }, null);
 }
 

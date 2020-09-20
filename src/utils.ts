@@ -1,5 +1,6 @@
 import { QuickPickItem, ExtensionContext, Uri } from 'vscode';
-import { LeekTreeItem, SortType } from './leekTreeItem';
+import { LeekTreeItem } from './leekTreeItem';
+import { SortType } from './shared';
 const path = require('path');
 const fs = require('fs');
 

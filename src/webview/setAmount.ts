@@ -1,13 +1,14 @@
-import { ViewColumn, window, commands } from 'vscode';
-import global from '../global';
-import { LeekTreeItem, IAmount } from '../leekTreeItem';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { LeekFundService } from '../service';
+import { commands, ViewColumn, window } from 'vscode';
+import { LeekFundModel } from '../explorer/model';
+import globalState from '../globalState';
+import { LeekTreeItem } from '../leekTreeItem';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { LeekFundService } from '../explorer/service';
+import { IAmount } from '../shared';
 import { toFixed } from '../utils';
-import { LeekFundModel } from '../views/model';
 
 async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel) {
-  const amountObj: any = global.fundAmount || {};
+  const amountObj: any = globalState.fundAmount || {};
   const list = fundList.map((item: LeekTreeItem) => {
     return {
       name: item.info.name,
@@ -294,7 +295,7 @@ function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
     };
   });
   leekModel.setConfig('leek-fund.fundAmount', cfg).then(() => {
-    global.fundAmount = cfg;
+    globalState.fundAmount = cfg;
     window.showInformationMessage('保存成功！（没开市的时候添加的持仓盈亏为0，开市时会自动计算）');
   });
 }
@@ -304,7 +305,7 @@ function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
  * @param leekModel
  */
 export async function updateAmount(leekModel: LeekFundModel) {
-  const amountObj: any = global.fundAmount;
+  const amountObj: any = globalState.fundAmount;
   const codes = Object.keys(amountObj);
   if (codes.length === 0) {
     return;
@@ -339,7 +340,7 @@ export async function updateAmount(leekModel: LeekFundModel) {
     });
     if (Datas.length > 0) {
       leekModel.setConfig('leek-fund.fundAmount', amountObj).then(() => {
-        global.fundAmount = amountObj;
+        globalState.fundAmount = amountObj;
         console.log('🐥fundAmount has Updated ');
       });
     }

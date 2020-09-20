@@ -1,6 +1,6 @@
 import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { LeekFundService } from '../service';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { LeekFundService } from '../explorer/service';
 
 async function allFundTrend(service: LeekFundService) {
   const fundList = service.fundList;

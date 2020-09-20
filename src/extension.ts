@@ -5,16 +5,16 @@
  *-------------------------------------------------------------*/
 
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
-import global from './global';
-import { SortType } from './leekTreeItem';
-import { registerViewEvent } from './registerEvent';
-import { LeekFundService } from './service';
+import { FundProvider } from './explorer/fundProvider';
+import { LeekFundModel } from './explorer/model';
+import { NewsProvider } from './explorer/newsProvider';
+import { LeekFundService } from './explorer/service';
+import { StockProvider } from './explorer/stockProvider';
+import globalState from './globalState';
+import { registerViewEvent } from './registerCommand';
+import { SortType } from './shared';
+import { StatusBar } from './statusbar/statusBar';
 import { isStockTime } from './utils';
-import { FundProvider } from './views/fundProvider';
-import { LeekFundModel } from './views/model';
-import { NewsProvider } from './views/newsProvider';
-import { StatusBar } from './views/statusBar';
-import { StockProvider } from './views/stockProvider';
 import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
@@ -110,11 +110,11 @@ export function activate(context: ExtensionContext) {
 
 function setGlobalVariable(model: LeekFundModel) {
   const iconType = model.getConfig('leek-fund.iconType') || 'arrow';
-  global.iconType = iconType;
+  globalState.iconType = iconType;
   const fundAmount = model.getConfig('leek-fund.fundAmount') || {};
-  global.fundAmount = fundAmount;
+  globalState.fundAmount = fundAmount;
   const showEarnings = model.getConfig('leek-fund.showEarnings');
-  global.showEarnings = showEarnings;
+  globalState.showEarnings = showEarnings;
 }
 
 // this method is called when your extension is deactivated

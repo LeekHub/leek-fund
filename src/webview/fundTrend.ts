@@ -1,5 +1,5 @@
 import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 function fundTrend(code: string, name: string) {
   const panel = ReusedWebviewPanel.create(

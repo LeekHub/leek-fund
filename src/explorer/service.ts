@@ -1,18 +1,19 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
-import global from './global';
-import { LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
+import { LeekFundModel } from './model';
+import globalState from '../globalState';
+import { LeekTreeItem } from '../leekTreeItem';
+import { STOCK_TYPE } from '../shared';
 import {
+  caculateEarnings,
   calcFixedPirceNumber,
   formatNumber,
+  objectToQueryString,
   randHeader,
   sortData,
   toFixed,
-  caculateEarnings,
-  objectToQueryString,
-} from './utils';
-import { LeekFundModel } from './views/model';
+} from '../utils';
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -82,7 +83,7 @@ export class LeekFundService {
       appType: 'ttjj',
       product: 'EFund',
       plat: 'Android',
-      deviceid: global.deviceId,
+      deviceid: globalState.deviceId,
       Version: 1,
       Fcodes: fundCodes.join(','),
     };
@@ -113,7 +114,7 @@ export class LeekFundService {
     try {
       const { Datas = [] } = await LeekFundService.qryFundMNFInfo(fundCodes);
       // console.log(Datas);
-      const fundAmountObj: any = global.fundAmount;
+      const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
       const data = Datas.map((item: any) => {
         const { SHORTNAME, FCODE, GSZ, NAV, PDATE, GZTIME, GSZZL, NAVCHGRT } = item;

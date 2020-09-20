@@ -1,6 +1,7 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { LeekTreeItem, SortType } from '../leekTreeItem';
-import { LeekFundService } from '../service';
+import { LeekTreeItem } from '../leekTreeItem';
+import { LeekFundService } from './service';
+import { SortType } from '../shared';
 import { LeekFundModel } from './model';
 
 export class FundProvider implements TreeDataProvider<LeekTreeItem> {

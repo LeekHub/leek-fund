@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { ViewColumn } from 'vscode';
 import { LeekTreeItem } from '../leekTreeItem';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 import { randHeader } from '../utils';
 
 const fundPositionUrl = (code: string): string => {

@@ -1,5 +1,5 @@
 import { ViewColumn, ExtensionContext } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 function fundFlow(context: ExtensionContext) {
   const panel = ReusedWebviewPanel.create('leek-fund.fundFlow', '资金流向', ViewColumn.One, {

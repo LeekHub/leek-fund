@@ -1,5 +1,5 @@
 import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 function stockTrendPic(code: string, name: string, stockCode: string) {
   const panel = ReusedWebviewPanel.create(

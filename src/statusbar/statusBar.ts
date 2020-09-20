@@ -1,7 +1,7 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import { LeekFundModel } from '../explorer/model';
 import { LeekTreeItem } from '../leekTreeItem';
-import { LeekFundService } from '../service';
-import { LeekFundModel } from './model';
+import { LeekFundService } from '../explorer/service';
 
 export class StatusBar {
   private model: LeekFundModel;

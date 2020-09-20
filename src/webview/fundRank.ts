@@ -1,6 +1,6 @@
 import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
-import { LeekFundService } from '../service';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { LeekFundService } from '../explorer/service';
 
 const fundRankHtmlTemp = (list: any[] = []) => {
   let tbody = '';
