@@ -96,8 +96,7 @@ export const isStockTime = () => {
   const hours = date.getHours();
   const minus = date.getMinutes();
   const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
-  console.log(hours, hours >= stockTime[0] && hours < stockTime[1], delay);
-  return (hours >= stockTime[0] && hours <= stockTime[1]) || delay;
+  return (hours >= stockTime[0] && hours < stockTime[1]) || delay;
 };
 
 export const calcFixedPirceNumber = (
