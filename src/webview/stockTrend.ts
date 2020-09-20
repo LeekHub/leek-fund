@@ -39,11 +39,13 @@ function stockTrend(code: string, name: string, stockCode: string) {
     <title>股票走势</title>
   </head>
   <body>
-    <iframe
+    <div  style="min-width: 1320px; overflow-x:auto">
+      <iframe
       src="http://quote.eastmoney.com/basic/full.html?mcid=${mcid}"
       frameborder="0"
       style="width: 100%; height: 900px"
     ></iframe>
+    </div>
   </body>
 </html>
 
