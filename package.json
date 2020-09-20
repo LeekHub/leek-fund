@@ -429,7 +429,7 @@
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
-    "test": "node ./out/test/runTest.js",
+    "test": "node ./out/_test/runTest.js",
     "deploy": "vsce publish --yarn"
   },
   "devDependencies": {
