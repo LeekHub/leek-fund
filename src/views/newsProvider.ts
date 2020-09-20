@@ -20,7 +20,7 @@ export class NewsProvider implements TreeDataProvider<NewsTreeItem> {
   }
 
   getChildren(): NewsTreeItem[] | Thenable<NewsTreeItem[]> {
-    const userIds = this.model.getCfg('leek-fund.newsUserIds') || [];
+    const userIds = this.model.getConfig('leek-fund.newsUserIds') || [];
     return this.service.getNewsUserList(userIds);
   }
 

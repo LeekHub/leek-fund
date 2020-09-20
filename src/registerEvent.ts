@@ -189,7 +189,7 @@ export function registerViewEvent(
         if (!id) {
           return;
         }
-        const newsUserIds = leekModel.getCfg('leek-fund.newsUserIds') || [];
+        const newsUserIds = leekModel.getConfig('leek-fund.newsUserIds') || [];
         if (newsUserIds.includes(id)) {
           window.showInformationMessage(`ID为 ${id} 的用户已存在，无需添加`);
           return;
@@ -209,7 +209,7 @@ export function registerViewEvent(
   });
 
   commands.registerCommand('leek-fund.deleteUser', (target) => {
-    const newsUserIds = leekModel.getCfg('leek-fund.newsUserIds') || [];
+    const newsUserIds = leekModel.getConfig('leek-fund.newsUserIds') || [];
     const newIds = newsUserIds.filter((id: string) => id !== target.id);
     leekModel.setConfig('leek-fund.newsUserIds', newIds).then(() => {
       newsProvider.refresh();

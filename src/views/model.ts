@@ -4,7 +4,7 @@ import { clean, uniq } from '../utils';
 export class BaseModel {
   constructor() {}
 
-  getCfg(key: string): any {
+  getConfig(key: string): any {
     const config = workspace.getConfiguration();
     return config.get(key);
   }
@@ -55,7 +55,7 @@ export class LeekFundModel extends BaseModel {
   }
 
   setFundTopCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getCfg('leek-fund.funds');
+    let configArr: string[] = this.getConfig('leek-fund.funds');
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
 
@@ -88,7 +88,7 @@ export class LeekFundModel extends BaseModel {
   }
 
   setStockTopCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getCfg('leek-fund.stocks');
+    let configArr: string[] = this.getConfig('leek-fund.stocks');
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
 

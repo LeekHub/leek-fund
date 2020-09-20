@@ -234,7 +234,7 @@ export class LeekFundService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
-    const statusBarStocks = this.model.getCfg('leek-fund.statusBarStock');
+    const statusBarStocks = this.model.getConfig('leek-fund.statusBarStock');
 
     const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {

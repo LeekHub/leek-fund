@@ -17,10 +17,10 @@ export class StatusBar {
   }
 
   get riseColor(): string {
-    return this.model.getCfg('leek-fund.riseColor');
+    return this.model.getConfig('leek-fund.riseColor');
   }
   get fallColor(): string {
-    return this.model.getCfg('leek-fund.fallColor');
+    return this.model.getConfig('leek-fund.fallColor');
   }
 
   refresh() {

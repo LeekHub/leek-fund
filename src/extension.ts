@@ -54,10 +54,10 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService.getFundData(model.getCfg('leek-fund.funds'), SortType.NORMAL).then(() => {
+    fundService.getFundData(model.getConfig('leek-fund.funds'), SortType.NORMAL).then(() => {
       statusBar.refresh();
     });
-    fundService.getStockData(model.getCfg('leek-fund.stocks'), SortType.NORMAL).then(() => {
+    fundService.getStockData(model.getConfig('leek-fund.stocks'), SortType.NORMAL).then(() => {
       statusBar.refresh();
     });
   };
@@ -109,11 +109,11 @@ export function activate(context: ExtensionContext) {
 }
 
 function setGlobalVariable(model: LeekFundModel) {
-  const iconType = model.getCfg('leek-fund.iconType') || 'arrow';
+  const iconType = model.getConfig('leek-fund.iconType') || 'arrow';
   global.iconType = iconType;
-  const fundAmount = model.getCfg('leek-fund.fundAmount') || {};
+  const fundAmount = model.getConfig('leek-fund.fundAmount') || {};
   global.fundAmount = fundAmount;
-  const showEarnings = model.getCfg('leek-fund.showEarnings');
+  const showEarnings = model.getConfig('leek-fund.showEarnings');
   global.showEarnings = showEarnings;
 }
 
