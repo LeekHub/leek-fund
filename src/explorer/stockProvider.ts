@@ -77,7 +77,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.A,
           name: `${StockCategory.A}${
-            globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : 0
+            globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : ''
           }`,
         }),
         undefined,
