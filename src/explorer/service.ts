@@ -3,7 +3,7 @@ import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
-import { STOCK_TYPE } from '../shared';
+import { StockCategory, STOCK_TYPE } from '../shared';
 import {
   caculateEarnings,
   calcFixedPirceNumber,
@@ -279,7 +279,7 @@ export class LeekFundService {
       let aStockCount = 0;
       let usStockCount = 0;
       let hkStockCount = 0;
-      let otherStockCount = 0;
+      let noDataStockCount = 0;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
@@ -349,7 +349,7 @@ export class LeekFundService {
               percent: '',
             };
             type = code.substr(0, 3);
-            otherStockCount += 1;
+            noDataStockCount += 1;
           } else if (/^usr_/.test(code)) {
             symbol = code.substr(4);
             let open = params[5];
@@ -396,6 +396,20 @@ export class LeekFundService {
             }
             stockList.push(treeItem);
           }
+        } else {
+          // 接口不支持的
+          noDataStockCount += 1;
+          stockItem = {
+            id: code,
+            name: `接口不支持该股票 ${code}`,
+            showLabel: this.showLabel,
+            isStock: true,
+            percent: '',
+            type: 'nodata',
+            contextValue: 'nodata',
+          };
+          const treeItem = new LeekTreeItem(stockItem, this.context);
+          stockList.push(treeItem);
         }
       }
       this.defaultBarStock = sz || stockList[0];
@@ -409,7 +423,7 @@ export class LeekFundService {
       globalState.aStockCount = aStockCount;
       globalState.hkStockCount = hkStockCount;
       globalState.usStockCount = usStockCount;
-      globalState.otherStockCount = otherStockCount;
+      globalState.noDataStockCount = noDataStockCount;
       return res;
     } catch (err) {
       console.info(url);

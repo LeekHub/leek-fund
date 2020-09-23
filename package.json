@@ -59,7 +59,7 @@
         },
         {
           "id": "leekFundView.settings",
-          "visibility": "collapsed",
+          "visibility": "visible",
           "name": "Settings"
         }
       ]
@@ -281,17 +281,17 @@
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
           "group": "group1"
         },
         {
           "command": "leek-fund.stockTrendPic",
-          "when": "view == leekFundView.stock  && viewItem != category",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata",
           "group": "group2"
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
           "group": "inline"
         },
         {

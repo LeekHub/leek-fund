@@ -41,6 +41,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
           return this.getHkStockNodes(resultPromise);
         case StockCategory.US:
           return this.getUsStockNodes(resultPromise);
+        case StockCategory.NODATA:
+          return this.getNoDataStockNodes(resultPromise);
         default:
           return [];
         // return this.getChildrenNodesById(element.id);
@@ -72,7 +74,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getRootNodes(): LeekTreeItem[] {
-    return [
+    const nodes = [
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.A,
@@ -87,7 +89,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.HK,
           name: `${StockCategory.HK}${
-            globalState.hkStockCount > 0 ? `(${globalState.hkStockCount})` : 0
+            globalState.hkStockCount > 0 ? `(${globalState.hkStockCount})` : ''
           }`,
         }),
         undefined,
@@ -97,21 +99,27 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.US,
           name: `${StockCategory.US}${
-            globalState.usStockCount > 0 ? `(${globalState.usStockCount})` : 0
+            globalState.usStockCount > 0 ? `(${globalState.usStockCount})` : ''
           }`,
         }),
         undefined,
         true
       ),
-      /*     new LeekTreeItem(
-        Object.assign({}, defaultFundInfo, {
-          id: StockCategory.Other,
-          name: `${StockCategory.Other}(${globalState.otherStockCount})`,
-        }),
-        undefined,
-        true
-      ), */
     ];
+    // 显示接口不支持的股票，避免用户老问为什么添加了股票没反应
+    if (globalState.noDataStockCount) {
+      nodes.push(
+        new LeekTreeItem(
+          Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+            id: StockCategory.NODATA,
+            name: `${StockCategory.NODATA}(${globalState.noDataStockCount})`,
+          }),
+          undefined,
+          true
+        )
+      );
+    }
+    return nodes;
   }
   getAStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
     const aStocks: Promise<LeekTreeItem[]> = stocks.then((res: LeekTreeItem[]) => {
@@ -130,6 +138,13 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     return stocks.then((res: LeekTreeItem[]) =>
       res.filter((item: LeekTreeItem) => /^(usr_)/.test(item.type || ''))
     );
+  }
+  getNoDataStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    return stocks.then((res: LeekTreeItem[]) => {
+      return res.filter((item: LeekTreeItem) => {
+        return /^(nodata)/.test(item.type || '');
+      });
+    });
   }
 
   changeOrder(): void {

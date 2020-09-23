@@ -10,7 +10,7 @@ let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
 let aStockCount = 0;
 let usStockCount = 0;
 let hkStockCount = 0;
-let otherStockCount = 0;
+let noDataStockCount = 0;
 
 export default {
   iconType,
@@ -22,5 +22,5 @@ export default {
   aStockCount,
   usStockCount,
   hkStockCount,
-  otherStockCount,
+  noDataStockCount,
 };

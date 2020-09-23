@@ -64,5 +64,5 @@ export enum StockCategory {
   A = 'A Stock',
   US = 'US Stock',
   HK = 'HK Stock',
-  Other = 'Other Stock',
+  NODATA = 'Not Support Stock',
 }
