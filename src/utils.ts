@@ -1,6 +1,6 @@
-import { QuickPickItem, ExtensionContext, Uri } from 'vscode';
+import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
-import { SortType } from './shared';
+import { SortType, StockCategory } from './shared';
 const path = require('path');
 const fs = require('fs');
 
@@ -77,7 +77,9 @@ export const clean = (elements: Array<string | number>) => {
  */
 export const toFixed = (value = 0, precision = 2) => {
   const num = Number(value);
-  if (Number.isNaN(num)) return 0;
+  if (Number.isNaN(num)) {
+    return 0;
+  }
   if (num < Math.pow(-2, 31) || num > Math.pow(2, 31) - 1) {
     return 0;
   }
@@ -91,12 +93,33 @@ export const toFixed = (value = 0, precision = 2) => {
 };
 
 export const isStockTime = () => {
-  let stockTime = [9, 15];
+  const markets = allMarkets();
+  const stockTimes = allStockTimes(markets);
   const date = new Date();
   const hours = date.getHours();
   const minus = date.getMinutes();
-  const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
-  return (hours >= stockTime[0] && hours < stockTime[1]) || delay;
+  const delay = 5;
+  for (let i = 0; i < stockTimes.length; i++) {
+    let stockTime = stockTimes[i];
+    // 针对美股交易时间跨越北京时间0点
+    if (stockTime[0] > stockTime[1]) {
+      if (
+        hours >= stockTime[0] ||
+        hours < stockTime[1] ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        (hours >= stockTime[0] && hours < stockTime[1]) ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 export const calcFixedPirceNumber = (
@@ -289,4 +312,53 @@ export function getWebViewContent(context: ExtensionContext, templatePath: strin
     }
   );
   return html;
+}
+
+export function getConfig(key: string): any {
+  const config = workspace.getConfiguration();
+  return config.get(key);
+}
+
+export function allMarkets(): Array<string> {
+  const codes = getConfig('leek-fund.stocks');
+  const allMarkets = codes.reduce((result: Array<string>, item: string, index: number) => {
+    let market = StockCategory.NODATA;
+    if (/^(sh|sz)/.test(item)) {
+      market = StockCategory.A;
+    } else if (/^(hk)/.test(item)) {
+      market = StockCategory.HK;
+    } else if (/^(usr_)/.test(item)) {
+      market = StockCategory.US;
+    }
+    if (index === 1) {
+      result = [];
+    }
+    return result.includes(market) ? result : result.concat(market);
+  });
+  return allMarkets;
+}
+
+export function allStockTimes(markets: Array<string>): Array<Array<number>> {
+  let stockTimes: number[][] = [];
+  markets.forEach((market: string) => {
+    switch (market) {
+      case StockCategory.A:
+        stockTimes.push([9, 15]);
+        return;
+      case StockCategory.HK:
+        stockTimes.push([9, 16]);
+        return;
+      case StockCategory.US:
+        const date = new Date();
+        const month = date.getMonth() + 1;
+        // 判断夏令时
+        if (month >= 3 && month <= 11) {
+          stockTimes.push([21, 4]);
+        } else {
+          stockTimes.push([22, 5]);
+        }
+        return;
+    }
+  });
+  return stockTimes;
 }
