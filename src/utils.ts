@@ -1,6 +1,8 @@
 import { QuickPickItem, ExtensionContext, Uri } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType } from './shared';
+import { HolidayAPIHelper } from './holidayAPIHelper';
+
 const path = require('path');
 const fs = require('fs');
 
@@ -77,7 +79,9 @@ export const clean = (elements: Array<string | number>) => {
  */
 export const toFixed = (value = 0, precision = 2) => {
   const num = Number(value);
-  if (Number.isNaN(num)) return 0;
+  if (Number.isNaN(num)) {
+    return 0;
+  }
   if (num < Math.pow(-2, 31) || num > Math.pow(2, 31) - 1) {
     return 0;
   }
@@ -290,3 +294,44 @@ export function getWebViewContent(context: ExtensionContext, templatePath: strin
   );
   return html;
 }
+
+/**
+ * 判断是否周未的方法
+ * @param {*} date 参与判断的日期
+ */
+const isWeekend = (date: Date) => {
+  let tof = false;
+  let dayOfWeek = date.getDay();
+
+  tof = dayOfWeek === 6 || dayOfWeek === 0;
+
+  return tof;
+};
+
+/**
+ * 判断是否节假日的方法
+ * @param {*} date 参与判断的日期
+ */
+const isHoliday = async (date: Date) => {
+  let tof = false;
+
+  tof = await HolidayAPIHelper.isHoliday(date);
+
+  return tof;
+};
+
+/**
+ * 判断是否中国股市的交易日的方法
+ * @param {*} date 参与判断的日期
+ */
+export const isTradeDateChina = async (date: Date = new Date(Date.now())) => {
+  let tof = true;
+  let myDate = date ? date : new Date(Date.now());
+
+  let isHolidayTOF = await isHoliday(myDate);
+
+  // 思路是取节假日及周未的交集
+  tof = !isWeekend(date) && !isHolidayTOF;
+
+  return tof;
+};
