@@ -1,13 +1,17 @@
-import { ViewColumn } from 'vscode';
-import ReusedWebviewPanel from '../ReusedWebviewPanel';
+import { ViewColumn, ExtensionContext } from 'vscode';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
-function fundFlow() {
+function fundFlow(context: ExtensionContext) {
   const panel = ReusedWebviewPanel.create('leek-fund.fundFlow', '资金流向', ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
-  panel.webview.html = `
-<!DOCTYPE html>
+  panel.webview.html = getWebViewContent();
+}
+
+function getWebViewContent() {
+  return `
+  <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -190,16 +194,16 @@ function fundFlow() {
       .image img {
         width: 500px;
       }
-       body{
-         background:#fff;
-         color:#333;
-       }
+      body {
+        background: #fff;
+        color: #333;
+      }
     </style>
   </head>
   <body>
     <div class="main-content">
-      <div class="contentBox" style="border-top: 0; margin-top: -10px;">
-        <div class="titbar" style="overflow: visible;">
+      <div class="contentBox" style="border-top: 0; margin-top: -10px">
+        <div class="titbar" style="overflow: visible">
           <b class="el"></b>
           <div class="tit">沪深港通资金流向</div>
           <i
@@ -208,10 +212,10 @@ function fundFlow() {
           ></i>
         </div>
         <div class="sepe">
-          <div class="left" style="width: 174px;"></div>
-          <div class="right" style="width: 1026px;"></div>
+          <div class="left" style="width: 174px"></div>
+          <div class="right" style="width: 1026px"></div>
         </div>
-        <div class="contentBox" style="border-top: 0; margin-top: -10px;">
+        <div class="contentBox" style="border-top: 0; margin-top: -10px">
           <table
             cellpadding="0"
             cellspacing="0"
@@ -220,41 +224,41 @@ function fundFlow() {
           >
             <thead>
               <tr class="bbDeepBlue">
-                <th style="width: 8%;">类型</th>
-                <th style="width: 8%;">
+                <th style="width: 8%">类型</th>
+                <th style="width: 8%">
                   板块<i
                     class="question"
                     title="港股通(沪)代表沪港通的港股通部分，港股通(深)代表深港通的港股通部分。"
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i
                   >
                 </th>
-                <th style="width: 8%;">
+                <th style="width: 8%">
                   资金方向<i
                     class="question"
                     title="香港投资者交易内地股票，称为北向资金，内地投资者交易香港股票，称为南向资金。"
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i
                   >
                 </th>
-                <th style="width: 7%;">交易状态</th>
-                <th style="width: 12%;">
+                <th style="width: 7%">交易状态</th>
+                <th style="width: 12%">
                   资金净流入<i
                     class="question"
                     title="当日资金流入额=当日限额-当日余额。当日资金流入额包含两部分：当日成交净买额，当日申报但未成交的买单金额。"
                     >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</i
                   >
                 </th>
-                <th style="width: 12%;">成交净买额</th>
-                <th style="width: 12%;">当日资金余额</th>
-                <th style="width: 6%;">上涨数</th>
-                <th style="width: 6%;">持平数</th>
-                <th style="width: 6%;">下跌数</th>
-                <th style="width: 6%;">相关指数</th>
-                <th style="width: 10%;">指数涨跌幅</th>
+                <th style="width: 12%">成交净买额</th>
+                <th style="width: 12%">当日资金余额</th>
+                <th style="width: 6%">上涨数</th>
+                <th style="width: 6%">持平数</th>
+                <th style="width: 6%">下跌数</th>
+                <th style="width: 6%">相关指数</th>
+                <th style="width: 10%">指数涨跌幅</th>
               </tr>
             </thead>
             <tbody>
               <tr id="zjlx_hgt">
-                <td rowspan="2" class="bbLightBlue" style="line-height: 18px;">
+                <td rowspan="2" class="bbLightBlue" style="line-height: 18px">
                   沪港通
                 </td>
                 <td>
@@ -301,7 +305,7 @@ function fundFlow() {
                 <td><span class="green">-0.19%</span></td>
               </tr>
               <tr id="zjlx_sgt">
-                <td rowspan="2" class="bbLightBlue" style="line-height: 18px;">
+                <td rowspan="2" class="bbLightBlue" style="line-height: 18px">
                   深港通
                 </td>
                 <td>
@@ -350,7 +354,7 @@ function fundFlow() {
               <tr class="bbLightBlue">
                 <td
                   colspan="12"
-                  style="text-align: left; text-indent: 10px; color: #666;"
+                  style="text-align: left; text-indent: 10px; color: #666"
                 >
                   注：资金净流入=当日资金限额-当日资金余额。资金净流入包含<a
                     target="_self"
@@ -509,15 +513,8 @@ function fundFlow() {
       </div>
     </div>
     <script src="http://emres.dfcfw.com/common/js/jquery.1.8.3.min.js"></script>
-    <!-- <script src="http://data.eastmoney.com/js_001/hsgt/hsgt.js?2020"></script> -->
     <script>
-      // http://push2.eastmoney.com/api/qt/kamt/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54,f63&_=1597587991248
-      // http://data.eastmoney.com/js_001/hsgt/zjlx.js?2020
-      // http://dcfm.eastmoney.com/EM_MutiSvcExpandInterface/api/js/get?type=HSGTZJLJ&token=70f12f2f4f091e459a279469fe49eca5&ps=5000&js=var%20wxEphCe=({data:[(x)]})&filter=(DateTime%3E^2020-02-16^)
-      // http://data.eastmoney.com/js_001/hsgt/hsgt.js?2020
-      // 北向资金流向
-      //   http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTH&imageType=NSZJ2
-
+      console.log($, jQuery);
       var newHqDomain = 'http://push2.eastmoney.com/';
       var v4Domain = 'http://dcfm.eastmoney.com/';
       var newHqut = 'b2884a393a59ad64002292a3e90d46a5';
@@ -959,18 +956,19 @@ function fundFlow() {
         newUpdateZjlx();
         ImgIeLoad();
         loaddrzjlxchartdata();
-        setInterval(function(){
+        setInterval(function () {
           newUpdateZjlx();
           ImgIeLoad();
           loaddrzjlxchartdata();
-        },time)
+        }, time);
       }
       // 20秒轮询一次
       setHsgtInterval(20000);
     </script>
   </body>
 </html>
-    `;
+
+  `;
 }
 
 export default fundFlow;

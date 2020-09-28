@@ -1,9 +1,19 @@
 import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
-import { FundInfo, LeekTreeItem, STOCK_TYPE } from './leekTreeItem';
-import { formatNumber, randHeader, sortData } from './utils';
-import { LeekFundModel } from './views/model';
+import globalState from '../globalState';
+import { LeekTreeItem } from '../leekTreeItem';
+import { StockCategory, STOCK_TYPE } from '../shared';
+import {
+  caculateEarnings,
+  calcFixedPirceNumber,
+  formatNumber,
+  objectToQueryString,
+  randHeader,
+  sortData,
+  toFixed,
+} from '../utils';
+import { LeekFundModel } from './model';
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -14,7 +24,7 @@ export class LeekFundService {
 
   private context: ExtensionContext;
   private model: LeekFundModel;
-  szItem: LeekTreeItem | null = null;
+  defaultBarStock: LeekTreeItem | null = null;
   searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
 
   constructor(context: ExtensionContext, model: LeekFundModel) {
@@ -62,52 +72,89 @@ export class LeekFundService {
     this._barStockList = value;
   }
 
-  private fundUrl(code: string): string {
-    const fundUrl = `http://fundgz.1234567.com.cn/js/${code}.js?rt="${new Date().getTime()}`;
-    return fundUrl;
-  }
-  private fundHistoryUrl(code: string): string {
-    const fundUrl = `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=24`;
-    return fundUrl;
-  }
-  private stockUrl(codes: Array<string>): string {
-    return `http://hq.sinajs.cn/list=${codes.join(',')}`;
-  }
-
   toggleLabel() {
     this.showLabel = !this.showLabel;
   }
 
-  singleFund(code: string): Promise<FundInfo> {
-    const url = this.fundUrl(code);
+  static qryFundMNFInfo(fundCodes: string[]): Promise<any> {
+    const params: any = {
+      pageIndex: 1,
+      pageSize: fundCodes.length,
+      appType: 'ttjj',
+      product: 'EFund',
+      plat: 'Android',
+      deviceid: globalState.deviceId,
+      Version: 1,
+      Fcodes: fundCodes.join(','),
+    };
+
     return new Promise((resolve) => {
-      axios
-        // @ts-ignore
-        .get(url, { headers: randHeader() })
-        .then((rep) => {
-          const data = JSON.parse(rep.data.slice(8, -2));
-          const { gszzl, gztime, name } = data;
-          resolve({ percent: gszzl, code, time: gztime, name });
-        })
-        .catch(() => resolve({ percent: 'NaN', name: '基金代码错误', code }));
+      if (!params.deviceid || !params.Fcodes) {
+        resolve([]);
+      } else {
+        const url =
+          'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo' + objectToQueryString(params);
+        axios
+          .get(url, {
+            headers: randHeader(),
+          })
+          .then((resp) => {
+            resolve(resp.data);
+          })
+          .catch((err) => {
+            console.error(err);
+            resolve([]);
+          });
+      }
     });
   }
 
   async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching fund data……');
-    const promiseAll = [];
-    for (const fundCode of fundCodes) {
-      promiseAll.push(this.singleFund(fundCode));
-    }
     try {
-      const result = await Promise.all(promiseAll);
-      const data = result.map((item) => {
-        item.showLabel = this.showLabel;
-        return new LeekTreeItem(item, this.context);
+      const { Datas = [] } = await LeekFundService.qryFundMNFInfo(fundCodes);
+      // console.log(Datas);
+      const fundAmountObj: any = globalState.fundAmount;
+      const keyLength = Object.keys(fundAmountObj).length;
+      const data = Datas.map((item: any) => {
+        const { SHORTNAME, FCODE, GSZ, NAV, PDATE, GZTIME, GSZZL, NAVCHGRT } = item;
+        const time = item.GZTIME.substr(0, 10);
+        const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
+        let earnings = 0;
+        let amount = 0;
+        // 不填写的时候不计算
+        if (keyLength) {
+          amount = fundAmountObj[FCODE]?.amount || 0;
+          const price = fundAmountObj[FCODE]?.price || 0;
+          // const priceDate = fundAmountObj[FCODE]?.priceDate || '';
+          const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
+          // 闭市的时候显示上一次盈亏
+          earnings =
+            amount === 0
+              ? 0
+              : isUpdated
+              ? yestEarnings
+              : toFixed(caculateEarnings(amount, price, GSZ));
+        }
+
+        const obj = {
+          name: SHORTNAME,
+          code: FCODE,
+          price: GSZ, // 今日估值
+          percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
+          yestclose: NAV, // 昨日净值
+          showLabel: this.showLabel,
+          earnings,
+          isUpdated,
+          amount,
+          t2: GSZZL == '--' ? true : false, // 海外基金t2
+          time: GSZZL == '--' ? PDATE : GZTIME, // 更新时间
+          showEarnings: keyLength > 0 && amount !== 0,
+        };
+        return new LeekTreeItem(obj, this.context);
       });
 
       this.fundList = sortData(data, order);
-      // console.log(data);
       return this.fundList;
     } catch (err) {
       console.log(err);
@@ -115,7 +162,7 @@ export class LeekFundService {
     }
   }
 
-  getFundSuggestList() {
+  /*   getFundSuggestList() {
     console.log('fundSuggestList: getting...');
     axios
       .get('http://m.1234567.com.cn/data/FundSuggestList.js', {
@@ -129,7 +176,7 @@ export class LeekFundService {
         console.log(error);
       });
   }
-
+ */
   async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
@@ -160,10 +207,17 @@ export class LeekFundService {
       const result: QuickPickItem[] = [];
       tempArr.forEach((item: string) => {
         const arr = item.split(',');
+        let code = arr[0];
+        if (code.substr(0, 2) === 'of') {
+          // 修改lof以及etf的前缀，防止被过滤
+          // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
+          // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
+          code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
+        }
         // 过滤多余的 us. 开头的股干扰
-        if (STOCK_TYPE.includes(arr[0].substr(0, 2)) && !arr[0].startsWith('us.')) {
+        if (STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) {
           result.push({
-            label: `${arr[0]} | ${arr[4]}`,
+            label: `${code} | ${arr[4]}`,
             description: arr[7] && arr[7].replace(/"/g, ''),
           });
         }
@@ -176,30 +230,14 @@ export class LeekFundService {
     }
   }
 
-  async getFundHistoryByCode(code: string) {
-    try {
-      const response = await axios.get(this.fundHistoryUrl(code), {
-        headers: randHeader(),
-      });
-
-      const idxs = response.data.indexOf('"<table');
-      const lastIdx = response.data.indexOf('</table>"');
-      const content = response.data.slice(idxs + 1, lastIdx);
-      // console.log(idxs, lastIdx, content);
-      return { code, content };
-    } catch (err) {
-      console.log(err);
-      return { code, content: '历史净值获取失败' };
-    }
-  }
-
   async getStockData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
     console.log('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
-    const statusBarStocks = this.model.getCfg('leek-fund.statusBarStock');
-    const url = this.stockUrl(codes);
+    const statusBarStocks = this.model.getConfig('leek-fund.statusBarStock');
+
+    const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {
       const resp = await axios.get(url, {
         // axios 乱码解决
@@ -222,6 +260,9 @@ export class LeekFundService {
           return [
             {
               id: codes[0],
+              type: '',
+              contextValue: 'failed',
+              isCategory: false,
               info: { code: codes[0], percent: '0', name: '错误代码' },
               label: codes[0] + ' 错误代码，请查看是否缺少交易所信息',
             },
@@ -235,79 +276,113 @@ export class LeekFundService {
 
       const splitData = resp.data.split(';\n');
       let sz: LeekTreeItem | null = null;
+      let aStockCount = 0;
+      let usStockCount = 0;
+      let hkStockCount = 0;
+      let noDataStockCount = 0;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
         const params = splitData[i].split('="')[1].split(',');
         let type = code.substr(0, 2) || 'sh';
         let symbol = code.substr(2);
         let stockItem: any;
+        let fixedNumber = 2;
         if (params.length > 1) {
           if (/^(sh|sz)/.test(code)) {
+            let open = params[1];
+            let yestclose = params[2];
+            let price = params[3];
+            let high = params[4];
+            let low = params[5];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[1], 2, false),
-              yestclose: formatNumber(params[2], 2, false),
-              highStop: formatNumber(params[2] * 1.1, 2, false),
-              lowStop: formatNumber(params[2] * 0.9, 2, false),
-              price: formatNumber(params[3], 2, false),
-              low: formatNumber(params[5], 2, false),
-              high: formatNumber(params[4], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[8], 2),
               amount: formatNumber(params[9], 2),
               percent: '',
             };
+            aStockCount += 1;
           } else if (/^hk/.test(code)) {
+            let open = params[2];
+            let yestclose = params[3];
+            let price = params[6];
+            let high = params[4];
+            let low = params[5];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[1],
-              open: formatNumber(params[2], 2, false),
-              yestclose: formatNumber(params[3], 2, false),
-              price: formatNumber(params[6], 2, false),
-              low: formatNumber(params[5], 2, false),
-              high: formatNumber(params[4], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[12], 2),
               amount: formatNumber(params[11], 2),
               percent: '',
             };
+            hkStockCount += 1;
           } else if (/^gb_/.test(code)) {
             symbol = code.substr(3);
+            let open = params[5];
+            let yestclose = params[26];
+            let price = params[1];
+            let high = params[6];
+            let low = params[7];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[5], 2, false),
-              yestclose: formatNumber(params[26], 2, false),
-              price: formatNumber(params[1], 2, false),
-              low: formatNumber(params[7], 2, false),
-              high: formatNumber(params[6], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[10], 2),
               amount: '接口无数据',
               percent: '',
             };
             type = code.substr(0, 3);
+            noDataStockCount += 1;
           } else if (/^usr_/.test(code)) {
             symbol = code.substr(4);
+            let open = params[5];
+            let yestclose = params[26];
+            let price = params[1];
+            let high = params[6];
+            let low = params[7];
+            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
-              open: formatNumber(params[5], 2, false),
-              yestclose: formatNumber(params[26], 2, false),
-              price: formatNumber(params[1], 2, false),
-              low: formatNumber(params[7], 2, false),
-              high: formatNumber(params[6], 2, false),
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[10], 2),
               amount: '接口无数据',
               percent: '',
             };
             type = code.substr(0, 4);
+            usStockCount += 1;
           }
           if (stockItem) {
-            const { yestclose, price } = stockItem;
+            const { yestclose, price, open } = stockItem;
+            /*  if (open === price && price === '0.00') {
+              stockItem.isStop = true;
+            } */
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;
             stockItem.symbol = symbol;
-            stockItem.updown = formatNumber(+price - +yestclose, 2, false);
+            stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
             stockItem.percent =
               (stockItem.updown >= 0 ? '+' : '-') +
               formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
@@ -321,12 +396,34 @@ export class LeekFundService {
             }
             stockList.push(treeItem);
           }
+        } else {
+          // 接口不支持的
+          noDataStockCount += 1;
+          stockItem = {
+            id: code,
+            name: `接口不支持该股票 ${code}`,
+            showLabel: this.showLabel,
+            isStock: true,
+            percent: '',
+            type: 'nodata',
+            contextValue: 'nodata',
+          };
+          const treeItem = new LeekTreeItem(stockItem, this.context);
+          stockList.push(treeItem);
         }
       }
-      this.szItem = sz || stockList[0];
+      this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
       this.stockList = res;
+      if (barStockList.length === 0) {
+        // 用户没有设置股票时，默认展示上证或第一个
+        barStockList.push(this.defaultBarStock);
+      }
       this.statusBarStockList = sortData(barStockList, order);
+      globalState.aStockCount = aStockCount;
+      globalState.hkStockCount = hkStockCount;
+      globalState.usStockCount = usStockCount;
+      globalState.noDataStockCount = noDataStockCount;
       return res;
     } catch (err) {
       console.info(url);

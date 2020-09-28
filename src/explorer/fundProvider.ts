@@ -1,6 +1,7 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { LeekTreeItem, SortType } from '../leekTreeItem';
-import { LeekFundService } from '../service';
+import { LeekTreeItem } from '../leekTreeItem';
+import { LeekFundService } from './service';
+import { SortType } from '../shared';
 import { LeekFundModel } from './model';
 
 export class FundProvider implements TreeDataProvider<LeekTreeItem> {
@@ -14,8 +15,8 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
 
   constructor(service: LeekFundService) {
     this.service = service;
-    this.order = SortType.NORMAL;
     this.model = new LeekFundModel();
+    this.order = this.model.getConfig('leek-fund.fundSort') || SortType.NORMAL;
   }
 
   refresh(): any {
@@ -23,7 +24,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
-    const fundCodes = this.model.getCfg('leek-fund.funds') || [];
+    const fundCodes = this.model.getConfig('leek-fund.funds') || [];
     return this.service.getFundData(fundCodes, this.order);
   }
 
@@ -45,6 +46,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
+    this.model.setConfig('leek-fund.fundSort', this.order);
     this.refresh();
   }
 }

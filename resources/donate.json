@@ -1,0 +1,42 @@
+{
+  "description": "赞赏用户列表，不定时更新（可能有遗漏）",
+  "updatedTime": "2020-09-11 23:18:57",
+  "likeTheAuthors": [
+    {
+      "name": "E*o",
+      "from": "微信"
+    },
+    {
+      "name": "*纠",
+      "from": "微信"
+    },
+    {
+      "name": "**旭",
+      "from": "支付宝"
+    },
+    {
+      "name": "**雄",
+      "from": "支付宝"
+    },
+    {
+      "name": "匿名",
+      "from": "微信"
+    },
+    {
+      "name": "**宽",
+      "from": "支付宝"
+    },
+    {
+      "name": "zhjie",
+      "from": "微信"
+    },
+    {
+      "name": "**其",
+      "from": "支付宝"
+    },
+    {
+      "name": "Zelena",
+      "from": "微信"
+    }
+  ]
+}

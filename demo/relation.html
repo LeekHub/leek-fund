@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>矩形树图</title>
+  </head>
+  <body>
+    <div id="container" style="width: 900px; height: 500px"></div>
+
+    <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
+    <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
+    <script>
+      var stockPercentMap = {};
+      getStockPercent();
+      function getStockPercent() {
+        var table = document.querySelector('.comm');
+        var tbody = table.querySelector('tbody');
+        var trList = tbody.children;
+        stockPercentMap = {};
+        for (var i = 0; i < trList.length; i++) {
+          var tds = trList[i].children;
+          stockPercentMap[
+            tds[1].firstChild.innerText
+          ] = +tds[6].innerText.replace('%', '');
+        }
+      }
+    </script>
+    <script>
+      rectChart();
+      var chart;
+      function rectChart() {
+        let valueArr = [];
+        const { DataView } = DataSet;
+        const arr = [
+          { f2: 411.54, f3: -0.04, f9: 63.58, f12: '000661', f14: '长春高新' },
+          { f2: 97.78, f3: -0.11, f9: 67.73, f12: '603259', f14: '药明康德' },
+          { f2: 55.16, f3: 0.88, f9: 689.57, f12: '300142', f14: '沃森生物' },
+          { f2: 124.51, f3: 2.55, f9: 66.2, f12: '300122', f14: '智飞生物' },
+          { f2: 48.52, f3: 0.71, f9: 86.49, f12: '002007', f14: '华兰生物' },
+          { f2: 167.65, f3: 0.39, f9: 216.97, f12: '300601', f14: '康泰生物' },
+          { f2: 25.64, f3: -0.31, f9: 79.14, f12: '600201', f14: '生物股份' },
+          { f2: 68.87, f3: -0.19, f9: 62.45, f12: '300529', f14: '健帆生物' },
+          { f2: 137.53, f3: 3.02, f9: 16.66, f12: '300676', f14: '华大基因' },
+          { f2: 14.12, f3: 6.73, f9: 26.53, f12: '600867', f14: '通化东宝' },
+        ];
+        const relationMap = arr.map((item) => {
+          const { f2, f3, f9, f12, f14 } = item;
+          return {
+            name: f14 + '  ' + f3 + '%',
+            code: f12,
+            price: f2,
+            percent: f3,
+            value: Math.ceil(f2 * f9),
+          };
+        });
+        const data = {
+          name: 'root',
+          children: relationMap,
+        };
+        const dv = new DataView();
+        dv.source(data, {
+          type: 'hierarchy',
+        }).transform({
+          field: 'value',
+          type: 'hierarchy.treemap',
+          tile: 'treemapResquarify',
+          as: ['x', 'y'],
+        });
+
+        // 将 DataSet 处理后的结果转换为 G2 接受的数据
+        const nodes = [];
+        for (const node of dv.getAllNodes()) {
+          if (node.data.name === 'root') {
+            continue;
+          }
+          valueArr.push(node.data.value);
+          const eachNode = {
+            name: node.data.name,
+            x: node.x,
+            y: node.y,
+            code: node.data.code,
+            value: node.data.value,
+            price: node.data.price,
+            percent: node.data.percent,
+          };
+
+          nodes.push(eachNode);
+        }
+        valueArr = valueArr.sort((a, b) => a - b);
+        const middleIndex = Math.ceil(valueArr.length / 2);
+        chart = new G2.Chart({
+          container: 'container',
+          autoFit: true,
+          height: 500,
+        });
+        chart.data(nodes);
+        chart.scale({
+          x: {
+            nice: true,
+          },
+          y: {
+            nice: true,
+          },
+        });
+
+        chart.axis(false);
+        chart.legend(false);
+        chart.tooltip({
+          showTitle: false,
+          showMarkers: false,
+          itemTpl:
+            '<ul style="padding-bottom: 10px;margin-left:-30px"><li style="list-style: none;">' +
+            '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+            '{name}' +
+            '</li>' +
+            '<li style="list-style: none;">' +
+            '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+            '<span style="margin-top:4px">股票代码：{code}</span><br/>' +
+            '</li>' +
+            '<li style="list-style: none;">' +
+            '<span style="background-color:{color};" class="g2-tooltip-marker"></span>' +
+            '<span style="margin-top:4px">最新价格：{price}</span><br/>' +
+            '</li></ul>',
+        });
+        chart
+          .polygon()
+          .position('x*y')
+          .color('value*percent', (value, percent) => {
+            if (percent > 0) {
+              return '#F44336';
+            }
+            return 'green';
+          })
+          .tooltip('name*price*code', (name, price, code) => {
+            return {
+              name,
+              price,
+              code,
+            };
+          })
+          .style({
+            lineWidth: 2,
+            stroke: '#fff',
+          })
+          .label('name*value', (name, value) => {
+            let labelStyle = {
+              offset: 0,
+              style: {
+                textBaseline: 'middle',
+                fontSize: 12,
+              },
+              content: (obj) => {
+                if (obj.name !== 'root') {
+                  return obj.name;
+                }
+              },
+            };
+            console.log(value, valueArr[middleIndex]);
+            if (value > valueArr[middleIndex]) {
+              console.log(value, middleIndex);
+              labelStyle.style.fontSize = 20;
+              return labelStyle;
+            }
+            return labelStyle;
+          });
+
+        chart.interaction('element-active');
+
+        chart.render();
+      }
+    </script>
+  </body>
+</html>

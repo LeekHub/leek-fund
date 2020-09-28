@@ -1,42 +1,18 @@
-import { TreeItem, ExtensionContext, TreeItemCollapsibleState } from 'vscode';
 import { join } from 'path';
+import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import globalState from './globalState';
+import { FundInfo, IconType } from './shared';
 import { formatTreeText } from './utils';
-
-export enum SortType {
-  NORMAL = 0,
-  ASC = 1,
-  DESC = -1,
-}
-
-// 支持的股票类型
-export const STOCK_TYPE = ['sh', 'sz', 'hk', 'gb', 'us'];
-
-export interface FundInfo {
-  percent: any;
-  name: string;
-  code: string;
-  showLabel?: boolean;
-  symbol?: string;
-  type?: string;
-  yestclose?: string | number; // 昨日净值
-  open?: string | number;
-  highStop?: string | number;
-  high?: string | number;
-  lowStop?: string | number;
-  low?: string | number;
-  time?: string;
-  updown?: string; // 涨跌值 price-yestclose
-  price?: string; // 当前价格
-  volume?: string; // 成交量
-  amount?: string; // 成交额
-  isStock?: boolean;
-}
 
 export class LeekTreeItem extends TreeItem {
   info: FundInfo;
-  constructor(info: FundInfo, context: ExtensionContext) {
+  type: string | undefined;
+  isCategory: boolean;
+  contextValue: string | undefined;
+  constructor(info: FundInfo, context: ExtensionContext | undefined, isCategory = false) {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
+    this.isCategory = isCategory;
     const {
       showLabel,
       isStock,
@@ -52,28 +28,87 @@ export class LeekTreeItem extends TreeItem {
       low,
       updown,
       volume,
-      amount,
+      amount = 0,
+      earnings,
+      time,
+      isStop,
+      t2,
+      contextValue,
     } = info;
-    let _percent = Math.abs(percent).toFixed(2);
-
-    if (showLabel) {
-      let icon = 'up';
-      const grow = percent.indexOf('-') === 0 ? false : true;
-      const val = Math.abs(percent);
-      if (grow) {
+    this.type = type;
+    this.contextValue = contextValue;
+    let _percent: number | string = Math.abs(percent);
+    if (isNaN(_percent)) {
+      _percent = '--';
+    } else {
+      _percent = _percent.toFixed(2);
+    }
+    let icon = 'up';
+    const grow = percent.indexOf('-') === 0 ? false : true;
+    const val = Math.abs(percent);
+    if (grow) {
+      if (IconType.ARROW === globalState.iconType) {
         icon = val >= 2 ? 'up' : 'up1';
-        _percent = '+' + _percent;
-      } else {
-        icon = val >= 2 ? 'down' : 'down1';
-        _percent = '-' + _percent;
+      } else if (IconType.FOOD1 === globalState.iconType) {
+        icon = 'meat2';
+      } else if (IconType.FOOD2 === globalState.iconType) {
+        icon = 'kabob';
+      } else if (IconType.FOOD3 === globalState.iconType) {
+        icon = 'wine';
+      } else if (IconType.ICON_FOOD === globalState.iconType) {
+        icon = '🍗';
       }
-      this.iconPath = context.asAbsolutePath(join('resources', `${icon}.svg`));
+      _percent = '+' + _percent;
+    } else {
+      if (IconType.ARROW === globalState.iconType) {
+        icon = val >= 2 ? 'down' : 'down1';
+      } else if (IconType.FOOD1 === globalState.iconType) {
+        icon = 'noodles';
+      } else if (IconType.FOOD2 === globalState.iconType) {
+        icon = 'bakeleek';
+      } else if (IconType.FOOD3 === globalState.iconType) {
+        icon = 'noodles';
+      } else if (IconType.ICON_FOOD === globalState.iconType) {
+        icon = '🍜';
+      }
+      _percent = '-' + _percent;
+    }
+    if (isStop) {
+      icon = 'stop';
+    }
+    let iconPath: string | undefined = '';
+    if (showLabel) {
+      iconPath =
+        globalState.iconType !== IconType.ICON_FOOD
+          ? context?.asAbsolutePath(join('resources', `${icon}.svg`))
+          : icon;
+    }
+    const isIconPath = iconPath?.lastIndexOf('.svg') !== -1;
+    if (isIconPath && type !== 'nodata') {
+      this.iconPath = iconPath;
     }
     let text = '';
     if (showLabel) {
-      text = isStock
-        ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)}「${name}」`
-        : `${formatTreeText(`${_percent}%`)}「${name}」(${code})`;
+      if (isStock) {
+        const risePercent = isStop
+          ? formatTreeText('停牌', 11)
+          : formatTreeText(`${_percent}%`, 11);
+        if (type === 'nodata') {
+          text = info.name;
+        } else {
+          text = `${!isIconPath ? iconPath : ''}${risePercent}${formatTreeText(
+            price,
+            15
+          )}「${name}」`;
+        }
+      } else {
+        text =
+          `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
+            t2 || !(globalState.showEarnings && amount > 0)
+              ? ''
+              : `(${grow ? '盈' : '亏'}：${earnings})`
+          }` + `${t2 ? `(${time})` : ''}`;
+      }
     } else {
       text = isStock
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
@@ -81,10 +116,10 @@ export class LeekTreeItem extends TreeItem {
     }
 
     this.label = text;
-    this.id = code;
+    this.id = info.id || code;
     this.command = {
       title: name, // 标题
-      command: isStock ? 'leet-fund.stockItemClick' : 'leet-fund.fundItemClick', // 命令 ID
+      command: isStock ? 'leek-fund.stockItemClick' : 'leek-fund.fundItemClick', // 命令 ID
       arguments: [
         isStock ? '0' + symbol : code, // 基金/股票编码
         name, // 基金/股票名称
@@ -92,13 +127,20 @@ export class LeekTreeItem extends TreeItem {
         `${type}${symbol}`,
       ],
     };
+    if (type === 'nodata') {
+      this.command.command = '';
+    }
 
     if (isStock) {
-      this.tooltip = `【今日行情】${
-        !showLabel ? name : ''
-      }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+      if (type === 'nodata') {
+        this.tooltip = '接口不支持，右键删除关注';
+      } else {
+        this.tooltip = `【今日行情】${
+          !showLabel ? name : ''
+        }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+      }
     } else {
-      this.tooltip = `${!showLabel ? name : '点击查看详情'}`;
+      this.tooltip = `「${name}」(${code})`;
     }
   }
 }

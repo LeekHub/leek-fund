@@ -2,6 +2,8 @@ out
 node_modules
 .vscode-test/
 *.vsix
+*.zip
 yarn.lock
 package-lock.json
 demo/donate.html
+demo/api.html

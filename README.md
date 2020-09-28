@@ -30,7 +30,7 @@
 
 本插件具有以下特点：
 
-- 基金涨跌（因接口原因基金数据延迟 `2 分钟` 左右）
+- 基金涨跌，实时数据，支持海外基展示
 - 股票涨跌，支持 A 股、港股、美股（实时数据）
 - 左侧菜单面板
 - 底部状态栏信息
@@ -44,6 +44,12 @@
 - 支持 GUI 操作新增&删除 基金 和 股票
 - 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 支持 GUI 设置涨跌颜色、状态栏股票自定义等
+- 雪球用户动态关注 `v1.4.0`
+- 自定义涨跌图标（吃面、吃肉、烤韭菜、烤肉、喝酒）
+- 基金持仓金额设置
+- 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏） `v1.5.0`
+- 基金趋势统计图
+- 股票支持分组展示（A 股、港股、美股）
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
@@ -59,9 +65,11 @@
 
 ![概览](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/overview.png)
 
-## 插件配置说明
+## 插件配置
 
 **添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/giscafer/leek-fund/issues/23)
+
+![](./screenshot/settings.png)
 
 下面是插件配置说明：
 
@@ -137,6 +145,10 @@
 
 [插件（养 🐥）微信交流群](https://github.com/giscafer/leek-fund/issues/19)
 
+## 赞助支持一下！
+
+[Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
+
 ## Todo List
 
 - [版本迭代需求池（想法）](https://github.com/giscafer/leek-fund/projects)
@@ -150,8 +162,9 @@
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
+- [iporer](https://github.com/iporer)
 
-更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)
+更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
 ## Changelog
 

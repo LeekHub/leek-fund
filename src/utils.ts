@@ -1,5 +1,47 @@
-import { QuickPickItem } from 'vscode';
-import { LeekTreeItem, SortType } from './leekTreeItem';
+import { QuickPickItem, ExtensionContext, Uri } from 'vscode';
+import { LeekTreeItem } from './leekTreeItem';
+import { SortType } from './shared';
+const path = require('path');
+const fs = require('fs');
+
+const formatNum = (n: number) => {
+  const m = n.toString();
+  return m[1] ? m : '0' + m;
+};
+
+export const objectToQueryString = (queryParameters: Object): string => {
+  return queryParameters
+    ? Object.entries(queryParameters).reduce((queryString, [key, val], index) => {
+        const symbol = queryString.length === 0 ? '?' : '&';
+        queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
+        return queryString;
+      }, '')
+    : '';
+};
+
+export const formatDate = (date: Date, seperator = '-') => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  return [year, month, day].map(formatNum).join(seperator);
+};
+
+// 时间格式化
+export const formatDateTime = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  const second = date.getSeconds();
+
+  return (
+    [year, month, day].map(formatNum).join('-') +
+    ' ' +
+    [hour, minute, second].map(formatNum).join(':')
+  );
+};
 
 /**
  * 数组去重
@@ -23,25 +65,75 @@ export const clean = (elements: Array<string | number>) => {
   return elements.filter((element) => !!element);
 };
 
+/**
+ * toFixed 解决js精度问题，使用方式：toFixed(value)
+ * @param {Number | String} value
+ * @param {Number} precision 精度，默认2位小数，需要取整则传0
+ * 该方法会处理好以下这些问题
+ * 1.12*100=112.00000000000001
+ * 1.13*100=112.9999999999999
+ * '0.015'.toFixed(2)结果位0.01
+ * 1121.1/100 = 11.210999999999999
+ */
+export const toFixed = (value = 0, precision = 2) => {
+  const num = Number(value);
+  if (Number.isNaN(num)) return 0;
+  if (num < Math.pow(-2, 31) || num > Math.pow(2, 31) - 1) {
+    return 0;
+  }
+  // console.log(num, precision)
+  if (precision < 0 || typeof precision !== 'number') {
+    return value;
+  } else if (precision > 0) {
+    return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision);
+  }
+  return Math.round(num);
+};
+
 export const isStockTime = () => {
   let stockTime = [9, 15];
   const date = new Date();
   const hours = date.getHours();
   const minus = date.getMinutes();
   const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
-  return (hours >= stockTime[0] && hours <= stockTime[1]) || delay;
+  return (hours >= stockTime[0] && hours < stockTime[1]) || delay;
+};
+
+export const calcFixedPirceNumber = (
+  open: string,
+  yestclose: string,
+  price: string,
+  high: string,
+  low: string
+): number => {
+  let reg = /0+$/g;
+  open = open.replace(reg, '');
+  yestclose = yestclose.replace(reg, '');
+  price = price.replace(reg, '');
+  high = high.replace(reg, '');
+  low = low.replace(reg, '');
+  let o = open.indexOf('.') === -1 ? 0 : open.length - open.indexOf('.') - 1;
+  let yc = yestclose.indexOf('.') === -1 ? 0 : yestclose.length - yestclose.indexOf('.') - 1;
+  let p = price.indexOf('.') === -1 ? 0 : price.length - price.indexOf('.') - 1;
+  let h = high.indexOf('.') === -1 ? 0 : high.length - high.indexOf('.') - 1;
+  let l = low.indexOf('.') === -1 ? 0 : low.length - low.indexOf('.') - 1;
+  let max = Math.max(o, yc, p, h, l);
+  if (max > 3) {
+    max = 2; // 接口返回的指数数值的小数位为4，但习惯两位小数
+  }
+  return max;
 };
 
 export const formatNumber = (val: number = 0, fixed: number = 2, format = true): string => {
   const num = +val;
   if (format) {
     if (num > 1000 * 10000) {
-      return +(num / (10000 * 10000)).toFixed(fixed) + '亿';
+      return (num / (10000 * 10000)).toFixed(fixed) + '亿';
     } else if (num > 1000) {
-      return +(num / 10000).toFixed(fixed) + '万';
+      return (num / 10000).toFixed(fixed) + '万';
     }
   }
-  return `${+num.toFixed(fixed)}`;
+  return `${num.toFixed(fixed)}`;
 };
 
 export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => {
@@ -60,10 +152,14 @@ export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => 
   }
 };
 
-export const formatTreeText = (text = '', num = 10) => {
+export const formatTreeText = (text = '', num = 10): string => {
   const str = text + '';
   const lenx = num - str.length;
   return str + ' '.repeat(lenx);
+};
+
+export const caculateEarnings = (money: number, price: number, currentPrice: number): number => {
+  return (money / price) * currentPrice - money;
 };
 
 export const colorOptionList = (): QuickPickItem[] => {
@@ -165,45 +261,32 @@ export const randHeader = () => {
   return result;
 };
 
-export const fundRankHtmlTemp = (list: any[] = []) => {
-  let tbody = '';
-  const thead = `
-  <thead><tr ><th class="colorize">序号</th><th class="colorize">基金代码</th><th class="colorize">基金名称</th><th class="r_20 colorize">单位净值</th><th class="r_20 colorize">累计净值</th><th class="r_20">近三个月(%)</th><th class="r_20">近六个月(%)</th><th class=" r_20">近一年(%)</th><th class="sort_down r_20">今年以来(%)</th><th class=" r_20">成立以来(%)</th></tr></thead>`;
-  for (let i = 0; i < list.length; i++) {
-    const item = list[i];
-    const {
-      symbol,
-      name,
-      per_nav,
-      total_nav,
-      three_month,
-      six_month,
-      one_year,
-      form_year,
-      form_start,
-      sname,
-      zmjgm,
-      clrq,
-      jjjl,
-      dwjz,
-      ljjz,
-      jzrq,
-      zjzfe,
-      jjglr_code,
-    } = item;
-    tbody += `<tr class="red">
-    <td class="colorize">${i + 1}</td>
-    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank">${symbol}</a></td>
-    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank" title="${name}" class="name">${name}</a></td>
-    <td class="r_20 colorize">${dwjz}</td>
-    <td class="r_20 colorize">${ljjz}</td>
-    <td class="r_20">${three_month}</td>
-    <td class="r_20">${six_month}</td>
-    <td class="r_20">${one_year}</td>
-    <td class="r_20 sort_down r_20">${form_year}</td>
-    <td class="r_20">${form_start}</td>
-    </tr>`;
-  }
-
-  return `<table boder="0">${thead}<tbody>${tbody} </tbody></table>`;
-};
+/**
+ * 从某个HTML文件读取能被 WebView 加载的HTML内容
+ * @param {*} context 上下文
+ * @param {*} templatePath 相对于插件根目录的html文件相对路径
+ */
+export function getWebViewContent(context: ExtensionContext, templatePath: string) {
+  const resourcePath = path.join(context.extensionPath, templatePath);
+  console.log(templatePath, resourcePath);
+  const dirPath = path.dirname(resourcePath);
+  let html = fs.readFileSync(resourcePath, 'utf-8');
+  // vscode不支持直接加载本地资源，需要替换成其专有路径格式，这里只是简单的将样式和JS的路径替换
+  html = html.replace(
+    /(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g,
+    (m: any, $1: any, $2: any) => {
+      // 本地资源更换为 Uri 文件读取
+      if ($2.includes('http') === -1) {
+        return (
+          $1 +
+          Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() +
+          '"'
+        );
+      } else {
+        // 外链资源不动
+        return $1 + $2 + `"`;
+      }
+    }
+  );
+  return html;
+}

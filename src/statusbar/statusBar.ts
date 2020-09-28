@@ -1,7 +1,7 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import { LeekFundModel } from '../explorer/model';
 import { LeekTreeItem } from '../leekTreeItem';
-import { LeekFundService } from '../service';
-import { LeekFundModel } from './model';
+import { LeekFundService } from '../explorer/service';
 
 export class StatusBar {
   private model: LeekFundModel;
@@ -17,10 +17,10 @@ export class StatusBar {
   }
 
   get riseColor(): string {
-    return this.model.getCfg('leek-fund.riseColor');
+    return this.model.getConfig('leek-fund.riseColor');
   }
   get fallColor(): string {
-    return this.model.getCfg('leek-fund.fallColor');
+    return this.model.getConfig('leek-fund.fallColor');
   }
 
   refresh() {
@@ -67,7 +67,7 @@ export class StatusBar {
   }
 
   refreshFundStatusBar() {
-    this.fundBarItem.text = `🐥🐥🐥$(pulse)`;
+    this.fundBarItem.text = `🐥$(pulse)`;
     this.fundBarItem.color = this.riseColor;
     this.fundBarItem.tooltip = this.getFundTooltipText();
     this.fundBarItem.show();
