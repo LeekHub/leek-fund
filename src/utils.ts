@@ -4,6 +4,7 @@ import { SortType, StockCategory } from './shared';
 const path = require('path');
 const fs = require('fs');
 const stockTimes = allStockTimes();
+const holidays = allHolidays();
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -100,7 +101,7 @@ export const isStockTime = () => {
   const delay = 5;
   for (let i = 0; i < markets.length; i++) {
     let stockTime = stockTimes.get(markets[i]);
-    if (!stockTime || stockTime.length < 2) {
+    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
       continue;
     }
     // 针对美股交易时间跨越北京时间0点
@@ -351,6 +352,7 @@ export function allStockTimes(): Map<string, Array<number>> {
   stocks.set(StockCategory.A, [9, 15]);
   stocks.set(StockCategory.HK, [9, 16]);
 
+  // FIXME: 夏令时冬令时切换前一天，北京时间过了0点的时候有bug，需要获取纽约时区数据
   const date = new Date();
   const month = date.getMonth() + 1;
   // 判断夏令时
@@ -361,4 +363,31 @@ export function allStockTimes(): Map<string, Array<number>> {
   }
 
   return stocks;
+}
+
+export function allHolidays(): Map<string, Array<string>> {
+  // https://websys.fsit.com.tw/FubonETF/Top/Holiday.aspx
+  // 假日日期格式为yyyyMMdd
+  // TODO: 寻找假日API，自动判断假日
+  let days = new Map<string, Array<string>>();
+  const A = ['20201001', '20201002', '20201005', '20201006', '20201007', '20201008'];
+  const HK = ['20201001', '20201002', '20201026', '20201225'];
+  const US = ['20201126', '20201225'];
+  days.set(StockCategory.A, A);
+  days.set(StockCategory.HK, HK);
+  days.set(StockCategory.US, US);
+  return days;
+}
+
+export function isHoliday(market: string): boolean {
+  let date = new Date();
+  if (market === StockCategory.US) {
+    // FIXME: 获取纽约时间
+    date = new Date();
+  }
+  const day = date.getDay();
+  if (day === 0 || day === 6 || holidays.get(market)?.includes(formatDate(date, ''))) {
+    return true;
+  }
+  return false;
 }
