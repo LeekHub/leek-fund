@@ -1,9 +1,10 @@
-import { QuickPickItem, ExtensionContext, Uri } from 'vscode';
+import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
-import { SortType } from './shared';
+import { SortType, StockCategory } from './shared';
 const path = require('path');
 const fs = require('fs');
-
+const stockTimes = allStockTimes();
+const holidays = allHolidays();
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -77,7 +78,9 @@ export const clean = (elements: Array<string | number>) => {
  */
 export const toFixed = (value = 0, precision = 2) => {
   const num = Number(value);
-  if (Number.isNaN(num)) return 0;
+  if (Number.isNaN(num)) {
+    return 0;
+  }
   if (num < Math.pow(-2, 31) || num > Math.pow(2, 31) - 1) {
     return 0;
   }
@@ -91,12 +94,35 @@ export const toFixed = (value = 0, precision = 2) => {
 };
 
 export const isStockTime = () => {
-  let stockTime = [9, 15];
+  const markets = allMarkets();
   const date = new Date();
   const hours = date.getHours();
   const minus = date.getMinutes();
-  const delay = hours === 15 && minus === 5; // 15点5分的时候刷新一次，避免数据延迟
-  return (hours >= stockTime[0] && hours < stockTime[1]) || delay;
+  const delay = 5;
+  for (let i = 0; i < markets.length; i++) {
+    let stockTime = stockTimes.get(markets[i]);
+    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
+      continue;
+    }
+    // 针对美股交易时间跨越北京时间0点
+    if (stockTime[0] > stockTime[1]) {
+      if (
+        hours >= stockTime[0] ||
+        hours < stockTime[1] ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        (hours >= stockTime[0] && hours < stockTime[1]) ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 export const calcFixedPirceNumber = (
@@ -289,4 +315,78 @@ export function getWebViewContent(context: ExtensionContext, templatePath: strin
     }
   );
   return html;
+}
+
+export function getConfig(key: string): any {
+  const config = workspace.getConfiguration();
+  return config.get(key);
+}
+
+export function allMarkets(): Array<string> {
+  let result: Array<string> = [];
+  const funds: Array<string> = getConfig('leek-fund.funds');
+  if (funds.length > 0) {
+    // 针对只配置基金的用户，默认增加A股交易时间
+    result.push(StockCategory.A);
+  }
+
+  const stocks: Array<string> = getConfig('leek-fund.stocks');
+  stocks.forEach((item: string) => {
+    let market = StockCategory.NODATA;
+    if (/^(sh|sz)/.test(item)) {
+      market = StockCategory.A;
+    } else if (/^(hk)/.test(item)) {
+      market = StockCategory.HK;
+    } else if (/^(usr_)/.test(item)) {
+      market = StockCategory.US;
+    }
+    if (!result.includes(market)) {
+      result.push(market);
+    }
+  });
+  return result;
+}
+
+export function allStockTimes(): Map<string, Array<number>> {
+  let stocks = new Map<string, Array<number>>();
+  stocks.set(StockCategory.A, [9, 15]);
+  stocks.set(StockCategory.HK, [9, 16]);
+  // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
+  stocks.set(StockCategory.US, [21, 5]);
+
+  return stocks;
+}
+
+export function allHolidays(): Map<string, Array<string>> {
+  // https://websys.fsit.com.tw/FubonETF/Top/Holiday.aspx
+  // 假日日期格式为yyyyMMdd
+  // TODO: 寻找假日API，自动判断假日
+  let days = new Map<string, Array<string>>();
+  const A = ['20201001', '20201002', '20201005', '20201006', '20201007', '20201008'];
+  const HK = ['20201001', '20201002', '20201026', '20201225'];
+  const US = ['20201126', '20201225'];
+  days.set(StockCategory.A, A);
+  days.set(StockCategory.HK, HK);
+  days.set(StockCategory.US, US);
+  return days;
+}
+
+export function timezoneDate(timezone: number): Date {
+  const date = new Date();
+  const diff = date.getTimezoneOffset(); // 分钟差
+  const gmt = date.getTime() + diff * 60 * 1000;
+  let nydate = new Date(gmt + timezone * 60 * 60 * 1000);
+  return nydate;
+}
+
+export function isHoliday(market: string): boolean {
+  let date = new Date();
+  if (market === StockCategory.US) {
+    date = timezoneDate(-5);
+  }
+  const day = date.getDay();
+  if (day === 0 || day === 6 || holidays.get(market)?.includes(formatDate(date, ''))) {
+    return true;
+  }
+  return false;
 }

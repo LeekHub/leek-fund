@@ -147,8 +147,8 @@ export class LeekFundService {
           earnings,
           isUpdated,
           amount,
-          t2: GSZZL == '--' ? true : false, // 海外基金t2
-          time: GSZZL == '--' ? PDATE : GZTIME, // 更新时间
+          t2: GSZZL === '--', // 海外基金t2
+          time: GSZZL === '--' ? PDATE : GZTIME, // 更新时间
           showEarnings: keyLength > 0 && amount !== 0,
         };
         return new LeekTreeItem(obj, this.context);
