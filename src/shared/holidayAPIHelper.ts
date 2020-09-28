@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { formatDate } from './utils';
+import { formatDate } from '../utils';
 
-export class HolidayAPIHelper {
+export class HolidayHelper {
   /**
    * 根据年份，取出全年节假日情况
    * @param year 年份字符串，如：'2020'
@@ -85,10 +85,10 @@ export class HolidayAPIHelper {
     }
   };
 
-  public static isHoliday = async (date: Date) => {
+  public static isHolidayInChina = async (date: Date = new Date()) => {
     let tof = false;
 
-    let dataObj = await HolidayAPIHelper.getHolidayDataByDate(date);
+    let dataObj = await HolidayHelper.getHolidayDataByDate(date);
 
     if (dataObj) {
       tof = dataObj.type.type === 2;

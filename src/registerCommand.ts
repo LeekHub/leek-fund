@@ -8,7 +8,7 @@ import { StockProvider } from './explorer/stockProvider';
 import globalState from './globalState';
 import { LeekTreeItem } from './leekTreeItem';
 import { LeekFundService } from './explorer/service';
-import checkForUpdate from './update';
+import checkForUpdate from './shared/update';
 import { colorOptionList, randomColor } from './utils';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';

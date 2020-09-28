@@ -1,7 +1,7 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
-import { defaultFundInfo, SortType, StockCategory } from '../shared';
+import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
 import { LeekFundModel } from './model';
 import { LeekFundService } from './service';
 

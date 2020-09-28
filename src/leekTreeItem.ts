@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from './globalState';
-import { FundInfo, IconType } from './shared';
+import { FundInfo, IconType } from './shared/typed';
 import { formatTreeText } from './utils';
 
 export class LeekTreeItem extends TreeItem {

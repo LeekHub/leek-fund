@@ -1,11 +1,8 @@
 import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
-import { HolidayAPIHelper } from './holidayAPIHelper';
-import { SortType, StockCategory } from './shared';
+import { HolidayHelper } from './shared/holidayAPIHelper';
+import { SortType, StockCategory } from './shared/typed';
 import globalState from './globalState';
-
-const path = require('path');
-const fs = require('fs');
 
 const stockTimes = allStockTimes();
 const holidays = allHolidays();
@@ -96,38 +93,6 @@ export const toFixed = (value = 0, precision = 2) => {
     return Math.round(num * Math.pow(10, precision)) / Math.pow(10, precision);
   }
   return Math.round(num);
-};
-
-export const isStockTime = () => {
-  const markets = allMarkets();
-  const date = new Date();
-  const hours = date.getHours();
-  const minus = date.getMinutes();
-  const delay = 5;
-  for (let i = 0; i < markets.length; i++) {
-    let stockTime = stockTimes.get(markets[i]);
-    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
-      continue;
-    }
-    // 针对美股交易时间跨越北京时间0点
-    if (stockTime[0] > stockTime[1]) {
-      if (
-        hours >= stockTime[0] ||
-        hours < stockTime[1] ||
-        (hours === stockTime[1] && minus === delay)
-      ) {
-        return true;
-      }
-    } else {
-      if (
-        (hours >= stockTime[0] && hours < stockTime[1]) ||
-        (hours === stockTime[1] && minus === delay)
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
 };
 
 export const calcFixedPirceNumber = (
@@ -293,36 +258,6 @@ export const randHeader = () => {
 };
 
 /**
- * 从某个HTML文件读取能被 WebView 加载的HTML内容
- * @param {*} context 上下文
- * @param {*} templatePath 相对于插件根目录的html文件相对路径
- */
-export function getWebViewContent(context: ExtensionContext, templatePath: string) {
-  const resourcePath = path.join(context.extensionPath, templatePath);
-  console.log(templatePath, resourcePath);
-  const dirPath = path.dirname(resourcePath);
-  let html = fs.readFileSync(resourcePath, 'utf-8');
-  // vscode不支持直接加载本地资源，需要替换成其专有路径格式，这里只是简单的将样式和JS的路径替换
-  html = html.replace(
-    /(<link.+?href="|<script.+?src="|<img.+?src=")(.+?)"/g,
-    (m: any, $1: any, $2: any) => {
-      // 本地资源更换为 Uri 文件读取
-      if ($2.includes('http') === -1) {
-        return (
-          $1 +
-          Uri.file(path.resolve(dirPath, $2)).with({ scheme: 'vscode-resource' }).toString() +
-          '"'
-        );
-      } else {
-        // 外链资源不动
-        return $1 + $2 + `"`;
-      }
-    }
-  );
-  return html;
-}
-
-/**
  * 判断是否周未的方法
  * @param {*} date 参与判断的日期，默认今天
  */
@@ -335,16 +270,36 @@ export const isWeekend = (date: Date = new Date()) => {
   return tof;
 };
 
-/**
- * 判断是否节假日的方法
- * @param {*} date 参与判断的日期，默认今天
- */
-export const isHolidayChina = async (date: Date = new Date()) => {
-  let tof = false;
-
-  tof = await HolidayAPIHelper.isHoliday(date);
-
-  return tof;
+export const isStockTime = () => {
+  const markets = allMarkets();
+  const date = new Date();
+  const hours = date.getHours();
+  const minus = date.getMinutes();
+  const delay = 5;
+  for (let i = 0; i < markets.length; i++) {
+    let stockTime = stockTimes.get(markets[i]);
+    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
+      continue;
+    }
+    // 针对美股交易时间跨越北京时间0点
+    if (stockTime[0] > stockTime[1]) {
+      if (
+        hours >= stockTime[0] ||
+        hours < stockTime[1] ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    } else {
+      if (
+        (hours >= stockTime[0] && hours < stockTime[1]) ||
+        (hours === stockTime[1] && minus === delay)
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 export function getConfig(key: string): any {

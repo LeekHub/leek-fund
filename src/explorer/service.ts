@@ -3,7 +3,7 @@ import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
-import { StockCategory, STOCK_TYPE } from '../shared';
+import { StockCategory, STOCK_TYPE } from '../shared/typed';
 import {
   caculateEarnings,
   calcFixedPirceNumber,

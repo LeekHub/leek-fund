@@ -4,7 +4,7 @@ import globalState from '../globalState';
 import { LeekTreeItem } from '../leekTreeItem';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 import { LeekFundService } from '../explorer/service';
-import { IAmount } from '../shared';
+import { IAmount } from '../shared/typed';
 import { toFixed } from '../utils';
 
 async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel) {

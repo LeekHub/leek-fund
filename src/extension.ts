@@ -11,10 +11,11 @@ import { NewsProvider } from './explorer/newsProvider';
 import { LeekFundService } from './explorer/service';
 import { StockProvider } from './explorer/stockProvider';
 import globalState from './globalState';
+import { HolidayHelper } from './shared/holidayAPIHelper';
 import { registerViewEvent } from './registerCommand';
-import { SortType } from './shared';
+import { SortType } from './shared/typed';
 import { StatusBar } from './statusbar/statusBar';
-import { isStockTime, isHolidayChina } from './utils';
+import { isStockTime } from './utils';
 import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
@@ -27,12 +28,14 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
-  isHolidayChina().then((tof) => {
-    globalState.isHolidayChina = tof;
-  });
-
   let intervalTime = 3000;
   const model = new LeekFundModel();
+
+  // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
+  HolidayHelper.isHolidayInChina().then((isHoliday) => {
+    globalState.isHolidayChina = isHoliday;
+  });
+
   setGlobalVariable(model);
   updateAmount(model);
 
@@ -41,9 +44,6 @@ export function activate(context: ExtensionContext) {
   const nodeStockProvider = new StockProvider(fundService);
   const newsProvider = new NewsProvider();
   const statusBar = new StatusBar(fundService);
-
-  // prefetch all fund data for searching
-  // fundService.getFundSuggestList();
 
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
@@ -80,11 +80,12 @@ export function activate(context: ExtensionContext) {
       }
     } else {
       console.log('StockMarket Closed! Polling closed!');
+      setIntervalTime(intervalTime * 100);
     }
   };
 
-  const setIntervalTime = () => {
-    intervalTime = workspace.getConfiguration().get('leek-fund.interval', 10000);
+  const setIntervalTime = (interval?: number) => {
+    intervalTime = interval || workspace.getConfiguration().get('leek-fund.interval', 10000);
 
     if (intervalTime < 3000) {
       intervalTime = 3000;
