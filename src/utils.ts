@@ -3,7 +3,7 @@ import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './shared';
 const path = require('path');
 const fs = require('fs');
-
+const stockTimes = allStockTimes();
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -94,13 +94,15 @@ export const toFixed = (value = 0, precision = 2) => {
 
 export const isStockTime = () => {
   const markets = allMarkets();
-  const stockTimes = allStockTimes(markets);
   const date = new Date();
   const hours = date.getHours();
   const minus = date.getMinutes();
   const delay = 5;
-  for (let i = 0; i < stockTimes.length; i++) {
-    let stockTime = stockTimes[i];
+  for (let i = 0; i < markets.length; i++) {
+    let stockTime = stockTimes.get(markets[i]);
+    if (!stockTime || stockTime.length < 2) {
+      continue;
+    }
     // 针对美股交易时间跨越北京时间0点
     if (stockTime[0] > stockTime[1]) {
       if (
@@ -320,8 +322,15 @@ export function getConfig(key: string): any {
 }
 
 export function allMarkets(): Array<string> {
-  const codes = getConfig('leek-fund.stocks');
-  const allMarkets = codes.reduce((result: Array<string>, item: string, index: number) => {
+  let result: Array<string> = [];
+  const funds: Array<string> = getConfig('leek-fund.funds');
+  if (funds.length > 0) {
+    // 针对只配置基金的用户，默认增加A股交易时间
+    result.push(StockCategory.A);
+  }
+
+  const stocks: Array<string> = getConfig('leek-fund.stocks');
+  stocks.forEach((item: string) => {
     let market = StockCategory.NODATA;
     if (/^(sh|sz)/.test(item)) {
       market = StockCategory.A;
@@ -330,35 +339,26 @@ export function allMarkets(): Array<string> {
     } else if (/^(usr_)/.test(item)) {
       market = StockCategory.US;
     }
-    if (index === 1) {
-      result = [];
+    if (!result.includes(market)) {
+      result.push(market);
     }
-    return result.includes(market) ? result : result.concat(market);
   });
-  return allMarkets;
+  return result;
 }
 
-export function allStockTimes(markets: Array<string>): Array<Array<number>> {
-  let stockTimes: number[][] = [];
-  markets.forEach((market: string) => {
-    switch (market) {
-      case StockCategory.A:
-        stockTimes.push([9, 15]);
-        return;
-      case StockCategory.HK:
-        stockTimes.push([9, 16]);
-        return;
-      case StockCategory.US:
-        const date = new Date();
-        const month = date.getMonth() + 1;
-        // 判断夏令时
-        if (month >= 3 && month <= 11) {
-          stockTimes.push([21, 4]);
-        } else {
-          stockTimes.push([22, 5]);
-        }
-        return;
-    }
-  });
-  return stockTimes;
+export function allStockTimes(): Map<string, Array<number>> {
+  let stocks = new Map<string, Array<number>>();
+  stocks.set(StockCategory.A, [9, 15]);
+  stocks.set(StockCategory.HK, [9, 16]);
+
+  const date = new Date();
+  const month = date.getMonth() + 1;
+  // 判断夏令时
+  if (month >= 3 && month <= 11) {
+    stocks.set(StockCategory.US, [21, 4]);
+  } else {
+    stocks.set(StockCategory.US, [22, 5]);
+  }
+
+  return stocks;
 }
