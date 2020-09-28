@@ -14,7 +14,7 @@ import globalState from './globalState';
 import { registerViewEvent } from './registerCommand';
 import { SortType } from './shared';
 import { StatusBar } from './statusbar/statusBar';
-import { isStockTime } from './utils';
+import { isStockTime, isHolidayChina } from './utils';
 import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
@@ -94,10 +94,10 @@ export function activate(context: ExtensionContext) {
 
   setIntervalTime();
 
-  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+  workspace.onDidChangeConfiguration(async (e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
     setIntervalTime();
-    setGlobalVariable(model);
+    await setGlobalVariable(model);
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
@@ -108,12 +108,13 @@ export function activate(context: ExtensionContext) {
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
 }
 
-function setGlobalVariable(model: LeekFundModel) {
+async function setGlobalVariable(model: LeekFundModel) {
   const iconType = model.getConfig('leek-fund.iconType') || 'arrow';
   globalState.iconType = iconType;
   const fundAmount = model.getConfig('leek-fund.fundAmount') || {};
   globalState.fundAmount = fundAmount;
   const showEarnings = model.getConfig('leek-fund.showEarnings');
+  globalState.isHolidayChina = await isHolidayChina();
   globalState.showEarnings = showEarnings;
 }
 

@@ -2,11 +2,10 @@ import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
 import { HolidayAPIHelper } from './holidayAPIHelper';
 import { SortType, StockCategory } from './shared';
+import globalState from './globalState';
 
 const path = require('path');
 const fs = require('fs');
-const stockTimes = allStockTimes();
-const holidays = allHolidays();
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -96,6 +95,7 @@ export const toFixed = (value = 0, precision = 2) => {
 };
 
 export const isStockTime = () => {
+  const stockTimes = allStockTimes();
   const markets = allMarkets();
   const date = new Date();
   const hours = date.getHours();
@@ -321,9 +321,9 @@ export function getWebViewContent(context: ExtensionContext, templatePath: strin
 
 /**
  * 判断是否周未的方法
- * @param {*} date 参与判断的日期
+ * @param {*} date 参与判断的日期，默认今天
  */
-const isWeekend = (date: Date) => {
+export const isWeekend = (date: Date = new Date()) => {
   let tof = false;
   let dayOfWeek = date.getDay();
 
@@ -334,9 +334,9 @@ const isWeekend = (date: Date) => {
 
 /**
  * 判断是否节假日的方法
- * @param {*} date 参与判断的日期
+ * @param {*} date 参与判断的日期，默认今天
  */
-const isHolidayChina = async (date: Date) => {
+export const isHolidayChina = async (date: Date = new Date()) => {
   let tof = false;
 
   tof = await HolidayAPIHelper.isHoliday(date);
@@ -346,11 +346,11 @@ const isHolidayChina = async (date: Date) => {
 
 /**
  * 判断是否中国股市的交易日的方法
- * @param {*} date 参与判断的日期
+ * @param {*} date 参与判断的日期，默认今天
  */
-export const isTradeDateChina = async (date: Date = new Date(Date.now())) => {
+export const isTradeDateChina = async (date: Date = new Date()) => {
   let tof = true;
-  let myDate = date ? date : new Date(Date.now());
+  let myDate = date ? date : new Date();
 
   let isHolidayTOF = await isHolidayChina(myDate);
 
@@ -404,7 +404,11 @@ export function allHolidays(): Map<string, Array<string>> {
   // 假日日期格式为yyyyMMdd
   // TODO: 寻找假日API，自动判断假日
   let days = new Map<string, Array<string>>();
-  const A = ['20201001', '20201002', '20201005', '20201006', '20201007', '20201008'];
+  const A = [];
+  console.log('globalState.isHolidayChina:', globalState.isHolidayChina);
+  if (globalState.isHolidayChina) {
+    A.push(formatDate(new Date(), ''));
+  }
   const HK = ['20201001', '20201002', '20201026', '20201225'];
   const US = ['20201126', '20201225'];
   days.set(StockCategory.A, A);
@@ -422,12 +426,13 @@ export function timezoneDate(timezone: number): Date {
 }
 
 export function isHoliday(market: string): boolean {
+  const holidays = allHolidays();
   let date = new Date();
   if (market === StockCategory.US) {
     date = timezoneDate(-5);
   }
-  const day = date.getDay();
-  if (day === 0 || day === 6 || holidays.get(market)?.includes(formatDate(date, ''))) {
+
+  if (isWeekend(date) || holidays.get(market)?.includes(formatDate(date, ''))) {
     return true;
   }
   return false;
