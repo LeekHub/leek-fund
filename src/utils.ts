@@ -351,16 +351,8 @@ export function allStockTimes(): Map<string, Array<number>> {
   let stocks = new Map<string, Array<number>>();
   stocks.set(StockCategory.A, [9, 15]);
   stocks.set(StockCategory.HK, [9, 16]);
-
-  // FIXME: 夏令时冬令时切换前一天，北京时间过了0点的时候有bug，需要获取纽约时区数据
-  const date = new Date();
-  const month = date.getMonth() + 1;
-  // 判断夏令时
-  if (month >= 3 && month <= 11) {
-    stocks.set(StockCategory.US, [21, 4]);
-  } else {
-    stocks.set(StockCategory.US, [22, 5]);
-  }
+  // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
+  stocks.set(StockCategory.US, [21, 5]);
 
   return stocks;
 }
@@ -379,11 +371,18 @@ export function allHolidays(): Map<string, Array<string>> {
   return days;
 }
 
+export function timezoneDate(timezone: number): Date {
+  const date = new Date();
+  const diff = date.getTimezoneOffset(); // 分钟差
+  const gmt = date.getTime() + diff * 60 * 1000;
+  let nydate = new Date(gmt + timezone * 60 * 60 * 1000);
+  return nydate;
+}
+
 export function isHoliday(market: string): boolean {
   let date = new Date();
   if (market === StockCategory.US) {
-    // FIXME: 获取纽约时间
-    date = new Date();
+    date = timezoneDate(-5);
   }
   const day = date.getDay();
   if (day === 0 || day === 6 || holidays.get(market)?.includes(formatDate(date, ''))) {
