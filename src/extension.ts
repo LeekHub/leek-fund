@@ -27,6 +27,10 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
+  isHolidayChina().then((tof) => {
+    globalState.isHolidayChina = tof;
+  });
+
   let intervalTime = 3000;
   const model = new LeekFundModel();
   setGlobalVariable(model);
@@ -108,13 +112,12 @@ export function activate(context: ExtensionContext) {
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
 }
 
-async function setGlobalVariable(model: LeekFundModel) {
+function setGlobalVariable(model: LeekFundModel) {
   const iconType = model.getConfig('leek-fund.iconType') || 'arrow';
   globalState.iconType = iconType;
   const fundAmount = model.getConfig('leek-fund.fundAmount') || {};
   globalState.fundAmount = fundAmount;
   const showEarnings = model.getConfig('leek-fund.showEarnings');
-  globalState.isHolidayChina = await isHolidayChina();
   globalState.showEarnings = showEarnings;
 }
 

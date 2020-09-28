@@ -6,6 +6,10 @@ import globalState from './globalState';
 
 const path = require('path');
 const fs = require('fs');
+
+const stockTimes = allStockTimes();
+const holidays = allHolidays();
+
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -95,7 +99,6 @@ export const toFixed = (value = 0, precision = 2) => {
 };
 
 export const isStockTime = () => {
-  const stockTimes = allStockTimes();
   const markets = allMarkets();
   const date = new Date();
   const hours = date.getHours();
@@ -344,21 +347,6 @@ export const isHolidayChina = async (date: Date = new Date()) => {
   return tof;
 };
 
-/**
- * 判断是否中国股市的交易日的方法
- * @param {*} date 参与判断的日期，默认今天
- */
-export const isTradeDateChina = async (date: Date = new Date()) => {
-  let tof = true;
-  let myDate = date ? date : new Date();
-
-  let isHolidayTOF = await isHolidayChina(myDate);
-
-  // 思路是取节假日及周未的交集
-  tof = !isWeekend(date) && !isHolidayTOF;
-
-  return tof;
-};
 export function getConfig(key: string): any {
   const config = workspace.getConfiguration();
   return config.get(key);
@@ -405,7 +393,6 @@ export function allHolidays(): Map<string, Array<string>> {
   // TODO: 寻找假日API，自动判断假日
   let days = new Map<string, Array<string>>();
   const A = [];
-  console.log('globalState.isHolidayChina:', globalState.isHolidayChina);
   if (globalState.isHolidayChina) {
     A.push(formatDate(new Date(), ''));
   }
@@ -426,7 +413,6 @@ export function timezoneDate(timezone: number): Date {
 }
 
 export function isHoliday(market: string): boolean {
-  const holidays = allHolidays();
   let date = new Date();
   if (market === StockCategory.US) {
     date = timezoneDate(-5);
