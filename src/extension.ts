@@ -14,7 +14,7 @@ import globalState from './globalState';
 import { registerViewEvent } from './registerCommand';
 import { SortType } from './shared';
 import { StatusBar } from './statusbar/statusBar';
-import { isStockTime } from './utils';
+import { isStockTime, isHolidayChina } from './utils';
 import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
@@ -26,6 +26,10 @@ export function activate(context: ExtensionContext) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
+
+  isHolidayChina().then((tof) => {
+    globalState.isHolidayChina = tof;
+  });
 
   let intervalTime = 3000;
   const model = new LeekFundModel();
@@ -94,10 +98,10 @@ export function activate(context: ExtensionContext) {
 
   setIntervalTime();
 
-  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+  workspace.onDidChangeConfiguration(async (e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
     setIntervalTime();
-    setGlobalVariable(model);
+    await setGlobalVariable(model);
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();

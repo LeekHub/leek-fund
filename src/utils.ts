@@ -1,10 +1,15 @@
 import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
 import { LeekTreeItem } from './leekTreeItem';
+import { HolidayAPIHelper } from './holidayAPIHelper';
 import { SortType, StockCategory } from './shared';
+import globalState from './globalState';
+
 const path = require('path');
 const fs = require('fs');
+
 const stockTimes = allStockTimes();
 const holidays = allHolidays();
+
 const formatNum = (n: number) => {
   const m = n.toString();
   return m[1] ? m : '0' + m;
@@ -317,6 +322,31 @@ export function getWebViewContent(context: ExtensionContext, templatePath: strin
   return html;
 }
 
+/**
+ * 判断是否周未的方法
+ * @param {*} date 参与判断的日期，默认今天
+ */
+export const isWeekend = (date: Date = new Date()) => {
+  let tof = false;
+  let dayOfWeek = date.getDay();
+
+  tof = dayOfWeek === 6 || dayOfWeek === 0;
+
+  return tof;
+};
+
+/**
+ * 判断是否节假日的方法
+ * @param {*} date 参与判断的日期，默认今天
+ */
+export const isHolidayChina = async (date: Date = new Date()) => {
+  let tof = false;
+
+  tof = await HolidayAPIHelper.isHoliday(date);
+
+  return tof;
+};
+
 export function getConfig(key: string): any {
   const config = workspace.getConfiguration();
   return config.get(key);
@@ -362,7 +392,10 @@ export function allHolidays(): Map<string, Array<string>> {
   // 假日日期格式为yyyyMMdd
   // TODO: 寻找假日API，自动判断假日
   let days = new Map<string, Array<string>>();
-  const A = ['20201001', '20201002', '20201005', '20201006', '20201007', '20201008'];
+  const A = [];
+  if (globalState.isHolidayChina) {
+    A.push(formatDate(new Date(), ''));
+  }
   const HK = ['20201001', '20201002', '20201026', '20201225'];
   const US = ['20201126', '20201225'];
   days.set(StockCategory.A, A);
@@ -384,8 +417,8 @@ export function isHoliday(market: string): boolean {
   if (market === StockCategory.US) {
     date = timezoneDate(-5);
   }
-  const day = date.getDay();
-  if (day === 0 || day === 6 || holidays.get(market)?.includes(formatDate(date, ''))) {
+
+  if (isWeekend(date) || holidays.get(market)?.includes(formatDate(date, ''))) {
     return true;
   }
   return false;
