@@ -71,7 +71,11 @@ async function fundHistory(item: LeekTreeItem) {
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」历史净值</p>
     <div class="box">
     ${res.content}
+    <p style="text-align: center;">
+    <a href="http://fundf10.eastmoney.com/jjjz_${code}.html" target="_blank">查看全部历史净值明细>></a>
+    </p>
     </div>
+
     </div>
   </body></html>`;
 }
