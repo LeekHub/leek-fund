@@ -5,7 +5,6 @@ import { SortType, StockCategory } from './shared/typed';
 import globalState from './globalState';
 
 const stockTimes = allStockTimes();
-const holidays = allHolidays();
 
 const formatNum = (n: number) => {
   const m = n.toString();
@@ -373,6 +372,7 @@ export function isHoliday(market: string): boolean {
     date = timezoneDate(-5);
   }
 
+  const holidays = allHolidays();
   if (isWeekend(date) || holidays.get(market)?.includes(formatDate(date, ''))) {
     return true;
   }
