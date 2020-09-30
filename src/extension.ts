@@ -29,7 +29,6 @@ export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
   let intervalTime = getConfig('leek-fund.interval', 5000);
-  let intervalTimeCopy = intervalTime;
   const model = new LeekFundModel();
 
   // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
@@ -72,11 +71,6 @@ export function activate(context: ExtensionContext) {
   // loop
   const loopCallback = () => {
     if (isStockTime()) {
-      if (intervalTime !== intervalTimeCopy) {
-        intervalTime = intervalTimeCopy;
-        setIntervalTime();
-        return;
-      }
       if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
         nodeFundProvider.refresh();
@@ -86,29 +80,28 @@ export function activate(context: ExtensionContext) {
       }
     } else {
       console.log('StockMarket Closed! Polling closed!');
-      intervalTime = intervalTime * 100;
-      setIntervalTime();
+      setIntervalTime(intervalTime * 100);
     }
   };
 
-  const setIntervalTime = () => {
+  const setIntervalTime = (interval: number) => {
     // prevent qps
-    if (intervalTime < 3000) {
-      intervalTime = 3000;
+    if (interval < 3000) {
+      interval = 3000;
     }
     if (intervalTimer) {
       clearInterval(intervalTimer);
       intervalTimer = null;
     }
-    intervalTimer = setInterval(loopCallback, intervalTime);
+    intervalTimer = setInterval(loopCallback, interval);
   };
 
-  setIntervalTime();
+  setIntervalTime(intervalTime);
 
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
-    intervalTimeCopy = getConfig('leek-fund.interval');
-    setIntervalTime();
+    intervalTime = getConfig('leek-fund.interval');
+    setIntervalTime(intervalTime);
     setGlobalVariable(model);
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
