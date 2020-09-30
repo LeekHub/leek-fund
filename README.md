@@ -145,6 +145,8 @@
 
 [插件（养 🐥）微信交流群](https://github.com/giscafer/leek-fund/issues/19)
 
+或加微信好友（微信号：`fishingtech`）拉入群，备注：`韭菜盒子`
+
 ## 赞助支持一下！
 
 [Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)

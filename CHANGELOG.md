@@ -1,5 +1,12 @@
 # ChangeLog
 
+## [1.6.4]
+
+国庆中秋快乐！🎑
+
+- fix: 休市休眠唤醒 bug @iporer
+- refactor: 重构优化代码
+
 ## [1.6.3]
 
 - fix: 节假日 bug @iporer
