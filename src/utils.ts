@@ -285,14 +285,14 @@ export const isStockTime = () => {
       if (
         hours >= stockTime[0] ||
         hours < stockTime[1] ||
-        (hours === stockTime[1] && minus === delay)
+        (hours === stockTime[1] && minus <= delay)
       ) {
         return true;
       }
     } else {
       if (
         (hours >= stockTime[0] && hours < stockTime[1]) ||
-        (hours === stockTime[1] && minus === delay)
+        (hours === stockTime[1] && minus <= delay)
       ) {
         return true;
       }
