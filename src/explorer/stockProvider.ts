@@ -1,8 +1,8 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from '../globalState';
-import { LeekTreeItem } from '../leekTreeItem';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
-import { LeekFundModel } from './model';
+import { LeekFundConfig } from './model';
 import { LeekFundService } from './service';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
@@ -12,12 +12,10 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   private service: LeekFundService;
   private order: SortType;
-  private model: LeekFundModel;
 
   constructor(service: LeekFundService) {
     this.service = service;
-    this.model = new LeekFundModel();
-    this.order = this.model.getConfig('leek-fund.stockSort') || SortType.NORMAL;
+    this.order = LeekFundConfig.getConfig('leek-fund.stockSort') || SortType.NORMAL;
   }
 
   refresh(): any {
@@ -29,7 +27,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       // Root view
       return this.getRootNodes();
     } else {
-      const stockCodes = this.model.getConfig('leek-fund.stocks') || [];
+      const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
       const resultPromise = this.service.getStockData(stockCodes, this.order);
       // console.log(element.id);
       switch (
@@ -157,7 +155,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
-    this.model.setConfig('leek-fund.stockSort', this.order);
+    LeekFundConfig.setConfig('leek-fund.stockSort', this.order);
     this.refresh();
   }
 }

@@ -1,13 +1,13 @@
 import { commands, ViewColumn, window } from 'vscode';
-import { LeekFundModel } from '../explorer/model';
-import globalState from '../globalState';
-import { LeekTreeItem } from '../leekTreeItem';
-import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { LeekFundConfig } from '../explorer/model';
 import { LeekFundService } from '../explorer/service';
+import globalState from '../globalState';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
-import { toFixed } from '../utils';
+import { toFixed } from '../shared/utils';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
-async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel) {
+async function setAmount(fundList: LeekTreeItem[] = []) {
   const amountObj: any = globalState.fundAmount || {};
   const list = fundList.map((item: LeekTreeItem) => {
     return {
@@ -28,7 +28,7 @@ async function setAmount(fundList: LeekTreeItem[] = [], leekModel: LeekFundModel
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
       case 'success':
-        setAmountCfgCb(leekModel, JSON.parse(message.text));
+        setAmountCfgCb(JSON.parse(message.text));
         return;
       case 'alert':
         window.showErrorMessage('保存失败！');
@@ -283,7 +283,7 @@ function getWebviewContent(list: any[] = []) {
 `;
 }
 
-function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
+function setAmountCfgCb(data: IAmount[]) {
   const cfg: any = {};
   data.forEach((item: any) => {
     cfg[item.code] = {
@@ -294,7 +294,7 @@ function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
       priceDate: item.priceDate,
     };
   });
-  leekModel.setConfig('leek-fund.fundAmount', cfg).then(() => {
+  LeekFundConfig.setConfig('leek-fund.fundAmount', cfg).then(() => {
     globalState.fundAmount = cfg;
     window.showInformationMessage('保存成功！（没开市的时候添加的持仓盈亏为0，开市时会自动计算）');
   });
@@ -304,7 +304,7 @@ function setAmountCfgCb(leekModel: LeekFundModel, data: IAmount[]) {
  * 更新持仓金额
  * @param leekModel
  */
-export async function updateAmount(leekModel: LeekFundModel) {
+export async function updateAmount() {
   const amountObj: any = globalState.fundAmount;
   const codes = Object.keys(amountObj);
   if (codes.length === 0) {
@@ -339,7 +339,7 @@ export async function updateAmount(leekModel: LeekFundModel) {
       }
     });
     if (Datas.length > 0) {
-      leekModel.setConfig('leek-fund.fundAmount', amountObj).then(() => {
+      LeekFundConfig.setConfig('leek-fund.fundAmount', amountObj).then(() => {
         globalState.fundAmount = amountObj;
         console.log('🐥fundAmount has Updated ');
       });

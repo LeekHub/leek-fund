@@ -8,7 +8,7 @@ import { ViewColumn } from 'vscode';
 import { NewsService } from '../explorer/newsService';
 import globalState from '../globalState';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { formatDateTime } from '../utils';
+import { formatDateTime } from '../shared/utils';
 
 async function openNews(
   newsService: NewsService,

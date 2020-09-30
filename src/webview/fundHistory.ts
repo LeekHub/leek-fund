@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import { ViewColumn } from 'vscode';
-import { LeekTreeItem } from '../leekTreeItem';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { randHeader } from '../utils';
+import { randHeader } from '../shared/utils';
 
 const fundHistoryUrl = (code: string): string => {
   return `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=49`;

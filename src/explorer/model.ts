@@ -1,20 +1,25 @@
+/*--------------------------------------------------------------
+ *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
+ *  Licensed under the MIT License.
+ *  Github: https://github.com/giscafer
+ *-------------------------------------------------------------*/
+
 import { window, workspace } from 'vscode';
-import { clean, uniq } from '../utils';
+import { clean, uniq } from '../shared/utils';
 
-export class BaseModel {
-  constructor() {}
-
-  getConfig(key: string): any {
+export class BaseConfig {
+  static getConfig(key: string, defaultValue?: any): any {
     const config = workspace.getConfiguration();
-    return config.get(key);
+    const value = config.get(key);
+    return value === undefined ? defaultValue : value;
   }
 
-  setConfig(cfgKey: string, cfgValue: Array<any> | string | number) {
+  static setConfig(cfgKey: string, cfgValue: Array<any> | string | number) {
     const config = workspace.getConfiguration();
     return config.update(cfgKey, cfgValue, true);
   }
 
-  updateConfig(cfgKey: string, codes: Array<any>) {
+  static updateConfig(cfgKey: string, codes: Array<any>) {
     const config = workspace.getConfiguration();
     const updatedCfg = [...config.get(cfgKey, []), ...codes];
     let newCodes = clean(updatedCfg);
@@ -22,7 +27,7 @@ export class BaseModel {
     return config.update(cfgKey, newCodes, true);
   }
 
-  removeConfig(cfgKey: string, code: string) {
+  static removeConfig(cfgKey: string, code: string) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get(cfgKey, []);
     const newCfg = sourceCfg.filter((item) => item !== code);
@@ -30,13 +35,13 @@ export class BaseModel {
   }
 }
 
-export class LeekFundModel extends BaseModel {
+export class LeekFundConfig extends BaseConfig {
   constructor() {
     super();
   }
 
   // Fund Begin
-  updateFundCfg(codes: string, cb?: Function) {
+  static updateFundCfg(codes: string, cb?: Function) {
     this.updateConfig('leek-fund.funds', codes.split(',')).then(() => {
       window.showInformationMessage(`Fund Successfully add.`);
       if (cb && typeof cb === 'function') {
@@ -45,7 +50,7 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
-  removeFundCfg(code: string, cb?: Function) {
+  static removeFundCfg(code: string, cb?: Function) {
     this.removeConfig('leek-fund.funds', code).then(() => {
       window.showInformationMessage(`Fund Successfully delete.`);
       if (cb && typeof cb === 'function') {
@@ -54,7 +59,7 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
-  setFundTopCfg(code: string, cb?: Function) {
+  static setFundTopCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.funds');
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
@@ -69,7 +74,7 @@ export class LeekFundModel extends BaseModel {
   // Fund End
 
   // Stock Begin
-  updateStockCfg(codes: string, cb?: Function) {
+  static updateStockCfg(codes: string, cb?: Function) {
     this.updateConfig('leek-fund.stocks', codes.split(',')).then(() => {
       window.showInformationMessage(`Stock Successfully add.`);
       if (cb && typeof cb === 'function') {
@@ -78,7 +83,7 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
-  removeStockCfg(code: string, cb?: Function) {
+  static removeStockCfg(code: string, cb?: Function) {
     this.removeConfig('leek-fund.stocks', code).then(() => {
       window.showInformationMessage(`Stock Successfully delete.`);
       if (cb && typeof cb === 'function') {
@@ -87,7 +92,7 @@ export class LeekFundModel extends BaseModel {
     });
   }
 
-  setStockTopCfg(code: string, cb?: Function) {
+  static setStockTopCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.stocks');
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
@@ -103,7 +108,7 @@ export class LeekFundModel extends BaseModel {
   // Stock End
 
   // StatusBar Begin
-  updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
+  static updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
     this.setConfig('leek-fund.statusBarStock', codes).then(() => {
       window.showInformationMessage(`Status Bar Stock Successfully update.`);
       if (cb && typeof cb === 'function') {
@@ -111,6 +116,5 @@ export class LeekFundModel extends BaseModel {
       }
     });
   }
-
   // StatusBar End
 }

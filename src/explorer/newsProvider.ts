@@ -1,6 +1,6 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import { LeekFundConfig } from './model';
 import { NewsService, NewsTreeItem } from './newsService';
-import { LeekFundModel } from './model';
 
 export class NewsProvider implements TreeDataProvider<NewsTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
@@ -8,11 +8,9 @@ export class NewsProvider implements TreeDataProvider<NewsTreeItem> {
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
   private service: NewsService;
-  private model: LeekFundModel;
 
   constructor() {
     this.service = new NewsService();
-    this.model = new LeekFundModel();
   }
 
   refresh(): any {
@@ -20,7 +18,7 @@ export class NewsProvider implements TreeDataProvider<NewsTreeItem> {
   }
 
   getChildren(): NewsTreeItem[] | Thenable<NewsTreeItem[]> {
-    const userIds = this.model.getConfig('leek-fund.newsUserIds') || [];
+    const userIds = LeekFundConfig.getConfig('leek-fund.newsUserIds') || [];
     return this.service.getNewsUserList(userIds);
   }
 

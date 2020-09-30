@@ -1,8 +1,8 @@
-import { QuickPickItem, ExtensionContext, Uri, workspace } from 'vscode';
+import { QuickPickItem } from 'vscode';
+import { LeekFundConfig } from '../explorer/model';
+import globalState from '../globalState';
 import { LeekTreeItem } from './leekTreeItem';
-import { HolidayHelper } from './shared/holidayAPIHelper';
-import { SortType, StockCategory } from './shared/typed';
-import globalState from './globalState';
+import { SortType, StockCategory } from './typed';
 
 const stockTimes = allStockTimes();
 
@@ -301,20 +301,15 @@ export const isStockTime = () => {
   return false;
 };
 
-export function getConfig(key: string, defaulValue?: any): any {
-  const config = workspace.getConfiguration();
-  return config.get(key) || defaulValue;
-}
-
 export function allMarkets(): Array<string> {
   let result: Array<string> = [];
-  const funds: Array<string> = getConfig('leek-fund.funds');
+  const funds: Array<string> = LeekFundConfig.getConfig('leek-fund.funds');
   if (funds.length > 0) {
     // 针对只配置基金的用户，默认增加A股交易时间
     result.push(StockCategory.A);
   }
 
-  const stocks: Array<string> = getConfig('leek-fund.stocks');
+  const stocks: Array<string> = LeekFundConfig.getConfig('leek-fund.stocks');
   stocks.forEach((item: string) => {
     let market = StockCategory.NODATA;
     if (/^(sh|sz)/.test(item)) {

@@ -1,8 +1,8 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { LeekTreeItem } from '../leekTreeItem';
-import { LeekFundService } from './service';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import { SortType } from '../shared/typed';
-import { LeekFundModel } from './model';
+import { LeekFundConfig } from './model';
+import { LeekFundService } from './service';
 
 export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
@@ -11,12 +11,10 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
 
   private service: LeekFundService;
   private order: SortType;
-  private model: LeekFundModel;
 
   constructor(service: LeekFundService) {
     this.service = service;
-    this.model = new LeekFundModel();
-    this.order = this.model.getConfig('leek-fund.fundSort') || SortType.NORMAL;
+    this.order = LeekFundConfig.getConfig('leek-fund.fundSort') || SortType.NORMAL;
   }
 
   refresh(): any {
@@ -24,7 +22,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
-    const fundCodes = this.model.getConfig('leek-fund.funds') || [];
+    const fundCodes = LeekFundConfig.getConfig('leek-fund.funds') || [];
     return this.service.getFundData(fundCodes, this.order);
   }
 
@@ -46,7 +44,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
-    this.model.setConfig('leek-fund.fundSort', this.order);
+    LeekFundConfig.setConfig('leek-fund.fundSort', this.order);
     this.refresh();
   }
 }

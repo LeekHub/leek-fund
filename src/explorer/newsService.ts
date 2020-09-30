@@ -1,12 +1,10 @@
 import axios from 'axios';
 import { TreeItem, Uri, workspace } from 'vscode';
-import { randHeader } from '../utils';
+import { randHeader } from '../shared/utils';
 
 export class NewsTreeItem extends TreeItem {}
 
 export class NewsService {
-  constructor() {}
-
   async getNewsUserList(userIds: string[]): Promise<NewsTreeItem[]> {
     const treeItems = [];
     const promiseList = [];

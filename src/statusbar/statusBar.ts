@@ -1,15 +1,13 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
-import { LeekFundModel } from '../explorer/model';
-import { LeekTreeItem } from '../leekTreeItem';
+import { LeekFundConfig } from '../explorer/model';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import { LeekFundService } from '../explorer/service';
 
 export class StatusBar {
-  private model: LeekFundModel;
   private service: LeekFundService;
   private fundBarItem: StatusBarItem;
   private statusBarList: StatusBarItem[] = [];
   constructor(service: LeekFundService) {
-    this.model = new LeekFundModel();
     this.service = service;
     this.statusBarList = [];
     this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
@@ -17,10 +15,10 @@ export class StatusBar {
   }
 
   get riseColor(): string {
-    return this.model.getConfig('leek-fund.riseColor');
+    return LeekFundConfig.getConfig('leek-fund.riseColor');
   }
   get fallColor(): string {
-    return this.model.getConfig('leek-fund.fallColor');
+    return LeekFundConfig.getConfig('leek-fund.fallColor');
   }
 
   refresh() {

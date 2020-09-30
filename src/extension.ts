@@ -6,19 +6,19 @@
 
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { FundProvider } from './explorer/fundProvider';
-import { LeekFundModel } from './explorer/model';
+import { LeekFundConfig } from './explorer/model';
 import { NewsProvider } from './explorer/newsProvider';
 import { LeekFundService } from './explorer/service';
 import { StockProvider } from './explorer/stockProvider';
 import globalState from './globalState';
-import { HolidayHelper } from './shared/holidayAPIHelper';
 import { registerViewEvent } from './registerCommand';
+import { HolidayHelper } from './shared/holidayHelper';
 import { SortType } from './shared/typed';
 import { StatusBar } from './statusbar/statusBar';
-import { getConfig, isStockTime } from './utils';
+import { isStockTime } from './shared/utils';
 import { updateAmount } from './webview/setAmount';
 
-let intervalTimer: NodeJS.Timer | null = null;
+let loopTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
 // this method is called when your extension is activated
@@ -28,19 +28,18 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
-  let intervalTimeConfig = getConfig('leek-fund.interval', 5000);
+  let intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval', 5000);
   let intervalTime = intervalTimeConfig;
-  const model = new LeekFundModel();
 
   // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
   HolidayHelper.isHolidayInChina().then((isHoliday) => {
     globalState.isHolidayChina = isHoliday;
   });
 
-  setGlobalVariable(model);
-  updateAmount(model);
+  setGlobalVariable();
+  updateAmount();
 
-  const fundService = new LeekFundService(context, model);
+  const fundService = new LeekFundService(context);
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(fundService);
   const newsProvider = new NewsProvider();
@@ -59,12 +58,16 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService.getFundData(model.getConfig('leek-fund.funds'), SortType.NORMAL).then(() => {
-      statusBar.refresh();
-    });
-    fundService.getStockData(model.getConfig('leek-fund.stocks'), SortType.NORMAL).then(() => {
-      statusBar.refresh();
-    });
+    fundService
+      .getFundData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL)
+      .then(() => {
+        statusBar.refresh();
+      });
+    fundService
+      .getStockData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL)
+      .then(() => {
+        statusBar.refresh();
+      });
   };
 
   manualRequest();
@@ -98,20 +101,20 @@ export function activate(context: ExtensionContext) {
     if (intervalTime < 3000) {
       intervalTime = 3000;
     }
-    if (intervalTimer) {
-      clearInterval(intervalTimer);
-      intervalTimer = null;
+    if (loopTimer) {
+      clearInterval(loopTimer);
+      loopTimer = null;
     }
-    intervalTimer = setInterval(loopCallback, intervalTime);
+    loopTimer = setInterval(loopCallback, intervalTime);
   };
 
   setIntervalTime();
 
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
-    intervalTimeConfig = getConfig('leek-fund.interval');
+    intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
     setIntervalTime();
-    setGlobalVariable(model);
+    setGlobalVariable();
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
@@ -122,20 +125,20 @@ export function activate(context: ExtensionContext) {
   registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
 }
 
-function setGlobalVariable(model: LeekFundModel) {
-  const iconType = model.getConfig('leek-fund.iconType') || 'arrow';
+function setGlobalVariable() {
+  const iconType = LeekFundConfig.getConfig('leek-fund.iconType') || 'arrow';
   globalState.iconType = iconType;
-  const fundAmount = model.getConfig('leek-fund.fundAmount') || {};
+  const fundAmount = LeekFundConfig.getConfig('leek-fund.fundAmount') || {};
   globalState.fundAmount = fundAmount;
-  const showEarnings = model.getConfig('leek-fund.showEarnings');
+  const showEarnings = LeekFundConfig.getConfig('leek-fund.showEarnings');
   globalState.showEarnings = showEarnings;
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
   console.log('🐥deactivate');
-  if (intervalTimer) {
-    clearInterval(intervalTimer);
-    intervalTimer = null;
+  if (loopTimer) {
+    clearInterval(loopTimer);
+    loopTimer = null;
   }
 }

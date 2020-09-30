@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
-import { LeekTreeItem } from '../leekTreeItem';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import { StockCategory, STOCK_TYPE } from '../shared/typed';
 import {
   caculateEarnings,
@@ -12,8 +12,8 @@ import {
   randHeader,
   sortData,
   toFixed,
-} from '../utils';
-import { LeekFundModel } from './model';
+} from '../shared/utils';
+import { LeekFundConfig } from './model';
 
 export class LeekFundService {
   private _showLabel: boolean = true;
@@ -23,13 +23,11 @@ export class LeekFundService {
   private _barStockList: Array<LeekTreeItem> = [];
 
   private context: ExtensionContext;
-  private model: LeekFundModel;
   defaultBarStock: LeekTreeItem | null = null;
   searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
 
-  constructor(context: ExtensionContext, model: LeekFundModel) {
+  constructor(context: ExtensionContext) {
     this.context = context;
-    this.model = model;
   }
 
   public get showLabel(): boolean {
@@ -235,7 +233,7 @@ export class LeekFundService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
-    const statusBarStocks = this.model.getConfig('leek-fund.statusBarStock');
+    const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
 
     const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {

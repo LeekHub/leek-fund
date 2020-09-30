@@ -1,8 +1,8 @@
 import Axios from 'axios';
 import { ViewColumn } from 'vscode';
-import { LeekTreeItem } from '../leekTreeItem';
+import { LeekTreeItem } from '../shared/leekTreeItem';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { randHeader } from '../utils';
+import { randHeader } from '../shared/utils';
 
 const fundPositionUrl = (code: string): string => {
   return ` http://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=${code}&topline=10&year=&month=&rt=0.${Date.now()}`;
