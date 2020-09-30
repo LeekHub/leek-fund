@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.6.3]
+
+- fix: 节假日 bug @iporer
+- fix: 闭市轮询策略 bug
+
 ## [1.6.2]
 
 - feat: 股票根据自选股所有的交易市场优化交易时间判断 @iporer
