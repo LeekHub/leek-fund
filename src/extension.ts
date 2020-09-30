@@ -6,7 +6,7 @@
 
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { FundProvider } from './explorer/fundProvider';
-import { LeekFundConfig } from './explorer/model';
+import { LeekFundConfig } from './shared/leekConfig';
 import { NewsProvider } from './explorer/newsProvider';
 import { LeekFundService } from './explorer/service';
 import { StockProvider } from './explorer/stockProvider';

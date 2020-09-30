@@ -1,5 +1,5 @@
 import { commands, ViewColumn, window } from 'vscode';
-import { LeekFundConfig } from '../explorer/model';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekFundService } from '../explorer/service';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
@@ -19,7 +19,7 @@ async function setAmount(fundList: LeekTreeItem[] = []) {
       yestEarnings: amountObj[item.info.code]?.earnings || 0,
     };
   });
-  console.log(JSON.stringify(list, null, 2));
+  // console.log(JSON.stringify(list, null, 2));
   const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,

@@ -1,5 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import { LeekFundConfig } from './model';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { NewsService, NewsTreeItem } from './newsService';
 
 export class NewsProvider implements TreeDataProvider<NewsTreeItem> {

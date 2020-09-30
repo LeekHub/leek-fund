@@ -2,8 +2,9 @@ import axios from 'axios';
 import * as iconv from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { StockCategory, STOCK_TYPE } from '../shared/typed';
+import { STOCK_TYPE } from '../shared/typed';
 import {
   caculateEarnings,
   calcFixedPirceNumber,
@@ -13,7 +14,6 @@ import {
   sortData,
   toFixed,
 } from '../shared/utils';
-import { LeekFundConfig } from './model';
 
 export class LeekFundService {
   private _showLabel: boolean = true;

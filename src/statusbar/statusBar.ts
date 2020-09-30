@@ -1,5 +1,5 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
-import { LeekFundConfig } from '../explorer/model';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { LeekFundService } from '../explorer/service';
 

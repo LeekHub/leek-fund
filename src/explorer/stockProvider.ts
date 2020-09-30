@@ -2,7 +2,7 @@ import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleSta
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
-import { LeekFundConfig } from './model';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekFundService } from './service';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {

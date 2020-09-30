@@ -1,5 +1,5 @@
 import { QuickPickItem } from 'vscode';
-import { LeekFundConfig } from '../explorer/model';
+import { LeekFundConfig } from './leekConfig';
 import globalState from '../globalState';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './typed';

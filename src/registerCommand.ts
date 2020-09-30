@@ -1,7 +1,7 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/fundSuggestData';
 import { FundProvider } from './explorer/fundProvider';
-import { LeekFundConfig } from './explorer/model';
+import { LeekFundConfig } from './shared/leekConfig';
 import { NewsProvider } from './explorer/newsProvider';
 import { NewsService } from './explorer/newsService';
 import { StockProvider } from './explorer/stockProvider';

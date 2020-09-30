@@ -5,7 +5,7 @@
  *-------------------------------------------------------------*/
 
 import { window, workspace } from 'vscode';
-import { clean, uniq } from '../shared/utils';
+import { clean, uniq } from './utils';
 
 export class BaseConfig {
   static getConfig(key: string, defaultValue?: any): any {
