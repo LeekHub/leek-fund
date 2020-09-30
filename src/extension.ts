@@ -28,8 +28,8 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
-  let intervalTime = getConfig('leek-fund.interval', 5000);
-  let intervalTimeCopy = intervalTime;
+  let intervalTimeConfig = getConfig('leek-fund.interval', 5000);
+  let intervalTime = intervalTimeConfig;
   const model = new LeekFundModel();
 
   // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
@@ -72,8 +72,8 @@ export function activate(context: ExtensionContext) {
   // loop
   const loopCallback = () => {
     if (isStockTime()) {
-      if (intervalTime !== intervalTimeCopy) {
-        intervalTime = intervalTimeCopy;
+      if (intervalTime !== intervalTimeConfig) {
+        intervalTime = intervalTimeConfig;
         setIntervalTime();
         return;
       }
@@ -86,8 +86,10 @@ export function activate(context: ExtensionContext) {
       }
     } else {
       console.log('StockMarket Closed! Polling closed!');
-      intervalTime = intervalTimeCopy * 100;
-      setIntervalTime();
+      if (intervalTime === intervalTimeConfig) {
+        intervalTime = intervalTimeConfig * 100;
+        setIntervalTime();
+      }
     }
   };
 
@@ -107,7 +109,7 @@ export function activate(context: ExtensionContext) {
 
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
-    intervalTimeCopy = getConfig('leek-fund.interval');
+    intervalTimeConfig = getConfig('leek-fund.interval');
     setIntervalTime();
     setGlobalVariable(model);
     nodeFundProvider.refresh();
