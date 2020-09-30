@@ -301,9 +301,9 @@ export const isStockTime = () => {
   return false;
 };
 
-export function getConfig(key: string): any {
+export function getConfig(key: string, defaulValue?: any): any {
   const config = workspace.getConfiguration();
-  return config.get(key);
+  return config.get(key) || defaulValue;
 }
 
 export function allMarkets(): Array<string> {

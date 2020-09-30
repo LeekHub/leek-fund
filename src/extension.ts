@@ -15,7 +15,7 @@ import { HolidayHelper } from './shared/holidayAPIHelper';
 import { registerViewEvent } from './registerCommand';
 import { SortType } from './shared/typed';
 import { StatusBar } from './statusbar/statusBar';
-import { isStockTime } from './utils';
+import { getConfig, isStockTime } from './utils';
 import { updateAmount } from './webview/setAmount';
 
 let intervalTimer: NodeJS.Timer | null = null;
@@ -28,7 +28,8 @@ export function activate(context: ExtensionContext) {
   // This line of code will only be executed once when your extension is activated
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
-  let intervalTime = 3000;
+  let intervalTime = getConfig('leek-fund.interval', 5000);
+  let intervalTimeCopy = intervalTime;
   const model = new LeekFundModel();
 
   // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
@@ -71,6 +72,11 @@ export function activate(context: ExtensionContext) {
   // loop
   const loopCallback = () => {
     if (isStockTime()) {
+      if (intervalTime !== intervalTimeCopy) {
+        intervalTime = intervalTimeCopy;
+        setIntervalTime();
+        return;
+      }
       if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
         nodeFundProvider.refresh();
@@ -80,13 +86,13 @@ export function activate(context: ExtensionContext) {
       }
     } else {
       console.log('StockMarket Closed! Polling closed!');
-      setIntervalTime(intervalTime * 100);
+      intervalTime = intervalTime * 100;
+      setIntervalTime();
     }
   };
 
-  const setIntervalTime = (interval?: number) => {
-    intervalTime = interval || workspace.getConfiguration().get('leek-fund.interval', 10000);
-
+  const setIntervalTime = () => {
+    // prevent qps
     if (intervalTime < 3000) {
       intervalTime = 3000;
     }
@@ -99,10 +105,11 @@ export function activate(context: ExtensionContext) {
 
   setIntervalTime();
 
-  workspace.onDidChangeConfiguration(async (e: ConfigurationChangeEvent) => {
+  workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
     console.log('🐥>>>Configuration changed');
+    intervalTimeCopy = getConfig('leek-fund.interval');
     setIntervalTime();
-    await setGlobalVariable(model);
+    setGlobalVariable(model);
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
