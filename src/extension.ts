@@ -86,7 +86,7 @@ export function activate(context: ExtensionContext) {
       }
     } else {
       console.log('StockMarket Closed! Polling closed!');
-      intervalTime = intervalTime * 100;
+      intervalTime = intervalTimeCopy * 100;
       setIntervalTime();
     }
   };
