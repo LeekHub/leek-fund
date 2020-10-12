@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-09-11 23:18:57",
+  "updatedTime": "2020-10-12 22:28:48",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -37,6 +37,14 @@
     {
       "name": "Zelena",
       "from": "微信"
+    },
+    {
+      "name": "0110",
+      "from": "微信"
+    },
+    {
+      "name": "**金",
+      "from": "支付宝"
     }
   ]
 }
