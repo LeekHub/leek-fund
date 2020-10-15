@@ -85,44 +85,50 @@ export class LeekFundService {
     });
 
     newStockList.forEach((stock) => {
-      const { info } = stock;
-      if (remindCodes.includes(info.code)) {
-        const oldStockInfo = oldStocksMap[info.code];
-        const currentPrice = parseFloat(info.price || '0');
-        const currentPrecent = parseFloat(info.percent || '0');
-        const currentUpdown = parseFloat(info.updown || '0');
+      try {
+        const { info } = stock;
+        if (remindCodes.includes(info.code)) {
+          const oldStockInfo = oldStocksMap[info.code];
+          const currentPrice = parseFloat(info.price || '0');
+          const currentPrecent = parseFloat(info.percent || '0');
+          const currentUpdown = parseFloat(info.updown || '0');
 
-        const oldPrice = parseFloat(oldStockInfo.price || '0');
-        const oldPrecent = parseFloat(oldStockInfo.percent || '0');
+          const oldPrice = parseFloat(oldStockInfo.price || '0');
+          const oldPrecent = parseFloat(oldStockInfo.percent || '0');
 
-        const priceRange = Math.abs(currentPrice - oldPrice);
-        const precentRange = Math.abs(currentPrecent - oldPrecent);
+          const priceRange = Math.abs(currentPrice - oldPrice);
+          const precentRange = Math.abs(currentPrecent - oldPrecent);
 
-        const remindConfig = stocksRemind[info.code];
-        const remindPrices: number[] = remindConfig.price;
-        const remindPercents: number[] = remindConfig.percent;
+          const remindConfig = stocksRemind[info.code];
+          const remindPrices: number[] = remindConfig.price;
+          const remindPercents: number[] = remindConfig.percent;
 
-        remindPrices.forEach((remindPrice) => {
-          const marginPrice = Math.abs(currentPrice - remindPrice);
-          if (priceRange > marginPrice) {
-            console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
-            window.showWarningMessage(
-              `股价提醒：「${info.name}」 ${currentUpdown >= 0 ? '上涨' : '下跌'}至 ${currentPrice}`
-            );
-          }
-        });
+          remindPrices.forEach((remindPrice) => {
+            const marginPrice = Math.abs(currentPrice - remindPrice);
+            if (priceRange > marginPrice) {
+              console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
+              window.showWarningMessage(
+                `股价提醒：「${info.name}」 ${
+                  currentUpdown >= 0 ? '上涨' : '下跌'
+                }至 ${currentPrice}`
+              );
+            }
+          });
 
-        remindPercents.forEach((remindPercent) => {
-          if (remindPercent / 0 !== currentUpdown / 0) return;
-          const marginPrecent = Math.abs(currentPrecent - remindPercent);
-          if (precentRange > marginPrecent) {
-            window.showWarningMessage(
-              `股价提醒：「${info.name}」 ${
-                remindPercent >= 0 ? '上涨' : '下跌'
-              }超 ${currentPrecent}%，现报：${currentPrice}`
-            );
-          }
-        });
+          remindPercents.forEach((remindPercent) => {
+            if (remindPercent / 0 !== currentUpdown / 0) return;
+            const marginPrecent = Math.abs(currentPrecent - remindPercent);
+            if (precentRange > marginPrecent) {
+              window.showWarningMessage(
+                `股价提醒：「${info.name}」 ${
+                  remindPercent >= 0 ? '上涨' : '下跌'
+                }超 ${currentPrecent}%，现报：${currentPrice}`
+              );
+            }
+          });
+        }
+      } catch (err) {
+        console.error(err);
       }
     });
   }
