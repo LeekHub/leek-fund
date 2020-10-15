@@ -11,6 +11,8 @@
 
 </div>
 
+加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
+
 ## Table of contents
 
 - [功能特性](#功能特性)
