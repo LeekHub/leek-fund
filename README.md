@@ -11,6 +11,8 @@
 
 </div>
 
+加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
+
 ## Table of contents
 
 - [功能特性](#功能特性)
@@ -81,6 +83,10 @@
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 
+
+不方便微信交流或者怕打扰的可以加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
+
+
 ## 赞助支持一下！
 
 [Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
@@ -91,6 +97,7 @@
 
 ## 感谢 PR
 
+- [iporer](https://github.com/iporer)
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
 - [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Designer）
@@ -98,7 +105,7 @@
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
-- [iporer](https://github.com/iporer)
+
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 

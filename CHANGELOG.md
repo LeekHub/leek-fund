@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.6.5]
+
+- feat: 支持恒生股票 @iporer
+- chore: 新增 Discord 交流社区邀请链接 https://discord.gg/AmzMfQz
+
 ## [1.6.4]
 
 国庆中秋快乐！🎑
