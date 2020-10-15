@@ -4,7 +4,7 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { STOCK_TYPE } from '../shared/typed';
+import { FundInfo, STOCK_TYPE } from '../shared/typed';
 import {
   caculateEarnings,
   calcFixedPirceNumber,
@@ -74,6 +74,59 @@ export class LeekFundService {
     this.showLabel = !this.showLabel;
   }
 
+  executeStocksRemind(newStockList: Array<LeekTreeItem>) {
+    if (!this.stockList.length) return;
+    const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind');
+    const remindCodes = Object.keys(stocksRemind);
+
+    const oldStocksMap: Record<string, FundInfo> = {};
+    this.stockList.forEach(({ info }) => {
+      oldStocksMap[info.code] = info;
+    });
+
+    newStockList.forEach((stock) => {
+      const { info } = stock;
+      if (remindCodes.includes(info.code)) {
+        const oldStockInfo = oldStocksMap[info.code];
+        const currentPrice = parseFloat(info.price || '0');
+        const currentPrecent = parseFloat(info.percent || '0');
+        const currentUpdown = parseFloat(info.updown || '0');
+
+        const oldPrice = parseFloat(oldStockInfo.price || '0');
+        const oldPrecent = parseFloat(oldStockInfo.percent || '0');
+
+        const priceRange = Math.abs(currentPrice - oldPrice);
+        const precentRange = Math.abs(currentPrecent - oldPrecent);
+
+        const remindConfig = stocksRemind[info.code];
+        const remindPrices: number[] = remindConfig.price;
+        const remindPercents: number[] = remindConfig.percent;
+
+        remindPrices.forEach((remindPrice) => {
+          const marginPrice = Math.abs(currentPrice - remindPrice);
+          if (priceRange > marginPrice) {
+            console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
+            window.showWarningMessage(
+              `股价提醒：「${info.name}」 ${currentUpdown >= 0 ? '上涨' : '下跌'}至 ${currentPrice}`
+            );
+          }
+        });
+
+        remindPercents.forEach((remindPercent) => {
+          if (remindPercent / 0 !== currentUpdown / 0) return;
+          const marginPrecent = Math.abs(currentPrecent - remindPercent);
+          if (precentRange > marginPrecent) {
+            window.showWarningMessage(
+              `股价提醒：「${info.name}」 ${
+                remindPercent >= 0 ? '上涨' : '下跌'
+              }超 ${currentPrecent}%，现报：${currentPrice}`
+            );
+          }
+        });
+      }
+    });
+  }
+
   static qryFundMNFInfo(fundCodes: string[]): Promise<any> {
     const params: any = {
       pageIndex: 1,
@@ -108,6 +161,7 @@ export class LeekFundService {
   }
 
   async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+    if (!fundCodes.length) return [];
     console.log('fetching fund data……');
     try {
       const { Datas = [] } = await LeekFundService.qryFundMNFInfo(fundCodes);
@@ -415,6 +469,7 @@ export class LeekFundService {
       }
       this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
+      this.executeStocksRemind(res);
       this.stockList = res;
       if (barStockList.length === 0) {
         // 用户没有设置股票时，默认展示上证或第一个
