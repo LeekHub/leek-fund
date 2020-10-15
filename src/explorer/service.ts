@@ -212,6 +212,9 @@ export class LeekFundService {
           // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
           code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
         }
+        if (code === 'hkhsi' || code === 'hkhscei') {
+          code = code.toUpperCase().replace('HK', 'hk');
+        }
         // 过滤多余的 us. 开头的股干扰
         if (STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) {
           result.push({
