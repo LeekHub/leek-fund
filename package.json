@@ -147,6 +147,10 @@
         }
       },
       {
+        "command": "leek-fund.setStockRemind",
+        "title": "设置提醒"
+      },
+      {
         "command": "leek-fund.refreshStock",
         "title": "刷新数据",
         "icon": {
@@ -295,6 +299,11 @@
           "group": "inline"
         },
         {
+          "command": "leek-fund.setStockRemind",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "group": "group1"
+        },
+        {
           "command": "leek-fund.deleteStock",
           "when": "view == leekFundView.stock  && viewItem != category",
           "group": "group3"
@@ -341,6 +350,10 @@
             "005963"
           ],
           "description": "配置需要监控的基金代码（建议通过界面新增）"
+        },
+        "leek-fund.stocksRemind": {
+          "type": "object",
+          "description": "股票涨跌提醒，支持价格、涨跌幅。"
         },
         "leek-fund.statusBarStock": {
           "type": "array",
