@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.6.6]
+
+- feat: 增加股价提醒功能 @zqjimlove
+
 ## [1.6.5]
 
 - feat: 支持恒生股票 @iporer

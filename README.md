@@ -32,12 +32,12 @@
 
 本插件具有以下特点：
 
-- 基金涨跌，实时数据，支持海外基展示
-- 股票涨跌，支持 A 股、港股、美股（实时数据）
+- 基金实时涨跌，实时数据，支持海外基展示
+- 股票实时涨跌，支持 A 股、港股、美股
 - 左侧菜单面板
 - 底部状态栏信息
 - 手动刷新
-- 自动刷新（每天 9~15 点之间轮询刷新数据）
+- 开市自动刷新，节假日关闭轮询
 - 支持升序/降序排序
 - 基金实时走势图和历史走势图
 - 基金排行榜
@@ -46,12 +46,13 @@
 - 支持 GUI 操作新增&删除 基金 和 股票
 - 通过 GUI 添加基金和股票时，支持模糊搜索匹配
 - 支持 GUI 设置涨跌颜色、状态栏股票自定义等
-- 雪球用户动态关注 `v1.4.0`
+- 雪球用户动态关注（雪球新闻）
 - 自定义涨跌图标（吃面、吃肉、烤韭菜、烤肉、喝酒）
-- 基金持仓金额设置
-- 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏） `v1.5.0`
+- 基金持仓金额设置（用于动态计算盈亏）
+- 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏）
 - 基金趋势统计图
 - 股票支持分组展示（A 股、港股、美股）
+- 股票涨跌提醒设置
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
@@ -83,9 +84,7 @@
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 
-
 不方便微信交流或者怕打扰的可以加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
-
 
 ## 赞助支持一下！
 
@@ -105,7 +104,7 @@
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
-
+- [zqjimlove](https://github.com/zqjimlove)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
