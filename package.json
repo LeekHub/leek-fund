@@ -416,10 +416,6 @@
       {
         "view": "leekFundView.news",
         "contents": "无数据，请检查网络或添加关注用户\n [设置cookie](command:leek-fund.setXueqiuCookie)"
-      },
-      {
-        "view": "leekFundView.settings",
-        "contents": " \n [🌈个性化设置](command:leek-fund.customSetting)\n[🛠打开配置页](command:leek-fund.openConfigPage)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；评分[给个5星✨](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund&ssr=false#review-details)，源码[Github](https://github.com/giscafer/leek-fund)，加群交流[微信群](https://github.com/giscafer/leek-fund/issues/19)"
       }
     ]
   },
@@ -435,14 +431,14 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.11.0",
-    "@types/vscode": "1.41.0",
+    "@types/node": "^14.11.10",
+    "@types/vscode": "^1.50.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "mocha": "^7.1.2",
-    "typescript": "^3.8.3",
+    "typescript": "^4.0.3",
     "vsce": "^1.78.0",
     "vscode-test": "^1.3.0"
   },

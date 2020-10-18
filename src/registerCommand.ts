@@ -21,6 +21,7 @@ import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
+import SettingsViewProvider from './explorer/settingsView';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -382,6 +383,11 @@ export function registerViewEvent(
   );
 
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
+
+  const settingsProvider = new SettingsViewProvider(context.extensionUri);
+  context.subscriptions.push(
+    window.registerWebviewViewProvider(SettingsViewProvider.viewType, settingsProvider)
+  );
 
   checkForUpdate();
 }
