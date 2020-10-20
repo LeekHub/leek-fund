@@ -128,7 +128,10 @@
       {
         "command": "leek-fund.refreshFund",
         "title": "刷新数据",
-        "icon": "$(refresh)"
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       },
       {
         "command": "leek-fund.sortStock",
