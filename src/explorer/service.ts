@@ -75,7 +75,9 @@ export class LeekFundService {
   }
 
   executeStocksRemind(newStockList: Array<LeekTreeItem>) {
-    if (!this.stockList.length) return;
+    if (!this.stockList.length) {
+      return;
+    }
     const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind');
     const remindCodes = Object.keys(stocksRemind);
 
@@ -116,7 +118,9 @@ export class LeekFundService {
           });
 
           remindPercents.forEach((remindPercent) => {
-            if (remindPercent / 0 !== currentUpdown / 0) return;
+            if (remindPercent / 0 !== currentUpdown / 0) {
+              return;
+            }
             const marginPrecent = Math.abs(currentPrecent - remindPercent);
             if (precentRange > marginPrecent) {
               window.showWarningMessage(
@@ -167,7 +171,9 @@ export class LeekFundService {
   }
 
   async getFundData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
-    if (!fundCodes.length) return [];
+    if (!fundCodes.length) {
+      return [];
+    }
     console.log('fetching fund data……');
     try {
       const { Datas = [] } = await LeekFundService.qryFundMNFInfo(fundCodes);

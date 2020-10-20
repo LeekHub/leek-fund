@@ -124,7 +124,7 @@ export class LeekFundConfig extends BaseConfig {
       }
     });
 
-    configObj[code] = remindPriceConfig
+    configObj[code] = remindPriceConfig;
 
     this.setConfig('leek-fund.stocksRemind', configObj).then(() => {
       window.showInformationMessage(`Stock successfully set to Remind.`);
