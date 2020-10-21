@@ -1,7 +1,7 @@
 import { commands, ViewColumn, window } from 'vscode';
-import { LeekFundConfig } from '../shared/leekConfig';
-import { LeekFundService } from '../explorer/service';
+import FundService from '../explorer/fundService';
 import globalState from '../globalState';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
 import { toFixed } from '../shared/utils';
@@ -318,7 +318,7 @@ export async function updateAmount() {
     }
   }
   try {
-    const { Datas = [], Expansion } = await LeekFundService.qryFundMNFInfo(filterCodes);
+    const { Datas = [], Expansion } = await FundService.qryFundInfo(filterCodes);
     Datas.forEach((item: any) => {
       const { FCODE, NAV } = item;
       const time = item.GZTIME.substr(0, 10);

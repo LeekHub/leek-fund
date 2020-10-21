@@ -6,16 +6,17 @@
 
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { FundProvider } from './explorer/fundProvider';
-import { LeekFundConfig } from './shared/leekConfig';
+import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
-import { LeekFundService } from './explorer/service';
 import { StockProvider } from './explorer/stockProvider';
+import StockService from './explorer/stockService';
 import globalState from './globalState';
 import { registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
+import { LeekFundConfig } from './shared/leekConfig';
 import { SortType } from './shared/typed';
-import { StatusBar } from './statusbar/statusBar';
 import { isStockTime } from './shared/utils';
+import { StatusBar } from './statusbar/statusBar';
 import { updateAmount } from './webview/setAmount';
 
 let loopTimer: NodeJS.Timer | null = null;
@@ -39,11 +40,12 @@ export function activate(context: ExtensionContext) {
   setGlobalVariable();
   updateAmount();
 
-  const fundService = new LeekFundService(context);
+  const fundService = new FundService(context);
+  const stockService = new StockService(context);
   const nodeFundProvider = new FundProvider(fundService);
-  const nodeStockProvider = new StockProvider(fundService);
+  const nodeStockProvider = new StockProvider(stockService);
   const newsProvider = new NewsProvider();
-  const statusBar = new StatusBar(fundService);
+  const statusBar = new StatusBar(stockService, fundService);
 
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
@@ -58,16 +60,12 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService
-      .getFundData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
-    fundService
-      .getStockData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL)
-      .then(() => {
-        statusBar.refresh();
-      });
+    fundService.getData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
+    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL).then(() => {
+      statusBar.refresh();
+    });
   };
 
   manualRequest();
@@ -122,7 +120,14 @@ export function activate(context: ExtensionContext) {
   });
 
   // register event
-  registerViewEvent(context, fundService, nodeFundProvider, nodeStockProvider, newsProvider);
+  registerViewEvent(
+    context,
+    fundService,
+    stockService,
+    nodeFundProvider,
+    nodeStockProvider,
+    newsProvider
+  );
 }
 
 function setGlobalVariable() {

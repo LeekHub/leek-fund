@@ -3,17 +3,17 @@ import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
 import { LeekFundConfig } from '../shared/leekConfig';
-import { LeekFundService } from './service';
+import StockService from './stockService';
 
 export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
 
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
 
-  private service: LeekFundService;
+  private service: StockService;
   private order: SortType;
 
-  constructor(service: LeekFundService) {
+  constructor(service: StockService) {
     this.service = service;
     this.order = LeekFundConfig.getConfig('leek-fund.stockSort') || SortType.NORMAL;
   }
@@ -28,7 +28,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       return this.getRootNodes();
     } else {
       const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-      const resultPromise = this.service.getStockData(stockCodes, this.order);
+      const resultPromise = this.service.getData(stockCodes, this.order);
       // console.log(element.id);
       switch (
         element.id // First-level

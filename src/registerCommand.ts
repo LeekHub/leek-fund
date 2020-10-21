@@ -1,13 +1,14 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/fundSuggestData';
 import { FundProvider } from './explorer/fundProvider';
-import { LeekFundConfig } from './shared/leekConfig';
+import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
 import { NewsService } from './explorer/newsService';
 import { StockProvider } from './explorer/stockProvider';
+import StockService from './explorer/stockService';
 import globalState from './globalState';
+import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
-import { LeekFundService } from './explorer/service';
 import checkForUpdate from './shared/update';
 import { colorOptionList, randomColor } from './shared/utils';
 import allFundTrend from './webview/allFundTrend';
@@ -24,7 +25,8 @@ import stockTrendPic from './webview/stockTrendPic';
 
 export function registerViewEvent(
   context: ExtensionContext,
-  service: LeekFundService,
+  fundService: FundService,
+  stockService: StockService,
   fundProvider: FundProvider,
   stockProvider: StockProvider,
   newsProvider: NewsProvider
@@ -128,7 +130,7 @@ export function registerViewEvent(
         timer = null;
       }
       timer = setTimeout(async () => {
-        const res = await service.getStockSuggestList(value);
+        const res = await stockService.getStockSuggestList(value);
         qp.items = res;
         qp.busy = false;
       }, 100); // 简单防抖
@@ -175,9 +177,9 @@ export function registerViewEvent(
   // 基金持仓
   commands.registerCommand('leek-fund.viewFundPosition', (item) => fundPosition(item));
   // 基金排行
-  commands.registerCommand('leek-fund.viewFundRank', () => fundRank(service));
+  commands.registerCommand('leek-fund.viewFundRank', () => fundRank());
   // 基金走势图
-  commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(service));
+  commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(fundService));
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow(context));
   // 基金置顶
@@ -194,11 +196,11 @@ export function registerViewEvent(
   });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
-    if (service.fundList.length === 0) {
+    if (fundService.fundList.length === 0) {
       window.showWarningMessage('数据刷新中，请重试！');
       return;
     }
-    setAmount(service.fundList);
+    setAmount(fundService.fundList);
   });
   commands.registerCommand('leek-fund.stockTrendPic', (target) => {
     const { code, name, type, symbol } = target.info;
@@ -274,7 +276,8 @@ export function registerViewEvent(
    */
   context.subscriptions.push(
     commands.registerCommand('leek-fund.hideText', () => {
-      service.toggleLabel();
+      fundService.toggleLabel();
+      stockService.toggleLabel();
       fundProvider.refresh();
       stockProvider.refresh();
     })
@@ -282,7 +285,7 @@ export function registerViewEvent(
 
   context.subscriptions.push(
     commands.registerCommand('leek-fund.setStockStatusBar', () => {
-      const stockList = service.stockList;
+      const stockList = stockService.stockList;
       const stockNameList = stockList.map((item: LeekTreeItem) => {
         return {
           label: `${item.info.name}`,

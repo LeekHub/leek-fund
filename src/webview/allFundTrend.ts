@@ -1,8 +1,8 @@
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { LeekFundService } from '../explorer/service';
+import FundService from '../explorer/fundService';
 
-async function allFundTrend(service: LeekFundService) {
+async function allFundTrend(service: FundService) {
   const fundList = service.fundList;
   const panel = ReusedWebviewPanel.create('allFundTrendWebview', '基金走势一览', ViewColumn.One, {
     enableScripts: true,

@@ -1,6 +1,6 @@
 import { ViewColumn } from 'vscode';
+import FundService from '../explorer/fundService';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { LeekFundService } from '../explorer/service';
 
 const fundRankHtmlTemp = (list: any[] = []) => {
   let tbody = '';
@@ -36,8 +36,8 @@ const fundRankHtmlTemp = (list: any[] = []) => {
   return `<table boder="0">${thead}<tbody>${tbody} </tbody></table>`;
 };
 
-async function fundRank(service: LeekFundService) {
-  const list = await service.getRankFund();
+async function fundRank() {
+  const list = await FundService.getRankFund();
   const content = fundRankHtmlTemp(list);
   const panel = ReusedWebviewPanel.create('fundRankWebview', '基金排行榜', ViewColumn.One, {
     enableScripts: true,
