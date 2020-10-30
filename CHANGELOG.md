@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.6.7]
+
+- fix: VSCode 隔天不重启盈亏计算显示问题 [#78](https://github.com/giscafer/leek-fund/issues/78)
+
 ## [1.6.6]
 
 - feat: 增加股价提醒功能 @zqjimlove

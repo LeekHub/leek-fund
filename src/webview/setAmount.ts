@@ -4,7 +4,7 @@ import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
-import { toFixed } from '../shared/utils';
+import { formatDate, toFixed } from '../shared/utils';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 async function setAmount(fundList: LeekTreeItem[] = []) {
@@ -295,7 +295,7 @@ function setAmountCfgCb(data: IAmount[]) {
     };
   });
   LeekFundConfig.setConfig('leek-fund.fundAmount', cfg).then(() => {
-    globalState.fundAmount = cfg;
+    cacheFundAmountData(cfg);
     window.showInformationMessage('保存成功！（没开市的时候添加的持仓盈亏为0，开市时会自动计算）');
   });
 }
@@ -340,13 +340,18 @@ export async function updateAmount() {
     });
     if (Datas.length > 0) {
       LeekFundConfig.setConfig('leek-fund.fundAmount', amountObj).then(() => {
-        globalState.fundAmount = amountObj;
+        cacheFundAmountData(amountObj);
         console.log('🐥fundAmount has Updated ');
       });
     }
   } catch (e) {
     return [];
   }
+}
+
+export function cacheFundAmountData(amountObj: Object) {
+  globalState.fundAmount = amountObj;
+  globalState.fundAmountCacheDate = formatDate(new Date());
 }
 
 export default setAmount;
