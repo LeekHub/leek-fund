@@ -37,12 +37,16 @@ export default class FundService extends LeekService {
         const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
         let amount = 0;
+        let unitPrice = 0;
+        let earningPercent = 0;
         // 不填写的时候不计算
         if (keyLength) {
           amount = fundAmountObj[FCODE]?.amount || 0;
+          unitPrice = fundAmountObj[FCODE]?.unitPrice || 0;
           const price = fundAmountObj[FCODE]?.price || 0;
           // const priceDate = fundAmountObj[FCODE]?.priceDate || '';
           const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
+
           // 闭市的时候显示上一次盈亏
           earnings =
             amount === 0
@@ -50,6 +54,9 @@ export default class FundService extends LeekService {
               : isUpdated
               ? yestEarnings
               : toFixed(caculateEarnings(amount, price, GSZ));
+
+          // 收益率
+          earningPercent = toFixed((price - unitPrice) / unitPrice, 4) * 100;
         }
 
         const obj = {
@@ -59,9 +66,11 @@ export default class FundService extends LeekService {
           percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
           yestclose: NAV, // 昨日净值
           showLabel: this.showLabel,
-          earnings,
+          earnings, // 盈亏
           isUpdated,
-          amount,
+          amount, // 持仓金额
+          unitPrice, // 成本价
+          earningPercent, // 收益率
           t2: GSZZL === '--' ? true : false, // 海外基金t2
           time: GSZZL === '--' ? PDATE : GZTIME, // 更新时间
           showEarnings: keyLength > 0 && amount !== 0,

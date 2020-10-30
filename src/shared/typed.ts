@@ -21,6 +21,8 @@ export interface IAmount {
   amount: number;
   priceDate: string;
   earnings: number;
+  unitPrice: number;
+  earningPercent: number;
   yestEarnings?: number;
 }
 
@@ -41,10 +43,12 @@ export interface FundInfo {
   low?: string | number;
   time?: string;
   updown?: string; // 涨跌值 price-yestclose
+  unitPrice?: number; // 成本价格
   price?: string; // 当前价格
   volume?: string; // 成交量
   amount?: string | number; // 成交额
-  earnings?: number;
+  earnings?: number; // 盈亏
+  earningPercent?: number; // 盈亏率
   isStop?: boolean; // 停牌
   t2?: boolean;
   isUpdated?: boolean;

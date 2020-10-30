@@ -30,6 +30,7 @@ export class LeekTreeItem extends TreeItem {
       volume,
       amount = 0,
       earnings,
+      earningPercent,
       time,
       isStop,
       t2,
@@ -106,7 +107,9 @@ export class LeekTreeItem extends TreeItem {
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !(globalState.showEarnings && amount > 0)
               ? ''
-              : `(${grow ? '盈' : '亏'}：${earnings})`
+              : `(${grow ? '盈' : '亏'}：${earnings}${
+                  earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''
+                })`
           }` + `${t2 ? `(${time})` : ''}`;
       }
     } else {

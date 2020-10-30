@@ -11,11 +11,13 @@ async function setAmount(fundList: LeekTreeItem[] = []) {
   const amountObj: any = globalState.fundAmount || {};
   const list = fundList.map((item: LeekTreeItem) => {
     return {
-      name: item.info.name,
+      name: item.info?.name,
       code: item.id,
-      percent: item.info.percent,
-      amount: amountObj[item.info.code]?.amount || 0,
-      earnings: item.info.earnings || 0,
+      percent: item.info?.percent,
+      amount: amountObj[item.info?.code]?.amount || 0,
+      earningPercent: item.info?.earningPercent,
+      unitPrice: item.info?.unitPrice,
+      earnings: item.info?.earnings || 0,
       yestEarnings: amountObj[item.info.code]?.earnings || 0,
     };
   });
@@ -28,6 +30,7 @@ async function setAmount(fundList: LeekTreeItem[] = []) {
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
       case 'success':
+        console.log(JSON.parse(message.text));
         setAmountCfgCb(JSON.parse(message.text));
         return;
       case 'alert':
@@ -72,9 +75,10 @@ function getWebviewContent(list: any[] = []) {
         .amount {
           display: inline-block;
         }
-        .unit,
+        .unit{float: right;}
         .amount {
           float: right;
+          width: 220px !important;
         }
         .name {
           font-size: 14px;
@@ -88,12 +92,12 @@ function getWebviewContent(list: any[] = []) {
         }
         .el-input__inner {
           height: 28px;
-          width: 90%;
+          width: 120px;
           background-color: #eee;
         }
         .main {
           margin: 30px auto;
-          width: 520px;
+          width: 820px;
         }
         .footer {
           width: 520px;
@@ -104,6 +108,19 @@ function getWebviewContent(list: any[] = []) {
           font-size: 12px;
           margin-top: 20px;
           color: #696666;
+        }
+        .unitDiv{
+          width:224px;
+          float:right;
+        }
+        .unitPriceInput{
+          width:100px;
+        }
+        .red{
+          color:#F56C6C;
+        }
+        .green{
+          color:green;
         }
       </style>
     </head>
@@ -141,16 +158,24 @@ function getWebviewContent(list: any[] = []) {
           let listStr = '';
           fundList.forEach((item) => {
             const amount = item.amount || 0;
+            const unitPrice = item.unitPrice || 0;
+            const earningPercent = item.earningPercent || 0;
             const str =
               '<div class="item"><div class="name">' +
-              item.name +
+              item.name + '（<i class="'+(earningPercent>0?'red':'green')+'">'+earningPercent+'%</i>）'+
               '</div>' +
               '<div class="amount el-input">' +
-              '<input type="number" class="amountInput el-input__inner" id="' +
+              '持仓金额：<input type="number" class="amountInput el-input__inner" id="' +
               item.code +
               '" value="' +
               amount +
               '" /> <span class="unit">元</span> </div>' +
+              '<div class="unitDiv el-input">' +
+              '持仓成本价：<input type="number" class="unitPriceInput el-input__inner" id="' +
+              item.code +
+              '_unit" value="' +
+              unitPrice +
+              '" /> <span class="unit">元、</span> </div>' +
               '</div>';
 
             listStr += str;
@@ -162,7 +187,7 @@ function getWebviewContent(list: any[] = []) {
           list.html(listStr);
           $('#totalMoney').html(totalMoney.toFixed(2));
 
-          $('.amountInput').on('input', function (e) {
+          $('.amountInput,.unitPriceInput').on('input', function (e) {
             const value = e.target.value;
             if (value.length > 12) {
               e.target.value = value.slice(0, 12);
@@ -173,11 +198,15 @@ function getWebviewContent(list: any[] = []) {
             const ammountObj = {};
             fundList.forEach((item) => {
               let amount = $('#' + item.code).val();
+              let unitPrice = $('#' + item.code + '_unit').val();
               amount = isNaN(Number(amount)) ? 0 : Number(amount);
+              unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
+
               if (typeof ammountObj[item.code] !== 'object') {
                 ammountObj[item.code] = {};
               }
               ammountObj[item.code].amount = amount;
+              ammountObj[item.code].unitPrice = unitPrice;
               const earnings = item.earnings || 0;
               ammountObj[item.code].earnings = earnings;
             });
@@ -191,10 +220,12 @@ function getWebviewContent(list: any[] = []) {
               totalMoney = 0;
               Datas.forEach((item) => {
                 const amount = ammountObj[item.FCODE].amount;
+                const unitPrice = ammountObj[item.FCODE].unitPrice;
                 const obj = {
                   code: item.FCODE,
                   name: item.SHORTNAME,
-                  amount: amount,
+                  unitPrice: unitPrice, // 成本价
+                  amount: amount, // 持仓金额
                   earnings: ammountObj[item.FCODE].earnings,
                   price: item.NAV, // 净值
                   priceDate: item.PDATE, // 净值时间
@@ -290,6 +321,7 @@ function setAmountCfgCb(data: IAmount[]) {
       name: item.name,
       amount: item.amount || 0,
       price: item.price,
+      unitPrice: item.unitPrice,
       earnings: item.earnings,
       priceDate: item.priceDate,
     };
