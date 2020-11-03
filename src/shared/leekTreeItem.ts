@@ -107,10 +107,9 @@ export class LeekTreeItem extends TreeItem {
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !(globalState.showEarnings && amount > 0)
               ? ''
-              : `(${grow ? '盈' : '亏'}：${earnings}${
-                  earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''
-                })`
+              : `(${grow ? '盈' : '亏'}：${grow ? '+' : '-'}${earnings})`
           }` + `${t2 ? `(${time})` : ''}`;
+        // ${earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''}
       }
     } else {
       text = isStock
