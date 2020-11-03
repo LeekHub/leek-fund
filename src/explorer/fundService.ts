@@ -56,7 +56,7 @@ export default class FundService extends LeekService {
               : toFixed(caculateEarnings(amount, price, GSZ));
 
           // 收益率
-          earningPercent = toFixed((price - unitPrice) / unitPrice, 4) * 100;
+          earningPercent = toFixed((price - unitPrice) / unitPrice, 2, 100);
         }
 
         const obj = {

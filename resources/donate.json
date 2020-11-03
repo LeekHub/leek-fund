@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-10-30 17:24:49",
+  "updatedTime": "2020-11-03 09:15:59",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -52,6 +52,10 @@
     },
     {
       "name": "童da星",
+      "from": "微信"
+    },
+    {
+      "name": "或与非",
       "from": "微信"
     }
   ]
