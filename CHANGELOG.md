@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.6.8]
+
+- fix: 收益率小数位数问题 [#96](https://github.com/giscafer/leek-fund/issues/96)
+
 ## [1.6.7]
 
 - feat: 新增持仓成本价设置，自动计算收益率 🚀 :rocket:
