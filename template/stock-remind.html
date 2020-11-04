@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimal-ui, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>韭菜盒子</title>
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body {
+        background: #282c34;
+        color: #abb2bf;
+        /* padding: 20px; */
+        font-size: 14px;
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+      .el-col {
+        background: #282c34;
+        height: 100%;
+        padding: 10px;
+        padding-right: 8px;
+        border-right: 2px solid #3e4451;
+        border-top: 2px solid #3e4451;
+        position: relative;
+      }
+      .el-container {
+        height: 100%;
+      }
+      .el-header {
+        padding-left: 10px;
+        /* margin-bottom: 8px; */
+        border-bottom: 5px solid #3e4451;
+      }
+      .el-main {
+        padding: 0;
+        flex: 1;
+      }
+      .stocks {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .stock-item {
+        padding: 5px 10px;
+        cursor: pointer;
+        display: flex;
+      }
+      .stock-item:hover {
+        background: #333842;
+        color: #fff;
+      }
+      .stock-item .label {
+        width: 10em;
+        margin-right: 10px;
+      }
+      .stock-item .price {
+        text-align: right;
+        width: 5em;
+        margin-right: 10px;
+      }
+      .stock-item .count {
+        text-align: right;
+        width: 4em;
+        color: #808a9e;
+      }
+      .stock-item .count.has {
+        color: #abb2bf;
+      }
+
+      .stock-item:first-child {
+        color: #808a9e;
+        cursor: auto;
+      }
+      .stock-item:first-child:hover {
+        background: #282c34;
+      }
+      .main {
+        line-height: 1.2;
+        padding: 10px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .main__hd {
+        display: flex;
+        margin-bottom: 10px;
+        align-items: center;
+        /* justify-content: space-between; */
+      }
+      .main__bd {
+        background: #3e4451;
+        flex: 1;
+      }
+      .info {
+        font-size: 120%;
+        line-height: 1.6;
+        margin-right: 40px;
+      }
+      .stock-num {
+        font-size: 70%;
+      }
+      .remind {
+        padding: 4px 6px;
+        border: 1px solid #d6dae0;
+        border-radius: 2px;
+        display: block;
+      }
+      .remind-input {
+        outline: 0;
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: none;
+        width: 5em;
+        color: #fff;
+      }
+      h3 {
+        margin: 0 0 12px;
+      }
+      .d-input {
+        height: 32px;
+        line-height: 32px;
+        /* width: 100%; */
+        /* display: block; */
+        position: relative;
+        display: flex;
+        margin: 6px 0;
+        margin-right: 20px;
+      }
+      .d-input .label {
+        /* flex: 1; */
+        /* display: block; */
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0 16px 0 8px;
+      }
+      .d-input .unit {
+        height: 100%;
+        padding: 0 8px;
+        position: absolute;
+        right: 0;
+      }
+      .d-input input {
+        /* text-align: right; */
+        z-index: 1;
+        outline: 0;
+        margin: 0;
+        background: none;
+        height: 32px;
+        line-height: 34px;
+        padding-top: 1px;
+        /* line-height: 40px; */
+        color: #fff;
+        display: block;
+
+        width: 100%;
+        height: 100%;
+        border: 1px solid #d6dae0;
+        border-radius: 2px;
+        box-sizing: border-box;
+
+        padding: 2px 2em 0 7em;
+        caret-color: #2483ff;
+      }
+      .d-input input:focus {
+        border-color: #2483ff;
+      }
+      .d-input .remove {
+        position: absolute;
+        right: -20px;
+        height: 100%;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .d-input .remove:hover {
+        color: #e06c75;
+      }
+      .reminds-box {
+        width: 200%;
+        overflow: hidden;
+        display: flex;
+        transition: transform 0.3s ease;
+        min-height: 320px;
+      }
+      .reminds-box_add {
+        transform: translateX(-50%);
+      }
+      .reminds-box > div {
+        width: 50%;
+        height: 200px;
+      }
+    </style>
+  </head>
+
+  <body ontouchstart>
+    <div class="el-container is-vertical">
+      <header class="el-header">
+        <h2>个股设置</h2>
+      </header>
+      <div class="el-main">
+        <div class="el-container">
+          <aside
+            style="border-right: 5px solid #3e4451; padding-top: 5px"
+            class="el-aside"
+          >
+            <ul id="stockList" class="stocks"></ul>
+          </aside>
+          <main class="main">
+            <div class="main__hd">
+              <div class="info">
+                <div id="currentStockName" class="stock-name">ETC助手</div>
+                <div id="currentStockNum" class="stock-num">00000000</div>
+              </div>
+              <div class="button-group">
+                <button
+                  id="appendRemindBtn"
+                  class="el-button el-button--primary el-button--mini"
+                >
+                  添加提醒
+                </button>
+              </div>
+            </div>
+            <div class="main__bd">
+              <!-- <div class="remind">
+                就是这样的字的 <input class="remind-input" type="text" /> 踢开
+              </div> -->
+              <div
+                class="el-row"
+                style="margin-left: -10px; margin-right: -10px; height: 100%"
+              >
+                <div class="el-col el-col-sm-12 el-col-md-8 el-col-xl-6">
+                  <h3>提醒</h3>
+                  <div style="overflow: hidden">
+                    <div class="reminds-box">
+                      <div id="remindFields"></div>
+                      <div class="add-remind-form">
+                        <div style="font-size: 110%; margin-bottom: 10px">
+                          添加新的提醒
+                        </div>
+                        <form style="padding-bottom: 20px" id="newRemindForm">
+                          <label class="d-input">
+                            <span class="label">股价上涨到</span>
+                            <input value="" type="text" name="price1" />
+                            <span class="unit">元</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">股价下跌到</span>
+                            <input value="" type="text" name="price0" />
+                            <span class="unit">元</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">日涨幅达</span>
+                            <input value="" type="text" name="percent1" />
+                            <span class="unit">%</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">日跌幅达</span>
+                            <input value="" type="text" name="percent0" />
+                            <span class="unit">%</span>
+                          </label>
+                          <div style="padding-bottom: 100px">
+                            <button
+                              type="submit"
+                              class="el-button el-button--primary el-button--mini"
+                            >
+                              保存
+                            </button>
+                            <button
+                              id="cancelAppendRemindBtn"
+                              type="button"
+                              class="el-button el-button--mini"
+                            >
+                              取消
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="el-col el-col-sm-12 el-col-md-16 el-col-xl-18"
+                ></div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/html" id="stockItemTpl">
+      <li class="stock-item">
+        <span class="label">名称</span>
+        <span class="price">最新价</span>
+        <span class="count">提醒数量</span>
+      </li>
+      <!-- {{each data}} -->
+      <li
+        data-id="{{$value.id}}"
+        data-info="{{$value.info}}"
+        class="stock-item"
+      >
+        <span class="label">{{$value.info.name}}({{$value.info.code}})</span>
+        <span class="price">{{$value.info.price}}</span>
+        <span class="count {{ if $value.remindCount}}has{{/if}}"
+          >{{$value.remindCount || 0}}</span
+        >
+      </li>
+      <!-- {{/each}} -->
+    </script>
+
+    <script type="text/html" id="remindFieldTpl">
+      <!-- {{each data}} -->
+      <label
+        id="field_{{type}}_{{$index}}"
+        for="field_{{type}}_{{$index}}-input"
+        class="d-input"
+      >
+        <span class="label">{{type | remindLabel $value}}</span>
+        <input
+          data-type="{{type}}"
+          data-index="{{$index}}"
+          data-remind-type="{{$value | remindType}}"
+          value="{{$value | formatRemindValue}}"
+          id="field_{{type}}_{{$index}}-input"
+          type="text"
+        />
+        <span class="unit">{{unit}}</span>
+        <span
+          data-type="{{type}}"
+          data-index="{{$index}}"
+          alt="删除"
+          title="删除"
+          class="remove"
+          >&times;</span
+        >
+      </label>
+      <!-- {{/each}} -->
+    </script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/art-template/4.13.2/lib/template-web.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script>
+      var stockRemind = {};
+      var _stockList;
+      var currentStockId;
+      // var acquireVsCodeApi = acquireVsCodeApi || null;
+      const vscode = acquireVsCodeApi();
+      const deviceId =
+        Math.random().toString(16).substr(2) +
+        Math.random().toString(32).substr(2);
+
+      function checkInputValue(v) {
+        return /^[0-9]+(.[0-9]{1,3})?%?$/.test(v);
+      }
+
+      function saveStockRemind() {
+        vscode.postMessage({
+          command: 'save',
+          data: JSON.stringify(stockRemind),
+        });
+      }
+
+      function vscode_alert(msg) {
+        vscode.postMessage({
+          command: 'alert',
+          message: msg,
+        });
+      }
+
+      $('#newRemindForm').on('submit', (e) => {
+        e.preventDefault();
+        var ro = (stockRemind[currentStockId] = stockRemind[currentStockId] || {
+          price: [],
+          percent: [],
+        });
+        $('#newRemindForm')
+          .serializeArray()
+          .forEach(({ name, value }) => {
+            if (value) {
+              if (!checkInputValue(value)) {
+                vscode_alert(`输入的「${value}」格式不正确`);
+                $(`input[name=${name}]`).focus();
+                throw new Error(`输入的「${value}」格式不正确`);
+              }
+              const type = name.substring(0, name.length - 1);
+              const remindType = name.substring(name.length - 1);
+              stockRemind[currentStockId][type].push(
+                (remindType === '1' ? '+' : '-') + value
+              );
+            }
+          });
+        $('#newRemindForm')[0].reset();
+        $('.reminds-box').removeClass('reminds-box_add');
+        updateStockList(_stockList);
+        renderRemindFields(currentStockId);
+        saveStockRemind();
+      });
+
+      $('#appendRemindBtn').click(() => {
+        $('.reminds-box').addClass('reminds-box_add');
+      });
+
+      $('#cancelAppendRemindBtn').click(() => {
+        $('.reminds-box').removeClass('reminds-box_add');
+      });
+
+      $('#stockList').on('click', '.stock-item', function (e) {
+        const dataset = e.currentTarget.dataset;
+        const id = dataset.id;
+        const info = JSON.parse(dataset.info);
+        currentStockId = id;
+        renderRemindFields(id);
+        $('#currentStockName').text(info.name);
+        $('#currentStockNum').text(info.code);
+      });
+
+      $('#remindFields')
+        .on('click', '.remove', function (e) {
+          const dataset = e.currentTarget.dataset;
+          const type = dataset.type;
+          const index = dataset.index;
+          $('#field_' + type + '_' + index).hide();
+          stockRemind[currentStockId][type].splice(index, 1);
+          console.log('stockRemind: ', stockRemind);
+          vscode.postMessage({
+            command: 'save',
+            data: JSON.stringify(stockRemind),
+          });
+        })
+        .on('change', 'input', function (e) {
+          console.log('e: ', e);
+          const dataset = e.currentTarget.dataset;
+          const type = dataset.type;
+          const index = dataset.index;
+          const remindType = dataset.remindType;
+          const value = e.currentTarget.value;
+          if (!checkInputValue(value)) {
+            vscode_alert(`输入的「${value}」格式不正确`);
+            return;
+          }
+          stockRemind[currentStockId][type][index] =
+            (remindType === '1' ? '+' : '-') + value;
+          console.log('stockRemind: ', stockRemind);
+          saveStockRemind();
+        });
+
+      template.defaults.imports.formatRemindValue = function (value) {
+        const symbol = String(value)[0];
+        if (/[+-]/.test(symbol)) {
+          return String(value).substr(1);
+        } else {
+          return value;
+        }
+      };
+      template.defaults.imports.remindType = function (value) {
+        const symbol = String(value)[0];
+        return symbol === '-' ? 0 : 1;
+      };
+      template.defaults.imports.remindLabel = function (type, value) {
+        const symbol = String(value)[0];
+        switch (type) {
+          case 'price':
+            return '股价' + (symbol === '-' ? '下跌' : '上涨') + '到';
+          case 'percent':
+            return '日' + (symbol === '-' ? '跌幅' : '涨幅') + '达';
+            break;
+        }
+      };
+      const remindFieldsCompiler = template.compile(
+        $('#remindFieldTpl').html()
+      );
+      function renderRemindFields(stockId) {
+        const ro = stockRemind[stockId];
+        if (!ro) {
+          $('#remindFields').html('请先添加提醒');
+          return;
+        }
+        $('#remindFields').html(
+          remindFieldsCompiler({
+            data: ro.price,
+            type: 'price',
+            unit: '元',
+          }) +
+            remindFieldsCompiler({
+              data: ro.percent,
+              type: 'percent',
+              unit: '%',
+            })
+        );
+      }
+
+      const stockListCompiler = template.compile($('#stockItemTpl').html());
+      function updateStockList(stockList) {
+        stockList.forEach((stock) => {
+          var ro;
+          if ((ro = stockRemind[stock.id])) {
+            stock.remindCount = ro.price.length + ro.percent.length;
+          } else {
+            stock.remindCount = 0;
+          }
+        });
+        stockList.sort((a, b) => b.remindCount - a.remindCount);
+        $('#stockList').html(stockListCompiler({ data: stockList }));
+        if (!currentStockId) {
+          $('#stockList .stock-item:eq(1)').click();
+        }
+      }
+
+      window.addEventListener('message', (event) => {
+        const msg = event.data;
+        switch (msg.command) {
+          case 'updateStockList':
+            updateStockList((_stockList = msg.data));
+            break;
+          case 'updateStockRemind':
+            stockRemind = msg.data;
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

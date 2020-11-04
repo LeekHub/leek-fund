@@ -5,7 +5,7 @@ import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { FundInfo, STOCK_TYPE } from '../shared/typed';
-import { calcFixedPirceNumber, formatNumber, randHeader, sortData } from '../shared/utils';
+import { calcFixedPirceNumber, formatNumber, randHeader, sortData, events } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class StockService extends LeekService {
@@ -206,6 +206,7 @@ export default class StockService extends LeekService {
       this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
       this.executeStocksRemind(res);
+      events.emit('stockListUpdate', res, this.stockList);
       this.stockList = res;
       if (barStockList.length === 0) {
         // 用户没有设置股票时，默认展示上证或第一个
@@ -229,7 +230,7 @@ export default class StockService extends LeekService {
     if (!this.stockList.length) {
       return;
     }
-    const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind');
+    const stocksRemind = globalState.stocksRemind;
     const remindCodes = Object.keys(stocksRemind);
 
     const oldStocksMap: Record<string, FundInfo> = {};
@@ -253,11 +254,15 @@ export default class StockService extends LeekService {
           const precentRange = Math.abs(currentPrecent - oldPrecent);
 
           const remindConfig = stocksRemind[info.code];
-          const remindPrices: number[] = remindConfig.price;
-          const remindPercents: number[] = remindConfig.percent;
+          const remindPrices: string[] = remindConfig.price;
+          const remindPercents: string[] = remindConfig.percent;
 
-          remindPrices.forEach((remindPrice) => {
-            const marginPrice = Math.abs(currentPrice - remindPrice);
+          remindPrices.forEach((remindPriceStr) => {
+            const remindPrice = parseFloat(remindPriceStr);
+            if (remindPrice / 0 !== currentUpdown / 0) {
+              return;
+            }
+            const marginPrice = Math.abs(currentPrice - Math.abs(remindPrice));
             if (priceRange > marginPrice) {
               console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
               window.showWarningMessage(
@@ -268,7 +273,8 @@ export default class StockService extends LeekService {
             }
           });
 
-          remindPercents.forEach((remindPercent) => {
+          remindPercents.forEach((remindPercentStr) => {
+            const remindPercent = parseFloat(remindPercentStr);
             if (remindPercent / 0 !== currentUpdown / 0) {
               return;
             }

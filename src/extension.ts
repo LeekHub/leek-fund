@@ -18,6 +18,7 @@ import { SortType } from './shared/typed';
 import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
+import { cacheStocksRemindData } from './webview/setStocksRemind';
 
 let loopTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
@@ -25,6 +26,8 @@ let stockTreeView: TreeView<any> | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
+
+  globalState.context = context;
 
   let intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval', 5000);
   let intervalTime = intervalTimeConfig;
@@ -138,8 +141,13 @@ export function activate(context: ExtensionContext) {
 function setGlobalVariable() {
   const iconType = LeekFundConfig.getConfig('leek-fund.iconType') || 'arrow';
   globalState.iconType = iconType;
+
   const fundAmount = LeekFundConfig.getConfig('leek-fund.fundAmount') || {};
   cacheFundAmountData(fundAmount);
+
+  const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind') || {};
+  cacheStocksRemindData(stocksRemind);
+
   const showEarnings = LeekFundConfig.getConfig('leek-fund.showEarnings');
   globalState.showEarnings = showEarnings;
 }

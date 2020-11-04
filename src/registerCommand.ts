@@ -22,6 +22,7 @@ import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
+import setStockRemind from './webview/setStocksRemind';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -82,39 +83,11 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.setStockRemind', (stock) => {
-    console.log('stock: ', stock);
-    const qp = window.createQuickPick();
-    qp.placeholder = `请输入【${stock.info.name}】提醒的价格或涨跌幅(+-10%)，可用逗号分割多个设置`;
-
-    let price: string | undefined;
-
-    function checkPriceFormat(value: string) {
-      return value.split(',').every((item) => {
-        return /^([+-])?[0-9]+(.[0-9]{1,3})?%?$/.test(item);
-      });
+    if (stockService.stockList.length === 0) {
+      window.showWarningMessage('数据刷新中，请重试！');
+      return;
     }
-
-    qp.onDidChangeValue((value) => {
-      if (!value || checkPriceFormat(value)) {
-        price = value;
-        qp.items = [];
-      } else {
-        qp.items = [{ label: `输入的「${value}」格式不正确` }];
-      }
-    });
-
-    qp.onDidAccept(() => {
-      if (!price) {
-        return;
-      }
-
-      LeekFundConfig.setStockRemindCfg(stock.info.code, price);
-
-      qp.hide();
-      qp.dispose();
-    });
-
-    qp.show();
+    setStockRemind(stockService.stockList);
   });
   commands.registerCommand('leek-fund.addStock', () => {
     // vscode QuickPick 不支持动态查询，只能用此方式解决

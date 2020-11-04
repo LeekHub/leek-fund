@@ -1,8 +1,11 @@
-import { QuickPickItem } from 'vscode';
+import { QuickPickItem, ExtensionContext } from 'vscode';
 import { LeekFundConfig } from './leekConfig';
 import globalState from '../globalState';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './typed';
+import * as path from 'path';
+import * as fs from 'fs';
+import { EventEmitter } from 'events';
 
 const stockTimes = allStockTimes();
 
@@ -378,3 +381,11 @@ export function isHoliday(market: string): boolean {
   }
   return false;
 }
+
+export function getTemplateFileContent(tplName: string) {
+  const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
+  const html = fs.readFileSync(tplPath, 'utf-8');
+  return html;
+}
+
+export const events = new EventEmitter();
