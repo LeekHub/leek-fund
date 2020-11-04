@@ -151,7 +151,11 @@
       },
       {
         "command": "leek-fund.setStockRemind",
-        "title": "设置提醒"
+        "title": "设置提醒",
+        "icon": {
+          "light": "resources/light/remind.svg",
+          "dark": "resources/dark/remind.svg"
+        }
       },
       {
         "command": "leek-fund.refreshStock",
@@ -255,6 +259,11 @@
           "group": "navigation"
         },
         {
+          "command": "leek-fund.setStockRemind",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
           "command": "leek-fund.addNews",
           "when": "view == leekFundView.news",
           "group": "navigation"
@@ -300,11 +309,6 @@
           "command": "leek-fund.setStockTop",
           "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
           "group": "inline"
-        },
-        {
-          "command": "leek-fund.setStockRemind",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
-          "group": "group4"
         },
         {
           "command": "leek-fund.deleteStock",
