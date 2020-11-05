@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.6.9]
+
+- feat: 股价提醒功能，增强体验 @zqjimlove
+
 ## [1.6.8]
 
 - fix: 收益率小数位数问题 [#96](https://github.com/giscafer/leek-fund/issues/96)
