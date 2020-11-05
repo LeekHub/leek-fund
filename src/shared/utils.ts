@@ -388,4 +388,8 @@ export function getTemplateFileContent(tplName: string) {
   return html;
 }
 
+export function multi1000(n: number) {
+  return Math.ceil(n * 1000);
+}
+
 export const events = new EventEmitter();
