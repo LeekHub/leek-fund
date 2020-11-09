@@ -421,6 +421,11 @@
           "type": "number",
           "default": 0,
           "description": "股票排序方式(0正常、1升序、-1倒序)"
+        },
+        "leek-fund.stockRemindSwitch": {
+          "type": "number",
+          "default": 1,
+          "description": "打开/关闭提醒（1打开，0关闭）"
         }
       }
     },

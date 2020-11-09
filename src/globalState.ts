@@ -10,6 +10,7 @@ let fundAmount = {}; // 缓存数据
 let fundAmountCacheDate = '2020-10-30'; // 标记缓存时间，解决 VScode 多天都没有关闭时，盈亏计算缓存问题
 let stocksRemind: Record<string, any> = {};
 let showEarnings = 1; // 是否展示盈亏
+let remindSwitch = 1; // 是否打开提示
 let newsIntervalTime = 20000; // 新闻刷新频率（毫秒）
 let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
 
@@ -37,4 +38,5 @@ export default {
    */
   isHolidayChina,
   stocksRemind,
+  remindSwitch
 };

@@ -4,15 +4,9 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { FundInfo, STOCK_TYPE } from '../shared/typed';
-import {
-  calcFixedPirceNumber,
-  formatNumber,
-  randHeader,
-  sortData,
-  events,
-  multi1000,
-} from '../shared/utils';
+import { executeStocksRemind } from '../shared/remindNotification';
+import { STOCK_TYPE } from '../shared/typed';
+import { calcFixedPirceNumber, formatNumber, randHeader, sortData, events } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class StockService extends LeekService {
@@ -212,7 +206,7 @@ export default class StockService extends LeekService {
       }
       this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
-      this.executeStocksRemind(res);
+      executeStocksRemind(res, this.stockList);
       events.emit('stockListUpdate', res, this.stockList);
       this.stockList = res;
       if (barStockList.length === 0) {
@@ -231,77 +225,6 @@ export default class StockService extends LeekService {
       window.showErrorMessage(`fail: Stock error ` + url);
       return [];
     }
-  }
-
-  executeStocksRemind(newStockList: Array<LeekTreeItem>) {
-    if (!this.stockList.length) {
-      return;
-    }
-    const stocksRemind = globalState.stocksRemind;
-    const remindCodes = Object.keys(stocksRemind);
-
-    const oldStocksMap: Record<string, FundInfo> = {};
-    this.stockList.forEach(({ info }) => {
-      oldStocksMap[info.code] = info;
-    });
-
-    newStockList.forEach((stock) => {
-      try {
-        const { info } = stock;
-        if (remindCodes.includes(info.code)) {
-          const oldStockInfo = oldStocksMap[info.code];
-          const currentPrice = multi1000(parseFloat(info.price || '0'));
-          const currentPrecent = multi1000(parseFloat(info.percent || '0'));
-
-          const oldPrice = multi1000(parseFloat(oldStockInfo.price || '0'));
-          const oldPrecent = multi1000(parseFloat(oldStockInfo.percent || '0'));
-
-          const priceRange = Math.abs(currentPrice - oldPrice);
-          const precentRange = Math.abs(currentPrecent - oldPrecent);
-
-          // 如果用 info.updown（当前-昨收） 有可能导致股价从高位回落也上涨触发提醒，或高位回落不下跌不提醒。
-          // 所以改由 当前 - 上次
-          const currentUpdown = (currentPrice-oldPrice) > 0 ? 1 : -1; 
-
-          const remindConfig = stocksRemind[info.code];
-          const remindPrices: string[] = remindConfig.price;
-          const remindPercents: string[] = remindConfig.percent;
-
-          remindPrices.forEach((remindPriceStr) => {
-            const remindPrice = multi1000(parseFloat(remindPriceStr));
-            if (remindPrice / 0 !== currentUpdown / 0) {
-              return;
-            }
-            const marginPrice = Math.abs(currentPrice - Math.abs(remindPrice));
-            if (priceRange > marginPrice) {
-              console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
-              window.showWarningMessage(
-                `股价提醒：「${info.name}」 ${
-                  currentUpdown > 0 ? '上涨' : '下跌'
-                }至 ${info.price}`
-              );
-            }
-          });
-
-          remindPercents.forEach((remindPercentStr) => {
-            const remindPercent = multi1000(parseFloat(remindPercentStr));
-            if (remindPercent / 0 !== currentUpdown / 0) {
-              return;
-            }
-            const marginPrecent = Math.abs(currentPrecent - remindPercent);
-            if (precentRange > marginPrecent) {
-              window.showWarningMessage(
-                `股价提醒：「${info.name}」 ${
-                  remindPercent >= 0 ? '上涨' : '下跌'
-                }超 ${info.percent}%，现报：${info.price}`
-              );
-            }
-          });
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
   }
 
   async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {

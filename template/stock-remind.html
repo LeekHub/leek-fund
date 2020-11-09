@@ -547,6 +547,7 @@
             break;
           case 'updateStockRemind':
             stockRemind = msg.data;
+            currentStockId && renderRemindFields(currentStockId);
             break;
         }
       });

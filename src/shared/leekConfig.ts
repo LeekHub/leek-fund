@@ -5,7 +5,7 @@
  *-------------------------------------------------------------*/
 
 import { window, workspace } from 'vscode';
-import { clean, uniq } from './utils';
+import { clean, uniq, events } from './utils';
 
 export class BaseConfig {
   static getConfig(key: string, defaultValue?: any): any {
@@ -15,6 +15,7 @@ export class BaseConfig {
   }
 
   static setConfig(cfgKey: string, cfgValue: Array<any> | string | number | Object) {
+    events.emit('updateConfig:' + cfgKey, cfgValue);
     const config = workspace.getConfiguration();
     return config.update(cfgKey, cfgValue, true);
   }
