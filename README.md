@@ -98,6 +98,7 @@
 ## 感谢 PR
 
 - [iporer](https://github.com/iporer)
+- [zqjimlove](https://github.com/zqjimlove)
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
 - [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Designer）
@@ -105,7 +106,6 @@
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
-- [zqjimlove](https://github.com/zqjimlove)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
