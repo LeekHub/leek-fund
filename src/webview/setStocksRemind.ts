@@ -9,7 +9,7 @@ import { LeekFundConfig } from '../shared/leekConfig';
 function setStocksRemind(stockList: Array<LeekTreeItem>) {
   console.log('stockList: ', stockList);
 
-  const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
+  const panel = ReusedWebviewPanel.create('setAmountWebview', `个股设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
@@ -39,9 +39,16 @@ function setStocksRemind(stockList: Array<LeekTreeItem>) {
   panel.onDidDispose(() => {
     offUpdateStockList();
   });
+
+  events.on('updateConfig:leek-fund.stocksRemind', (cfg) => {
+    panel.webview.postMessage({
+      command: 'updateStockRemind',
+      data: cfg,
+    });
+  });
 }
 
-function setStocksRemindCfgCb(cfg: Object) {
+export function setStocksRemindCfgCb(cfg: Object) {
   LeekFundConfig.setConfig('leek-fund.stocksRemind', cfg).then(
     () => {
       window.showInformationMessage('保存成功！');

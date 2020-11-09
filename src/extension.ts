@@ -150,6 +150,9 @@ function setGlobalVariable() {
 
   const showEarnings = LeekFundConfig.getConfig('leek-fund.showEarnings');
   globalState.showEarnings = showEarnings;
+
+  const remindSwitch = LeekFundConfig.getConfig('leek-fund.stockRemindSwitch');
+  globalState.remindSwitch = remindSwitch;
 }
 
 // this method is called when your extension is deactivated

@@ -304,6 +304,10 @@ export function registerViewEvent(
               label: globalState.showEarnings ? '隐藏盈亏' : '👀显示盈亏',
               description: 'earnings',
             },
+            {
+              label: globalState.remindSwitch ? '关闭提醒' : '🔔️打开提醒',
+              description: 'remindSwitch',
+            },
           ],
           {
             placeHolder: '第一步：选择设置项',
@@ -381,6 +385,8 @@ export function registerViewEvent(
             globalState.showEarnings = newValue;
           } else if (type === 'hideText') {
             commands.executeCommand('leek-fund.hideText');
+          } else if (type === 'remindSwitch') {
+            commands.executeCommand('leek-fund.toggleRemindSwitch');
           }
         });
     })
@@ -393,6 +399,14 @@ export function registerViewEvent(
   );
 
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleRemindSwitch', () => {
+      const newValue = globalState.remindSwitch === 1 ? 0 : 1;
+      LeekFundConfig.setConfig('leek-fund.stockRemindSwitch', newValue);
+      globalState.remindSwitch = newValue;
+    })
+  );
 
   checkForUpdate();
 }
