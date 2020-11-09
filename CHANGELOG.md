@@ -1,5 +1,11 @@
 # ChangeLog
 
+## [1.7.0]
+
+- chore: 提醒的涨跌状态判断从「昨收价-现价」改为「现价-上一秒价」 @zqjimlove
+- fix: 浮点数精度问题 @zqjimlove
+- fix: 基金亏时两个减号问题
+
 ## [1.6.9]
 
 - feat: 股价提醒功能，增强体验 @zqjimlove
