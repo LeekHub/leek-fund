@@ -1,4 +1,5 @@
 import { ExtensionContext } from 'vscode';
+import { DEFAULT_LABEL_FORMAT } from './shared/constant';
 
 const deviceId = Math.random().toString(16).substr(2) + Math.random().toString(32).substr(2);
 
@@ -13,6 +14,7 @@ let showEarnings = 1; // 是否展示盈亏
 let remindSwitch = 1; // 是否打开提示
 let newsIntervalTime = 20000; // 新闻刷新频率（毫秒）
 let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
+let labelFormat = DEFAULT_LABEL_FORMAT;
 
 let aStockCount = 0;
 let usStockCount = 0;
@@ -38,5 +40,6 @@ export default {
    */
   isHolidayChina,
   stocksRemind,
-  remindSwitch
+  remindSwitch,
+  labelFormat,
 };

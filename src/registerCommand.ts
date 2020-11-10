@@ -408,5 +408,44 @@ export function registerViewEvent(
     })
   );
 
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.changeStatusBarItem', (stockId) => {
+      const stockList = stockService.stockList;
+      const stockNameList = stockList
+        .filter((stock) => stock.id !== stockId)
+        .map((item: LeekTreeItem) => {
+          return {
+            label: `${item.info.name}`,
+            description: `${item.info.code}`,
+          };
+        });
+
+      window
+        .showQuickPick(stockNameList, {
+          placeHolder: '更换状态栏个股',
+        })
+        .then((res) => {
+          if (!res) return;
+          const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
+          const newCfg = [...statusBarStocks];
+          const newStockId = res.description;
+          const index = newCfg.indexOf(stockId);
+          if (statusBarStocks.includes(newStockId)) {
+            window.showWarningMessage(`「${res.label}」已在状态栏`);
+            return;
+          }
+          if (index > -1) {
+            newCfg[newCfg.indexOf(stockId)] = res.description;
+          }
+          LeekFundConfig.updateStatusBarStockCfg(newCfg, () => {
+            const handler = window.setStatusBarMessage(`下次数据刷新见效`);
+            setTimeout(() => {
+              handler.dispose();
+            }, 1500);
+          });
+        });
+    })
+  );
+
   checkForUpdate();
 }

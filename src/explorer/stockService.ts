@@ -11,7 +11,7 @@ import { LeekService } from './leekService';
 
 export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
-  public statusBarStockList: Array<LeekTreeItem> = [];
+  // public statusBarStockList: Array<LeekTreeItem> = [];
 
   private context: ExtensionContext;
   private defaultBarStock: LeekTreeItem | null = null;
@@ -27,7 +27,7 @@ export default class StockService extends LeekService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
-    const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
+    // const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
 
     const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {
@@ -43,7 +43,7 @@ export default class StockService extends LeekService {
         headers: randHeader(),
       });
       let stockList: Array<LeekTreeItem> = [];
-      const barStockList: Array<LeekTreeItem> = [];
+      // const barStockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
           window.showErrorMessage(
@@ -67,7 +67,7 @@ export default class StockService extends LeekService {
       }
 
       const splitData = resp.data.split(';\n');
-      let sz: LeekTreeItem | null = null;
+      // let sz: LeekTreeItem | null = null;
       let aStockCount = 0;
       let usStockCount = 0;
       let hkStockCount = 0;
@@ -180,12 +180,12 @@ export default class StockService extends LeekService {
               formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
 
             const treeItem = new LeekTreeItem(stockItem, this.context);
-            if (code === 'sh000001') {
-              sz = treeItem;
-            }
-            if (statusBarStocks.includes(code)) {
-              barStockList.push(treeItem);
-            }
+            // if (code === 'sh000001') {
+            //   sz = treeItem;
+            // }
+            // if (statusBarStocks.includes(code)) {
+            //   barStockList.push(treeItem);
+            // }
             stockList.push(treeItem);
           }
         } else {
@@ -204,16 +204,16 @@ export default class StockService extends LeekService {
           stockList.push(treeItem);
         }
       }
-      this.defaultBarStock = sz || stockList[0];
+      // this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
       executeStocksRemind(res, this.stockList);
       events.emit('stockListUpdate', res, this.stockList);
       this.stockList = res;
-      if (barStockList.length === 0) {
+      /* if (barStockList.length === 0) {
         // 用户没有设置股票时，默认展示上证或第一个
         barStockList.push(this.defaultBarStock);
       }
-      this.statusBarStockList = sortData(barStockList, order);
+      this.statusBarStockList = sortData(barStockList, order); */
       globalState.aStockCount = aStockCount;
       globalState.hkStockCount = hkStockCount;
       globalState.usStockCount = usStockCount;

@@ -24,7 +24,7 @@
   "publisher": "giscafer",
   "icon": "resources/logo.png",
   "engines": {
-    "vscode": "^1.41.0"
+    "vscode": "^1.44.0"
   },
   "categories": [
     "Other"
@@ -426,6 +426,15 @@
           "type": "number",
           "default": 1,
           "description": "打开/关闭提醒（1打开，0关闭）"
+        },
+        "leek-fund.labelFormat": {
+          "type": "object",
+          "default": {
+            "statusBarLabelFormat": "「${name}」${price}  ${icon}（${percent}）",
+            "sidebarStockLabelFormat": "${icon|padRight|4}${percent|padRight|11}${price|padRight|15}「${name}」",
+            "sidebarFundLabelFormat": "${icon|padRight|4}${percent|padRight}「${name}」${earnings} ${time}"
+          },
+          "description": "修改底部状态栏、侧栏的显示格式。\n"
         }
       }
     },
@@ -461,7 +470,7 @@
     "@types/glob": "^7.1.1",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
-    "@types/vscode": "1.41.0",
+    "@types/vscode": "1.44.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
