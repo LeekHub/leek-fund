@@ -130,6 +130,47 @@
 
 ```
 
+## 状态栏、侧栏模板
+
+```
+"leek-fund.labelFormat": {
+  "type": "object",
+  "default": {
+    "statusBarLabelFormat": "「${name}」${price}  ${icon}（${percent}%）",
+    "sidebarStockLabelFormat": "${icon|padRight|4}${percent|padRight|11}${price|padRight|15}「${name}」",
+    "sidebarFundLabelFormat": "${icon|padRight|4}${percent|padRight}「${name}」${earnings} ${time}"
+  },
+  "description": "修改底部状态栏、侧栏的显示格式。\n"
+}
+```
+
+支持自定义底部状态栏、侧栏的模板格式。
+
+### 模板语法
+
+请使用 `${key}` 作为占位格式。
+
+支持`padRight`方法（字符不满指定长度则往右填充**空格**），使用格式为`${key|padRight}`或`${key|padRight|15}`，已`|`作为分割，第一个是方法名，第二个是参数。`padRight`默认是*10个空格*长度，可以通过第二个参数定义需要的空格数量。如`${key|padRight|15}`就是使用15个空格长度。
+
+### 支持的参数列表
+
+- `name` 股票、基金名字
+- `code` 代码
+- `price` 现价
+- `percent` 涨跌幅度
+- `high` 最高价
+- `low` 最低价
+- `yestclose` 昨收价
+- `open` 开盘价
+- `volume` 成交量
+- `amount` 成交额
+
+#### 以下参数 **基金** 独有
+
+- `earnings` 盈亏，显示格式如：盈：+100
+- `time` 更新时间，**仅T+2的基金显示**。
+
+
 ## 问题
 
 > 问题会逐渐修复和完善

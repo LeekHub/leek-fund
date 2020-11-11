@@ -26,7 +26,6 @@ let stockTreeView: TreeView<any> | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
-
   globalState.context = context;
 
   let intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval', 5000);
@@ -153,6 +152,8 @@ function setGlobalVariable() {
 
   const remindSwitch = LeekFundConfig.getConfig('leek-fund.stockRemindSwitch');
   globalState.remindSwitch = remindSwitch;
+
+  globalState.labelFormat = LeekFundConfig.getConfig('leek-fund.labelFormat');
 }
 
 // this method is called when your extension is deactivated

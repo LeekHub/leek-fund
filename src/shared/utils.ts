@@ -1,4 +1,4 @@
-import { QuickPickItem, ExtensionContext } from 'vscode';
+import { QuickPickItem, ExtensionContext, window } from 'vscode';
 import { LeekFundConfig } from './leekConfig';
 import globalState from '../globalState';
 import { LeekTreeItem } from './leekTreeItem';
@@ -157,7 +157,7 @@ export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => 
 
 export const formatTreeText = (text = '', num = 10): string => {
   const str = text + '';
-  const lenx = num - str.length;
+  const lenx = Math.max(num - str.length, 0);
   return str + ' '.repeat(lenx);
 };
 
@@ -393,3 +393,24 @@ export function multi1000(n: number) {
 }
 
 export const events = new EventEmitter();
+
+export function formatLabelString(str: string, params: Record<string, any>) {
+  try {
+    str = str.replace(/\$\{(.*?)\}/gi, function (_, $1) {
+      const formatMatch = /(.*?)\s*\|\s*padRight\s*(\|\s*(\d+))?/gi.exec($1);
+
+      if (formatMatch) {
+        return formatTreeText(
+          params[formatMatch[1]],
+          formatMatch[3] ? parseInt(formatMatch[3]) : undefined
+        );
+      } else {
+        return String(params[$1]);
+      }
+    });
+  } catch (err) {
+    window.showErrorMessage(`fail: Label format Error, ${str};\n${err.message}`);
+    return '模板格式错误！';
+  }
+  return str;
+}

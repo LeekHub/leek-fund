@@ -15,16 +15,19 @@
 
 ## Table of contents
 
-- [功能特性](#功能特性)
-- [安装使用](#安装使用)
-- [插件介绍](#插件介绍)
-- [插件设置](#插件设置)
-- [交流群](#交流群)
-- [Todo List](#todo-list)
-- [感谢 PR](#感谢-pr)
-- [Changelog](#changelog)
-- [Github](#github)
-- [License](#license)
+- [leek-fund（韭菜盒子）](#leek-fund韭菜盒子)
+  - [Table of contents](#table-of-contents)
+  - [功能特性](#功能特性)
+  - [安装使用](#安装使用)
+  - [插件介绍](#插件介绍)
+  - [插件设置](#插件设置)
+  - [交流群](#交流群)
+  - [赞助支持一下！](#赞助支持一下)
+  - [Todo List](#todo-list)
+  - [感谢 PR](#感谢-pr)
+  - [Changelog](#changelog)
+  - [Github](#github)
+  - [License](#license)
 
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
 
@@ -54,6 +57,7 @@
 - 基金趋势统计图
 - 股票支持分组展示（A 股、港股、美股）
 - 股票涨跌提醒设置
+- 状态栏、侧栏支持自定义模板格式
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
