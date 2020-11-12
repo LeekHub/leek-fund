@@ -11,7 +11,7 @@
 
 </div>
 
-加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
+加入 [韭菜盒子电报群](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg) 和每个人一起沟通交流
 
 ## Table of contents
 
@@ -89,7 +89,7 @@
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 
-不方便微信交流或者怕打扰的可以加入 [Discord](https://discord.gg/AmzMfQz) 和每个人一起沟通交流<!--  <a href="https://discord.gg/AmzMfQz" target="_blank" rel="noreferrer noopener" align="center"> ![Discord](https://discord.com/api/guilds/746641026239954954/widget.png?style=shield)</a> -->
+不方便微信交流或者怕打扰的加入 [韭菜盒子电报群](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg)
 
 ## 赞助支持一下！
 
