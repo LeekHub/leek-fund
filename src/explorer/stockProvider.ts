@@ -25,11 +25,12 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     if (!element) {
       // Root view
-      return this.getRootNodes();
-    } else {
       const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-      const resultPromise = this.service.getData(stockCodes, this.order);
-      // console.log(element.id);
+      return this.service.getData(stockCodes, this.order).then(() => {
+        return this.getRootNodes();
+      });
+    } else {
+      const resultPromise = Promise.resolve(this.service.stockList || []);
       switch (
         element.id // First-level
       ) {
