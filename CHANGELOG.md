@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.7.1]
+
+- perf: 股票接口请求逻辑 @zqjimlove
+- perf: 状态栏个股点击快速更换，自定义状态栏、侧栏模板格式 @zqjimlove
+
 ## [1.7.0]
 
 - chore: 提醒的涨跌状态判断从「昨收价-现价」改为「现价-上一秒价」 @zqjimlove
