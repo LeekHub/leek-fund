@@ -2,7 +2,6 @@ import { join } from 'path';
 import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from '../globalState';
 import { DEFAULT_LABEL_FORMAT } from './constant';
-import { LeekFundConfig } from './leekConfig';
 import { FundInfo, IconType } from './typed';
 import { formatLabelString, formatTreeText } from './utils';
 
@@ -11,6 +10,7 @@ export class LeekTreeItem extends TreeItem {
   type: string | undefined;
   isCategory: boolean;
   contextValue: string | undefined;
+  tooltip: string;
   constructor(info: FundInfo, context: ExtensionContext | undefined, isCategory = false) {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
