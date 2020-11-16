@@ -176,6 +176,10 @@ http://blog.haoji.me/vscode-plugin-overview.html
 |GSZZL|估值涨了多少|
 |GZTIME|估值的日期|
 
+```
+https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=11&appType=ttjj&product=EFund&plat=Android&deviceid=9e16077fca2fcr78ep0ltn98&Version=1&Fcodes=161725,320007,001632,161726,001071,007874,004857,420009,377240,002207,004855
+```
+
 - 获取基金历史净值
 
 地址:https://fundmobapi.eastmoney.com/FundMNewApi/FundMNHisNetList
@@ -235,4 +239,4 @@ http://blog.haoji.me/vscode-plugin-overview.html
 
 参数列表:version=6.2.4&plat=Android&appType=ttjj&FCODE=005919&onFundCache=3&keeeeeyparam=FCODE&deviceid=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me&igggggnoreburst=true&product=EFund&MobileKey=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me
 
-https://fundmobapi.eastmoney.com/FundMNewApi/FundMNNBasicInformation?version=6.2.4&plat=Android&appType=ttjj&FCODE=005919&onFundCache=3&keeeeeyparam=FCODE&deviceid=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me&igggggnoreburst=true&product=EFund&MobileKey=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me
+https://fundmobapi.eastmoney.com/FundMNewApi/FundMNNBasicInformation?version=6.2.4&plat=Android&appType=ttjj&FCODE=320007&onFundCache=3&keeeeeyparam=FCODE&deviceid=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me&igggggnoreburst=true&product=EFund&MobileKey=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me

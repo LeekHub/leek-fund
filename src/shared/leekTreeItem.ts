@@ -10,7 +10,6 @@ export class LeekTreeItem extends TreeItem {
   type: string | undefined;
   isCategory: boolean;
   contextValue: string | undefined;
-  tooltip: string;
   constructor(info: FundInfo, context: ExtensionContext | undefined, isCategory = false) {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
