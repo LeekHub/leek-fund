@@ -22,6 +22,8 @@ let hkStockCount = 0;
 let noDataStockCount = 0;
 let isHolidayChina = false; // 初始化状态，默认是false，免得API有问题，就当它不是好了，可以继续运行
 
+let showStockErrorInfo = true; // 控制只显示一次错误弹窗（临时处理）
+
 export default {
   context,
   iconType,
@@ -42,4 +44,5 @@ export default {
   stocksRemind,
   remindSwitch,
   labelFormat,
+  showStockErrorInfo,
 };

@@ -46,9 +46,12 @@ export default class StockService extends LeekService {
       // const barStockList: Array<LeekTreeItem> = [];
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
-          window.showErrorMessage(
-            `fail: error Stock code in ${codes}, please delete error Stock code`
-          );
+          if (globalState.showStockErrorInfo) {
+            window.showErrorMessage(
+              `fail: error Stock code in ${codes}, please delete error Stock code`
+            );
+            globalState.showStockErrorInfo = false;
+          }
           return [
             {
               id: codes[0],
