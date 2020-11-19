@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -87,6 +87,14 @@
         "icon": {
           "light": "resources/light/sort.svg",
           "dark": "resources/dark/sort.svg"
+        }
+      },
+      {
+        "command": "leek-fund.sortAmountFund",
+        "title": "持仓金额升序/降序",
+        "icon": {
+          "light": "resources/light/amount-sort.svg",
+          "dark": "resources/dark/amount-sort.svg"
         }
       },
       {
@@ -225,6 +233,11 @@
         },
         {
           "command": "leek-fund.sortFund",
+          "when": "view == leekFundView.fund",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.sortAmountFund",
           "when": "view == leekFundView.fund",
           "group": "navigation"
         },
@@ -415,7 +428,7 @@
         "leek-fund.fundSort": {
           "type": "number",
           "default": 0,
-          "description": "基金排序方式(0正常、1升序、-1倒序)"
+          "description": "基金排序方式(0正常、1涨跌升序、-1涨跌倒序、2持仓金额升序、-2持仓金额降序)"
         },
         "leek-fund.stockSort": {
           "type": "number",

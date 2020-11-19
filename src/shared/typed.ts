@@ -2,9 +2,11 @@
 export const STOCK_TYPE = ['sh', 'sz', 'hk', 'gb', 'us'];
 
 export enum SortType {
-  NORMAL = 0,
-  ASC = 1,
-  DESC = -1,
+  NORMAL = 0, // 基金默认顺序
+  ASC = 1, // 涨跌升序
+  DESC = -1, // 涨跌降序
+  AMOUNTASC = 2, // 持仓金额升序
+  AMOUNTDESC = -2, // 持仓金额降序
 }
 
 export enum IconType {

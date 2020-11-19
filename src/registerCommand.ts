@@ -68,6 +68,10 @@ export function registerViewEvent(
     fundProvider.changeOrder();
     fundProvider.refresh();
   });
+  commands.registerCommand('leek-fund.sortAmountFund', () => {
+    fundProvider.changeAmountOrder();
+    fundProvider.refresh();
+  });
 
   // Stock operation
   commands.registerCommand('leek-fund.refreshStock', () => {

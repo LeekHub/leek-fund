@@ -44,6 +44,21 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
+    console.log('this.order=', this.order);
+    LeekFundConfig.setConfig('leek-fund.fundSort', this.order);
+    this.refresh();
+  }
+
+  changeAmountOrder(): void {
+    let order = this.order as number;
+
+    if (order === SortType.AMOUNTDESC) {
+      this.order = SortType.AMOUNTASC;
+    } else if (order === SortType.AMOUNTASC) {
+      this.order = SortType.AMOUNTDESC;
+    } else {
+      this.order = SortType.AMOUNTDESC;
+    }
     LeekFundConfig.setConfig('leek-fund.fundSort', this.order);
     this.refresh();
   }

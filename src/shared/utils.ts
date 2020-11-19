@@ -140,9 +140,7 @@ export const formatNumber = (val: number = 0, fixed: number = 2, format = true):
 };
 
 export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => {
-  if (order === SortType.NORMAL) {
-    return data;
-  } else {
+  if (order === SortType.ASC || order === SortType.DESC) {
     return data.sort((a: any, b: any) => {
       const aValue = +a.info.percent;
       const bValue = +b.info.percent;
@@ -152,6 +150,18 @@ export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => 
         return aValue > bValue ? 1 : -1;
       }
     });
+  } else if (order === SortType.AMOUNTASC || order === SortType.AMOUNTDESC) {
+    return data.sort((a: any, b: any) => {
+      const aValue = a.info.amount - 0;
+      const bValue = b.info.amount - 0;
+      if (order === SortType.AMOUNTDESC) {
+        return aValue > bValue ? -1 : 1;
+      } else {
+        return aValue > bValue ? 1 : -1;
+      }
+    });
+  } else {
+    return data;
   }
 };
 
