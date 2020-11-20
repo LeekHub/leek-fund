@@ -44,7 +44,6 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     } else if (order === 0) {
       this.order = SortType.NORMAL;
     }
-    console.log('this.order=', this.order);
     LeekFundConfig.setConfig('leek-fund.fundSort', this.order);
     this.refresh();
   }
