@@ -3,7 +3,7 @@
 
 # leek-fund（韭菜盒子）
 
-**韭菜盒子**——VSCode 里也可以看股票 & 基金实时数据，做最好用的养基插件。
+**韭菜盒子**——VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件。
 
 [![Marketplace](https://img.shields.io/visual-studio-marketplace/v/giscafer.leek-fund.svg?label=Marketplace&style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
@@ -26,7 +26,6 @@
   - [Todo List](#todo-list)
   - [感谢 PR](#感谢-pr)
   - [Changelog](#changelog)
-  - [Github](#github)
   - [License](#license)
 
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
@@ -116,10 +115,6 @@
 ## Changelog
 
 [CHANGELOG](./CHANGELOG.md)
-
-## Github
-
-https://github.com/giscafer/leek-fund
 
 ## License
 
