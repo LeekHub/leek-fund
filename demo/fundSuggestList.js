@@ -19,7 +19,7 @@ function request() {
         const fundSuggestList = [${response.data.split('[')[1].split(']')[0]}];
         export default fundSuggestList;
         `;
-        fs.writeFileSync('./src/data/FundSuggestList.ts', fundSuggestList);
+        fs.writeFileSync('./src/data/fundSuggestData.ts', fundSuggestList);
       })
       .catch((error) => {
         console.log(error);
