@@ -97,7 +97,7 @@ function getWebviewContent(list: any[] = []) {
         }
         .main {
           margin: 30px auto;
-          width: 820px;
+          width: 1020px;
         }
         .footer {
           width: 520px;
