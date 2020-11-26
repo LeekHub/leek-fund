@@ -19,7 +19,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
     market = stockCode.substring(0, 2) === 'sh' ? '1' : '0';
   }
   let mcid = market + '.' + code.substr(1);
-  // console.log(`http://quote.eastmoney.com/basic/full.html?mcid=${mcid}`);
+  // console.log(`https://quote.eastmoney.com/basic/full.html?mcid=${mcid}`);
 
   const panel = ReusedWebviewPanel.create(
     'stockTrendWebview',
@@ -41,7 +41,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
   <body>
     <div  style="min-width: 1320px; overflow-x:auto">
       <iframe
-      src="http://quote.eastmoney.com/basic/full.html?mcid=${mcid}"
+      src="https://quote.eastmoney.com/basic/full.html?mcid=${mcid}"
       frameborder="0"
       style="width: 100%; height: 900px"
     ></iframe>

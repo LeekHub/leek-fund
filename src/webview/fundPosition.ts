@@ -5,7 +5,7 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 import { randHeader } from '../shared/utils';
 
 const fundPositionUrl = (code: string): string => {
-  return ` http://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=${code}&topline=10&year=&month=&rt=0.${Date.now()}`;
+  return ` https://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=${code}&topline=10&year=&month=&rt=0.${Date.now()}`;
 };
 
 async function getFundPositionByCode(code: string) {
@@ -19,15 +19,15 @@ async function getFundPositionByCode(code: string) {
       .replace('content', '"content"')
       .replace('arryear', '"arryear"')
       .replace('curyear', '"curyear"')
-      .replace(/href='\/\//g, "href='http://")
-      .replace(/href='ccbdxq/g, "href='http://fundf10.eastmoney.com/ccbdxq")
+      .replace(/href='\/\//g, "href='https://")
+      .replace(/href='ccbdxq/g, "href='https://fundf10.eastmoney.com/ccbdxq")
       .replace(
         "onclick='LoadMore(this,6,LoadStockPos)'",
-        `href='http://fundf10.eastmoney.com/ccmx_${code}.html'`
+        `href='https://fundf10.eastmoney.com/ccmx_${code}.html'`
       )
       .replace(
         "onclick='LoadMore(this,3,LoadStockPos)'",
-        `href='http://fundf10.eastmoney.com/ccmx_${code}.html'`
+        `href='https://fundf10.eastmoney.com/ccmx_${code}.html'`
       );
     return JSON.parse(data).content;
   } catch (err) {
@@ -327,7 +327,7 @@ table.jlchg .tor {
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」持仓📊</p>
     <div class="trend"><img
       class="fund-sstrend"
-      src="http://j6.dfcfw.com/charts/StockPos/${code}.png?rt=${new Date().getTime()}"
+      src="https://j6.dfcfw.com/charts/StockPos/${code}.png?rt=${new Date().getTime()}"
       alt="「${name}」- ${code}"
     />
     </div>
@@ -336,7 +336,7 @@ table.jlchg .tor {
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」持仓明细</p>
     ${content}
     </div>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
     <script>

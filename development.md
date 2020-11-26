@@ -5,13 +5,13 @@
 ### 爬取基金基本概况信息
 
 ```
-http://fund.eastmoney.com/f10/jbgk_001632.html
+https://fund.eastmoney.com/f10/jbgk_001632.html
 ```
 
 只需要获取基金名称可以走 js，jsonp
 
 ```
-http://fundgz.1234567.com.cn/js/001632.js?rt=1596338178723
+https://fundgz.1234567.com.cn/js/001632.js?rt=1596338178723
 ```
 
 ### 基金持仓股票涨跌情况
@@ -23,13 +23,13 @@ https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f12,f
 html 数据
 
 ```
- http://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=161726&topline=10&year=&month=&rt=0.3585181467435923
+ https://fundf10.eastmoney.com/FundArchivesDatas.aspx?type=jjcc&code=161726&topline=10&year=&month=&rt=0.3585181467435923
 ```
 
 页面逻辑
 
 ```
-http://j5.dfcfw.com/js/f10/f10_min_20200220153807.js
+https://j5.dfcfw.com/js/f10/f10_min_20200220153807.js
 ```
 
 ### 爬取净值接口
@@ -37,14 +37,14 @@ http://j5.dfcfw.com/js/f10/f10_min_20200220153807.js
 ```
 
 // 历史净值
-http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=001632&page=1&&sdate=2020-07-31
+https://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=001632&page=1&&sdate=2020-07-31
 
 股票实时数据，比如腾讯股票：
 https://hq.sinajs.cn/list=hk00700
 
 // 基金实时数据（有几分钟延迟，插件基金数据使用的是此接口）
 // 比如诺安成长混合
-http://fundgz.1234567.com.cn/js/320007.js?callback=a
+https://fundgz.1234567.com.cn/js/320007.js?callback=a
 
 // 天天基金 app
 https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=50&plat=Android&appType=ttjj&product=EFund&Version=1&deviceid=ssdfsdfsdf&Fcodes=320007,161726
@@ -56,7 +56,7 @@ https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=50
 ```
 
 // 走势图片、[沪深拼音]/time/[图片大小]/[股票代码]
-http://img1.money.126.net/chart/hs/time/210x140/1399001.png
+https://img1.money.126.net/chart/hs/time/210x140/1399001.png
 
 ```
 
@@ -64,7 +64,7 @@ http://img1.money.126.net/chart/hs/time/210x140/1399001.png
 
 ```
 
-http://fund.eastmoney.com/js/fundcode_search.js
+https://fund.eastmoney.com/js/fundcode_search.js
 
 ```
 
@@ -72,7 +72,7 @@ http://fund.eastmoney.com/js/fundcode_search.js
 
 ```
 
-http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=
+https://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=
 
 ```
 
@@ -99,7 +99,7 @@ https://blog.csdn.net/yuzhucu/article/details/55261024
 https://blog.csdn.net/Suwanqing_su/article/details/105947156
 
 // 开发系列博文
-http://blog.haoji.me/vscode-plugin-overview.html
+https://blog.haoji.me/vscode-plugin-overview.html
 
 ```
 

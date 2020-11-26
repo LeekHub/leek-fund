@@ -263,7 +263,7 @@ function getWebViewContent() {
                 </td>
                 <td>
                   <a
-                    href="http://quote.eastmoney.com/center/list.html#28003707_12_2"
+                    href="https://quote.eastmoney.com/center/list.html#28003707_12_2"
                     >沪股通</a
                   >
                 </td>
@@ -276,7 +276,7 @@ function getWebViewContent() {
                 <td><span>25</span></td>
                 <td><span class="green">112</span></td>
                 <td>
-                  <a href="http://quote.eastmoney.com/zs000001.html"
+                  <a href="https://quote.eastmoney.com/zs000001.html"
                     >上证指数</a
                   >
                 </td>
@@ -285,7 +285,7 @@ function getWebViewContent() {
               <tr id="zjlx_ggth" class="bbLightBlue">
                 <td>
                   <a
-                    href="http://quote.eastmoney.com/center/list.html#mk0144_12"
+                    href="https://quote.eastmoney.com/center/list.html#mk0144_12"
                     >港股通(沪)</a
                   >
                 </td>
@@ -298,7 +298,7 @@ function getWebViewContent() {
                 <td><span>34</span></td>
                 <td><span class="green">133</span></td>
                 <td>
-                  <a href="http://quote.eastmoney.com/hk/zs110000.html"
+                  <a href="https://quote.eastmoney.com/hk/zs110000.html"
                     >恒生指数</a
                   >
                 </td>
@@ -310,7 +310,7 @@ function getWebViewContent() {
                 </td>
                 <td>
                   <a
-                    href="http://quote.eastmoney.com/center/list.html#28013804_12_3"
+                    href="https://quote.eastmoney.com/center/list.html#28013804_12_3"
                     >深股通</a
                   >
                 </td>
@@ -323,7 +323,7 @@ function getWebViewContent() {
                 <td><span>22</span></td>
                 <td><span class="green">149</span></td>
                 <td>
-                  <a href="http://quote.eastmoney.com/zs399001.html"
+                  <a href="https://quote.eastmoney.com/zs399001.html"
                     >深证成指</a
                   >
                 </td>
@@ -332,7 +332,7 @@ function getWebViewContent() {
               <tr id="zjlx_ggts" class="bbLightBlue">
                 <td>
                   <a
-                    href="http://quote.eastmoney.com/center/list.html#mk0146_12"
+                    href="https://quote.eastmoney.com/center/list.html#mk0146_12"
                     >港股通(深)</a
                   >
                 </td>
@@ -345,7 +345,7 @@ function getWebViewContent() {
                 <td><span>45</span></td>
                 <td><span class="green">195</span></td>
                 <td>
-                  <a href="http://quote.eastmoney.com/hk/zs110000.html"
+                  <a href="https://quote.eastmoney.com/hk/zs110000.html"
                     >恒生指数</a
                   >
                 </td>
@@ -380,7 +380,7 @@ function getWebViewContent() {
               ></i>
               <div class="right-tips">
                 数据日期：<span id="updateTime_bxzj">LeekFund</span>
-                <a href="http://data.eastmoney.com/hsgtcg/gzcglist.html"
+                <a href="https://data.eastmoney.com/hsgtcg/gzcglist.html"
                   >更多</a
                 >
               </div>
@@ -435,7 +435,7 @@ function getWebViewContent() {
             <ul class="remark">
               <li>
                 注：北向资金是沪股通与深股通的资金加总；资金数据仅供参考。<a
-                  href="http://finance.eastmoney.com/news/1622,20161118685370149.html"
+                  href="https://finance.eastmoney.com/news/1622,20161118685370149.html"
                   >了解详细</a
                 >
               </li>
@@ -453,7 +453,7 @@ function getWebViewContent() {
               ></i>
               <div class="right-tips">
                 数据日期：<span id="updateTime_nxzj">08-14</span>
-                <a href="http://data.eastmoney.com/hsgtcg/lz.html">更多</a>
+                <a href="https://data.eastmoney.com/hsgtcg/lz.html">更多</a>
               </div>
             </div>
             <div id="emchart-nxzj" class="image"></div>
@@ -512,11 +512,11 @@ function getWebViewContent() {
         </div>
       </div>
     </div>
-    <script src="http://emres.dfcfw.com/common/js/jquery.1.8.3.min.js"></script>
+    <script src="https://emres.dfcfw.com/common/js/jquery.1.8.3.min.js"></script>
     <script>
       console.log($, jQuery);
-      var newHqDomain = 'http://push2.eastmoney.com/';
-      var v4Domain = 'http://dcfm.eastmoney.com/';
+      var newHqDomain = 'https://push2.eastmoney.com/';
+      var v4Domain = 'https://dcfm.eastmoney.com/';
       var newHqut = 'b2884a393a59ad64002292a3e90d46a5';
       var url1 =
         newHqDomain +
@@ -716,28 +716,28 @@ function getWebViewContent() {
         imgDom.attr('id', 'zljx_img_b');
         imgDom.attr(
           'src',
-          'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTH&imageType=NSZJ2'
+          'https://webquotepic.eastmoney.com/GetPic.aspx?id=NORTH&imageType=NSZJ2'
         );
         jQuery('#emchart-bxzj').html(imgDom.prop('outerHTML'));
         //南向当日资金流向
         imgDom.attr('id', 'zljx_img_n');
         imgDom.attr(
           'src',
-          'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTH&imageType=NSZJ2'
+          'https://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTH&imageType=NSZJ2'
         );
         jQuery('#emchart-nxzj').html(imgDom.prop('outerHTML'));
         //北向当日资金余额
         imgDom.attr('id', 'zlye_img_b');
         imgDom.attr(
           'src',
-          'http://webquotepic.eastmoney.com/GetPic.aspx?id=NORTHREMAIN&imageType=NSZJ2'
+          'https://webquotepic.eastmoney.com/GetPic.aspx?id=NORTHREMAIN&imageType=NSZJ2'
         );
         jQuery('#emchart-bxzj_drzjye').html(imgDom.prop('outerHTML'));
         //南向当日资金余额
         imgDom.attr('id', 'zlye_img_n');
         imgDom.attr(
           'src',
-          'http://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTHREMAIN&imageType=NSZJ2'
+          'https://webquotepic.eastmoney.com/GetPic.aspx?id=SOUTHREMAIN&imageType=NSZJ2'
         );
         jQuery('#emchart-nxzj_drzjye').html(imgDom.prop('outerHTML'));
       }
@@ -827,7 +827,7 @@ function getWebViewContent() {
         $.ajax({
           type: 'get',
           url:
-            'http://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54,f55,f56&ut=b2884a393a59ad64002292a3e90d46a5',
+            'https://push2.eastmoney.com/api/qt/kamt.rtmin/get?fields1=f1,f2,f3,f4&fields2=f51,f52,f53,f54,f55,f56&ut=b2884a393a59ad64002292a3e90d46a5',
           dataType: 'jsonp',
           jsonp: 'cb',
           success: function (json) {

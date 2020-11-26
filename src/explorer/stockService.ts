@@ -235,7 +235,7 @@ export default class StockService extends LeekService {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
-    const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
+    const url = `https://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
       searchText
     )}`;
     try {
@@ -264,7 +264,7 @@ export default class StockService extends LeekService {
         let code = arr[0];
         if (code.substr(0, 2) === 'of') {
           // 修改lof以及etf的前缀，防止被过滤
-          // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
+          // https://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
           // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
           code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
         }

@@ -5,7 +5,7 @@ function request() {
   return new Promise((resolve, reject) => {
     // @ts-ignore
     axios
-      .get('http://m.1234567.com.cn/data/FundSuggestList.js', {
+      .get('https://m.1234567.com.cn/data/FundSuggestList.js', {
         headers: {
           'User-Agent':
             'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.11 TaoBrowser/3.0 Safari/536.11',

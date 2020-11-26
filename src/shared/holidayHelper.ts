@@ -7,9 +7,9 @@ export class HolidayHelper {
    * @param year 年份字符串，如：'2020'
    */
   public static getHolidayDataByYear = async (year: string) => {
-    // 使用 http://timor.tech/api/holiday 的API
-    // http://timor.tech/api/holiday/year/2020
-    const url = `http://timor.tech/api/holiday/info/${year}`;
+    // 使用 https://timor.tech/api/holiday 的API
+    // https://timor.tech/api/holiday/year/2020
+    const url = `https://timor.tech/api/holiday/info/${year}`;
     try {
       const response = await axios.get(url);
       const data = response.data;
@@ -49,9 +49,9 @@ export class HolidayHelper {
    * @param date 日期
    */
   public static getHolidayDataByDate = async (date: Date) => {
-    // 使用 http://timor.tech/api/holiday 的API
-    // http://timor.tech/api/holiday/info/2020-09-18
-    const url = `http://timor.tech/api/holiday/info/${formatDate(date)}`;
+    // 使用 https://timor.tech/api/holiday 的API
+    // https://timor.tech/api/holiday/info/2020-09-18
+    const url = `https://timor.tech/api/holiday/info/${formatDate(date)}`;
     try {
       const response = await axios.get(url);
       const data = response.data;

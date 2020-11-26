@@ -135,7 +135,7 @@ async function allFundTrend(service: FundService) {
             });
             target.style.background = '#1890ff';
             target.style.color = '#fff';
-            sstrendImgEl.src='http://j4.dfcfw.com/charts/pic6/' +
+            sstrendImgEl.src='https://j4.dfcfw.com/charts/pic6/' +
             code +
             '.png?v=' +
             new Date().getTime();
@@ -157,7 +157,7 @@ async function allFundTrend(service: FundService) {
             }
             timer = setInterval(function () {
               sstrendImgEl.src =
-                'http://j4.dfcfw.com/charts/pic6/' +
+                'https://j4.dfcfw.com/charts/pic6/' +
                 code +
                 '.png?v=' +
                 new Date().getTime();

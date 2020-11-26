@@ -21,8 +21,8 @@ const fundRankHtmlTemp = (list: any[] = []) => {
     } = item;
     tbody += `<tr class="red">
     <td class="colorize">${i + 1}</td>
-    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank">${symbol}</a></td>
-    <td class="colorize"><a href="http://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank" title="${name}" class="name">${name}</a></td>
+    <td class="colorize"><a href="https://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank">${symbol}</a></td>
+    <td class="colorize"><a href="https://biz.finance.sina.com.cn/suggest/lookup_n.php?q=${symbol}&amp;country=fund" target="_blank" title="${name}" class="name">${name}</a></td>
     <td class="r_20 colorize">${dwjz}</td>
     <td class="r_20 colorize">${ljjz}</td>
     <td class="r_20">${three_month}</td>
@@ -51,7 +51,7 @@ async function fundRank() {
   <body class="bg">
     <br/>
     <p style="text-align: center; font-size:18px; width: 200px;margin: 0 auto;">基金回报排行榜前40</p>
-    <p style="text-align: center; font-size:14px; width: 200px;margin: 0 auto;margin-top:4px"><a href="http://vip.stock.finance.sina.com.cn/fund_center/index.html#hbphall" target="_blank">查看更多</a></p>
+    <p style="text-align: center; font-size:14px; width: 200px;margin: 0 auto;margin-top:4px"><a href="https://vip.stock.finance.sina.com.cn/fund_center/index.html#hbphall" target="_blank">查看更多</a></p>
     <div class="table">
       ${content}
     </div>

@@ -11,10 +11,10 @@ async function donate(context: ExtensionContext) {
 
 function getWebViewContent() {
   return `
-  <html xmlns="http://www.w3.org/1999/xhtml">
+  <html xmlns="https://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <title>打赏</title>
     <style type="text/css">
       .content {
@@ -87,7 +87,7 @@ function getWebViewContent() {
         line-height: 66px;
         color: #a3a3a3;
         font-size: 16px;
-        background: url('http://ww1.sinaimg.cn/large/940e68eegy1ghyyd5jtocj20f8023dfn.jpg');
+        background: url('https://ww1.sinaimg.cn/large/940e68eegy1ghyyd5jtocj20f8023dfn.jpg');
         font-family: 'Microsoft YaHei';
         margin-top: 7px;
         margin-right: 2px;
@@ -121,14 +121,14 @@ function getWebViewContent() {
       .radiobox {
         width: 16px;
         height: 16px;
-        background: url('http://ww1.sinaimg.cn/large/940e68eegy1ghyyf0i5x2j200g00gdfl.jpg');
+        background: url('https://ww1.sinaimg.cn/large/940e68eegy1ghyyf0i5x2j200g00gdfl.jpg');
         display: block;
         float: left;
         margin-top: 5px;
         margin-right: 14px;
       }
       .checked > .radiobox {
-        background: url('http://ww1.sinaimg.cn/large/940e68eegy1ghyygj4gwej200g00gdfl.jpg');
+        background: url('https://ww1.sinaimg.cn/large/940e68eegy1ghyygj4gwej200g00gdfl.jpg');
       }
       .shang_payselect {
         text-align: center;
@@ -174,11 +174,11 @@ function getWebViewContent() {
   <body>
     <div style="display: none">
       <img
-        src="http://ww1.sinaimg.cn/large/940e68eegy1ghyyag1d02j20dc0d077j.jpg"
+        src="https://ww1.sinaimg.cn/large/940e68eegy1ghyyag1d02j20dc0d077j.jpg"
         alt="alipay"
       />
       <img
-        src="http://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpgg"
+        src="https://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpgg"
         alt="wechat"
       />
     </div>
@@ -189,7 +189,7 @@ function getWebViewContent() {
         </div>
         <div class="shang_payimg">
           <img
-            src="http://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpg"
+            src="https://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpg"
             alt="扫码支持"
             title="扫一扫"
           />
@@ -227,9 +227,9 @@ function getWebViewContent() {
     </div>
     <script type="text/javascript">
       var alipayImageData =
-        'http://ww1.sinaimg.cn/large/940e68eegy1ghyyag1d02j20dc0d077j.jpg';
+        'https://ww1.sinaimg.cn/large/940e68eegy1ghyyag1d02j20dc0d077j.jpg';
       var wechatPayImageData =
-        'http://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpg';
+        'https://ww1.sinaimg.cn/large/940e68eegy1gi599sueg7j20fo0fcgrw.jpg';
       $(function () {
         $('.pay_item').click(function () {
           $(this)

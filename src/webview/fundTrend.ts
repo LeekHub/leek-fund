@@ -43,21 +43,21 @@ function fundTrend(code: string, name: string) {
     width:100%;
   }
   </style>
-  <script src="http://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=${new Date().getTime()}"></script>
-  <script src="http://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=${new Date().getTime()}"></script>
-  <script src="http://fund.eastmoney.com/pingzhongdata/${code}.js?v=${new Date().getTime()}"></script>
+  <script src="https://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=${new Date().getTime()}"></script>
+  <script src="https://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=${new Date().getTime()}"></script>
+  <script src="https://fund.eastmoney.com/pingzhongdata/${code}.js?v=${new Date().getTime()}"></script>
   <body>
     <br/>
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
     <div class="trend"><img
       class="fund-sstrend"
-      src="http://j4.dfcfw.com/charts/pic6/${code}.png?v=${new Date().getTime()}"
+      src="https://j4.dfcfw.com/charts/pic6/${code}.png?v=${new Date().getTime()}"
       alt=""
     />
    <!-- <p class="title" style="text-align: center; font-size:18px; width: 400px;margin: 20px auto;">历史趋势图</p>
     <img
     class="fund-sstrend"
-      src="http://j3.dfcfw.com/images/JJJZ1/${code}.png"
+      src="https://j3.dfcfw.com/images/JJJZ1/${code}.png"
       alt=""
     /> -->
     </div>
@@ -81,7 +81,7 @@ function fundTrend(code: string, name: string) {
     }
     timer = setInterval(function () {
       sstrendImgEl.src =
-        'http://j4.dfcfw.com/charts/pic6/' +
+        'https://j4.dfcfw.com/charts/pic6/' +
        code+
         '.png?v=' +
         new Date().getTime();

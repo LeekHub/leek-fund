@@ -7,7 +7,7 @@ function request() {
   return new Promise((resolve, reject) => {
     // @ts-ignore
     axios
-      .get('http://data.eastmoney.com/zjlx/dpzjlx.html', {
+      .get('https://data.eastmoney.com/zjlx/dpzjlx.html', {
         responseType: 'arraybuffer',
         transformResponse: [
           (data) => {

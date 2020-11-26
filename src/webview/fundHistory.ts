@@ -5,7 +5,7 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 import { randHeader } from '../shared/utils';
 
 const fundHistoryUrl = (code: string): string => {
-  return `http://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=49`;
+  return `https://fund.eastmoney.com/f10/F10DataApi.aspx?type=lsjz&code=${code}&page=1&per=49`;
 };
 
 async function getFundHistoryByCode(code: string) {
@@ -72,7 +72,7 @@ async function fundHistory(item: LeekTreeItem) {
     <div class="box">
     ${res.content}
     <p style="text-align: center;">
-    <a href="http://fundf10.eastmoney.com/jjjz_${code}.html" target="_blank">查看全部历史净值明细>></a>
+    <a href="https://fundf10.eastmoney.com/jjjz_${code}.html" target="_blank">查看全部历史净值明细>></a>
     </p>
     </div>
 
