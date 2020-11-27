@@ -41,8 +41,8 @@ export class StatusBar {
     if (!this.stockService.stockList.length) return;
 
     let sz: LeekTreeItem | null = null;
-    const barStockList: Array<LeekTreeItem> = new Array(4);
     const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
+    const barStockList: Array<LeekTreeItem> = new Array(statusBarStocks.length);
 
     this.statusBarItemLabelFormat =
       globalState.labelFormat?.['statusBarLabelFormat'] ??

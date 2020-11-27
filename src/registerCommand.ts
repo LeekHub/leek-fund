@@ -275,14 +275,13 @@ export function registerViewEvent(
           canPickMany: true,
         })
         .then((res) => {
-          if (!res?.length) {
-            return;
+          if (!res) {
+            res = [];
           }
           let codes = res.map((item) => item.description);
           if (codes.length > 4) {
             codes = codes.slice(0, 4);
           }
-          // console.log(codes.length);
           LeekFundConfig.updateStatusBarStockCfg(codes, () => {
             const handler = window.setStatusBarMessage(`下次数据刷新见效`);
             setTimeout(() => {
