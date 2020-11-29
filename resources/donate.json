@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-11-20 15:12:24",
+  "updatedTime": "2020-11-29 11:31:44",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -68,6 +68,10 @@
     },
     {
       "name": "滇西之王",
+      "from": "微信"
+    },
+    {
+      "name": "hgz",
       "from": "微信"
     }
   ]
