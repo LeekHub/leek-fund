@@ -166,10 +166,16 @@ export default class StockService extends LeekService {
             usStockCount += 1;
           }
           if (stockItem) {
-            const { yestclose, price, open } = stockItem;
+            const { yestclose, open } = stockItem;
+            let { price } = stockItem;
             /*  if (open === price && price === '0.00') {
             stockItem.isStop = true;
           } */
+
+            // 竞价阶段部分开盘和价格为0.00导致显示 -100%
+            if (open === '0.00') {
+              price = yestclose;
+            }
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = type;
