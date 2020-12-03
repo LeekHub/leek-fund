@@ -404,8 +404,8 @@ export function registerViewEvent(
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
 
   context.subscriptions.push(
-    commands.registerCommand('leek-fund.toggleRemindSwitch', () => {
-      const newValue = globalState.remindSwitch === 1 ? 0 : 1;
+    commands.registerCommand('leek-fund.toggleRemindSwitch', (on?: number) => {
+      const newValue = on !== undefined ? (on ? 1 : 0) : globalState.remindSwitch === 1 ? 0 : 1;
       LeekFundConfig.setConfig('leek-fund.stockRemindSwitch', newValue);
       globalState.remindSwitch = newValue;
     })

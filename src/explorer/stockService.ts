@@ -173,8 +173,12 @@ export default class StockService extends LeekService {
           } */
 
             // 竞价阶段部分开盘和价格为0.00导致显示 -100%
-            if (open === '0.00') {
-              price = yestclose;
+            try {
+              if (Number(open) >= 0) {
+                price = yestclose;
+              }
+            } catch (err) {
+              console.error(err);
             }
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;

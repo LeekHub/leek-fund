@@ -91,10 +91,10 @@ function showRemindNotice(info: FundInfo, msg: string) {
     _remindedCache[code] = false;
   }, 1000 * 60);
   //TODO 暂时关闭提醒?
-  window.showWarningMessage(msg, '关闭提醒', '删除该股提醒').then((res) => {
+  window.showWarningMessage(msg, '删除该股提醒', '关闭所有提醒').then((res) => {
     switch (res) {
-      case '关闭提醒':
-        commands.executeCommand('leek-fund.toggleRemindSwitch');
+      case '关闭所有提醒':
+        commands.executeCommand('leek-fund.toggleRemindSwitch', 0);
         break;
       case '删除该股提醒':
         let newCfg = { ...globalState.stocksRemind };
