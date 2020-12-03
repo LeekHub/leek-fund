@@ -102,7 +102,7 @@ export const toFixed = (value = 0, precision = 2, percent = 1) => {
   return newNum;
 };
 
-export const calcFixedPirceNumber = (
+export const calcFixedPriceNumber = (
   open: string,
   yestclose: string,
   price: string,

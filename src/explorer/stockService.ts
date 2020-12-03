@@ -6,7 +6,7 @@ import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
 import { STOCK_TYPE } from '../shared/typed';
-import { calcFixedPirceNumber, formatNumber, randHeader, sortData, events } from '../shared/utils';
+import { calcFixedPriceNumber, formatNumber, randHeader, sortData, events } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class StockService extends LeekService {
@@ -86,7 +86,7 @@ export default class StockService extends LeekService {
             let price = params[3];
             let high = params[4];
             let low = params[5];
-            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
+            fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
@@ -106,7 +106,7 @@ export default class StockService extends LeekService {
             let price = params[6];
             let high = params[4];
             let low = params[5];
-            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
+            fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[1],
@@ -127,7 +127,7 @@ export default class StockService extends LeekService {
             let price = params[1];
             let high = params[6];
             let low = params[7];
-            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
+            fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
@@ -149,7 +149,7 @@ export default class StockService extends LeekService {
             let price = params[1];
             let high = params[6];
             let low = params[7];
-            fixedNumber = calcFixedPirceNumber(open, yestclose, price, high, low);
+            fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
             stockItem = {
               code,
               name: params[0],
