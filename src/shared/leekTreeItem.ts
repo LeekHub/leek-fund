@@ -2,7 +2,7 @@ import { join } from 'path';
 import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from '../globalState';
 import { DEFAULT_LABEL_FORMAT } from './constant';
-import { FundInfo, IconType } from './typed';
+import { FundInfo, IconType, TreeItemType } from './typed';
 import { formatLabelString, formatTreeText } from './utils';
 
 export class LeekTreeItem extends TreeItem {
@@ -10,6 +10,8 @@ export class LeekTreeItem extends TreeItem {
   type: string | undefined;
   isCategory: boolean;
   contextValue: string | undefined;
+  _itemType?: TreeItemType;
+
   constructor(info: FundInfo, context: ExtensionContext | undefined, isCategory = false) {
     super('', TreeItemCollapsibleState.None);
     this.info = info;
@@ -36,7 +38,15 @@ export class LeekTreeItem extends TreeItem {
       isStop,
       t2,
       contextValue,
+      _itemType
     } = info;
+
+    if (_itemType) {
+      this._itemType = _itemType;
+    } else {
+      this._itemType = isStock ? TreeItemType.STOCK : TreeItemType.FUND;
+    }
+
     this.type = type;
     this.contextValue = contextValue;
     let _percent: number | string = Math.abs(percent);
@@ -90,8 +100,10 @@ export class LeekTreeItem extends TreeItem {
       this.iconPath = iconPath;
     }
     let text = '';
+
     if (showLabel) {
-      if (isStock) {
+      /* `showLabel: true` */
+      if (this._itemType === TreeItemType.STOCK) {
         const risePercent = isStop ? '停牌' : `${_percent}%`;
         if (type === 'nodata') {
           text = info.name;
@@ -110,7 +122,7 @@ export class LeekTreeItem extends TreeItem {
             }
           );
         }
-      } else {
+      } else if (this._itemType === TreeItemType.FUND) {
         /* text =
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !(globalState.showEarnings && amount > 0)
@@ -132,30 +144,47 @@ export class LeekTreeItem extends TreeItem {
           }
         );
         // ${earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''}
+      } else if (this._itemType === TreeItemType.BINANCE) {
+        text = formatLabelString(
+          globalState.labelFormat?.['sidebarBinanceLabelFormat'] ??
+            DEFAULT_LABEL_FORMAT.sidebarBinanceLabelFormat,
+          {
+            ...info,
+            icon: !isIconPath ? iconPath : '',
+            percent: `${_percent}%`,
+          }
+        );
       }
     } else {
-      text = isStock
+      /* `showLabel: false` */
+      text = this._itemType === TreeItemType.STOCK
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
         : `${formatTreeText(`${_percent}%`)}「${code}」`;
     }
 
     this.label = text;
     this.id = info.id || code;
-    this.command = {
-      title: name, // 标题
-      command: isStock ? 'leek-fund.stockItemClick' : 'leek-fund.fundItemClick', // 命令 ID
-      arguments: [
-        isStock ? '0' + symbol : code, // 基金/股票编码
-        name, // 基金/股票名称
-        text,
-        `${type}${symbol}`,
-      ],
-    };
-    if (type === 'nodata') {
-      this.command.command = '';
+
+    if (this._itemType === TreeItemType.STOCK || this._itemType === TreeItemType.FUND) {
+      this.command = {
+        title: name, // 标题
+        command:
+          this._itemType === TreeItemType.STOCK
+            ? 'leek-fund.stockItemClick'
+            : 'leek-fund.fundItemClick', // 命令 ID
+        arguments: [
+          this._itemType === TreeItemType.STOCK ? '0' + symbol : code, // 基金/股票编码
+          name, // 基金/股票名称
+          text,
+          `${type}${symbol}`,
+        ],
+      };
+      if (type === 'nodata') {
+        this.command.command = '';
+      }
     }
 
-    if (isStock) {
+    if (this._itemType === TreeItemType.STOCK) {
       if (type === 'nodata') {
         this.tooltip = '接口不支持，右键删除关注';
       } else {
@@ -163,6 +192,8 @@ export class LeekTreeItem extends TreeItem {
           !showLabel ? name : ''
         }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       }
+    } else if (this._itemType === TreeItemType.BINANCE) {
+      this.tooltip = `【今日行情】${name}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
     } else {
       this.tooltip = `「${name}」(${code})`;
     }

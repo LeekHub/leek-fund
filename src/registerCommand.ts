@@ -23,6 +23,8 @@ import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
 import setStockRemind from './webview/setStocksRemind';
+import { BinanceProvider } from './explorer/binanceProvider';
+import BinanceService from './explorer/binanceService';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -30,10 +32,12 @@ export function registerViewEvent(
   stockService: StockService,
   fundProvider: FundProvider,
   stockProvider: StockProvider,
-  newsProvider: NewsProvider
+  newsProvider: NewsProvider,
+  binanceProvider: BinanceProvider
 ) {
   const leekModel = new LeekFundConfig();
   const newsService = new NewsService();
+  const binanceService = new BinanceService(context);
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
@@ -248,6 +252,35 @@ export function registerViewEvent(
       });
   });
 
+  /**
+   * Binance command
+   */
+  commands.registerCommand('leek-fund.refreshBinance', () => {
+    binanceProvider.refresh();
+  });
+
+  /* 添加交易对 */
+  commands.registerCommand('leek-fund.addBinancePair', async () => {
+    const pairsList = await binanceService.getParis();
+    window.showQuickPick(pairsList, { placeHolder: '请输入交易对' }).then((pair) => {
+      if (!pair) return;
+      LeekFundConfig.updateBinanceCfg(pair, () => binanceProvider.refresh());
+    });
+  });
+
+  /* 删除交易对 */
+  commands.registerCommand('leek-fund.deletePair', (target) => {
+    LeekFundConfig.removeBinanceCfg(target.id, () => {
+      binanceProvider.refresh();
+    });
+  });
+
+  /* 交易对置顶 */
+  commands.registerCommand('leek-fund.setPairTop', (target) => {
+    LeekFundConfig.setBinanceTopCfg(target.id, () => {
+      binanceProvider.refresh();
+    });
+  });
   /**
    * Settings command
    */

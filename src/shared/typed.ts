@@ -17,6 +17,16 @@ export enum IconType {
   ICON_FOOD = 'iconfood',
 }
 
+/** Tree Item Type */
+export enum TreeItemType {
+  /** 基金 */
+  FUND = 'fund',
+  /** 股票 */
+  STOCK = 'stock',
+  /** 币安 */
+  BINANCE = 'binance'
+}
+
 export interface IAmount {
   name: string;
   price: number | string;
@@ -56,6 +66,7 @@ export interface FundInfo {
   isUpdated?: boolean;
   showEarnings?: boolean;
   isStock?: boolean;
+  _itemType?: TreeItemType
 }
 
 export const defaultFundInfo: FundInfo = {

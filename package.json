@@ -19,6 +19,9 @@
     "同花顺",
     "天天基金",
     "蚂蚁财富",
+    "数字货币",
+    "Binance",
+    "币安",
     "vscode"
   ],
   "publisher": "giscafer",
@@ -52,6 +55,10 @@
         {
           "id": "leekFundView.stock",
           "name": "Stock"
+        },
+        {
+          "id": "leekFundView.binance",
+          "name": "Binance"
         },
         {
           "id": "leekFundView.news",
@@ -212,6 +219,34 @@
       {
         "command": "leek-fund.deleteUser",
         "title": "取消关注"
+      },
+      {
+        "command": "leek-fund.addBinancePair",
+        "title": "添加交易对",
+        "icon": {
+          "light": "resources/light/add.svg",
+          "dark": "resources/dark/add.svg"
+        }
+      },
+      {
+        "command": "leek-fund.deletePair",
+        "title": "删除交易对"
+      },
+      {
+        "command": "leek-fund.refreshBinance",
+        "title": "刷新数据",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
+        "command": "leek-fund.setPairTop",
+        "title": "交易对置顶",
+        "icon": {
+          "light": "resources/light/top.svg",
+          "dark": "resources/dark/top.svg"
+        }
       }
     ],
     "menus": {
@@ -280,6 +315,16 @@
           "command": "leek-fund.addNews",
           "when": "view == leekFundView.news",
           "group": "navigation"
+        },
+        {
+          "command": "leek-fund.refreshBinance",
+          "when": "view == leekFundView.binance",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.addBinancePair",
+          "when": "view == leekFundView.binance",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
@@ -329,6 +374,21 @@
           "group": "group5"
         },
         {
+          "command": "leek-fund.deletePair",
+          "when": "view == leekFundView.binance  && viewItem != category",
+          "group": "group0"
+        },
+        {
+          "command": "leek-fund.setPairTop",
+          "when": "view == leekFundView.binance",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.setPairTop",
+          "when": "view == leekFundView.binance",
+          "group": "group1"
+        },
+        {
           "command": "leek-fund.viewUserTimeline",
           "when": "view == leekFundView.news",
           "group": "group0"
@@ -370,6 +430,15 @@
             "005963"
           ],
           "description": "配置需要监控的基金代码（建议通过界面新增）"
+        },
+        "leek-fund.binance": {
+          "type": "array",
+          "default": [
+            "BTC_USDT",
+            "ETH_USDT",
+            "EOS_USDT"
+          ],
+          "description": "配置需要监控的交易对（建议通过界面新增）"
         },
         "leek-fund.stocksRemind": {
           "type": "object",
@@ -459,6 +528,10 @@
       {
         "view": "leekFundView.stock",
         "contents": "无数据，请检查网络或添加股票"
+      },
+      {
+        "view": "leekFundView.binance",
+        "contents": "无数据，请检查网络或添加交易对"
       },
       {
         "view": "leekFundView.news",

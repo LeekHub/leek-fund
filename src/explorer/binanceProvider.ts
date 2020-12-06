@@ -1,0 +1,51 @@
+/*
+ * @Author: John Trump
+ * @Date: 2020-12-04 13:37:18
+ * @LastEditors: John Trump
+ * @LastEditTime: 2020-12-06 18:13:29
+ */
+
+import { Event, EventEmitter, ProviderResult, TreeDataProvider, TreeItem } from "vscode";
+import { LeekFundConfig } from "../shared/leekConfig";
+import { LeekTreeItem } from "../shared/leekTreeItem";
+import { SortType } from "../shared/typed";
+import BinanceService from "./binanceService";
+
+export class BinanceProvider implements TreeDataProvider<any> {
+
+  private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
+  private service: BinanceService;
+  readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
+  private order: SortType;
+
+  constructor(service: BinanceService) {
+    this.service = service;
+    this.order = LeekFundConfig.getConfig('leek-fund.fundSort') || SortType.NORMAL;
+  }
+
+  getTreeItem(element: any): TreeItem | Thenable<TreeItem> {
+    return element;
+  }
+
+  getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    const paris = LeekFundConfig.getConfig('leek-fund.binance') || [];
+    return this.service.getData(paris, this.order);
+  }
+
+  getParent?(element: any) {
+    return null;
+  }
+
+  /* Implement */
+  /** Notify data change then refresh */
+  refresh(): any {
+    // this.service.getParis();
+    this._onDidChangeTreeData.fire(undefined);
+  }
+
+  /** Modify order */
+  changeOrder(): void {
+    // leek-fund.binanceSort
+    throw new Error("Method not implemented.");
+  }
+}

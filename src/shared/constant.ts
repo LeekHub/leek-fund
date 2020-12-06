@@ -3,6 +3,7 @@
  */
 export const DEFAULT_LABEL_FORMAT = {
   statusBarLabelFormat: '「${name}」${price} ${icon}（${percent}）',
+  sidebarBinanceLabelFormat: '${icon|padRight|4}${percent|padRight|11}${price|padRight|15}「${name}」',
   sidebarStockLabelFormat:
     '${icon|padRight|4}${percent|padRight|11}${price|padRight|15}「${name}」',
   sidebarFundLabelFormat: '${icon|padRight|4}${percent|padRight}「${name}」${earnings} ${time}',
