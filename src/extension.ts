@@ -5,6 +5,8 @@
  *-------------------------------------------------------------*/
 
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
+import { BinanceProvider } from './explorer/binanceProvider';
+import BinanceService from './explorer/binanceService';
 import { FundProvider } from './explorer/fundProvider';
 import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
@@ -21,8 +23,10 @@ import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStocksRemindData } from './webview/setStocksRemind';
 
 let loopTimer: NodeJS.Timer | null = null;
+let binanceLoopTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
+let binanceTreeView: TreeView<any> | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
@@ -41,18 +45,28 @@ export function activate(context: ExtensionContext) {
 
   const fundService = new FundService(context);
   const stockService = new StockService(context);
+  const binanceService = new BinanceService(context);
+
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(stockService);
+  const binanceProvider = new BinanceProvider(binanceService);
   const newsProvider = new NewsProvider();
+
   const statusBar = new StatusBar(stockService, fundService);
 
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
     treeDataProvider: nodeFundProvider,
   });
+
   stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
   });
+
+  binanceTreeView = window.createTreeView('leekFundView.binance', {
+    treeDataProvider: binanceProvider,
+  });
+
   window.createTreeView('leekFundView.news', {
     treeDataProvider: newsProvider,
   });
@@ -110,7 +124,22 @@ export function activate(context: ExtensionContext) {
       clearInterval(loopTimer);
       loopTimer = null;
     }
+
     loopTimer = setInterval(loopCallback, intervalTime);
+
+    /* 虚拟币不休市 */
+    if (binanceLoopTimer) {
+      clearInterval(binanceLoopTimer);
+      binanceLoopTimer = null;
+    }
+    binanceLoopTimer = setInterval(
+      () => {
+        if (binanceTreeView?.visible) {
+          binanceProvider.refresh();
+        }
+      },
+      intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
+    );
   };
 
   setIntervalTime();
@@ -123,6 +152,7 @@ export function activate(context: ExtensionContext) {
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
+    binanceProvider.refresh();
     statusBar.refresh();
   });
 
@@ -133,7 +163,8 @@ export function activate(context: ExtensionContext) {
     stockService,
     nodeFundProvider,
     nodeStockProvider,
-    newsProvider
+    newsProvider,
+    binanceProvider
   );
 }
 
@@ -162,5 +193,9 @@ export function deactivate() {
   if (loopTimer) {
     clearInterval(loopTimer);
     loopTimer = null;
+  }
+  if (binanceLoopTimer) {
+    clearInterval(binanceLoopTimer);
+    binanceLoopTimer = null;
   }
 }

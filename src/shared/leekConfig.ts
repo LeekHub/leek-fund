@@ -40,7 +40,6 @@ export class LeekFundConfig extends BaseConfig {
   constructor() {
     super();
   }
-
   // Fund Begin
   static updateFundCfg(codes: string, cb?: Function) {
     this.updateConfig('leek-fund.funds', codes.split(',')).then(() => {
@@ -107,6 +106,35 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   // Stock End
+
+  // Binance Begin
+  static updateBinanceCfg(codes: string, cb?: Function) {
+    this.updateConfig('leek-fund.binance', codes.split(',')).then(() => {
+      window.showInformationMessage(`Pair Successfully add.`);
+      if (cb && typeof cb === 'function') {
+        cb(codes);
+      }
+    });
+  }
+  static removeBinanceCfg(code: string, cb?: Function) {
+    this.removeConfig('leek-fund.binance', code).then(() => {
+      window.showInformationMessage(`Pair Successfully delete.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
+  }
+  static setBinanceTopCfg(code: string, cb?: Function) {
+    let configArr: string[] = this.getConfig('leek-fund.binance');
+    configArr = [code, ...configArr.filter((item) => item !== code)];
+    this.setConfig('leek-fund.binance', configArr).then(() => {
+      window.showInformationMessage(`Pair successfully set to top.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
+  }
+  // Binance end
 
   // StatusBar Begin
   static updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {

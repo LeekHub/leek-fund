@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es5",
     "outDir": "out",
-    "lib": ["es6"],
+    "lib": ["ES2020.Promise"],
     "sourceMap": true,
     "rootDir": "src",
     "strict": true /* enable all strict type-checking options */
