@@ -9,6 +9,7 @@ import Axios from 'axios';
 import { ExtensionContext } from 'vscode';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { FundInfo, TreeItemType } from '../shared/typed';
+import { randHeader } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class BinanceService extends LeekService {
@@ -22,8 +23,11 @@ export default class BinanceService extends LeekService {
 
   /** 获取支持的交易对 */
   async getParis(): Promise<string[]> {
-    const res = await Axios.get(`https://api.binance.com/api/v1/exchangeInfo`);
-    return res.data.symbols.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
+    const res = await Axios.get(`https://api.binance.com/api/v1/exchangeInfo`, {
+      headers: randHeader(),
+    });
+    // console.log(res);
+    return res.data?.symbols?.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
   }
 
   async _fetchPairData(symbolWithSplit: string): Promise<any> {
@@ -31,6 +35,7 @@ export default class BinanceService extends LeekService {
     return {
       data: await Axios.get(`https://api.binance.com/api/v1/ticker/24hr`, {
         params: { symbol },
+        headers: randHeader(),
       }),
       symbol: symbolWithSplit,
     };
@@ -42,8 +47,9 @@ export default class BinanceService extends LeekService {
     const promises = codes.map((i) => this._fetchPairData(i));
     // @ts-ignore
     const results = await Promise.allSettled(promises);
+    console.log(results);
     // @ts-ignore
-    for (const { status, value } of results) {
+    for (const { status, value = {} } of results) {
       if (status === 'fulfilled') {
         // status === 'fulfilled'
         const {
