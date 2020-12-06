@@ -98,7 +98,7 @@ export function activate(context: ExtensionContext) {
           updateAmount();
         }
       }
-      if (stockTreeView?.visible || fundTreeView?.visible || binanceTreeView?.visible) {
+      if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
         nodeFundProvider.refresh();
         statusBar.refresh();
@@ -134,7 +134,9 @@ export function activate(context: ExtensionContext) {
     }
     binanceLoopTimer = setInterval(
       () => {
-        binanceProvider.refresh();
+        if (binanceTreeView?.visible) {
+          binanceProvider.refresh();
+        }
       },
       intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
     );

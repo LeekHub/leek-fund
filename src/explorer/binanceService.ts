@@ -36,7 +36,7 @@ export default class BinanceService extends LeekService {
     };
   }
 
-  async getData(codes: string[], order: number): Promise<LeekTreeItem[]> {
+  async getData(codes: string[]): Promise<LeekTreeItem[]> {
     const pairList: Array<LeekTreeItem> = [];
 
     const promises = codes.map((i) => this._fetchPairData(i));

@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-12-04 13:37:18
  * @LastEditors: John Trump
- * @LastEditTime: 2020-12-06 18:13:29
+ * @LastEditTime: 2020-12-06 20:14:01
  */
 
 import { Event, EventEmitter, ProviderResult, TreeDataProvider, TreeItem } from "vscode";
@@ -16,11 +16,12 @@ export class BinanceProvider implements TreeDataProvider<any> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
   private service: BinanceService;
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
-  private order: SortType;
+  // TODO: 未完成排序功能
+  // private order: SortType;
 
   constructor(service: BinanceService) {
     this.service = service;
-    this.order = LeekFundConfig.getConfig('leek-fund.fundSort') || SortType.NORMAL;
+    // this.order = LeekFundConfig.getConfig('leek-fund.binanceSort') || SortType.NORMAL;
   }
 
   getTreeItem(element: any): TreeItem | Thenable<TreeItem> {
@@ -29,7 +30,7 @@ export class BinanceProvider implements TreeDataProvider<any> {
 
   getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     const paris = LeekFundConfig.getConfig('leek-fund.binance') || [];
-    return this.service.getData(paris, this.order);
+    return this.service.getData(paris);
   }
 
   getParent?(element: any) {
