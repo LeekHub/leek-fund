@@ -111,6 +111,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
 - [chen86860](https://github.com/chen86860)
+- [wujunchuan](https://github.com/wujunchuan)
 
 更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
