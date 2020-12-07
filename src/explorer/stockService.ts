@@ -174,7 +174,7 @@ export default class StockService extends LeekService {
 
             // 竞价阶段部分开盘和价格为0.00导致显示 -100%
             try {
-              if (Number(open) >= 0) {
+              if (Number(open) <= 0) {
                 price = yestclose;
               }
             } catch (err) {
