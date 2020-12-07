@@ -357,14 +357,15 @@ export function allStockTimes(): Map<string, Array<number>> {
 export function allHolidays(): Map<string, Array<string>> {
   // https://websys.fsit.com.tw/FubonETF/Top/Holiday.aspx
   // 假日日期格式为yyyyMMdd
-  // TODO: 寻找假日API，自动判断假日
   let days = new Map<string, Array<string>>();
   const A = [];
   if (globalState.isHolidayChina) {
     A.push(formatDate(new Date(), ''));
   }
-  const HK = ['20201001', '20201002', '20201026', '20201225'];
-  const US = ['20201126', '20201225'];
+  // https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2020/ce_SEHK_CT_038_2020.pdf
+  const HK = ['20201225', '20210101', '20210212', '20210215', '20210402', '20210405', '20210406', '20210519', '20210614', '20210701', '20210922', '20211001', '20211014', '20211227'];
+  // https://www.nyse.com/markets/hours-calendars
+  const US = ['20201225', '20210101', '20210118', '20210215', '20210402', '20210531', '20210705', '20210906', '20211125', '20211224', '20220117', '20220221', '20220415', '20220530', '20220704', '20220905', '20221124', '20221226'];
   days.set(StockCategory.A, A);
   days.set(StockCategory.HK, HK);
   days.set(StockCategory.US, US);
