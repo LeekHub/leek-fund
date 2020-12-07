@@ -58,10 +58,6 @@
           "name": "Stock"
         },
         {
-          "id": "leekFundView.binance",
-          "name": "Binance"
-        },
-        {
           "id": "leekFundView.news",
           "name": "XueQiu News"
         },
@@ -69,6 +65,11 @@
           "id": "leekFundView.settings",
           "visibility": "visible",
           "name": "Settings"
+        },
+        {
+          "id": "leekFundView.binance",
+          "name": "Binance",
+          "visibility": "hidden"
         }
       ]
     },

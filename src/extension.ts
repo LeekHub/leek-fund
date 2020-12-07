@@ -138,7 +138,8 @@ export function activate(context: ExtensionContext) {
           binanceProvider.refresh();
         }
       },
-      intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
+      // intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
+      60000 // 该功能有，有bug这里故意设置长时间
     );
   };
 
