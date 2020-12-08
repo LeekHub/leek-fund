@@ -36,6 +36,12 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
 
   changeOrder(): void {
     let order = this.order as number;
+
+    /* fix: 如果基金排序先前是按照持仓金额升序/降序, 按涨跌排序失效的问题 */
+    if (Math.abs(order) > 1) {
+      this.order = SortType.NORMAL;
+    }
+
     order += 1;
     if (order > 1) {
       this.order = SortType.DESC;
