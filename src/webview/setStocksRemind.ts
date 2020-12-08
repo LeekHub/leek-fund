@@ -6,13 +6,17 @@ import { getTemplateFileContent } from '../shared/utils';
 import { events } from '../shared/utils';
 import { LeekFundConfig } from '../shared/leekConfig';
 
+let _INITED = false;
+
 function setStocksRemind(stockList: Array<LeekTreeItem>) {
-  console.log('stockList: ', stockList);
 
   const panel = ReusedWebviewPanel.create('setAmountWebview', `个股设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
+
+  if (_INITED) return;
+  _INITED = true;
 
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
@@ -36,15 +40,19 @@ function setStocksRemind(stockList: Array<LeekTreeItem>) {
     data: globalState.stocksRemind,
   });
   const offUpdateStockList = updateStockList(panel.webview, stockList);
-  panel.onDidDispose(() => {
-    offUpdateStockList();
-  });
 
-  events.on('updateConfig:leek-fund.stocksRemind', (cfg) => {
+  const updateWebViewCfg = (cfg: Object) => {
     panel.webview.postMessage({
       command: 'updateStockRemind',
       data: cfg,
     });
+  };
+  events.on('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
+
+  panel.onDidDispose(() => {
+    offUpdateStockList();
+    events.off('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
+    _INITED = false;
   });
 }
 
