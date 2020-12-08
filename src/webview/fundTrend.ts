@@ -42,6 +42,33 @@ function fundTrend(code: string, name: string) {
     margin-bottom:30px;
     width:100%;
   }
+  body.vscode-dark img.fund-sstrend,
+  body.vscode-high-contrast img.fund-sstrend {
+    filter: invert(1);
+  }
+  body.vscode-dark .highcharts-background,
+  body.vscode-high-contrast .highcharts-background {
+    fill: var(--vscode-editor-background);
+  }
+  body.vscode-dark .highcharts-title,
+  body.vscode-high-contrast .highcharts-title,
+  body.vscode-dark .highcharts-axis-labels text,
+  body.vscode-high-contrast .highcharts-axis-labels text,
+  body.vscode-dark .highcharts-button text,
+  body.vscode-high-contrast .highcharts-button text,
+  body.vscode-dark .highcharts-range-selector-buttons .highcharts-button text,
+  body.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button text {
+    fill: var(--vscode-editor-foreground) !important;
+  }
+  body.vscode-dark .highcharts-range-selector-buttons .highcharts-button rect,
+  body.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button rect {
+    fill: var(--vscode-editor-selectionHighlightBackground);
+  }
+  body.vscode-dark #grandTotalCharsWrap .highcharts-range-selector,
+  body.vscode-high-contrast #grandTotalCharsWrap .highcharts-range-selector {
+    background: #333;
+    color: var(--vscode-editor-foreground);
+  }
   </style>
   <script src="http://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=${new Date().getTime()}"></script>
   <script src="http://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=${new Date().getTime()}"></script>
@@ -132,6 +159,7 @@ function fundTrend(code: string, name: string) {
           $('#netWorthTrend').highcharts('StockChart', {
             chart: {
               marginRight: 20,
+              styledMode: true
             },
             title: {
               text: '「${name}」单位净值走势'
@@ -343,6 +371,7 @@ function fundTrend(code: string, name: string) {
         $('#grandTotalCharsWrap').highcharts('StockChart', {
           chart: {
             marginRight: 20,
+            styledMode: true
           },
           title: {
             text: '「${name}」累计收益率走势'
