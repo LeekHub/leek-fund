@@ -36,15 +36,18 @@ function setStocksRemind(stockList: Array<LeekTreeItem>) {
     data: globalState.stocksRemind,
   });
   const offUpdateStockList = updateStockList(panel.webview, stockList);
-  panel.onDidDispose(() => {
-    offUpdateStockList();
-  });
 
-  events.on('updateConfig:leek-fund.stocksRemind', (cfg) => {
+  const updateWebViewCfg = (cfg: Object) => {
     panel.webview.postMessage({
       command: 'updateStockRemind',
       data: cfg,
     });
+  };
+  events.on('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
+
+  panel.onDidDispose(() => {
+    offUpdateStockList();
+    events.off('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
   });
 }
 
