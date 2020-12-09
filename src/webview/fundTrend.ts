@@ -76,7 +76,7 @@ function fundTrend(code: string, name: string) {
   <body>
     <br/>
     <div style="text-align: right;">
-      <label for="immersive">沉浸式背景（仅对暗色主题生效）<input id="immersive" type="checkbox"/></label>
+      <label for="immersive">沉浸式背景（仅适配暗色主题）<input id="immersive" type="checkbox"/></label>
     </div>
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
     <div class="trend"><img
@@ -508,15 +508,11 @@ function fundTrend(code: string, name: string) {
       const vscode = acquireVsCodeApi();
       const previousState = vscode.getState();
       let isChecked = previousState ? previousState.isChecked : false;
-      if (isChecked) {
-        $('body').addClass('require-immersive')
-      } else {
-        $('body').removeClass('require-immersive')
-      }
+      $('body').toggleClass('require-immersive', isChecked)
       $('#immersive').prop('checked', isChecked)
       $('#immersive').on('click', function() {
         isChecked = $(this).prop('checked')
-        isChecked ? $('body').addClass('require-immersive') : $('body').removeClass('require-immersive')
+        $('body').toggleClass('require-immersive', isChecked)
         vscode.setState({ isChecked })
       })
     </script>
