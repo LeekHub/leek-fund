@@ -42,12 +42,42 @@ function fundTrend(code: string, name: string) {
     margin-bottom:30px;
     width:100%;
   }
+  body.require-immersive.vscode-dark img.fund-sstrend,
+  body.require-immersive.vscode-high-contrast img.fund-sstrend {
+    filter: invert(1);
+  }
+  body.require-immersive.vscode-dark .highcharts-background,
+  body.require-immersive.vscode-high-contrast .highcharts-background {
+    fill: var(--vscode-editor-background);
+  }
+  body.require-immersive.vscode-dark .highcharts-title,
+  body.require-immersive.vscode-high-contrast .highcharts-title,
+  body.require-immersive.vscode-dark .highcharts-axis-labels text,
+  body.require-immersive.vscode-high-contrast .highcharts-axis-labels text,
+  body.require-immersive.vscode-dark .highcharts-button text,
+  body.require-immersive.vscode-high-contrast .highcharts-button text,
+  body.require-immersive.vscode-dark .highcharts-range-selector-buttons .highcharts-button text,
+  body.require-immersive.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button text {
+    fill: var(--vscode-editor-foreground) !important;
+  }
+  body.require-immersive.vscode-dark .highcharts-range-selector-buttons .highcharts-button rect,
+  body.require-immersive.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button rect {
+    fill: var(--vscode-editor-selectionHighlightBackground);
+  }
+  body.require-immersive.vscode-dark #grandTotalCharsWrap .highcharts-range-selector,
+  body.require-immersive.vscode-high-contrast #grandTotalCharsWrap .highcharts-range-selector {
+    background: #333;
+    color: var(--vscode-editor-foreground);
+  }
   </style>
   <script src="http://j5.dfcfw.com/libs/jquery/1.8.3/jquery.min.js?v=${new Date().getTime()}"></script>
   <script src="http://j5.dfcfw.com/js/pinzhong/highstock201602_20161116195237.js?v=${new Date().getTime()}"></script>
   <script src="http://fund.eastmoney.com/pingzhongdata/${code}.js?v=${new Date().getTime()}"></script>
   <body>
     <br/>
+    <div style="text-align: right;">
+      <label for="immersive">沉浸式背景（仅适配暗色主题）<input id="immersive" type="checkbox"/></label>
+    </div>
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
     <div class="trend"><img
       class="fund-sstrend"
@@ -132,6 +162,7 @@ function fundTrend(code: string, name: string) {
           $('#netWorthTrend').highcharts('StockChart', {
             chart: {
               marginRight: 20,
+              styledMode: true
             },
             title: {
               text: '「${name}」单位净值走势'
@@ -343,6 +374,7 @@ function fundTrend(code: string, name: string) {
         $('#grandTotalCharsWrap').highcharts('StockChart', {
           chart: {
             marginRight: 20,
+            styledMode: true
           },
           title: {
             text: '「${name}」累计收益率走势'
@@ -471,6 +503,18 @@ function fundTrend(code: string, name: string) {
       }
       defineNetWorthTrend.prototype.init(Data_netWorthTrend);
       addGrandTotalMap(Data_grandTotal, 'y');
+    </script>
+    <script>
+      const vscode = acquireVsCodeApi();
+      const previousState = vscode.getState();
+      let isChecked = previousState ? previousState.isChecked : false;
+      $('body').toggleClass('require-immersive', isChecked)
+      $('#immersive').prop('checked', isChecked)
+      $('#immersive').on('click', function() {
+        isChecked = $(this).prop('checked')
+        $('body').toggleClass('require-immersive', isChecked)
+        vscode.setState({ isChecked })
+      })
     </script>
   </body></html>`;
 }
