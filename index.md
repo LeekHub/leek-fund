@@ -60,7 +60,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 ## 安装使用
 
-安装插件：[VisualStudio | Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，VSCode 最低版本要求：`v1.40.0+`
+安装插件：[VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)，VSCode 最低版本要求：`v1.40.0+`
 
 ## 插件介绍
 
