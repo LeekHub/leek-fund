@@ -42,30 +42,30 @@ function fundTrend(code: string, name: string) {
     margin-bottom:30px;
     width:100%;
   }
-  body.vscode-dark img.fund-sstrend,
-  body.vscode-high-contrast img.fund-sstrend {
+  body.require-immersive.vscode-dark img.fund-sstrend,
+  body.require-immersive.vscode-high-contrast img.fund-sstrend {
     filter: invert(1);
   }
-  body.vscode-dark .highcharts-background,
-  body.vscode-high-contrast .highcharts-background {
+  body.require-immersive.vscode-dark .highcharts-background,
+  body.require-immersive.vscode-high-contrast .highcharts-background {
     fill: var(--vscode-editor-background);
   }
-  body.vscode-dark .highcharts-title,
-  body.vscode-high-contrast .highcharts-title,
-  body.vscode-dark .highcharts-axis-labels text,
-  body.vscode-high-contrast .highcharts-axis-labels text,
-  body.vscode-dark .highcharts-button text,
-  body.vscode-high-contrast .highcharts-button text,
-  body.vscode-dark .highcharts-range-selector-buttons .highcharts-button text,
-  body.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button text {
+  body.require-immersive.vscode-dark .highcharts-title,
+  body.require-immersive.vscode-high-contrast .highcharts-title,
+  body.require-immersive.vscode-dark .highcharts-axis-labels text,
+  body.require-immersive.vscode-high-contrast .highcharts-axis-labels text,
+  body.require-immersive.vscode-dark .highcharts-button text,
+  body.require-immersive.vscode-high-contrast .highcharts-button text,
+  body.require-immersive.vscode-dark .highcharts-range-selector-buttons .highcharts-button text,
+  body.require-immersive.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button text {
     fill: var(--vscode-editor-foreground) !important;
   }
-  body.vscode-dark .highcharts-range-selector-buttons .highcharts-button rect,
-  body.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button rect {
+  body.require-immersive.vscode-dark .highcharts-range-selector-buttons .highcharts-button rect,
+  body.require-immersive.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button rect {
     fill: var(--vscode-editor-selectionHighlightBackground);
   }
-  body.vscode-dark #grandTotalCharsWrap .highcharts-range-selector,
-  body.vscode-high-contrast #grandTotalCharsWrap .highcharts-range-selector {
+  body.require-immersive.vscode-dark #grandTotalCharsWrap .highcharts-range-selector,
+  body.require-immersive.vscode-high-contrast #grandTotalCharsWrap .highcharts-range-selector {
     background: #333;
     color: var(--vscode-editor-foreground);
   }
@@ -75,6 +75,9 @@ function fundTrend(code: string, name: string) {
   <script src="http://fund.eastmoney.com/pingzhongdata/${code}.js?v=${new Date().getTime()}"></script>
   <body>
     <br/>
+    <div style="text-align: right;">
+      <label for="immersive">沉浸式背景（仅对暗色主题生效）<input id="immersive" type="checkbox"/></label>
+    </div>
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
     <div class="trend"><img
       class="fund-sstrend"
@@ -500,6 +503,22 @@ function fundTrend(code: string, name: string) {
       }
       defineNetWorthTrend.prototype.init(Data_netWorthTrend);
       addGrandTotalMap(Data_grandTotal, 'y');
+    </script>
+    <script>
+      const vscode = acquireVsCodeApi();
+      const previousState = vscode.getState();
+      let isChecked = previousState ? previousState.isChecked : false;
+      if (isChecked) {
+        $('body').addClass('require-immersive')
+      } else {
+        $('body').removeClass('require-immersive')
+      }
+      $('#immersive').prop('checked', isChecked)
+      $('#immersive').on('click', function() {
+        isChecked = $(this).prop('checked')
+        isChecked ? $('body').addClass('require-immersive') : $('body').removeClass('require-immersive')
+        vscode.setState({ isChecked })
+      })
     </script>
   </body></html>`;
 }
