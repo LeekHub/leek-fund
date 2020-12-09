@@ -1,8 +1,15 @@
 # ChangeLog
 
+## [1.7.7]
+
+- feat: 基金详情图表支持黑色背景模式 @laampui
+- fix: 基金涨跌排序切换失效的问题 @wujunchuan
+- fix: 股票提醒设置不起作用 bug @zqjimlove
+- chore: 配置 2021 年香港和美股放假时间 @iporer
+
 ## [1.7.6]
 
-- feat: 新增对数字货币行情的简单支持
+- feat: 新增对数字货币行情的简单支持 @wujunchuan
 
 ## [1.7.5]
 

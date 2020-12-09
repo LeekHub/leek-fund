@@ -507,7 +507,7 @@ function fundTrend(code: string, name: string) {
     <script>
       const vscode = acquireVsCodeApi();
       const previousState = vscode.getState();
-      let isChecked = previousState ? previousState.isChecked : false;
+      let isChecked = previousState ? previousState.isChecked : true;
       $('body').toggleClass('require-immersive', isChecked)
       $('#immersive').prop('checked', isChecked)
       $('#immersive').on('click', function() {

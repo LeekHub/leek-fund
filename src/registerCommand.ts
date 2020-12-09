@@ -33,7 +33,7 @@ export function registerViewEvent(
   fundProvider: FundProvider,
   stockProvider: StockProvider,
   newsProvider: NewsProvider,
-  binanceProvider: BinanceProvider
+  binanceProvider?: BinanceProvider
 ) {
   const leekModel = new LeekFundConfig();
   const newsService = new NewsService();
@@ -256,7 +256,7 @@ export function registerViewEvent(
    * Binance command
    */
   commands.registerCommand('leek-fund.refreshBinance', () => {
-    binanceProvider.refresh();
+    binanceProvider?.refresh();
   });
 
   /* 添加交易对 */
@@ -264,21 +264,21 @@ export function registerViewEvent(
     const pairsList = await binanceService.getParis();
     window.showQuickPick(pairsList, { placeHolder: '请输入交易对' }).then((pair) => {
       if (!pair) return;
-      LeekFundConfig.updateBinanceCfg(pair, () => binanceProvider.refresh());
+      LeekFundConfig.updateBinanceCfg(pair, () => binanceProvider?.refresh());
     });
   });
 
   /* 删除交易对 */
   commands.registerCommand('leek-fund.deletePair', (target) => {
     LeekFundConfig.removeBinanceCfg(target.id, () => {
-      binanceProvider.refresh();
+      binanceProvider?.refresh();
     });
   });
 
   /* 交易对置顶 */
   commands.registerCommand('leek-fund.setPairTop', (target) => {
     LeekFundConfig.setBinanceTopCfg(target.id, () => {
-      binanceProvider.refresh();
+      binanceProvider?.refresh();
     });
   });
   /**

@@ -139,7 +139,7 @@ export function activate(context: ExtensionContext) {
         }
       },
       // intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
-      60000 // 该功能有，有bug这里故意设置长时间
+      300000 // 该功能纯在网络问题（有vpn都无法请求通），这里故意设置长时间
     );
   };
 
