@@ -3,8 +3,6 @@
 
 # leek-fund（韭菜盒子）
 
-<iframe src="https://ghbtns.com/github-btn.html?user=LeekHub&repo=leek-fund&type=star&count=true&size=large" frameborder="0" scrolling="0" width="170" height="30" title="GitHub"></iframe>
-
 **韭菜盒子**——VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件。
 
 Leek box - VSCode can also see the real-time data of stock & fund, do the most useful investment plug-in
