@@ -1,11 +1,11 @@
-import { StatusBarAlignment, StatusBarItem, window, Command } from 'vscode';
+import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import FundService from '../explorer/fundService';
+import StockService from '../explorer/stockService';
+import globalState from '../globalState';
+import { DEFAULT_LABEL_FORMAT } from '../shared/constant';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import StockService from '../explorer/stockService';
-import FundService from '../explorer/fundService';
-import { events, formatLabelString } from '../shared/utils';
-import { DEFAULT_LABEL_FORMAT } from '../shared/constant';
-import globalState from '../globalState';
+import { formatLabelString } from '../shared/utils';
 
 export class StatusBar {
   private stockService: StockService;
@@ -78,15 +78,15 @@ export class StatusBar {
       }
     }
     barStockList.forEach((stock, index) => {
-      this.udpateBarInfo(this.statusBarList[index], stock);
+      this.updateBarInfo(this.statusBarList[index], stock);
     });
   }
 
-  udpateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
+  updateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
     if (!item) {
       return;
     }
-    const { type, symbol, price, percent, open, yestclose, high, low, updown } = item.info;
+    const { name, type, symbol, price, percent, open, yestclose, high, low, updown } = item.info;
     const deLow = percent.indexOf('-') === -1;
     /* stockBarItem.text = `「${this.stockService.showLabel ? item.info.name : item.id}」${price}  ${
       deLow ? '📈' : '📉'
@@ -97,13 +97,9 @@ export class StatusBar {
       icon: deLow ? '📈' : '📉',
     });
 
-    stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
+    stockBarItem.tooltip = `【今日行情】${type}${symbol} ${name}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     stockBarItem.color = deLow ? this.riseColor : this.fallColor;
-    stockBarItem.command = {
-      title: 'Change stock',
-      command: 'leek-fund.changeStatusBarItem',
-      arguments: [item.id],
-    };
+    stockBarItem.command = 'leek-fund.changeStatusBarItem';
     stockBarItem.show();
     return stockBarItem;
   }
