@@ -1,6 +1,6 @@
 import { commands, window } from 'vscode';
 import globalState from '../globalState';
-import { setStocksRemindCfgCb } from '../webview/setStocksRemind';
+import { setStocksRemindCfgCb } from '../webview/leekCenterView';
 import { LeekTreeItem } from './leekTreeItem';
 import { FundInfo } from './typed';
 import { multi1000 } from './utils';
@@ -36,7 +36,7 @@ export function executeStocksRemind(
 
         // 如果用 info.updown（当前-昨收） 有可能导致股价从高位回落也上涨触发提醒，或高位回落不下跌不提醒。
         // 所以改由 当前 - 上次
-        const currentUpdown = currentPrice - oldPrice > 0 ? 1 : -1;
+        const currentUpdown = currentPrice - oldPrice >= 0 ? 1 : -1;
 
         const remindConfig = stocksRemind[info.code];
         const remindPrices: string[] = remindConfig.price;

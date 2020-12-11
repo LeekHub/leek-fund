@@ -4,7 +4,14 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
+import {
+  ConfigurationChangeEvent,
+  ExtensionContext,
+  TreeView,
+  window,
+  workspace,
+  authentication,
+} from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
 import { FundProvider } from './explorer/fundProvider';
@@ -20,7 +27,7 @@ import { SortType } from './shared/typed';
 import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
-import { cacheStocksRemindData } from './webview/setStocksRemind';
+import { cacheStocksRemindData } from './webview/leekCenterView';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;

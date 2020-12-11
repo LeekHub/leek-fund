@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimal-ui, initial-scale=1, maximum-scale=1, minimum-scale=1"
+    />
+    <title>韭菜盒子</title>
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
+      rel="stylesheet"
+    />
+    <!-- style assets -->
+  </head>
+
+  <body ontouchstart>
+    <div class="el-container is-vertical">
+      <header class="el-header">
+        <h2 id="title">韭菜中心</h2>
+      </header>
+      <div class="el-main">
+        <div class="el-container">
+          <aside
+            style="border-right: 5px solid #3e4451; padding-top: 5px"
+            class="el-aside"
+          >
+            <ul id="treeList" class="stocks"></ul>
+          </aside>
+          <main class="main">
+            <div class="main__hd">
+              <div class="info">
+                <div id="currentStockName" class="stock-name"></div>
+                <div id="currentStockNum" class="stock-num"></div>
+              </div>
+              <div class="button-group">
+                <button
+                  id="appendRemindBtn"
+                  class="el-button el-button--primary el-button--mini"
+                >
+                  添加预警
+                </button>
+              </div>
+            </div>
+            <div class="main__bd">
+              <!-- <div class="remind">
+                就是这样的字的 <input class="remind-input" type="text" /> 踢开
+              </div> -->
+              <div
+                class="el-row"
+                style="margin-left: -10px; margin-right: -10px; height: 100%"
+              >
+                <div class="el-col el-col-sm-12 el-col-md-8 el-col-xl-6">
+                  <h3>价格预警</h3>
+                  <div style="overflow: hidden">
+                    <div class="reminds-box">
+                      <div id="remindFields"></div>
+                      <div class="add-remind-form">
+                        <div style="font-size: 110%; margin-bottom: 10px">
+                          添加新的预警
+                        </div>
+                        <form style="padding-bottom: 20px" id="newRemindForm">
+                          <label class="d-input">
+                            <span class="label">价格上涨到</span>
+                            <input value="" type="text" name="price1" />
+                            <span class="unit">元</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">价格下跌到</span>
+                            <input value="" type="text" name="price0" />
+                            <span class="unit">元</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">日涨幅达</span>
+                            <input value="" type="text" name="percent1" />
+                            <span class="unit">%</span>
+                          </label>
+                          <label class="d-input">
+                            <span class="label">日跌幅达</span>
+                            <input value="" type="text" name="percent0" />
+                            <span class="unit">%</span>
+                          </label>
+                          <div style="padding-bottom: 100px">
+                            <button
+                              type="submit"
+                              class="el-button el-button--primary el-button--mini"
+                            >
+                              保存
+                            </button>
+                            <button
+                              id="cancelAppendRemindBtn"
+                              type="button"
+                              class="el-button el-button--mini"
+                            >
+                              取消
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  id="gitalk-container"
+                  class="el-col el-col-sm-12 el-col-md-16 el-col-xl-18"
+                ></div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/html" id="stockItemTpl">
+      <li class="stock-item">
+        <span class="label">名称</span>
+        <span class="price">最新价</span>
+        <span class="count">提醒数量</span>
+      </li>
+      <!-- {{if fundList.length>0}} -->
+      <li class="division">基金</li>
+      <!-- {{each fundList}} -->
+      <li
+        data-id="{{$value.id}}"
+        data-info="{{$value.info}}"
+        data-type="fund"
+        class="stock-item"
+      >
+        <span class="label">{{$value.info.name}}({{$value.info.code}})</span>
+        <span class="price">{{$value.info.price}}</span>
+        <span class="count {{ if $value.remindCount}}has{{/if}}"
+          >{{$value.remindCount || 0}}</span
+        >
+      </li>
+      <!-- {{/each}} -->
+      <!-- {{/if}} -->
+      <!-- {{if stockList.length>0}} -->
+      <li class="division">个股</li>
+      <!-- {{each stockList}} -->
+      <li
+        data-id="{{$value.id}}"
+        data-info="{{$value.info}}"
+        data-type="stock"
+        class="stock-item"
+      >
+        <span class="label">{{$value.info.name}}({{$value.info.code}})</span>
+        <span class="price">{{$value.info.price}}</span>
+        <span class="count {{ if $value.remindCount}}has{{/if}}"
+          >{{$value.remindCount || 0}}</span
+        >
+      </li>
+      <!-- {{/each}} -->
+      <!-- {{/if}} -->
+    </script>
+
+    <script type="text/html" id="remindFieldTpl">
+      <!-- {{each data}} -->
+      <label
+        id="field_{{type}}_{{$index}}"
+        for="field_{{type}}_{{$index}}-input"
+        class="d-input"
+      >
+        <span class="label">{{type | remindLabel $value}}</span>
+        <input
+          data-type="{{type}}"
+          data-index="{{$index}}"
+          data-remind-type="{{$value | remindType}}"
+          value="{{$value | formatRemindValue}}"
+          id="field_{{type}}_{{$index}}-input"
+          type="text"
+        />
+        <span class="unit">{{unit}}</span>
+        <span
+          data-type="{{type}}"
+          data-index="{{$index}}"
+          alt="删除"
+          title="删除"
+          class="remove"
+          >&times;</span
+        >
+      </label>
+      <!-- {{/each}} -->
+    </script>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/art-template/4.13.2/lib/template-web.min.js"></script>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.20/lodash.min.js"></script>
+    <!-- script assets -->
+  </body>
+</html>
