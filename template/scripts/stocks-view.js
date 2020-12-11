@@ -71,6 +71,10 @@ const Talker = {
         isIniting: true,
       },
       () => {
+        // TODO: 弱网问题的话，目前的交互方式基本只有两个解决方案了：
+        // 1、初始化遮罩层，左侧的基金和股票在gitalk初始化过程中不能操作
+        // 2、不用遮罩层，使用取消上一次请求的方案
+        // 简单看了一下gitalk源码，是axios请求支持取消操作，可以试试取消上一次请求。
         this.gitalk
           .getIssue()
           .then((issue) => this.gitalk.getComments(issue))
