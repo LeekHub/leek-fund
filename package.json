@@ -519,6 +519,11 @@
             "sidebarFundLabelFormat": "${icon|padRight|4}${percent|padRight}「${name}」${earnings} ${time}"
           },
           "description": "修改底部状态栏、侧栏的显示格式。\n"
+        },
+        "leek-fund.immersiveBackground": {
+          "type": "boolean",
+          "default": true,
+          "description": "沉浸式背景（仅适配暗色主题）"
         }
       }
     },

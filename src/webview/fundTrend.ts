@@ -1,7 +1,8 @@
-import { ViewColumn } from 'vscode';
+import { commands, ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
+import globalState from '../globalState';
 
-function fundTrend(code: string, name: string) {
+function fundTrend(code: string, name: string, immersiveBackground: boolean = globalState.immersiveBackground) {
   const panel = ReusedWebviewPanel.create(
     'fundTrendWebview',
     `基金实时走势(${code})`,
@@ -9,6 +10,15 @@ function fundTrend(code: string, name: string) {
     {
       enableScripts: true,
       retainContextWhenHidden: true,
+    }
+  );
+  // Handle messages from the webview
+  panel.webview.onDidReceiveMessage(
+    message => {
+      switch (message.name) {
+        case 'immersiveBackground':
+          commands.executeCommand('leek-fund.immersiveBackground', message.value);
+      }
     }
   );
   panel.webview.html = `<html>
@@ -51,12 +61,12 @@ function fundTrend(code: string, name: string) {
     fill: var(--vscode-editor-background);
   }
   body.require-immersive.vscode-dark .highcharts-title,
-  body.require-immersive.vscode-high-contrast .highcharts-title,
   body.require-immersive.vscode-dark .highcharts-axis-labels text,
-  body.require-immersive.vscode-high-contrast .highcharts-axis-labels text,
   body.require-immersive.vscode-dark .highcharts-button text,
-  body.require-immersive.vscode-high-contrast .highcharts-button text,
   body.require-immersive.vscode-dark .highcharts-range-selector-buttons .highcharts-button text,
+  body.require-immersive.vscode-high-contrast .highcharts-title,
+  body.require-immersive.vscode-high-contrast .highcharts-axis-labels text,
+  body.require-immersive.vscode-high-contrast .highcharts-button text,
   body.require-immersive.vscode-high-contrast .highcharts-range-selector-buttons .highcharts-button text {
     fill: var(--vscode-editor-foreground) !important;
   }
@@ -505,16 +515,17 @@ function fundTrend(code: string, name: string) {
       addGrandTotalMap(Data_grandTotal, 'y');
     </script>
     <script>
+    {
       const vscode = acquireVsCodeApi();
-      const previousState = vscode.getState();
-      let isChecked = previousState ? previousState.isChecked : true;
-      $('body').toggleClass('require-immersive', isChecked)
-      $('#immersive').prop('checked', isChecked)
+      let isChecked = ${immersiveBackground};
+      $('body').toggleClass('require-immersive', isChecked);
+      $('#immersive').prop('checked', isChecked);
       $('#immersive').on('click', function() {
-        isChecked = $(this).prop('checked')
-        $('body').toggleClass('require-immersive', isChecked)
-        vscode.setState({ isChecked })
-      })
+        isChecked = $(this).prop('checked');
+        $('body').toggleClass('require-immersive', isChecked);
+        vscode.postMessage({ name: 'immersiveBackground', value: isChecked });
+      });
+    };
     </script>
   </body></html>`;
 }
