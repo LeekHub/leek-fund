@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.8.0]
+
+- feat: 新增韭菜讨论中心，支持基金和股票评论 🚀 :rocket: @zqjimlove
+
 ## [1.7.7]
 
 - feat: 基金详情图表支持黑色背景模式 @laampui
