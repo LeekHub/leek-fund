@@ -186,6 +186,8 @@ function setGlobalVariable() {
   globalState.remindSwitch = remindSwitch;
 
   globalState.labelFormat = LeekFundConfig.getConfig('leek-fund.labelFormat');
+
+  globalState.immersiveBackground = LeekFundConfig.getConfig('leek-fund.immersiveBackground', true);
 }
 
 // this method is called when your extension is deactivated

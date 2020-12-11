@@ -483,5 +483,12 @@ export function registerViewEvent(
     })
   );
 
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.immersiveBackground', (isChecked: boolean) => {
+      LeekFundConfig.setConfig('leek-fund.immersiveBackground', isChecked);
+      globalState.immersiveBackground = isChecked;
+    })
+  );
+
   checkForUpdate();
 }
