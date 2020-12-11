@@ -22,7 +22,7 @@ import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
-import setStockRemind from './webview/setStocksRemind';
+import leekCenterView from './webview/leekCenterView';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
 
@@ -90,12 +90,12 @@ export function registerViewEvent(
       stockProvider.refresh();
     });
   });
-  commands.registerCommand('leek-fund.setStockRemind', (stock) => {
-    if (stockService.stockList.length === 0) {
+  commands.registerCommand('leek-fund.leekCenterView', () => {
+    /* if (stockService.stockList.length === 0) {
       window.showWarningMessage('数据刷新中，请重试！');
       return;
-    }
-    setStockRemind(stockService.stockList);
+    } */
+    leekCenterView(stockService, fundService);
   });
   commands.registerCommand('leek-fund.addStock', () => {
     // vscode QuickPick 不支持动态查询，只能用此方式解决

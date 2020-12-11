@@ -8,6 +8,7 @@ import {
   randHeader,
   sortData,
   toFixed,
+  events,
 } from '../shared/utils';
 import { LeekService } from './leekService';
 
@@ -79,6 +80,7 @@ export default class FundService extends LeekService {
       });
 
       this.fundList = sortData(data, order);
+      events.emit('fundListUpdate', this.fundList);
       return this.fundList;
     } catch (err) {
       console.log(err);

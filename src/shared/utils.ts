@@ -6,6 +6,7 @@ import { SortType, StockCategory } from './typed';
 import * as path from 'path';
 import * as fs from 'fs';
 import { EventEmitter } from 'events';
+import * as vscode from 'vscode';
 
 const stockTimes = allStockTimes();
 
@@ -393,10 +394,23 @@ export function isHoliday(market: string): boolean {
   return false;
 }
 
-export function getTemplateFileContent(tplName: string) {
+export function getTemplateFileContent(
+  tplName: string,
+  scripts: vscode.Uri[] = [],
+  styles: vscode.Uri[] = []
+) {
   const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
   const html = fs.readFileSync(tplPath, 'utf-8');
-  return html;
+  return html
+    .replace(
+      '<!-- style assets -->',
+      styles.map((item) => `<link href="${item}" rel="stylesheet">`).join('\n')
+    )
+    .replace(
+      '<!-- script assets -->',
+      scripts.map((item) => `<script src="${item}"></script>`).join('\n')
+    );
+
 }
 
 export function multi1000(n: number) {
@@ -424,4 +438,16 @@ export function formatLabelString(str: string, params: Record<string, any>) {
     return '模板格式错误！';
   }
   return str;
+}
+
+export function getWebviewResourcesUrl(
+  webview: vscode.Webview,
+  _extensionUri: vscode.Uri,
+  args: string[][]
+) {
+  return args.map((arg) => {
+    return webview.asWebviewUri(
+      vscode.Uri.parse(path.join(_extensionUri.toString(), 'template', ...arg))
+    );
+  });
 }

@@ -1,0 +1,203 @@
+import { commands, Uri, ViewColumn, Webview, window, authentication } from 'vscode';
+import { LeekTreeItem } from '../shared/leekTreeItem';
+import globalState from '../globalState';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { getTemplateFileContent, getWebviewResourcesUrl } from '../shared/utils';
+import { events } from '../shared/utils';
+import { LeekFundConfig } from '../shared/leekConfig';
+import StockService from '../explorer/stockService';
+
+import { EventEmitter } from 'events';
+import FundService from '../explorer/fundService';
+
+let _INITED = false;
+
+let panelEvents: EventEmitter;
+
+function leekCenterView(stockService: StockService, fundServices: FundService) {
+  if (_INITED) return;
+  _INITED = true;
+  panelEvents = new EventEmitter();
+
+  const panel = ReusedWebviewPanel.create('setAmountWebview', `韭菜中心`, ViewColumn.One, {
+    enableScripts: true,
+    retainContextWhenHidden: true,
+  });
+
+  const _getWebviewResourcesUrl = (arr: string[][]): Uri[] => {
+    return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
+  };
+
+  panel.webview.html = getTemplateFileContent(
+    'stocks-view.html',
+    _getWebviewResourcesUrl([
+      ['vendors', 'gitalk.min.js'],
+      ['scripts', 'stocks-view.js'],
+    ]),
+    _getWebviewResourcesUrl([
+      ['vendors', 'gitalk.css'],
+      ['styles', 'stocks-view.css'],
+    ])
+  );
+
+  panel.webview.onDidReceiveMessage((message) => {
+    panelEvents.emit('onDidReceiveMessage', message);
+    switch (message.command) {
+      case 'alert':
+        window.showErrorMessage(message.message);
+        return;
+      case 'fail':
+        window.showErrorMessage('保存失败！');
+        return;
+      case 'pageReady':
+        panelEvents.emit('pageReady');
+        return;
+    }
+  }, undefined);
+
+  setList(panel.webview, panelEvents, stockService.stockList, fundServices.fundList);
+  setStocksRemind(panel.webview, panelEvents);
+  setDiscussions(panel.webview, panelEvents);
+  panel.onDidDispose(() => {
+    panelEvents.emit('onDidDispose');
+    _INITED = false;
+  });
+}
+
+function setStocksRemind(webview: Webview, panelEvents: EventEmitter) {
+  // console.log('stockList: ', stockList);
+
+  panelEvents.on('onDidReceiveMessage', (message) => {
+    switch (message.command) {
+      case 'saveRemind':
+        console.log(JSON.parse(message.data));
+        setStocksRemindCfgCb(JSON.parse(message.data));
+        return;
+    }
+  });
+
+  panelEvents.on('pageReady', () => {
+    webview.postMessage({
+      command: 'updateStockRemind',
+      data: globalState.stocksRemind,
+    });
+  });
+
+  const updateWebViewCfg = (cfg: Object) => {
+    webview.postMessage({
+      command: 'updateStockRemind',
+      data: cfg,
+    });
+  };
+  events.on('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
+
+  panelEvents.on('onDidDispose', () => {
+    events.off('updateConfig:leek-fund.stocksRemind', updateWebViewCfg);
+  });
+}
+
+function setDiscussions(webview: Webview, panelEvents: EventEmitter) {
+  function login(slient = true) {
+    return getGithubToken(slient).then((res) => {
+      if (res) {
+        webview.postMessage({
+          command: 'setGithubAccessToken',
+          data: res,
+        });
+      }
+    });
+  }
+
+  panelEvents.on('pageReady', () => {
+    login().then(() => {
+      webview.postMessage({
+        command: 'talkerReady',
+      });
+    });
+  });
+
+  panelEvents.on('onDidReceiveMessage', (message) => {
+    switch (message.command) {
+      case 'loginGithub':
+        console.log('loginGithub');
+        login(false).then(() => {
+          webview.postMessage({
+            command: 'githubLoginSuccess',
+          });
+        });
+        return;
+    }
+  });
+}
+
+function setList(
+  webview: Webview,
+  panelEvents: EventEmitter,
+  stockList: Array<LeekTreeItem>,
+  fundList: Array<LeekTreeItem>
+) {
+  const postListFactory = (command: string) => (data: Array<LeekTreeItem>) => {
+    webview.postMessage({
+      command,
+      data,
+    });
+  };
+  /**
+   * 更新列表数据
+   * @param webview
+   * @param defaultStockList
+   */
+  function updateStockList(webview: Webview, defaultStockList: Array<LeekTreeItem>) {
+    const postStockList = postListFactory('updateStockList');
+    postStockList(defaultStockList);
+    events.on('stockListUpdate', postStockList);
+    return () => {
+      events.off('stockListUpdate', postStockList);
+    };
+  }
+
+  function updateFundList(webview: Webview, defaultStockList: Array<LeekTreeItem>) {
+    const postFundList = postListFactory('updateFundList');
+    postFundList(defaultStockList);
+    events.on('fundListUpdate', postFundList);
+    return () => {
+      events.off('fundListUpdate', postFundList);
+    };
+  }
+
+  const offUpdateStockList = updateStockList(webview, stockList);
+  const offUpdateFundList = updateFundList(webview, fundList);
+  panelEvents.on('onDidDispose', () => {
+    offUpdateStockList();
+    offUpdateFundList();
+  });
+}
+
+function getGithubToken(slient = true) {
+  if (!authentication) {
+    window.showErrorMessage('当前vscode版本过低，请升级vscode');
+  }
+  return authentication
+    .getSession('github', ['read:user', 'user:email', 'public_repo'], { createIfNone: !slient })
+    .then((res) => {
+      return res?.accessToken ?? null;
+    });
+}
+
+export function setStocksRemindCfgCb(cfg: Object) {
+  LeekFundConfig.setConfig('leek-fund.stocksRemind', cfg).then(
+    () => {
+      window.showInformationMessage('保存成功！');
+      cacheStocksRemindData(cfg);
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
+}
+
+export function cacheStocksRemindData(remindObj: Object) {
+  globalState.stocksRemind = remindObj;
+}
+
+export default leekCenterView;
