@@ -16,13 +16,19 @@ function vscode_alert(msg) {
 
 const Talker = {
   options: {},
+  _threadId: 0,
+  _createIssueLockMap: {},
+  _currentTask: null,
+  _nextTask: null,
   _initGitalk() {
     if (!this.ready || !this.options.id) return;
     $('#gitalk-container').html('');
     let _gitalk = new Gitalk({
       clientID: '',
       clientSecret: '',
+      // repo: 'gittalk-demo', // The repository of store comments,
       repo: 'leek-discussions', // The repository of store comments,
+      // owner: 'zqjimlove',
       owner: 'LeekHub',
       admin: ['zqjimlove'],
       id: this.options.id || 'SH000001', // Ensure uniqueness and length less than 50
@@ -31,6 +37,7 @@ const Talker = {
       title: this.options.title,
       body: this.options.body,
       checkAdmin: false,
+      createIssueManually: false,
       labels: this.options.labels || ['discussions', 'stock'],
       handleLogin: () => {
         vscode.postMessage({
@@ -47,7 +54,6 @@ const Talker = {
       const info = JSON.parse(dataset.info);
       const type = dataset.type;
       this._changeGitalkOption(info, type);
-      console.log('info: ', info);
     });
   },
   _changeGitalkOption(stockInfo, type = 'stock') {
@@ -57,40 +63,86 @@ const Talker = {
       body: '和气生财，友善发言',
       labels: ['discussions', type],
     };
-    /* if (!this.gitalk && !this.gitalk.state.user) return;
-    if (!this.gitalk && this.gitalk.state.user) return this._initGitalk(); */
     if (!this.gitalk) return this._initGitalk();
     if (!this.gitalk.state.user) return;
-    this.gitalk.options = Object.assign({}, this.gitalk.options, this.options);
-    this.gitalk.setState(
-      {
-        comments: [],
-        isLoadOver: false,
-        page: 1,
-        issue: null,
-        isIniting: true,
-      },
-      () => {
-        // TODO: 弱网问题的话，目前的交互方式基本只有两个解决方案了：
-        // 1、初始化遮罩层，左侧的基金和股票在gitalk初始化过程中不能操作
-        // 2、不用遮罩层，使用取消上一次请求的方案
-        // 简单看了一下gitalk源码，是axios请求支持取消操作，可以试试取消上一次请求。
-        this.gitalk
-          .getIssue()
-          .then((issue) => this.gitalk.getComments(issue))
-          .then(() => {
-            this.gitalk.setState({
-              isIniting: false,
-            });
-          });
-      }
-    );
+
+    /**
+     * ! 用于网络延迟的问题，在异步请求过程中，用户快速点击切换个股
+     * ! 很有可能会导致发起多次请求issue，多次创建同一issue的问题
+     * ! 现在利用两个 Promise 变量 _currentTask 和 _nextTask 作为节流限制，避免发起多次并行请求
+     * ! _currentTask 处于 pending 时，用户再次切换个股的操作会被赋值（覆盖）到 _nextTask，
+     * ! 当 _currentTask 执行完后，会判断非空并执行 _nextTask。否则 _currentTask 赋值null，等待下一次切换。
+     * !
+     * ! 以上方法，实现了 _currentTask 未执行完，即使用户快速多次切换，_nextTask 也只会是 _currentTask 执行期间最后的一个。
+     * ! 并且避免的网络延迟导致的并行请求引发的问题。
+     */
+    const exec = () => {
+      return new Promise((resolve) => {
+        this.gitalk.options = Object.assign(
+          {},
+          this.gitalk.options,
+          this.options
+        );
+        this.gitalk.setState(
+          {
+            comments: [],
+            isLoadOver: false,
+            page: 1,
+            issue: null,
+            isIniting: true,
+          },
+          () => {
+            this.gitalk
+              .getIssue()
+              .then((issue) => {
+                const lockKey = `${type}:${this.gitalk.options.id}`;
+                if (!issue) {
+                  if (!this._createIssueLockMap[lockKey]) {
+                    this._createIssueLockMap[lockKey] = true;
+                    return this.createIssue().then(() => {
+                      return this.getIssue();
+                    });
+                  } else {
+                    return this.getIssue();
+                  }
+                }
+                return issue;
+              })
+              .then((issue) => {
+                this.gitalk.getComments(issue);
+              })
+              .then(() => {
+                this.gitalk.setState({
+                  isIniting: false,
+                });
+                resolve();
+              })
+              .catch((err) => {
+                console.error(err);
+                resolve();
+              });
+          }
+        );
+      }).then(() => {
+        if (this._nextTask) {
+          this._currentTask = this._nextTask();
+          this._nextTask = null;
+        } else {
+          this._currentTask = null;
+        }
+      });
+    };
+
+    if (!this._currentTask) {
+      this._currentTask = exec();
+    } else {
+      this._nextTask = exec;
+    }
   },
   init() {
     this._bind();
     window.addEventListener('message', (event) => {
       const msg = event.data;
-      console.log('msg: ', msg);
       switch (msg.command) {
         case 'setGithubAccessToken':
           this.accessToken = msg.data;
