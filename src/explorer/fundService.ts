@@ -11,6 +11,7 @@ import {
   events,
 } from '../shared/utils';
 import { LeekService } from './leekService';
+import { executeStocksRemind } from '../shared/remindNotification';
 
 const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=`;
 
@@ -79,7 +80,9 @@ export default class FundService extends LeekService {
         return new LeekTreeItem(obj, this.context);
       });
 
-      this.fundList = sortData(data, order);
+      const res = sortData(data, order);
+      executeStocksRemind(res, this.fundList);
+      this.fundList = res;
       events.emit('fundListUpdate', this.fundList);
       return this.fundList;
     } catch (err) {
