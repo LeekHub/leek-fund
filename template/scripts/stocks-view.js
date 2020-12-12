@@ -90,6 +90,7 @@ const Talker = {
             page: 1,
             issue: null,
             isIniting: true,
+            cursor: null,
           },
           () => {
             this.gitalk
