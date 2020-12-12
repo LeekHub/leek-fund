@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.8.2]
+
+- fix: 修复评论 401 问题 @zqjimlove
+
 ## [1.8.1]
 
 - fix: 修复 issue 无法创建 labels @zqjimlove
