@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.8.1]
+
+- fix: 修复 issue 无法创建 labels @zqjimlove
+
 ## [1.8.0]
 
 - feat: 新增韭菜讨论中心，支持基金和股票评论 🚀 :rocket: @zqjimlove
