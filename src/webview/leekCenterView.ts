@@ -24,6 +24,10 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
     retainContextWhenHidden: true,
   });
 
+  setList(panel.webview, panelEvents, stockService, fundServices);
+  setStocksRemind(panel.webview, panelEvents);
+  setDiscussions(panel.webview, panelEvents);
+
   const _getWebviewResourcesUrl = (arr: string[][]): Uri[] => {
     return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
   };
@@ -55,9 +59,6 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
     }
   }, undefined);
 
-  setList(panel.webview, panelEvents, stockService.stockList, fundServices.fundList);
-  setStocksRemind(panel.webview, panelEvents);
-  setDiscussions(panel.webview, panelEvents);
   panel.onDidDispose(() => {
     panelEvents.emit('onDidDispose');
     _INITED = false;
@@ -133,8 +134,8 @@ function setDiscussions(webview: Webview, panelEvents: EventEmitter) {
 function setList(
   webview: Webview,
   panelEvents: EventEmitter,
-  stockList: Array<LeekTreeItem>,
-  fundList: Array<LeekTreeItem>
+  stockService: StockService,
+  fundServices: FundService
 ) {
   const postListFactory = (command: string) => (data: Array<LeekTreeItem>) => {
     webview.postMessage({
@@ -165,8 +166,8 @@ function setList(
     };
   }
 
-  const offUpdateStockList = updateStockList(webview, stockList);
-  const offUpdateFundList = updateFundList(webview, fundList);
+  const offUpdateStockList = updateStockList(webview, stockService.stockList);
+  const offUpdateFundList = updateFundList(webview, fundServices.fundList);
   panelEvents.on('onDidDispose', () => {
     offUpdateStockList();
     offUpdateFundList();

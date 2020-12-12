@@ -91,10 +91,10 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.leekCenterView', () => {
-    /* if (stockService.stockList.length === 0) {
-      window.showWarningMessage('数据刷新中，请重试！');
+    if (stockService.stockList.length === 0 && fundService.fundList.length === 0) {
+      window.showWarningMessage('数据刷新中，请稍候！');
       return;
-    } */
+    }
     leekCenterView(stockService, fundService);
   });
   commands.registerCommand('leek-fund.addStock', () => {
