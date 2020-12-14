@@ -85,11 +85,11 @@ function showRemindNotice(info: FundInfo, msg: string) {
   if (_remindedCache[code]) {
     return;
   }
-  // 避免波动反复频繁提醒，1分钟内不再提醒
+  // 避免波动反复频繁提醒，3分钟内不再提醒
   _remindedCache[code] = true;
   setTimeout(() => {
     _remindedCache[code] = false;
-  }, 1000 * 60);
+  }, 3000 * 60);
   //TODO 暂时关闭提醒?
   window.showWarningMessage(msg, '删除该股提醒', '关闭所有提醒').then((res) => {
     switch (res) {
@@ -99,7 +99,6 @@ function showRemindNotice(info: FundInfo, msg: string) {
       case '删除该股提醒':
         let newCfg = { ...globalState.stocksRemind };
         delete newCfg[code];
-        console.log('globalState.stocksRemind: ', newCfg);
         setStocksRemindCfgCb(newCfg);
       default:
         break;

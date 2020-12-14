@@ -15,14 +15,14 @@ let _INITED = false;
 let panelEvents: EventEmitter;
 
 function leekCenterView(stockService: StockService, fundServices: FundService) {
-  if (_INITED) return;
-  _INITED = true;
-  panelEvents = new EventEmitter();
-
   const panel = ReusedWebviewPanel.create('setAmountWebview', `韭菜中心`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
   });
+
+  if (_INITED) return;
+  _INITED = true;
+  panelEvents = new EventEmitter();
 
   setList(panel.webview, panelEvents, stockService, fundServices);
   setStocksRemind(panel.webview, panelEvents);
@@ -35,12 +35,12 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
   panel.webview.html = getTemplateFileContent(
     'stocks-view.html',
     _getWebviewResourcesUrl([
-      ['vendors', 'gitalk.min.js'],
-      ['scripts', 'stocks-view.js'],
+      ['vendors/gitalk.min.js'],
+      ['scripts/stocks-view.js'],
     ]),
     _getWebviewResourcesUrl([
-      ['vendors', 'gitalk.css'],
-      ['styles', 'stocks-view.css'],
+      ['vendors/gitalk.css'],
+      ['styles/stocks-view.css'],
     ])
   );
 
