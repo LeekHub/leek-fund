@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.8.3]
+
+- chore: 因 Github 限制，gitalk 实现的 issue 评论功能暂时关闭 @zqjimlove
+
 ## [1.8.2]
 
 - fix: 修复评论 401 问题 @zqjimlove
