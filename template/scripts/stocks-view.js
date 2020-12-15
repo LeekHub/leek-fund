@@ -151,7 +151,7 @@ const Talker = {
   },
 };
 
-Talker.init();
+// Talker.init();
 
 /** 提醒 */
 const Viewer = {
