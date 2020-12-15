@@ -447,7 +447,7 @@ export function getWebviewResourcesUrl(
 ) {
   return args.map((arg) => {
     return webview.asWebviewUri(
-      vscode.Uri.parse(path.join(_extensionUri.toString(), 'template', ...arg))
+      vscode.Uri.parse([_extensionUri.toString(), 'template', ...arg].join('/'))
     );
   });
 }

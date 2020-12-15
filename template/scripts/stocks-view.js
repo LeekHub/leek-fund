@@ -83,15 +83,7 @@ const Talker = {
           this.gitalk.options,
           this.options
         );
-        this.gitalk.setState(
-          {
-            comments: [],
-            isLoadOver: false,
-            page: 1,
-            issue: null,
-            isIniting: true,
-            cursor: null,
-          },
+        this.gitalk.reset(
           () => {
             this.gitalk
               .getIssue()
@@ -159,7 +151,7 @@ const Talker = {
   },
 };
 
-Talker.init();
+// Talker.init();
 
 /** 提醒 */
 const Viewer = {
