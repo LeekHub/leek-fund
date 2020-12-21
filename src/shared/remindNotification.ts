@@ -48,6 +48,10 @@ export function executeStocksRemind(
             return;
           }
           const marginPrice = Math.abs(currentPrice - Math.abs(remindPrice));
+
+          /* fix: #136 */
+          if (currentPrice === 0) return;
+
           if (priceRange > marginPrice) {
             console.log('价格提醒:', oldPrice, currentPrice, remindPrice);
             showRemindNotice(
@@ -63,6 +67,10 @@ export function executeStocksRemind(
             return;
           }
           const marginPrecent = Math.abs(currentPrecent - remindPercent);
+
+          /* fix: #136 */
+          if (currentPrecent === 0) return;
+
           if (precentRange > marginPrecent) {
             showRemindNotice(
               info,
