@@ -207,7 +207,7 @@ function setGlobalVariable() {
 // this method is called when your extension is deactivated
 export function deactivate() {
   console.log('🐥deactivate');
-  flashNewsDaemon?.stop();
+  flashNewsDaemon?.destory();
   if (loopTimer) {
     clearInterval(loopTimer);
     loopTimer = null;
