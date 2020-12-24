@@ -524,6 +524,11 @@
           "type": "boolean",
           "default": true,
           "description": "沉浸式背景（仅适配暗色主题）"
+        },
+        "leek-fund.flash-news": {
+          "type": "boolean",
+          "default": false,
+          "description": "开启快讯输出（查看 - 输出 - 韭菜盒子快讯）"
         }
       }
     },
@@ -585,6 +590,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/vscode": "1.44.0",
+    "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
@@ -593,13 +599,14 @@
     "lint-staged": "^10.5.1",
     "mocha": "^7.1.2",
     "prettier": "^2.1.2",
-    "typescript": "^3.8.3",
+    "typescript": "^3.9.7",
     "vsce": "^1.78.0",
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
     "axios": "^0.19.2",
     "compare-versions": "^3.6.0",
-    "iconv-lite": "^0.6.2"
+    "iconv-lite": "^0.6.2",
+    "ws": "^7.4.1"
   }
 }
