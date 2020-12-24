@@ -1,4 +1,3 @@
-import { OutputChannel } from 'vscode';
 import * as WebSocket from 'ws';
 import FlashNewsDaemon from '../FlashNewsDaemon';
 import NewsFlushServiceAbstractClass from '../NewsFlushServiceAbstractClass';
@@ -30,7 +29,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     this.ws = ws;
     console.log('init ws:', this);
     ws.binaryType = 'arraybuffer';
-    ws.addEventListener('message', (msg) => {
+    ws.addEventListener('message', (msg: { data: Iterable<number> }) => {
       try {
         this.processData(Buffer.from(new Uint8Array(msg.data)));
       } catch (err) {
@@ -42,7 +41,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       this.sendHeartbeat();
     });
 
-    ws.addEventListener('error', (err) => {
+    ws.addEventListener('error', (err: any) => {
       console.log('金十快讯 ws 错误：', err);
     });
 
@@ -75,7 +74,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       const data = JSON.parse(bf.toString('utf-8', 4, 4 + dataLen));
       const { type, time, important, remark, id } = data;
       console.log('data: ', data);
-      if(!important) return;
+      if (!important) return;
 
       const contentSuffix = `（https://flash.jin10.com/detail/${id}）\r\n[金十快讯 - ${time}]`;
 

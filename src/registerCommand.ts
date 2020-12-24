@@ -41,6 +41,13 @@ export function registerViewEvent(
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
 
+  commands.registerCommand('leek-fund.toggleFlashNews', () => {
+    const isEnable = LeekFundConfig.getConfig('leek-fund.flash-news');
+    LeekFundConfig.setConfig('leek-fund.flash-news', !isEnable).then(() => {
+      window.showInformationMessage(`已${isEnable ? '启用' : '关闭'} OUTPUT 的 Flash News！`);
+    });
+  });
+
   commands.registerCommand('leek-fund.flash-news-show', () => {
     flashNewsDaemon.showOutput();
   });

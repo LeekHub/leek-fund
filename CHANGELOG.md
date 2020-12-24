@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.8.4]
+
+- feat: OUTPUT 窗口新增金十快讯 @zqjimlove
+- fix: 当设置股价下跌提醒时，在早上未开盘期间，股价为 0.00，这个时候会提示下跌到了 0.00 @wujunchuan
+
 ## [1.8.3]
 
 - chore: 因 Github 限制，gitalk 实现的 issue 评论功能暂时关闭 @zqjimlove

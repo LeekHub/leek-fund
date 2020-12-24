@@ -1,8 +1,6 @@
+import { OutputChannel, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { LeekFundConfig } from '../../shared/leekConfig';
-
 import { events } from '../../shared/utils';
-
-import { window, OutputChannel, StatusBarAlignment, StatusBarItem, commands } from 'vscode';
 import Jin10FlushService from './impl/Jin10FlushService';
 
 export default class FlashNewsDaemon {
@@ -39,7 +37,9 @@ export default class FlashNewsDaemon {
     this.newsCache = this.newsCache.slice(-3);
     if (this.flashNewsBarItem) {
       this.flashNewsBarItem.text = `⚡️️ ${this.newsCount}`;
-      this.flashNewsBarItem.tooltip = `${this.newsCache.join('\r\n-----------------------------\r\n')}`;
+      this.flashNewsBarItem.tooltip = `${this.newsCache.join(
+        '\r\n-----------------------------\r\n'
+      )}`;
       this.flashNewsBarItem.show();
     }
     this.op?.appendLine(`${news}\r\n-----------------------------`);

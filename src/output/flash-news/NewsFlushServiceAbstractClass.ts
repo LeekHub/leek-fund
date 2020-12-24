@@ -1,7 +1,6 @@
 import { events } from '../../shared/utils';
-
-import { OutputChannel } from 'vscode';
 import FlashNewsDaemon from './FlashNewsDaemon';
+
 export default abstract class NewsFlushServiceAbstractClass {
   constructor(readonly daemon: FlashNewsDaemon) {
     try {
