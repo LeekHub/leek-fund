@@ -28,12 +28,15 @@ import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStocksRemindData } from './webview/leekCenterView';
+import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
 let binanceTreeView: TreeView<any> | null = null;
+
+let flashNewsDaemon: FlashNewsDaemon | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
@@ -49,6 +52,8 @@ export function activate(context: ExtensionContext) {
 
   setGlobalVariable();
   updateAmount();
+
+  flashNewsDaemon = new FlashNewsDaemon();
 
   const fundService = new FundService(context);
   const stockService = new StockService(context);
@@ -162,6 +167,7 @@ export function activate(context: ExtensionContext) {
     newsProvider.refresh();
     binanceProvider.refresh();
     statusBar.refresh();
+    flashNewsDaemon?.reload();
   });
 
   // register event
@@ -172,6 +178,7 @@ export function activate(context: ExtensionContext) {
     nodeFundProvider,
     nodeStockProvider,
     newsProvider,
+    flashNewsDaemon,
     binanceProvider
   );
 }
@@ -200,6 +207,7 @@ function setGlobalVariable() {
 // this method is called when your extension is deactivated
 export function deactivate() {
   console.log('🐥deactivate');
+  flashNewsDaemon?.destory();
   if (loopTimer) {
     clearInterval(loopTimer);
     loopTimer = null;

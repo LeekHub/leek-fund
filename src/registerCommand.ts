@@ -25,6 +25,7 @@ import stockTrendPic from './webview/stockTrendPic';
 import leekCenterView from './webview/leekCenterView';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
+import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -33,11 +34,16 @@ export function registerViewEvent(
   fundProvider: FundProvider,
   stockProvider: StockProvider,
   newsProvider: NewsProvider,
+  flashNewsDaemon: FlashNewsDaemon,
   binanceProvider?: BinanceProvider
 ) {
   const leekModel = new LeekFundConfig();
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
+
+  commands.registerCommand('leek-fund.flash-news-show', () => {
+    flashNewsDaemon.showOutput();
+  });
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
