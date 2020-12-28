@@ -19,6 +19,7 @@ export class StatusBar {
     this.statusBarList = [];
     this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 3);
     this.refreshStockStatusBar();
+    this.bindEvents();
     /* events.on('updateConfig:leek-fund.statusBarStock',()=>{
 
     }) */
@@ -29,6 +30,15 @@ export class StatusBar {
   }
   get fallColor(): string {
     return LeekFundConfig.getConfig('leek-fund.fallColor');
+  }
+
+  bindEvents() {
+    events.on('stockListUpdate', () => {
+      this.refreshStockStatusBar();
+    });
+    events.on('fundListUpdate', () => {
+      this.refreshFundStatusBar();
+    });
   }
 
   refresh() {

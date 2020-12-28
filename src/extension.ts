@@ -85,12 +85,12 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService.getData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL).then(() => {
+    fundService.getData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL)/* .then(() => {
       statusBar.refresh();
-    });
-    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL).then(() => {
+    }); */
+    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL)/* .then(() => {
       statusBar.refresh();
-    });
+    }); */
   };
 
   manualRequest();
@@ -113,7 +113,7 @@ export function activate(context: ExtensionContext) {
       if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
         nodeFundProvider.refresh();
-        statusBar.refresh();
+        // statusBar.refresh();
       } else {
         manualRequest();
       }
@@ -162,11 +162,11 @@ export function activate(context: ExtensionContext) {
     intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
     setIntervalTime();
     setGlobalVariable();
+    statusBar.refresh();
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
     newsProvider.refresh();
     binanceProvider.refresh();
-    statusBar.refresh();
     flashNewsDaemon?.reload();
   });
 
