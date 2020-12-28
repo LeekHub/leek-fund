@@ -83,9 +83,8 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
         content && this.print(`${content}${contentSuffix}`);
       }
       if (type === 1) {
-        this.print(
-          `${data.country}${data.time_period}${data.name}:${data.actual}${data.unit}${contentSuffix}`
-        );
+        const { country, time_period, name, actual, unit } = data.data;
+        this.print(`${country}${time_period}${name}:${actual}${unit}${contentSuffix}`);
       }
     }
   }
