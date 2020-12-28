@@ -82,8 +82,9 @@ export default class FundService extends LeekService {
 
       const res = sortData(data, order);
       executeStocksRemind(res, this.fundList);
+      const oldFundList = this.fundList;
       this.fundList = res;
-      events.emit('fundListUpdate', this.fundList);
+      events.emit('fundListUpdate', this.fundList, oldFundList);
       return this.fundList;
     } catch (err) {
       console.log(err);
