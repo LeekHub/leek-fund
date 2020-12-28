@@ -2,6 +2,9 @@ import { OutputChannel, StatusBarAlignment, StatusBarItem, window } from 'vscode
 import { LeekFundConfig } from '../../shared/leekConfig';
 import { events } from '../../shared/utils';
 import Jin10FlushService from './impl/Jin10FlushService';
+import XuanGuBaoFlushService from './impl/XuanGuBaoFLushServices';
+
+const throttle = require('lodash.throttle');
 
 export default class FlashNewsDaemon {
   public op: OutputChannel | undefined;
@@ -11,10 +14,11 @@ export default class FlashNewsDaemon {
 
   isEnable: boolean = false;
   // private services: NewsFlushServiceAbstractClass[] = [];
-  jin10Services: Jin10FlushService | undefined;
+
   flashNewsBarItem: StatusBarItem | undefined;
 
   constructor() {
+    this.updateNewsBarItem = throttle(this.updateNewsBarItem, 1000);
     this.isEnable = LeekFundConfig.getConfig('leek-fund.flash-news');
     if (this.isEnable) {
       this.initServices();
@@ -29,12 +33,10 @@ export default class FlashNewsDaemon {
     this.flashNewsBarItem.show();
 
     new Jin10FlushService(this);
+    new XuanGuBaoFlushService(this);
   }
 
-  print(news: string) {
-    this.newsCount++;
-    this.newsCache.push(news);
-    this.newsCache = this.newsCache.slice(-3);
+  updateNewsBarItem() {
     if (this.flashNewsBarItem) {
       this.flashNewsBarItem.text = `⚡️️ ${this.newsCount}`;
       this.flashNewsBarItem.tooltip = `${this.newsCache.join(
@@ -42,10 +44,17 @@ export default class FlashNewsDaemon {
       )}`;
       this.flashNewsBarItem.show();
     }
+  }
+
+  print(news: string) {
+    this.newsCount++;
+    this.newsCache.push(news);
+    this.newsCache = this.newsCache.slice(-5);
+    this.updateNewsBarItem();
     this.op?.appendLine(`${news}\r\n-----------------------------`);
   }
   destory() {
-    events.emit('FlashNewsServices#stop');
+    events.emit('FlashNewsServices#destory');
     this.newsCache.length = 0;
     this.newsCount = 0;
     this.flashNewsBarItem?.dispose();

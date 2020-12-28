@@ -600,6 +600,7 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
     "@types/glob": "^7.1.1",
+    "@types/lodash.throttle": "^4.1.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
     "@types/vscode": "1.44.0",
@@ -620,6 +621,7 @@
     "axios": "^0.19.2",
     "compare-versions": "^3.6.0",
     "iconv-lite": "^0.6.2",
+    "lodash.throttle": "^4.1.1",
     "ws": "^7.4.1"
   }
 }
