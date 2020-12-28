@@ -27,7 +27,6 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     }
     const ws = new WebSocket('wss://wss-flash-1.jin10.com/');
     this.ws = ws;
-    console.log('init ws:', this);
     ws.binaryType = 'arraybuffer';
     ws.addEventListener('message', (msg: { data: Iterable<number> }) => {
       try {
@@ -53,7 +52,8 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       }
     });
   }
-  stop() {
+  destory() {
+    console.log('销毁 金十 快讯服务');
     this.isDone = true;
     this.heartbeatTimer && clearInterval(this.heartbeatTimer);
     this.ws?.close();
@@ -74,7 +74,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       const data = JSON.parse(bf.toString('utf-8', 4, 4 + dataLen));
       const { type, time, important, remark, id } = data;
       console.log('data: ', data);
-      if (!important) return;
+      // if (!important) return; // 去掉判断显示更多的内容
 
       const contentSuffix = `（https://flash.jin10.com/detail/${id}）\r\n[金十快讯 - ${time}]`;
 
@@ -83,9 +83,8 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
         content && this.print(`${content}${contentSuffix}`);
       }
       if (type === 1) {
-        this.print(
-          `${data.country}${data.time_period}${data.name}:${data.actual}${data.unit}${contentSuffix}`
-        );
+        const { country, time_period, name, actual, unit } = data.data;
+        this.print(`${country}${time_period}${name}:${actual}${unit}${contentSuffix}`);
       }
     }
   }

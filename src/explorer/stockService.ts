@@ -217,8 +217,9 @@ export default class StockService extends LeekService {
       // this.defaultBarStock = sz || stockList[0];
       const res = sortData(stockList, order);
       executeStocksRemind(res, this.stockList);
-      events.emit('stockListUpdate', res, this.stockList);
+      const oldStockList = this.stockList;
       this.stockList = res;
+      events.emit('stockListUpdate', this.stockList, oldStockList);
       /* if (barStockList.length === 0) {
         // 用户没有设置股票时，默认展示上证或第一个
         barStockList.push(this.defaultBarStock);
