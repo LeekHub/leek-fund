@@ -1,5 +1,11 @@
 # ChangeLog
 
+## [1.8.5]
+
+- feat: 选股宝异动快讯，金十全量输出 @zqjimlove
+- fix: 修复金十的消息显示 undefined @zqjimlove
+- fix: statusbar 股价更新滞后问题 @zqjimlove
+
 ## [1.8.4]
 
 - feat: OUTPUT 窗口新增金十快讯 @zqjimlove

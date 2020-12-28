@@ -1,6 +1,6 @@
 {
   "description": "赞赏用户列表，不定时更新（可能有遗漏）",
-  "updatedTime": "2020-12-21 19:37:49",
+  "updatedTime": "2020-12-29 00:12:29",
   "likeTheAuthors": [
     {
       "name": "E*o",
@@ -88,6 +88,18 @@
     },
     {
       "name": "匿名",
+      "from": "微信"
+    },
+    {
+      "name": "冰糖糊涂的涂",
+      "from": "微信"
+    },
+    {
+      "name": "Hanyu",
+      "from": "微信"
+    },
+    {
+      "name": "螃蟹在剥我的壳",
       "from": "微信"
     }
   ]
