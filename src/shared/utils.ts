@@ -431,7 +431,8 @@ export function isHoliday(market: string): boolean {
 export function getTemplateFileContent(
   tplName: string,
   scripts: vscode.Uri[] = [],
-  styles: vscode.Uri[] = []
+  styles: vscode.Uri[] = [],
+  images: vscode.Uri[] = []
 ) {
   const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
   const html = fs.readFileSync(tplPath, 'utf-8');
@@ -443,7 +444,8 @@ export function getTemplateFileContent(
     .replace(
       '<!-- script assets -->',
       scripts.map((item) => `<script src="${item}"></script>`).join('\n')
-    );
+    )
+    .replace('<!-- img assets -->', images.map((item) => `<img src="${item}"/>`).join('\n'));
 }
 
 export function multi1000(n: number) {

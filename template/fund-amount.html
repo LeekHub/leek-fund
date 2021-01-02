@@ -53,15 +53,15 @@
       .main {
         margin: 0 auto;
         width: 980px;
-        padding: 32px 32px 10px 32px;
+        padding: 32px;
       }
       .footer {
-        width: 520px;
+        width: 560px;
         margin: 30px auto 10px auto;
         text-align: center;
       }
       .footer .info {
-        font-size: 14px;
+        font-size: 16px;
         margin-top: 20px;
         color: #696666;
       }
@@ -86,10 +86,13 @@
         left: -2000;
         background-color: #3c3c3c;
       }
+      .imgHACK {
+        display: none;
+      }
 
       .main-canvas {
         width: 1000px;
-        background-color: #3c3c3c;
+        background-color: #303133;
       }
       .qr {
         margin: 10px auto;
@@ -153,16 +156,21 @@
             >收益图片分享</span
           >
         </div>
-        <div class="qr" style="display: none">
-          <img
-            src="https://raw.sevencdn.com/LeekHub/leek-fund/master/resources/qrcode_black.png"
-          />
-        </div>
-      </div>
-      <div class="html2canvas-container">
-        <div class="main-canvas"></div>
       </div>
     </div>
+    <canvas id="paint" width="1000" height="600" style="display: none"></canvas>
+    <div class="html2canvas-container">
+      <div
+        class="main-canvas"
+        style="width: 1000px; height: auto; background-color: #303133"
+      ></div>
+    </div>
+    <div class="qr" style="display: none">
+      <div class="imgHACK">
+        <!-- img assets -->
+      </div>
+    </div>
+
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
     <!-- script assets -->
     <script>
@@ -171,7 +179,7 @@
         Math.random().toString(16).substr(2) +
         Math.random().toString(32).substr(2);
 
-      let text2imgFlag = false;
+      let totalEarnings = 0;
       const list = $('.list');
       let fundList = [];
       window.addEventListener('message', (event) => {
@@ -187,7 +195,7 @@
       function init(fundList) {
         // const fundList = ${JSON.stringify(list)};
         let listStr = '';
-        let totalEarnings = 0;
+        totalEarnings = 0;
         let totalMoney = 0;
         fundList = fundList;
         // console.log(fundList);
@@ -255,16 +263,10 @@
           });
 
           $('.text2image').click((evt) => {
-            let selector = '.main';
-            // console.log(evt.target.getAttribute('data-type'));
-            if (evt.target.getAttribute('data-type') === 'shouyi') {
-              selector = '.footer';
-            }
-            /*  const canvas = document.getElementById('myCanvas');
-            const ctx = canvas.getContext('2d');
-            const txt = $('.footer .info').html();
-            canvasTxt.fontSize = 24;
-            canvasTxt.drawText(ctx, txt, 100, 200, 200, 200) */
+            const type = evt.target.getAttribute('data-type');
+
+            let selector = type === 'shouyi' ? '.footer' : '.main';
+
             $('.main-canvas').html($(selector).html());
             const canvasEl = $('.main-canvas');
             canvasEl.find('.rm').hide();
@@ -272,38 +274,121 @@
             canvasEl
               .find('.amount')
               .map((i, el) => (el.innerText = '持仓金额：*** 元'));
-            canvasEl.find('#totalMoney').html('***');
+            canvasEl.find('#totalMoney').html('*** 元');
 
-            html2canvas(canvasEl[0], { useCORS: true, allowTaint: true }).then(
-              (canvas) => {
-                const base64Data = canvas
-                  .toDataURL('image/png')
-                  .replace('data:image/png;base64,', '');
-                if (base64Data && base64Data.length < 100) {
-                  Toastify({
-                    text: '生成图片失败！',
-                    duration: 2000,
-                    backgroundColor: '#f56c6c',
-                    gravity: 'bottom',
-                  }).showToast();
-                  return;
-                }
-                const blobInput = convertBase64ToBlob(base64Data, 'image/png');
-                const clipboardItemInput = new ClipboardItem({
-                  'image/png': blobInput,
-                });
-                navigator.clipboard.write([clipboardItemInput]);
-                Toastify({
-                  text: '复制成功',
-                  duration: 2000,
-                  backgroundColor:
-                    'linear-gradient(to right, #00b09b, #96c93d)',
-                  gravity: 'bottom',
-                }).showToast();
-              }
-            );
+            const targetDom = canvasEl[0];
+            const paintCanvas = document.getElementById('paint');
+            const paintCtx = paintCanvas.getContext('2d');
+            const scale = 2;
+            const qrImageWidth = 240;
+            const qrImageHeight = 310;
+            // 自定义绘制
+            if (type === 'shouyi') {
+              paintCanvas.height = qrImageHeight / 2;
+              paintCanvas.width = qrImageWidth * scale;
+              paintCtx.fillStyle = '#303133';
+              paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+
+              const earnningTxt = totalEarnings.toFixed(2);
+              const title = '今日收益';
+              paintCtx.fillStyle = '#409eff';
+              canvasTxt.fontSize = 20;
+              canvasTxt.lineHeight = 20;
+              canvasTxt.align = 'left';
+              canvasTxt.drawText(paintCtx, title, 100, 10, 120, 40);
+              canvasTxt.drawText(
+                paintCtx,
+                Number(earnningTxt) < 0 ? '🍜' : '🍗',
+                184,
+                10,
+                120,
+                40
+              );
+              paintCtx.fillStyle =
+                Number(earnningTxt) < 0 ? 'green' : '#f55151';
+              canvasTxt.fontSize = Number(earnningTxt) > 10000 ? 30 : 40;
+              // canvasTxt.lineHeight = 20;
+              canvasTxt.drawText(
+                paintCtx,
+                earnningTxt + '元',
+                100,
+                50,
+                200,
+                80
+              );
+              canvasTxt.fontSize = 20;
+
+              paintCtx.drawImage(
+                $('.imgHACK>img')[0],
+                paintCanvas.width - qrImageWidth / 2,
+                0,
+                qrImageWidth / 2,
+                qrImageHeight / 2
+              );
+              return copyImageToClipboard(paintCanvas);
+            }
+            // html截图
+            html2canvas(targetDom, {
+              dpi: window.devicePixelRatio * 3,
+              scale,
+              height: targetDom.offsetHeight,
+              width: targetDom.offsetWidth,
+              scrollY: 0, // 解决偏移问题
+            }).then((htmlcanvas) => {
+              paintCanvas.height =
+                targetDom.offsetHeight * scale + qrImageHeight;
+              paintCanvas.width = targetDom.offsetWidth * scale;
+              paintCtx.fillStyle = '#303133';
+              paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+              paintCtx.drawImage(
+                htmlcanvas,
+                0,
+                10,
+                htmlcanvas.width,
+                htmlcanvas.height
+              );
+              paintCtx.drawImage(
+                $('.imgHACK>img')[0],
+                paintCanvas.width / 2 - qrImageWidth / 2,
+                paintCanvas.height - qrImageHeight + 8,
+                qrImageWidth,
+                qrImageHeight
+              );
+
+              copyImageToClipboard(paintCanvas);
+              /*  if (document.body.querySelector('canvas')) {
+                document.body.querySelector('canvas').remove();
+                document.body.appendChild(paintCanvas);
+              } */
+            });
           });
         }
+      }
+
+      function copyImageToClipboard(canvas) {
+        const base64Data = canvas
+          .toDataURL('image/png')
+          .replace('data:image/png;base64,', '');
+        if (base64Data && base64Data.length < 100) {
+          Toastify({
+            text: '生成图片失败！',
+            duration: 2000,
+            backgroundColor: '#f56c6c',
+            gravity: 'bottom',
+          }).showToast();
+          return;
+        }
+        const blobInput = convertBase64ToBlob(base64Data, 'image/png');
+        const clipboardItemInput = new ClipboardItem({
+          'image/png': blobInput,
+        });
+        navigator.clipboard.write([clipboardItemInput]);
+        Toastify({
+          text: '复制图片成功，可以去粘贴发送分享了！',
+          duration: 2500,
+          backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
+          gravity: 'bottom',
+        }).showToast();
       }
 
       $(function () {
