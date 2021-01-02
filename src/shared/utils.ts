@@ -1,12 +1,12 @@
-import { QuickPickItem, ExtensionContext, window } from 'vscode';
-import { LeekFundConfig } from './leekConfig';
+import { EventEmitter } from 'events';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as vscode from 'vscode';
+import { QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
+import { LeekFundConfig } from './leekConfig';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './typed';
-import * as path from 'path';
-import * as fs from 'fs';
-import { EventEmitter } from 'events';
-import * as vscode from 'vscode';
 
 const stockTimes = allStockTimes();
 
@@ -364,9 +364,43 @@ export function allHolidays(): Map<string, Array<string>> {
     A.push(formatDate(new Date(), ''));
   }
   // https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2020/ce_SEHK_CT_038_2020.pdf
-  const HK = ['20201225', '20210101', '20210212', '20210215', '20210402', '20210405', '20210406', '20210519', '20210614', '20210701', '20210922', '20211001', '20211014', '20211227'];
+  const HK = [
+    '20201225',
+    '20210101',
+    '20210212',
+    '20210215',
+    '20210402',
+    '20210405',
+    '20210406',
+    '20210519',
+    '20210614',
+    '20210701',
+    '20210922',
+    '20211001',
+    '20211014',
+    '20211227',
+  ];
   // https://www.nyse.com/markets/hours-calendars
-  const US = ['20201225', '20210101', '20210118', '20210215', '20210402', '20210531', '20210705', '20210906', '20211125', '20211224', '20220117', '20220221', '20220415', '20220530', '20220704', '20220905', '20221124', '20221226'];
+  const US = [
+    '20201225',
+    '20210101',
+    '20210118',
+    '20210215',
+    '20210402',
+    '20210531',
+    '20210705',
+    '20210906',
+    '20211125',
+    '20211224',
+    '20220117',
+    '20220221',
+    '20220415',
+    '20220530',
+    '20220704',
+    '20220905',
+    '20221124',
+    '20221226',
+  ];
   days.set(StockCategory.A, A);
   days.set(StockCategory.HK, HK);
   days.set(StockCategory.US, US);
@@ -410,7 +444,6 @@ export function getTemplateFileContent(
       '<!-- script assets -->',
       scripts.map((item) => `<script src="${item}"></script>`).join('\n')
     );
-
 }
 
 export function multi1000(n: number) {
@@ -443,11 +476,11 @@ export function formatLabelString(str: string, params: Record<string, any>) {
 export function getWebviewResourcesUrl(
   webview: vscode.Webview,
   _extensionUri: vscode.Uri,
-  args: string[][]
+  args: string[]
 ) {
   return args.map((arg) => {
     return webview.asWebviewUri(
-      vscode.Uri.parse([_extensionUri.toString(), 'template', ...arg].join('/'))
+      vscode.Uri.parse([_extensionUri.toString(), 'template', arg].join('/'))
     );
   });
 }

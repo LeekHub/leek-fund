@@ -620,10 +620,12 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "canvas": "^2.6.1",
     "compare-versions": "^3.6.0",
     "iconv-lite": "^0.6.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.throttle": "^4.1.1",
+    "text-to-image": "^2.4.4",
     "ws": "^7.4.1"
   }
 }

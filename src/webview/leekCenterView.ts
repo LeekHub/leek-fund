@@ -28,20 +28,14 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
   setStocksRemind(panel.webview, panelEvents);
   setDiscussions(panel.webview, panelEvents);
 
-  const _getWebviewResourcesUrl = (arr: string[][]): Uri[] => {
+  const _getWebviewResourcesUrl = (arr: string[]): Uri[] => {
     return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
   };
 
   panel.webview.html = getTemplateFileContent(
     'stocks-view.html',
-    _getWebviewResourcesUrl([
-      ['vendors/gitalk.min.js'],
-      ['scripts/stocks-view.js'],
-    ]),
-    _getWebviewResourcesUrl([
-      ['vendors/gitalk.css'],
-      ['styles/stocks-view.css'],
-    ])
+    _getWebviewResourcesUrl(['vendors/gitalk.min.js', 'scripts/stocks-view.js']),
+    _getWebviewResourcesUrl(['vendors/gitalk.css', 'styles/stocks-view.css'])
   );
 
   panel.webview.onDidReceiveMessage((message) => {
