@@ -6,22 +6,10 @@ import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
 import { formatDate, toFixed } from '../shared/utils';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
+const cloneDeep = require('lodash.clonedeep');
 
-async function setAmount(fundList: LeekTreeItem[] = []) {
-  const amountObj: any = globalState.fundAmount || {};
-  const list = fundList.map((item: LeekTreeItem) => {
-    return {
-      name: item.info?.name,
-      code: item.id,
-      percent: item.info?.percent,
-      amount: amountObj[item.info?.code]?.amount || 0,
-      earningPercent: item.info?.earningPercent,
-      unitPrice: item.info?.unitPrice,
-      earnings: item.info?.earnings || 0,
-      yestEarnings: amountObj[item.info.code]?.earnings || 0,
-    };
-  });
-  // console.log(JSON.stringify(list, null, 2));
+async function setAmount(fundService: FundService) {
+  const list = fundDataHandler(fundService);
   const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,
@@ -39,9 +27,34 @@ async function setAmount(fundList: LeekTreeItem[] = []) {
       case 'donate':
         commands.executeCommand('leek-fund.donate');
         return;
+      case 'refresh':
+        const list = fundDataHandler(fundService);
+        // console.log(list);
+        panel.webview.html = `<h3>loading</h3>`;
+        panel.webview.html = getWebviewContent(list);
+        return;
     }
   }, undefined);
   panel.webview.html = getWebviewContent(list);
+}
+
+function fundDataHandler(fundService: FundService) {
+  const fundList: LeekTreeItem[] = cloneDeep(fundService.fundList);
+  const amountObj: any = globalState.fundAmount || {};
+  const list = fundList.map((item: LeekTreeItem) => {
+    return {
+      name: item.info?.name,
+      code: item.id,
+      percent: item.info?.percent,
+      amount: amountObj[item.info?.code]?.amount || 0,
+      earningPercent: item.info?.earningPercent,
+      unitPrice: item.info?.unitPrice,
+      earnings: item.info?.earnings || 0,
+      yestEarnings: amountObj[item.info.code]?.earnings || 0,
+    };
+  });
+
+  return list;
 }
 
 function getWebviewContent(list: any[] = []) {
@@ -97,7 +110,7 @@ function getWebviewContent(list: any[] = []) {
         }
         .main {
           margin: 30px auto;
-          width: 1020px;
+          width: 950px;
         }
         .footer {
           width: 520px;
@@ -127,6 +140,19 @@ function getWebviewContent(list: any[] = []) {
 
     <body ontouchstart>
       <div class="main">
+      <button
+            class="el-button el-button--success el-button--mini"
+            id="refresh"
+            style="
+            position:fixed;
+            right:10px;
+            top:20px;
+            padding: 4px 8px;
+            font-size: 10px;
+            border-radius: 3px;"
+          >
+          刷新
+          </button>
         <h2 style="text-align: center;color:#409EFF;">持仓金额 <span id="totalMoney"></span></h2>
         <p style="font-size: 12px; color: #696666;text-align:center">现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额</p>
         <div class="list">
@@ -145,6 +171,7 @@ function getWebviewContent(list: any[] = []) {
       <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
       <script>
+      console.log('webview')
         const vscode = acquireVsCodeApi();
         const deviceId =
           Math.random().toString(16).substr(2) +
@@ -243,6 +270,12 @@ function getWebviewContent(list: any[] = []) {
             });
 
           });
+
+          $('#refresh').click(()=>{
+            vscode.postMessage({
+              command: 'refresh',
+            });
+          })
 
           if (totalEarnings !== 0) {
             const color = totalEarnings > 0 ? '#f55151' : 'green';

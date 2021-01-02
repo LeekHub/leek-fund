@@ -194,7 +194,7 @@ export function registerViewEvent(
       window.showWarningMessage('数据刷新中，请重试！');
       return;
     }
-    setAmount(fundService.fundList);
+    setAmount(fundService);
   });
   commands.registerCommand('leek-fund.stockTrendPic', (target) => {
     const { code, name, type, symbol } = target.info;
