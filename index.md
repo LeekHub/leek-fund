@@ -58,7 +58,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - 股票支持分组展示（A 股、港股、美股）
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式
-- 个股、基金讨论（ gitalk ）
+- OUTPUT 面板支持选股宝异动快讯，金十资讯
 - 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
 
 ## 安装使用
@@ -100,9 +100,13 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 - [版本迭代需求池（想法）](https://github.com/LeekHub/leek-fund/projects)
 
+## Core Contributors
+
+- [giscafer](https://github.com/giscafer)
+- [zqjimlove](https://github.com/zqjimlove)
+
 ## 感谢 PR
 
-- [zqjimlove](https://github.com/zqjimlove)
 - [iporer](https://github.com/iporer)
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
