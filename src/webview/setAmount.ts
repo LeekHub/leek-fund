@@ -3,7 +3,6 @@ import FundService from '../explorer/fundService';
 import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { textToImageBase64 } from '../shared/text-to-image';
 import { IAmount } from '../shared/typed';
 import {
   formatDate,
@@ -45,7 +44,9 @@ async function setAmount(fundService: FundService) {
         return;
     }
   }, undefined);
+
   getWebviewContent(panel);
+
   panel.onDidChangeViewState((event) => {
     console.log(event);
     panel.webview.postMessage({
