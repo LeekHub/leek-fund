@@ -40,6 +40,7 @@ async function setAmount(fundService: FundService) {
         panel.webview.postMessage({
           command: 'init',
           data: list,
+          sortType: message.sortType,
         });
         return;
     }

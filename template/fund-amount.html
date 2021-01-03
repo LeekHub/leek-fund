@@ -117,11 +117,11 @@
 
   <body ontouchstart>
     <button
-      class="el-button el-button--success el-button--mini"
+      class="el-button el-button--info el-button--mini"
       id="refresh"
       style="
         position: fixed;
-        right: 10px;
+        right: 8px;
         top: 20px;
         padding: 4px 8px;
         font-size: 10px;
@@ -129,6 +129,20 @@
       "
     >
       刷新
+    </button>
+    <button
+      class="el-button el-button--info el-button--mini"
+      id="sort"
+      style="
+        position: fixed;
+        right: 8px;
+        top: 60px;
+        padding: 4px 8px;
+        font-size: 10px;
+        border-radius: 3px;
+      "
+    >
+      收益率↓
     </button>
     <div class="main">
       <h2 style="text-align: center; color: #409eff">
@@ -179,6 +193,7 @@
         Math.random().toString(16).substr(2) +
         Math.random().toString(32).substr(2);
 
+      let sortType = 'default';
       let totalEarnings = 0;
       const list = $('.list');
       let fundList = [];
@@ -187,17 +202,27 @@
 
         switch (msg.command) {
           case 'init':
+            sortType = msg.sortType || 'default';
             init(msg.data);
             break;
         }
       });
 
-      function init(fundList) {
+      function init(data) {
         // const fundList = ${JSON.stringify(list)};
         let listStr = '';
         totalEarnings = 0;
         let totalMoney = 0;
-        fundList = fundList;
+
+        if (sortType !== 'default') {
+          fundList = data.sort((a, b) => {
+            const ae = a.earningPercent || 0;
+            const be = b.earningPercent || 0;
+            return sortType === 'earningsDesc' ? be - ae : ae - be;
+          });
+        } else {
+          fundList = data;
+        }
         // console.log(fundList);
 
         fundList.forEach((item) => {
@@ -450,6 +475,15 @@
         $('#refresh').click(() => {
           vscode.postMessage({
             command: 'refresh',
+            sortType,
+          });
+        });
+        $('#sort').click(() => {
+          sortType =
+            sortType === 'earningsDesc' ? 'earningsAsc' : 'earningsDesc';
+          vscode.postMessage({
+            command: 'refresh',
+            sortType,
           });
         });
       });
@@ -483,7 +517,7 @@
           )
           .then((res) => {
             if (res.status !== 200) {
-              console.log('获取数据失败');
+              // console.log('获取数据失败');
               vscode.postMessage({
                 command: 'alert',
                 text: '获取数据失败',
@@ -507,8 +541,8 @@
       }
 
       Toastify({
-        text: '数据加载成功！',
-        duration: 1500,
+        text: '数据已刷新！',
+        duration: 1000,
       }).showToast();
     </script>
 
