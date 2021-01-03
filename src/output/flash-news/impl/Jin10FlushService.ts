@@ -1,4 +1,5 @@
 import * as WebSocket from 'ws';
+import globalState from '../../../globalState';
 import FlashNewsDaemon from '../FlashNewsDaemon';
 import NewsFlushServiceAbstractClass from '../NewsFlushServiceAbstractClass';
 
@@ -41,6 +42,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     });
 
     ws.addEventListener('error', (err: any) => {
+      globalState.telemetry.sendEvent('error:jin10Service', { error: err });
       console.log('金十快讯 ws 错误：', err);
     });
 
@@ -73,7 +75,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     if (type === MSG_NEWS_FLASH) {
       const data = JSON.parse(bf.toString('utf-8', 4, 4 + dataLen));
       const { type, time, important, remark, id } = data;
-      console.log('data: ', data);
+      // console.log('data: ', data);
       // if (!important) return; // 去掉判断显示更多的内容
 
       const contentSuffix = `（https://flash.jin10.com/detail/${id}）\r\n[金十快讯 - ${time}]`;

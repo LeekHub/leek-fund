@@ -86,7 +86,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 加微信拉入**插件（养 🐥）微信交流群**：
 
-<img width="303" alt="微信号" src="https://user-images.githubusercontent.com/8676711/95286595-5a6ad700-0896-11eb-96f3-75b16ba10142.jpeg">
+<img width="300" alt="微信号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr.png">
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 

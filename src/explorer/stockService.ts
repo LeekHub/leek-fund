@@ -236,6 +236,10 @@ export default class StockService extends LeekService {
       if (globalState.showStockErrorInfo) {
         window.showErrorMessage(`fail: Stock error ` + url);
         globalState.showStockErrorInfo = false;
+        globalState.telemetry.sendEvent('error: stockService', {
+          url,
+          error: err,
+        });
       }
 
       return [];

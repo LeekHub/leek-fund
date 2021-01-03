@@ -1,9 +1,12 @@
 import { ExtensionContext } from 'vscode';
 import { DEFAULT_LABEL_FORMAT } from './shared/constant';
+import { Telemetry } from './shared/telemetry';
 
 const deviceId = Math.random().toString(16).substr(2) + Math.random().toString(32).substr(2);
 
 let context: ExtensionContext = (undefined as unknown) as ExtensionContext;
+
+let telemetry: Telemetry | any = null;
 
 let iconType = 'arrow';
 
@@ -27,6 +30,7 @@ let immersiveBackground = true; // 基金图表是否沉浸式背景
 
 export default {
   context,
+  telemetry,
   iconType,
   deviceId,
   fundAmount,

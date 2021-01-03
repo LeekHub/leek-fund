@@ -15,10 +15,15 @@ const cloneDeep = require('lodash.clonedeep');
 
 async function setAmount(fundService: FundService) {
   const list = fundDataHandler(fundService);
-  const panel = ReusedWebviewPanel.create('setAmountWebview', `基金持仓金额设置`, ViewColumn.One, {
-    enableScripts: true,
-    retainContextWhenHidden: true,
-  });
+  const panel = ReusedWebviewPanel.create(
+    'setFundAmountWebview',
+    `基金持仓金额设置`,
+    ViewColumn.One,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    }
+  );
   // Handle messages from the webview
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
@@ -43,13 +48,16 @@ async function setAmount(fundService: FundService) {
           sortType: message.sortType,
         });
         return;
+      case 'telemetry':
+        globalState.telemetry.sendEvent('shareByPicture', { type: message.type });
+        return;
     }
   }, undefined);
 
   getWebviewContent(panel);
 
   panel.onDidChangeViewState((event) => {
-    console.log(event);
+    // console.log(event);
     panel.webview.postMessage({
       command: 'init',
       data: list,

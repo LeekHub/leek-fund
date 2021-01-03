@@ -7,6 +7,7 @@
 
 import Axios from 'axios';
 import { ExtensionContext } from 'vscode';
+import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { FundInfo, TreeItemType } from '../shared/typed';
 import { randHeader } from '../shared/utils';
@@ -14,7 +15,8 @@ import { LeekService } from './leekService';
 
 export default class BinanceService extends LeekService {
   private context: ExtensionContext;
-
+  private parisUrl = 'https://api.binance.com/api/v1/exchangeInfo';
+  private ticker24hrUrl = 'https://api.binance.com/api/v1/ticker/24hr';
   constructor(context: ExtensionContext) {
     super();
     this.context = context;
@@ -23,19 +25,29 @@ export default class BinanceService extends LeekService {
 
   /** 获取支持的交易对 */
   async getParis(): Promise<string[]> {
-    const res = await Axios.get(`https://api.binance.com/api/v1/exchangeInfo`, {
+    const res: any = await Axios.get(this.parisUrl, {
       headers: randHeader(),
+    }).catch((err) => {
+      globalState.telemetry.sendEvent('error: binanceService', {
+        url: this.parisUrl,
+        error: err,
+      });
     });
     // console.log(res);
-    return res.data?.symbols?.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
+    return res?.data?.symbols?.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
   }
 
   async _fetchPairData(symbolWithSplit: string): Promise<any> {
     const symbol = symbolWithSplit.split('_').join('');
     return {
-      data: await Axios.get(`https://api.binance.com/api/v1/ticker/24hr`, {
+      data: await Axios.get(this.ticker24hrUrl, {
         params: { symbol },
         headers: randHeader(),
+      }).catch((err) => {
+        globalState.telemetry.sendEvent('error: binanceService', {
+          url: this.ticker24hrUrl,
+          error: err,
+        });
       }),
       symbol: symbolWithSplit,
     };

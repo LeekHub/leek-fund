@@ -4,14 +4,7 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import {
-  ConfigurationChangeEvent,
-  ExtensionContext,
-  TreeView,
-  window,
-  workspace,
-  authentication,
-} from 'vscode';
+import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
 import { FundProvider } from './explorer/fundProvider';
@@ -20,15 +13,16 @@ import { NewsProvider } from './explorer/newsProvider';
 import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
+import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
 import { registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
 import { LeekFundConfig } from './shared/leekConfig';
+import { Telemetry } from './shared/telemetry';
 import { SortType } from './shared/typed';
 import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
-import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStocksRemindData } from './webview/leekCenterView';
-import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -41,6 +35,9 @@ let flashNewsDaemon: FlashNewsDaemon | null = null;
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
   globalState.context = context;
+
+  const telemetry = new Telemetry();
+  globalState.telemetry = telemetry;
 
   let intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval', 5000);
   let intervalTime = intervalTimeConfig;
@@ -85,10 +82,16 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService.getData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL)/* .then(() => {
+    fundService.getData(
+      LeekFundConfig.getConfig('leek-fund.funds'),
+      SortType.NORMAL
+    ); /* .then(() => {
       statusBar.refresh();
     }); */
-    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL)/* .then(() => {
+    stockService.getData(
+      LeekFundConfig.getConfig('leek-fund.stocks'),
+      SortType.NORMAL
+    ); /* .then(() => {
       statusBar.refresh();
     }); */
   };
@@ -181,6 +184,9 @@ export function activate(context: ExtensionContext) {
     flashNewsDaemon,
     binanceProvider
   );
+
+  // Telemetry Event
+  telemetry.sendEvent('activate');
 }
 
 function setGlobalVariable() {

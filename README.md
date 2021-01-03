@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
+<img src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
 # leek-fund（韭菜盒子）
 
@@ -60,7 +60,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
-- 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/giscafer/leek-fund)）
+- 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/LeekHub/leek-fund)）
 
 ## 安装使用
 
@@ -68,16 +68,16 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 ## 插件介绍
 
-- [韭菜盒子使用文档](https://github.com/giscafer/leek-fund/issues/23)
+- [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
 - [VSCode 插件开发——韭菜盒子（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
-![概览](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/overview.png)
+![概览](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
 ## 插件设置
 
-**添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/giscafer/leek-fund/issues/23)
+**添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
 
 自定义配置在 **Settings** 视图下：
 
@@ -87,7 +87,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 加微信拉入**插件（养 🐥）微信交流群**：
 
-<img width="303" alt="微信号" src="https://user-images.githubusercontent.com/8676711/95286595-5a6ad700-0896-11eb-96f3-75b16ba10142.jpeg">
+<img width="300" alt="微信号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr.png">
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 
@@ -99,7 +99,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 ## Todo List
 
-- [版本迭代需求池（想法）](https://github.com/giscafer/leek-fund/projects)
+- [版本迭代需求池（想法）](https://github.com/LeekHub/leek-fund/projects)
 
 ## Core Contributors
 
@@ -119,7 +119,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - [wujunchuan](https://github.com/wujunchuan)
 - [laampui](https://github.com/laampui)
 
-更多贡献者 [contributors](https://github.com/giscafer/leek-fund/graphs/contributors)，欢迎来贡献 PR~
+更多贡献者 [contributors](https://github.com/LeekHub/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
 ## Changelog
 
