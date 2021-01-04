@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-const osName = require('os-name');
+const os = require('os');
 const publicIp = require('public-ip');
 var Amplitude = require('amplitude');
 
@@ -40,7 +40,7 @@ export class Telemetry {
     this.amplitude.identify({
       user_id: this.userId,
       language: vscode.env.language,
-      platform: osName(),
+      platform: os.platform(),
       app_version: extensionVersion,
       ip: this.ip,
       user_properties: {
