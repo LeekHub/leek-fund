@@ -625,9 +625,7 @@
     "iconv-lite": "^0.6.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.throttle": "^4.1.1",
-    "os-name": "^4.0.0",
     "public-ip": "^4.0.3",
-    "ws": "^7.4.1",
-    "nice-try":"2.1.0"
+    "ws": "^7.4.1"
   }
 }
