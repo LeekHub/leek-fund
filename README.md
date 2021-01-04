@@ -118,6 +118,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - [chen86860](https://github.com/chen86860)
 - [wujunchuan](https://github.com/wujunchuan)
 - [laampui](https://github.com/laampui)
+- [xiaohai](https://github.com/xiaohaiGitHub)
 
 更多贡献者 [contributors](https://github.com/LeekHub/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
