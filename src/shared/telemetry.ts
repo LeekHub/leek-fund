@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 const os = require('os');
 const publicIp = require('public-ip');
-var Amplitude = require('amplitude');
+const Amplitude = require('amplitude');
 
 export class Telemetry {
   amplitude: any;

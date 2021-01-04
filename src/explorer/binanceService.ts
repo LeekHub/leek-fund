@@ -60,8 +60,10 @@ export default class BinanceService extends LeekService {
     // @ts-ignore
     const results = await Promise.allSettled(promises);
     console.log(results);
-    // @ts-ignore
-    for (const { status, value = {} } of results) {
+
+    for (const item of results) {
+      // @ts-ignore
+      const { status, value = {} } = item || {};
       if (status === 'fulfilled') {
         // status === 'fulfilled'
         const {
