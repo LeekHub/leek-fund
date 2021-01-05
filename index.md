@@ -12,7 +12,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 [![Rating](https://img.shields.io/visual-studio-marketplace/stars/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 
-加入 [韭菜盒子电报群](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg) 和每个人一起沟通交流
+**论坛**交流：[韭菜盒子社区](https://support.qq.com/products/302926)，**电报群：** [邀请链接](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg) 和每个人一起沟通交流
 
 ## Table of contents
 
@@ -90,7 +90,10 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 或通过微信号： `fishingtech` 加好友，备注：**韭菜盒子**
 
-不方便微信交流或者怕打扰的加入 [韭菜盒子电报群](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg)
+其他交流方式：
+
+- **论坛**交流：[韭菜盒子社区](https://support.qq.com/products/302926)
+- **电报群** [邀请链接](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg)
 
 ## 赞助支持一下！
 
