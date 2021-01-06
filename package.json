@@ -62,14 +62,14 @@
           "name": "XueQiu News"
         },
         {
-          "id": "leekFundView.settings",
-          "visibility": "visible",
-          "name": "Settings"
-        },
-        {
           "id": "leekFundView.binance",
           "name": "Binance",
           "visibility": "hidden"
+        },
+        {
+          "id": "leekFundView.settings",
+          "visibility": "visible",
+          "name": "Settings"
         }
       ]
     },
