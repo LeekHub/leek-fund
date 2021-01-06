@@ -41,12 +41,13 @@ export default class FundService extends LeekService {
         let amount = 0;
         let unitPrice = 0;
         let earningPercent = 0;
+        let priceDate = '';
         // 不填写的时候不计算
         if (keyLength) {
           amount = fundAmountObj[FCODE]?.amount || 0;
           unitPrice = fundAmountObj[FCODE]?.unitPrice || 0;
+          priceDate = fundAmountObj[FCODE]?.priceDate || '';
           const price = fundAmountObj[FCODE]?.price || 0;
-          // const priceDate = fundAmountObj[FCODE]?.priceDate || '';
           const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
 
           // 闭市的时候显示上一次盈亏
@@ -72,6 +73,7 @@ export default class FundService extends LeekService {
           isUpdated,
           amount, // 持仓金额
           unitPrice, // 成本价
+          priceDate,
           earningPercent, // 收益率
           t2: GSZZL === '--' ? true : false, // 海外基金t2
           time: GSZZL === '--' ? PDATE : GZTIME, // 更新时间

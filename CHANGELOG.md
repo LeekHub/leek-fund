@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.9.0]
+
+- fix: binance 请求失败会提示错误 data of undefined 问题
+- chore: 优化图片分享加上日期
+
 ## [1.8.7]
 
 - feat: 设置持仓金额页面新增收益率排序功能

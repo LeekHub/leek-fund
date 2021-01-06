@@ -33,12 +33,12 @@ export class LeekTreeItem extends TreeItem {
       volume,
       amount = 0,
       earnings,
-      earningPercent,
+      priceDate,
       time,
       isStop,
       t2,
       contextValue,
-      _itemType
+      _itemType,
     } = info;
 
     if (_itemType) {
@@ -157,9 +157,10 @@ export class LeekTreeItem extends TreeItem {
       }
     } else {
       /* `showLabel: false` */
-      text = this._itemType === TreeItemType.STOCK
-        ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
-        : `${formatTreeText(`${_percent}%`)}「${code}」`;
+      text =
+        this._itemType === TreeItemType.STOCK
+          ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
+          : `${formatTreeText(`${_percent}%`)}「${code}」`;
     }
 
     this.label = text;

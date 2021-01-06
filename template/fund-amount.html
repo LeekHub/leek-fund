@@ -84,7 +84,9 @@
       .html2canvas-container {
         position: fixed;
         left: -2000;
-        background-color: #3c3c3c;
+        top: 1000;
+        margin-top: 200px;
+        background-color: #303133;
       }
       .imgHACK {
         display: none;
@@ -197,12 +199,14 @@
       let totalEarnings = 0;
       const list = $('.list');
       let fundList = [];
+      let priceDate = new Date().toDateString();
       window.addEventListener('message', (event) => {
         const msg = event.data;
 
         switch (msg.command) {
           case 'init':
             sortType = msg.sortType || 'default';
+            dateStr = msg.dateStr; // 懒得再写格式化日期
             init(msg.data);
             break;
         }
@@ -223,12 +227,19 @@
         } else {
           fundList = data;
         }
+
         // console.log(fundList);
 
-        fundList.forEach((item) => {
+        fundList.forEach((item, index) => {
           const amount = item.amount || 0;
           const unitPrice = item.unitPrice || 0;
           const earningPercent = item.earningPercent || 0;
+          if (index === 0) {
+            priceDate = item.priceDate;
+          }
+          if (!priceDate) {
+            priceDate = item.priceDate;
+          }
           const str =
             '<div class="item"><div class="name">' +
             item.name +
@@ -345,7 +356,9 @@
                 200,
                 80
               );
-              canvasTxt.fontSize = 20;
+              canvasTxt.fontSize = 10;
+              paintCtx.fillStyle = 'gray';
+              canvasTxt.drawText(paintCtx, priceDate, 100, 120, 100, 40);
 
               paintCtx.drawImage(
                 $('.imgHACK>img')[0],
@@ -376,12 +389,24 @@
                 htmlcanvas.width,
                 htmlcanvas.height
               );
+              const imageOffsetWidth = paintCanvas.width / 2 - qrImageWidth / 2;
+              const imageOffsetHeight = paintCanvas.height - qrImageHeight + 8;
               paintCtx.drawImage(
                 $('.imgHACK>img')[0],
-                paintCanvas.width / 2 - qrImageWidth / 2,
-                paintCanvas.height - qrImageHeight + 8,
+                imageOffsetWidth,
+                imageOffsetHeight,
                 qrImageWidth,
                 qrImageHeight
+              );
+              canvasTxt.fontSize = 20;
+              paintCtx.fillStyle = 'gray';
+              canvasTxt.drawText(
+                paintCtx,
+                priceDate,
+                imageOffsetWidth - 200,
+                imageOffsetHeight + 100,
+                150,
+                80
               );
 
               copyImageToClipboard(paintCanvas);

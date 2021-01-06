@@ -76,6 +76,7 @@ function fundDataHandler(fundService: FundService) {
       amount: amountObj[item.info?.code]?.amount || 0,
       earningPercent: item.info?.earningPercent,
       unitPrice: item.info?.unitPrice,
+      priceDate: item.info?.priceDate,
       earnings: item.info?.earnings || 0,
       yestEarnings: amountObj[item.info.code]?.earnings || 0,
     };
