@@ -1,11 +1,11 @@
-import { StatusBarAlignment, StatusBarItem, window, Command } from 'vscode';
+import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
+import FundService from '../explorer/fundService';
+import StockService from '../explorer/stockService';
+import globalState from '../globalState';
+import { DEFAULT_LABEL_FORMAT } from '../shared/constant';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import StockService from '../explorer/stockService';
-import FundService from '../explorer/fundService';
 import { events, formatLabelString } from '../shared/utils';
-import { DEFAULT_LABEL_FORMAT } from '../shared/constant';
-import globalState from '../globalState';
 
 export class StatusBar {
   private stockService: StockService;
@@ -107,7 +107,7 @@ export class StatusBar {
       icon: deLow ? '📈' : '📉',
     });
 
-    stockBarItem.tooltip = `【今日行情】${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
+    stockBarItem.tooltip = `「今日行情」${type}${symbol}\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}`;
     stockBarItem.color = deLow ? this.riseColor : this.fallColor;
     stockBarItem.command = {
       title: 'Change stock',
@@ -137,6 +137,6 @@ export class StatusBar {
     }
     // tooltip 有限定高度，所以只展示最多14只基金
     const tips = this.fundService.fundList.length >= 14 ? '（只展示前14只）' : '';
-    return `\n【基金详情】\n\n ${fundTemplate}${tips}`;
+    return `「基金详情」\n\n ${fundTemplate}${tips}`;
   }
 }
