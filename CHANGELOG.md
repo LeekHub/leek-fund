@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.9.1]
+
+- refactor: 资金流向页面重构，增强功能和交互入口
+
 ## [1.9.0]
 
 - fix: binance 请求失败会提示错误 data of undefined 问题

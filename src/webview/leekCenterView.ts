@@ -9,6 +9,7 @@ import StockService from '../explorer/stockService';
 
 import { EventEmitter } from 'events';
 import FundService from '../explorer/fundService';
+import fundFlow from './fundFlow';
 
 let _INITED = false;
 
@@ -49,6 +50,9 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
         return;
       case 'pageReady':
         panelEvents.emit('pageReady');
+        return;
+      case 'hsgtFund':
+        fundFlow();
         return;
     }
   }, undefined);

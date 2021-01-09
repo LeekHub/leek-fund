@@ -83,39 +83,37 @@ const Talker = {
           this.gitalk.options,
           this.options
         );
-        this.gitalk.reset(
-          () => {
-            this.gitalk
-              .getIssue()
-              .then((issue) => {
-                const lockKey = `${type}:${this.gitalk.options.id}`;
-                if (!issue) {
-                  if (!this._createIssueLockMap[lockKey]) {
-                    this._createIssueLockMap[lockKey] = true;
-                    return this.createIssue().then(() => {
-                      return this.getIssue();
-                    });
-                  } else {
+        this.gitalk.reset(() => {
+          this.gitalk
+            .getIssue()
+            .then((issue) => {
+              const lockKey = `${type}:${this.gitalk.options.id}`;
+              if (!issue) {
+                if (!this._createIssueLockMap[lockKey]) {
+                  this._createIssueLockMap[lockKey] = true;
+                  return this.createIssue().then(() => {
                     return this.getIssue();
-                  }
+                  });
+                } else {
+                  return this.getIssue();
                 }
-                return issue;
-              })
-              .then((issue) => {
-                this.gitalk.getComments(issue);
-              })
-              .then(() => {
-                this.gitalk.setState({
-                  isIniting: false,
-                });
-                resolve();
-              })
-              .catch((err) => {
-                console.error(err);
-                resolve();
+              }
+              return issue;
+            })
+            .then((issue) => {
+              this.gitalk.getComments(issue);
+            })
+            .then(() => {
+              this.gitalk.setState({
+                isIniting: false,
               });
-          }
-        );
+              resolve();
+            })
+            .catch((err) => {
+              console.error(err);
+              resolve();
+            });
+        });
       }).then(() => {
         if (this._nextTask) {
           this._currentTask = this._nextTask();
@@ -374,3 +372,11 @@ Viewer.init();
 vscode.postMessage({
   command: 'pageReady',
 });
+
+// 资金流向跳转
+const flowBtn = document.querySelector('#flowBtn');
+flowBtn.onclick = function () {
+  vscode.postMessage({
+    command: 'hsgtFund',
+  });
+};

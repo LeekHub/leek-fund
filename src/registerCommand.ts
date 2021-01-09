@@ -175,7 +175,7 @@ export function registerViewEvent(
   // 基金走势图
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(fundService));
   // 资金流向
-  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow(context));
+  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
     LeekFundConfig.setFundTopCfg(target.id, () => {
