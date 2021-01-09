@@ -1,0 +1,70 @@
+.stock-info {
+  &-panel {
+    padding: 8px 12px;
+  }
+  &-header {
+    &__hd {
+      display: flex;
+      align-items: center;
+      line-height: 1.6;
+    }
+    &__bd {
+      margin-top: 10px;
+      display: flex;
+      padding: 12px 0;
+      background-color: var(--vscode-panelSectionHeader-background, #21252b);
+      position: relative;
+      .update-time {
+        top: 0;
+        right: 0;
+        padding: 4px 6px 4px;
+        font-size: 80%;
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        opacity: 0.5;
+      }
+    }
+  }
+  &-name {
+    font-size: 160%;
+  }
+  &-code {
+    margin-left: 6px;
+    font-size: 100%;
+  }
+  &-price {
+    opacity: 0.7;
+    line-height: 1.4;
+    border-right: 1px solid
+      var(--vscode-panelSection-border, rgba(128, 128, 128, 0.35));
+    padding-right: 16px;
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+
+    .current {
+      font-size: 250%;
+      padding: 0 10px;
+      animation: current-price-show 1s ease-out;
+    }
+  }
+  &-base-info-table {
+    .val {
+      padding-right: 12px;
+    }
+    td {
+      line-height: 28px;
+      text-align: left;
+      // padding: 0 2px;
+    }
+  }
+}
+
+@keyframes current-price-show {
+  0% {
+    opacity: .3;
+  }
+  100% {
+    opacity: 1;
+  }
+}

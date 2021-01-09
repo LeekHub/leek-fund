@@ -40,6 +40,7 @@ export interface IAmount {
 
 export interface FundInfo {
   percent: any;
+  yestpercent?: string; // 净值涨跌幅度
   name: string;
   code: string;
   showLabel?: boolean;
@@ -57,6 +58,7 @@ export interface FundInfo {
   updown?: string; // 涨跌值 price-yestclose
   unitPrice?: number; // 成本价格
   priceDate?: string; // 价格日期
+  yestPriceDate?: string; // 最新净值更新日期
   price?: string; // 当前价格
   volume?: string; // 成交量
   amount?: string | number; // 成交额

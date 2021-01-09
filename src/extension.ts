@@ -23,6 +23,7 @@ import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
+import { events } from './shared/utils';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -34,6 +35,8 @@ let flashNewsDaemon: FlashNewsDaemon | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
+
+  globalState.isDevelopment = process.env.NODE_ENV === 'development';
   globalState.context = context;
 
   const telemetry = new Telemetry();
@@ -171,6 +174,7 @@ export function activate(context: ExtensionContext) {
     newsProvider.refresh();
     binanceProvider.refresh();
     flashNewsDaemon?.reload();
+    events.emit('onDidChangeConfiguration');
   });
 
   // register event

@@ -1,0 +1,117 @@
+@layout-body-background: var(--vscode-panel-background, #282c34);
+@layout-header-background: var(--vscode-panelSectionHeader-background, #21252c);
+@layout-footer-background: var(--vscode-panelSectionHeader-background, #21252c);
+@layout-footer-padding:2px 10px;
+@text-color: var(--vscode-foreground, #ccc);
+@heading-color: @text-color;
+@divider-color: var(--vscode-input-placeholderForeground, #fff);
+
+// LINK
+@link-color: var(--vscode-textLink-foreground, #61afef);
+@link-hover-color: var(--vscode-textLink-activeForeground, #3794ff);
+@link-active-color: var(--vscode-textLink-activeForeground, #3794ff);
+
+// Buttons
+@btn-default-color: var(--vscode-button-secondaryForeground, #fff);
+@btn-default-bg: var(--vscode-button-secondaryBackground, #3a3d41);
+@btn-default-border: var(--vscode-button-secondaryBackground, #3a3d41);
+@btn-padding-horizontal-base: 4px;
+
+// Collapse
+// ---
+@collapse-header-padding:2px 4px;
+@collapse-content-bg: var(--vscode-editor-background, #282c34);
+
+//CollapsePanel
+@collapse-header-bg: var(--vscode-titleBar-activeBackground, #282c34);
+@collapse-content-bg: var(--vscode-menu-background, #21252b);
+@collapse-header-padding: 4px 0;
+@collapse-header-padding-extra: 22px;
+@collapse-panel-border-radius: 0;
+@collapse-header-arrow-left: 6px;
+@collapse-content-padding: 0px;
+
+// Card
+// ---
+@card-head-color: var(
+  --vscode-panelTitle-inactiveForeground,
+  rgba(231, 231, 231, 0.6)
+);
+@card-head-background: transparent;
+@card-head-font-size: @font-size-lg;
+@card-head-font-size-sm: @font-size-base;
+@card-head-padding: 8px;
+@card-head-padding-sm: (@card-head-padding / 2);
+@card-head-height: 24px;
+@card-head-height-sm: 16px;
+@card-inner-head-padding: 6px;
+@card-padding-base: 8px;
+@card-padding-base-sm: (@card-padding-base / 2);
+@card-actions-background: @component-background;
+@card-actions-li-margin: 12px 0;
+@card-skeleton-bg: #cfd8dc;
+@card-background: var(--vscode-menu-background, #21252b);
+@card-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+  0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
+@card-radius: 0;
+@card-head-tabs-margin-bottom: -17px;
+@card-head-extra-color: @text-color;
+
+// Modal
+// --
+@modal-header-bg: var(--vscode-titleBar-activeBackground, #282c34);
+@modal-content-bg: var(--vscode-menu-background, #21252b);
+@modal-heading-color: var(
+  --vscode-panelTitle-inactiveForeground,
+  rgba(231, 231, 231, 0.6)
+);
+@modal-close-color: @modal-heading-color;
+@modal-footer-border-color-split: var(
+  --vscode-editorOverviewRuler-border,
+  rgba(127, 127, 127, 0.3)
+);
+@modal-header-border-style: none;
+
+// Input
+@input-placeholder-color: var(
+  --vscode-input-placeholderForeground,
+  rgba(204, 204, 204, 0.5)
+);
+@input-color: var(--vscode-input-foreground, #cccccc);
+@input-icon-color: @input-color;
+@input-border-color: var(
+  --vscode-inputOption-activeBorder,
+  rgba(0, 122, 204, 0)
+);
+@input-bg: var(--vscode-input-background, #1d1f23);
+
+@message-notice-content-bg: var(--vscode-titleBar-activeBackground, #282c34);
+
+.ant-collapse {
+  .ant-collapse-item {
+    border: none;
+    // border-color: var(--vscode-panelSection-border, rgba(128, 128, 128, 0.35));
+  }
+  .ant-collapse-item > .ant-collapse-header {
+    // padding: 4px 0;
+    // padding-left: 22px;
+    color: var(
+      --vscode-panelTitle-inactiveForeground,
+      rgba(231, 231, 231, 0.6)
+    );
+  }
+  .ant-collapse-content {
+    border: none;
+  }
+}
+
+.ant-card{
+  margin-bottom: 10px;
+}
+.ant-card-bordered,
+.ant-card-head {
+  border-color: var(
+    --vscode-editorOverviewRuler-border,
+    rgba(127, 127, 127, 0.3)
+  );
+}

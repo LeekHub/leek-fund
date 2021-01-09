@@ -2,6 +2,7 @@
 .vscode-test/**
 out/test/**
 src/**
+template-packages
 demo/
 screenshot/
 .gitignore
