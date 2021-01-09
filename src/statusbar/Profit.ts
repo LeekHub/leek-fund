@@ -7,6 +7,7 @@
 import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { TIPS_LOSE, TIPS_WIN } from '../shared/constant';
 import { LeekFundConfig } from '../shared/leekConfig';
+import { ProfitStatusBarInfo } from '../shared/typed';
 import { events } from '../shared/utils';
 
 const PREFIX = '💰';
@@ -31,8 +32,8 @@ export class ProfitStatusBar {
       this.fundBarItem.command = 'leek-fund.setFundAmount';
       this.fundBarItem.show();
 
-      const profitUpdateListener = ({ fundProfit = 0, fundProfitPercent = 0, fundAmount = 0 }) => {
-        this.updateFundBarItem(fundProfit, fundProfitPercent, fundAmount);
+      const profitUpdateListener = (data: ProfitStatusBarInfo) => {
+        this.updateFundBarItem(data);
         // this.updateStockBarItem(stockProfit);
       };
       events.on('updateBar:profit-refresh', profitUpdateListener);
@@ -56,12 +57,12 @@ export class ProfitStatusBar {
     }
   }
 
-  updateFundBarItem(fundProfit: number, fundProfitPercent: number, fundAmount: number) {
+  updateFundBarItem({ fundProfit = 0, fundProfitPercent = 0, fundAmount = 0, priceDate = '' }) {
     if (this.fundBarItem) {
       this.fundBarItem.text = `${PREFIX} ${fundProfit}`;
       this.fundBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.fundBarItem.tooltip =
-        `「基金收益统计」` +
+        `「基金收益统计${priceDate}」` +
         [
           ,
           `持仓金额：${fundAmount}元`,

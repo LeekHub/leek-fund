@@ -32,6 +32,7 @@ export default class FundService extends LeekService {
     try {
       let totalAmount = 0; // 总持仓
       let totalProfit = 0; // 总收益
+      let priceDate = '';
       const { Datas = [] } = await FundService.qryFundInfo(fundCodes);
       const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
@@ -44,7 +45,7 @@ export default class FundService extends LeekService {
         let unitPrice = 0;
         let earningPercent = 0;
         let profitPercent = 0;
-        let priceDate = '';
+        priceDate = '';
         // 不填写的时候不计算
         if (keyLength) {
           amount = fundAmountObj[FCODE]?.amount || 0;
@@ -92,6 +93,7 @@ export default class FundService extends LeekService {
         fundProfit: toFixed(totalProfit),
         fundAmount: toFixed(totalAmount),
         fundProfitPercent: toFixed(totalProfit / totalAmount, 2, 100),
+        priceDate: priceDate,
       });
       return this.fundList;
     } catch (err) {

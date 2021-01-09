@@ -12,7 +12,7 @@
       href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="vendors/toastify.css">
+    <link rel="stylesheet" href="vendors/toastify.css" />
     <style>
       body,
       html {
@@ -150,6 +150,7 @@
       <h2 style="text-align: center; color: #409eff">
         持仓金额 <span id="totalMoney"></span>
       </h2>
+
       <p style="font-size: 12px; color: #696666; text-align: center">
         现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额
       </p>
@@ -183,7 +184,7 @@
     </div>
     <div class="qr" style="display: none">
       <div class="imgHACK">
-        <img src="images/qrcode_black.png" alt="">
+        <img src="images/qrcode_black.png" alt="" />
       </div>
     </div>
 
@@ -273,12 +274,13 @@
         });
         list.html(listStr);
         $('#totalMoney').html(totalMoney.toFixed(2));
-
+        // $('#priceDate').html(priceDate || '');
         // 收益统计
         if (totalEarnings !== 0) {
           const color = totalEarnings > 0 ? '#f55151' : 'green';
           let str =
-            '估算收益为： <span style="font-size:18px;color:' +
+            priceDate +
+            ' 估算收益为： <span style="font-size:20px;color:' +
             color +
             '">' +
             totalEarnings.toFixed(2) +

@@ -84,3 +84,10 @@ export enum StockCategory {
   HK = 'HK Stock',
   NODATA = 'Not Support Stock',
 }
+
+export interface ProfitStatusBarInfo {
+  fundProfit: number;
+  fundProfitPercent: number;
+  fundAmount: number;
+  priceDate: string;
+}
