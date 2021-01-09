@@ -92,13 +92,7 @@ function getWebviewContent(panel: WebviewPanel) {
 
   panel.webview.html = getTemplateFileContent(
     'fund-amount.html',
-    _getWebviewResourcesUrl([
-      'vendors/html2canvas.min.js',
-      'vendors/toastify.js',
-      'vendors/canvas-text.js',
-    ]),
-    _getWebviewResourcesUrl(['vendors/toastify.css']),
-    _getWebviewResourcesUrl(['images/qrcode_black.png'])
+    panel.webview
   );
 }
 
