@@ -12,7 +12,7 @@
       href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
       rel="stylesheet"
     />
-    <!-- style assets -->
+    <link rel="stylesheet" href="vendors/toastify.css">
     <style>
       body,
       html {
@@ -183,12 +183,14 @@
     </div>
     <div class="qr" style="display: none">
       <div class="imgHACK">
-        <!-- img assets -->
+        <img src="images/qrcode_black.png" alt="">
       </div>
     </div>
 
     <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-    <!-- script assets -->
+    <script src="vendors/html2canvas.min.js"></script>
+    <script src="vendors/toastify.js"></script>
+    <script src="vendors/canvas-text.js"></script>
     <script>
       const vscode = acquireVsCodeApi();
       const deviceId =

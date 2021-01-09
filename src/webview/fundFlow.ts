@@ -1,5 +1,6 @@
 import { ExtensionContext, ViewColumn, WebviewPanel } from 'vscode';
 import { getTemplateFileContent } from '../shared/utils';
+import globalState from '../globalState';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 function fundFlow(context?: ExtensionContext) {
@@ -11,7 +12,10 @@ function fundFlow(context?: ExtensionContext) {
 }
 
 function getWebViewContent(panel: WebviewPanel) {
-  panel.webview.html = getTemplateFileContent('hsgt.html');
+  panel.webview.html = getTemplateFileContent(
+    'hsgt.html',
+    panel.webview
+  );
 }
 
 export default fundFlow;

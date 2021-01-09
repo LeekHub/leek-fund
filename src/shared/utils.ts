@@ -428,24 +428,46 @@ export function isHoliday(market: string): boolean {
   return false;
 }
 
+function isRemoteLink(link: string) {
+  return /^(https?|vscode-webview-resource|javascript):\/\//.test(link);
+}
+
+function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
+  const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
+  let matcher = LinkRegexp.exec(html);
+
+  while (matcher) {
+    const origin = matcher[0];
+    const originLen = origin.length;
+    const link = matcher[2];
+    if (!isRemoteLink(link)) {
+      let resourceLink = link;
+      try {
+        resourceLink = conversionUrlFn(link);
+        html =
+          html.substring(0, matcher.index) +
+          origin.replace(link, resourceLink) +
+          html.substring(matcher.index + originLen);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    matcher = LinkRegexp.exec(html);
+  }
+  return html;
+}
+
 export function getTemplateFileContent(
   tplName: string,
-  scripts: vscode.Uri[] = [],
-  styles: vscode.Uri[] = [],
-  images: vscode.Uri[] = []
+  webview: vscode.Webview
 ) {
   const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
   const html = fs.readFileSync(tplPath, 'utf-8');
-  return html
-    .replace(
-      '<!-- style assets -->',
-      styles.map((item) => `<link href="${item}" rel="stylesheet">`).join('\n')
-    )
-    .replace(
-      '<!-- script assets -->',
-      scripts.map((item) => `<script src="${item}"></script>`).join('\n')
-    )
-    .replace('<!-- img assets -->', images.map((item) => `<img src="${item}"/>`).join('\n'));
+  return formatHTMLWebviewResourcesUrl(html, (link) => {
+    return webview
+      .asWebviewUri(vscode.Uri.parse([path.parse(tplPath).dir, link].join('/')))
+      .toString();
+  });
 }
 
 export function multi1000(n: number) {

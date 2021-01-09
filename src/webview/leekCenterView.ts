@@ -35,8 +35,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
 
   panel.webview.html = getTemplateFileContent(
     'stocks-view.html',
-    _getWebviewResourcesUrl(['vendors/gitalk.min.js', 'scripts/stocks-view.js']),
-    _getWebviewResourcesUrl(['vendors/gitalk.css', 'styles/stocks-view.css'])
+    panel.webview
   );
 
   panel.webview.onDidReceiveMessage((message) => {
