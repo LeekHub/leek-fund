@@ -374,59 +374,21 @@ vscode.postMessage({
 });
 
 // 资金流向跳转
-const flowBtn = document.querySelector('#flowBtn');
-flowBtn.onclick = function () {
+const hstflowBtn = document.querySelector('#hstflowBtn');
+const mainflowBtn = document.querySelector('#mainflowBtn');
+hstflowBtn.onclick = function () {
   vscode.postMessage({
-    command: 'hsgtFund',
+    command: 'hsgtFundFlow',
   });
 };
-
-/**
-	弹出iframe页面(iframe后面会添加灰色蒙版)
-	**/
-/* function showIframe(url, selector = 'body') {
-  $(
-    "<div id='showMobilePreview'>" +
-      "<div class='mobile_preview_header'><i class='mobile_preview_header_icon'></i></div>" +
-      "<div class='mobile_preview_frame'><iframe id='YuFrameMobilePreview' name='YuFrameMobilePreview'sandbox='allow-same-origin allow-forms allow-scripts' ></iframe></div>" +
-      "<div class='mobile_preview_footer'><i class='mobile_preview_footer_icon'></i></div>" +
-      '</div>'
-  ).prependTo(selector);
-
-  $('#YuFrameMobilePreview').attr('src', url);
-  //添加背景遮罩
-  $(
-    "<div id='YuFrameMobilePreviewBg' style='cursor:pointer;width:100%;height:100%;background-color: Gray;display:block;z-index:9998;position:absolute;left:0px;top:0px;filter:Alpha(Opacity=30);opacity: 0.4; '/>"
-  ).prependTo(selector);
-
-  //点击背景遮罩移除iframe和背景
-  $('#YuFrameMobilePreviewBg').click(function () {
-    $('#showMobilePreview').remove();
-    $('#YuFrameMobilePreviewBg').remove();
+mainflowBtn.onclick = function () {
+  vscode.postMessage({
+    command: 'mainFundFlow',
   });
-}
- */
-// 无法伪造iframe代理;
-
-/* function setUserAgent(window, userAgent) {
-  if (window.navigator.userAgent !== userAgent) {
-    var userAgentProp = {
-      get: function () {
-        return userAgent;
-      },
-    };
-    try {
-      Object.defineProperty(window.navigator, 'userAgent', userAgentProp);
-    } catch (e) {
-      window.navigator = Object.create(navigator, {
-        userAgent: userAgentProp,
-      });
-    }
-  }
-}
-setUserAgent(
-  document.querySelector('#iframeEl').contentWindow,
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
-); */
-
-// showIframe('https://support.qq.com/embed/phone/302926', '#gitalk-container');
+};
+// 社区
+document.querySelector('#tucaoBtn').onclick = function () {
+  vscode.postMessage({
+    command: 'tucaoForum',
+  });
+};

@@ -1,15 +1,14 @@
-import { commands, Uri, ViewColumn, Webview, window, authentication } from 'vscode';
-import { LeekTreeItem } from '../shared/leekTreeItem';
-import globalState from '../globalState';
-import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { getTemplateFileContent, getWebviewResourcesUrl } from '../shared/utils';
-import { events } from '../shared/utils';
-import { LeekFundConfig } from '../shared/leekConfig';
-import StockService from '../explorer/stockService';
-
 import { EventEmitter } from 'events';
+import { authentication, Uri, ViewColumn, Webview, window } from 'vscode';
 import FundService from '../explorer/fundService';
-import fundFlow from './fundFlow';
+import StockService from '../explorer/stockService';
+import globalState from '../globalState';
+import { LeekFundConfig } from '../shared/leekConfig';
+import { LeekTreeItem } from '../shared/leekTreeItem';
+import { events, getTemplateFileContent, getWebviewResourcesUrl } from '../shared/utils';
+import fundFlow, { mainFundFlow } from './fundFlow';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
+import tucaoForum from './tucaoForum';
 
 let _INITED = false;
 
@@ -33,10 +32,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
     return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
   };
 
-  panel.webview.html = getTemplateFileContent(
-    'stocks-view.html',
-    panel.webview
-  );
+  panel.webview.html = getTemplateFileContent('stocks-view.html', panel.webview);
 
   panel.webview.onDidReceiveMessage((message) => {
     panelEvents.emit('onDidReceiveMessage', message);
@@ -50,8 +46,14 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
       case 'pageReady':
         panelEvents.emit('pageReady');
         return;
-      case 'hsgtFund':
+      case 'hsgtFundFlow':
         fundFlow();
+        return;
+      case 'mainFundFlow':
+        mainFundFlow();
+        return;
+      case 'tucaoForum':
+        tucaoForum();
         return;
     }
   }, undefined);
