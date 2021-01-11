@@ -435,7 +435,7 @@ export function isHoliday(market: string): boolean {
 }
 
 function isRemoteLink(link: string) {
-  return /^(https?|vscode-webview-resource|javascript):\/\//.test(link);
+  return /^(https?|vscode-webview-resource|javascript):/.test(link);
 }
 
 function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
@@ -463,12 +463,17 @@ function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: str
   return html;
 }
 
-export function getTemplateFileContent(tplName: string, webview: vscode.Webview) {
-  const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
+export function getTemplateFileContent(tplPaths: string | string[], webview: vscode.Webview) {
+  if (!Array.isArray(tplPaths)) {
+    tplPaths = [tplPaths];
+  }
+  const tplPath = path.join(globalState.context.extensionPath, 'template', ...tplPaths);
   const html = fs.readFileSync(tplPath, 'utf-8');
+  const extensionUri = globalState.context.extensionUri;
+  const dirUri = tplPaths.slice(0, -1).join('/');
   return formatHTMLWebviewResourcesUrl(html, (link) => {
     return webview
-      .asWebviewUri(vscode.Uri.parse([path.parse(tplPath).dir, link].join('/')))
+      .asWebviewUri(vscode.Uri.parse([extensionUri, 'template', dirUri, link].join('/')))
       .toString();
   });
 }
