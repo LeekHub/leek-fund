@@ -25,7 +25,13 @@ export const objectToQueryString = (queryParameters: Object): string => {
     : '';
 };
 
-export const formatDate = (date: Date, seperator = '-') => {
+export const formatDate = (val: Date | string | undefined, seperator = '-') => {
+  let date = new Date();
+  if (typeof val === 'object') {
+    date = val;
+  } else {
+    date = new Date(val || '');
+  }
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -457,10 +463,7 @@ function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: str
   return html;
 }
 
-export function getTemplateFileContent(
-  tplName: string,
-  webview: vscode.Webview
-) {
+export function getTemplateFileContent(tplName: string, webview: vscode.Webview) {
   const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
   const html = fs.readFileSync(tplPath, 'utf-8');
   return formatHTMLWebviewResourcesUrl(html, (link) => {

@@ -9,6 +9,7 @@ import {
   sortData,
   toFixed,
   events,
+  formatDate,
 } from '../shared/utils';
 import { LeekService } from './leekService';
 import { executeStocksRemind } from '../shared/remindNotification';
@@ -32,7 +33,7 @@ export default class FundService extends LeekService {
     try {
       let totalAmount = 0; // 总持仓
       let totalProfit = 0; // 总收益
-      let priceDate = '';
+      let updateTime = ''; // 更新时间
       const { Datas = [] } = await FundService.qryFundInfo(fundCodes);
       const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
@@ -45,7 +46,7 @@ export default class FundService extends LeekService {
         let unitPrice = 0;
         let earningPercent = 0;
         let profitPercent = 0;
-        priceDate = '';
+        let priceDate = '';
         // 不填写的时候不计算
         if (keyLength) {
           amount = fundAmountObj[FCODE]?.amount || 0;
@@ -78,7 +79,7 @@ export default class FundService extends LeekService {
           time: GSZZL === '--' ? PDATE : GZTIME, // 更新时间
           showEarnings: keyLength > 0 && amount !== 0,
         };
-
+        updateTime = obj.time;
         totalAmount += amount;
         totalProfit += earnings;
         return new LeekTreeItem(obj, this.context);
@@ -93,7 +94,7 @@ export default class FundService extends LeekService {
         fundProfit: toFixed(totalProfit),
         fundAmount: toFixed(totalAmount),
         fundProfitPercent: toFixed(totalProfit / totalAmount, 2, 100),
-        priceDate: priceDate,
+        priceDate: formatDate(updateTime),
       });
       return this.fundList;
     } catch (err) {

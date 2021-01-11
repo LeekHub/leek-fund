@@ -76,7 +76,7 @@ function fundDataHandler(fundService: FundService) {
       amount: amountObj[item.info?.code]?.amount || 0,
       earningPercent: item.info?.earningPercent,
       unitPrice: item.info?.unitPrice,
-      priceDate: item.info?.priceDate,
+      priceDate: formatDate(item.info?.time),
       earnings: item.info?.earnings || 0,
       yestEarnings: amountObj[item.info.code]?.earnings || 0,
     };
@@ -90,10 +90,7 @@ function getWebviewContent(panel: WebviewPanel) {
     return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
   };
 
-  panel.webview.html = getTemplateFileContent(
-    'fund-amount.html',
-    panel.webview
-  );
+  panel.webview.html = getTemplateFileContent('fund-amount.html', panel.webview);
 }
 
 function setAmountCfgCb(data: IAmount[]) {
