@@ -1,5 +1,7 @@
 import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/fundSuggestData';
+import { BinanceProvider } from './explorer/binanceProvider';
+import BinanceService from './explorer/binanceService';
 import { FundProvider } from './explorer/fundProvider';
 import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
@@ -7,6 +9,7 @@ import { NewsService } from './explorer/newsService';
 import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
+import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
 import checkForUpdate from './shared/update';
@@ -18,14 +21,12 @@ import fundHistory from './webview/fundHistory';
 import fundPosition from './webview/fundPosition';
 import fundRank from './webview/fundRank';
 import fundTrend from './webview/fundTrend';
+import leekCenterView from './webview/leekCenterView';
 import openNews from './webview/news';
 import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
-import leekCenterView from './webview/leekCenterView';
-import { BinanceProvider } from './explorer/binanceProvider';
-import BinanceService from './explorer/binanceService';
-import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import tucaoForum from './webview/tucaoForum';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -175,7 +176,7 @@ export function registerViewEvent(
   // 基金走势图
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(fundService));
   // 资金流向
-  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow(context));
+  commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
     LeekFundConfig.setFundTopCfg(target.id, () => {
@@ -448,6 +449,7 @@ export function registerViewEvent(
   );
 
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
+  context.subscriptions.push(commands.registerCommand('leek-fund.tucaoForum', () => tucaoForum()));
 
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleRemindSwitch', (on?: number) => {

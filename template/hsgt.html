@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>沪深通资金流向</title>
+    <link
+      href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div style="overflow-x: auto; min-width: 800px">
+      <button
+        id="refreshBtn"
+        class="el-button el-button--primary el-button--mini"
+        style="position: fixed; right: 10px; top: 20px"
+      >
+        刷新
+      </button>
+      <iframe
+        id="iframeEl"
+        src="https://emrnweb.eastmoney.com/hsgt/home"
+        frameborder="0"
+        style="width: 100%; height: 900px"
+      ></iframe>
+    </div>
+    <script>
+      document.querySelector('#refreshBtn').onclick = function (e) {
+        e.preventDefault();
+        iframeEl.src = '';
+        iframeEl.src = 'https://emrnweb.eastmoney.com/hsgt/home';
+      };
+    </script>
+  </body>
+</html>

@@ -24,7 +24,7 @@ export enum TreeItemType {
   /** 股票 */
   STOCK = 'stock',
   /** 币安 */
-  BINANCE = 'binance'
+  BINANCE = 'binance',
 }
 
 export interface IAmount {
@@ -56,6 +56,7 @@ export interface FundInfo {
   time?: string;
   updown?: string; // 涨跌值 price-yestclose
   unitPrice?: number; // 成本价格
+  priceDate?: string; // 价格日期
   price?: string; // 当前价格
   volume?: string; // 成交量
   amount?: string | number; // 成交额
@@ -66,7 +67,7 @@ export interface FundInfo {
   isUpdated?: boolean;
   showEarnings?: boolean;
   isStock?: boolean;
-  _itemType?: TreeItemType
+  _itemType?: TreeItemType;
 }
 
 export const defaultFundInfo: FundInfo = {
@@ -82,4 +83,11 @@ export enum StockCategory {
   US = 'US Stock',
   HK = 'HK Stock',
   NODATA = 'Not Support Stock',
+}
+
+export interface ProfitStatusBarInfo {
+  fundProfit: number;
+  fundProfitPercent: number;
+  fundAmount: number;
+  priceDate: string;
 }

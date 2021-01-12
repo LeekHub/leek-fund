@@ -20,7 +20,6 @@ export default class BinanceService extends LeekService {
   constructor(context: ExtensionContext) {
     super();
     this.context = context;
-    console.log(this.context);
   }
 
   /** 获取支持的交易对 */
@@ -33,8 +32,10 @@ export default class BinanceService extends LeekService {
         error: err,
       });
     });
-    // console.log(res);
-    return res?.data?.symbols?.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
+    if (res && res.data) {
+      return res.data.symbols?.map((i: any) => `${i.baseAsset}_${i.quoteAsset}`);
+    }
+    return [''];
   }
 
   async _fetchPairData(symbolWithSplit: string): Promise<any> {
@@ -59,13 +60,12 @@ export default class BinanceService extends LeekService {
     const promises = codes.map((i) => this._fetchPairData(i));
     // @ts-ignore
     const results = await Promise.allSettled(promises);
-    console.log(results);
+    // console.log('results=', results);
 
     for (const item of results) {
       // @ts-ignore
       const { status, value = {} } = item || {};
-      if (status === 'fulfilled') {
-        // status === 'fulfilled'
+      if (status === 'fulfilled' && value.data) {
         const {
           data: { data },
           symbol,
@@ -94,7 +94,7 @@ export default class BinanceService extends LeekService {
           id: symbol,
           code: '',
           percent: '0',
-          name: symbol,
+          name: symbol + '网络错误',
           showLabel: this.showLabel,
           _itemType: TreeItemType.BINANCE,
         };
