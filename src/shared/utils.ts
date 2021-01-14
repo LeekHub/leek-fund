@@ -25,7 +25,13 @@ export const objectToQueryString = (queryParameters: Object): string => {
     : '';
 };
 
-export const formatDate = (date: Date, seperator = '-') => {
+export const formatDate = (val: Date | string | undefined, seperator = '-') => {
+  let date = new Date();
+  if (typeof val === 'object') {
+    date = val;
+  } else {
+    date = new Date(val || '');
+  }
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -173,7 +179,11 @@ export const formatTreeText = (text = '', num = 10): string => {
 };
 
 export const caculateEarnings = (money: number, price: number, currentPrice: number): number => {
-  return (money / price) * currentPrice - money;
+  if (Number(currentPrice) > 0) {
+    return (money / price) * currentPrice - money;
+  } else {
+    return 0;
+  }
 };
 
 export const colorOptionList = (): QuickPickItem[] => {
@@ -428,24 +438,48 @@ export function isHoliday(market: string): boolean {
   return false;
 }
 
-export function getTemplateFileContent(
-  tplName: string,
-  scripts: vscode.Uri[] = [],
-  styles: vscode.Uri[] = [],
-  images: vscode.Uri[] = []
-) {
-  const tplPath = path.join(globalState.context.extensionPath, 'template', tplName);
+function isRemoteLink(link: string) {
+  return /^(https?|vscode-webview-resource|javascript):/.test(link);
+}
+
+export function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
+  const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
+  let matcher = LinkRegexp.exec(html);
+
+  while (matcher) {
+    const origin = matcher[0];
+    const originLen = origin.length;
+    const link = matcher[2];
+    if (!isRemoteLink(link)) {
+      let resourceLink = link;
+      try {
+        resourceLink = conversionUrlFn(link);
+        html =
+          html.substring(0, matcher.index) +
+          origin.replace(link, resourceLink) +
+          html.substring(matcher.index + originLen);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    matcher = LinkRegexp.exec(html);
+  }
+  return html;
+}
+
+export function getTemplateFileContent(tplPaths: string | string[], webview: vscode.Webview) {
+  if (!Array.isArray(tplPaths)) {
+    tplPaths = [tplPaths];
+  }
+  const tplPath = path.join(globalState.context.extensionPath, 'template', ...tplPaths);
   const html = fs.readFileSync(tplPath, 'utf-8');
-  return html
-    .replace(
-      '<!-- style assets -->',
-      styles.map((item) => `<link href="${item}" rel="stylesheet">`).join('\n')
-    )
-    .replace(
-      '<!-- script assets -->',
-      scripts.map((item) => `<script src="${item}"></script>`).join('\n')
-    )
-    .replace('<!-- img assets -->', images.map((item) => `<img src="${item}"/>`).join('\n'));
+  const extensionUri = globalState.context.extensionUri;
+  const dirUri = tplPaths.slice(0, -1).join('/');
+  return formatHTMLWebviewResourcesUrl(html, (link) => {
+    return webview
+      .asWebviewUri(vscode.Uri.parse([extensionUri, 'template', dirUri, link].join('/')))
+      .toString();
+  });
 }
 
 export function multi1000(n: number) {

@@ -37,6 +37,11 @@ function stockTrend(code: string, name: string, stockCode: string) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>股票走势</title>
+    <style>
+    html.vscode-dark, body.vscode-dark, html.vscode-high-contrast, body.vscode-high-contrast {
+      filter: invert(100%) hue-rotate(180deg);
+    }
+    </style>
   </head>
   <body>
     <div  style="min-width: 1320px; overflow-x:auto">

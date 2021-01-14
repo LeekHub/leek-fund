@@ -21,6 +21,7 @@ import { Telemetry } from './shared/telemetry';
 import { SortType } from './shared/typed';
 import { formatDate, isStockTime } from './shared/utils';
 import { StatusBar } from './statusbar/statusBar';
+import { ProfitStatusBar } from './statusbar/Profit';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { events } from './shared/utils';
@@ -32,6 +33,7 @@ let stockTreeView: TreeView<any> | null = null;
 let binanceTreeView: TreeView<any> | null = null;
 
 let flashNewsDaemon: FlashNewsDaemon | null = null;
+let profitBar: ProfitStatusBar | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
@@ -65,6 +67,7 @@ export function activate(context: ExtensionContext) {
   const newsProvider = new NewsProvider();
 
   const statusBar = new StatusBar(stockService, fundService);
+  profitBar = new ProfitStatusBar();
 
   // create fund & stock side views
   fundTreeView = window.createTreeView('leekFundView.fund', {
@@ -85,18 +88,8 @@ export function activate(context: ExtensionContext) {
 
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
-    fundService.getData(
-      LeekFundConfig.getConfig('leek-fund.funds'),
-      SortType.NORMAL
-    ); /* .then(() => {
-      statusBar.refresh();
-    }); */
-    stockService.getData(
-      LeekFundConfig.getConfig('leek-fund.stocks'),
-      SortType.NORMAL
-    ); /* .then(() => {
-      statusBar.refresh();
-    }); */
+    fundService.getData(LeekFundConfig.getConfig('leek-fund.funds'), SortType.NORMAL);
+    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL);
   };
 
   manualRequest();
@@ -157,7 +150,7 @@ export function activate(context: ExtensionContext) {
         }
       },
       // intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
-      300000 // 该功能纯在网络问题（有vpn都无法请求通），这里故意设置长时间
+      300000 // 该功能存在网络问题（一些网络有vpn都无法请求通），这里故意设置长时间
     );
   };
 
@@ -175,6 +168,7 @@ export function activate(context: ExtensionContext) {
     binanceProvider.refresh();
     flashNewsDaemon?.reload();
     events.emit('onDidChangeConfiguration');
+    profitBar?.reload();
   });
 
   // register event
@@ -218,6 +212,7 @@ function setGlobalVariable() {
 export function deactivate() {
   console.log('🐥deactivate');
   flashNewsDaemon?.destory();
+  profitBar?.destroy();
   if (loopTimer) {
     clearInterval(loopTimer);
     loopTimer = null;
