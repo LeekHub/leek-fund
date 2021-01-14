@@ -179,7 +179,11 @@ export const formatTreeText = (text = '', num = 10): string => {
 };
 
 export const caculateEarnings = (money: number, price: number, currentPrice: number): number => {
-  return (money / price) * currentPrice - money;
+  if (Number(currentPrice) > 0) {
+    return (money / price) * currentPrice - money;
+  } else {
+    return 0;
+  }
 };
 
 export const colorOptionList = (): QuickPickItem[] => {
