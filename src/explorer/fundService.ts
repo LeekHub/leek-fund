@@ -2,17 +2,20 @@ import Axios from 'axios';
 import { ExtensionContext } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
+import { executeStocksRemind } from '../shared/remindNotification';
 import {
   caculateEarnings,
-  objectToQueryString,
+
+
+
+
+  events,
+  formatDate, objectToQueryString,
   randHeader,
   sortData,
-  toFixed,
-  events,
-  formatDate,
+  toFixed
 } from '../shared/utils';
 import { LeekService } from './leekService';
-import { executeStocksRemind } from '../shared/remindNotification';
 
 const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=`;
 
@@ -54,7 +57,7 @@ export default class FundService extends LeekService {
           priceDate = fundAmountObj[FCODE]?.priceDate || '';
           const price = fundAmountObj[FCODE]?.price || 0;
           const yestEarnings = fundAmountObj[FCODE]?.earnings || 0;
-          const latestProfit = caculateEarnings(amount, price, GSZ);
+          const latestProfit = toFixed(caculateEarnings(amount, price, GSZ));
           // 闭市的时候显示上一次盈亏
           earnings = amount === 0 ? 0 : isUpdated ? yestEarnings : latestProfit;
           profitPercent = (price - unitPrice) / unitPrice;
