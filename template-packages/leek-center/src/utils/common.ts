@@ -60,3 +60,15 @@ export const formatNumber = (
   }
   return `${num.toFixed(fixed)}`;
 };
+
+export async function fetchTryHandler<S>(fn: (...args: any[]) => Promise<S>, ...args: any[]) {
+  let result: S | undefined = void 0;
+  try {
+    if (!fn) return result;
+    result = await fn.apply(void 0, args);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    return result;
+  }
+}

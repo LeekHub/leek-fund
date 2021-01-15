@@ -1,9 +1,9 @@
-import { Layout, Space, Divider } from 'antd';
+import { Layout } from 'antd';
 import LHeader from './components/layout/Header';
 import LFooter from './components/layout/Footer';
 import routes from './router-config';
 import { Switch, Route, Redirect } from 'react-router-dom';
-const { Header, Content, Sider } = Layout;
+const { Content } = Layout;
 
 function App() {
   return (

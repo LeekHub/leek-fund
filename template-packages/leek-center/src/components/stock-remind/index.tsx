@@ -1,4 +1,4 @@
-import { Button, Card, Modal } from 'antd';
+import { Button, Card } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { MinusOutlined } from '@ant-design/icons';
 

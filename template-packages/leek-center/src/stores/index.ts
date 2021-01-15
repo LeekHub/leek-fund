@@ -1,7 +1,9 @@
 import stock from './stock.store';
 import fund from './fund.store';
 
-export default {
+const store = {
   stock,
   fund,
 };
+
+export default store;

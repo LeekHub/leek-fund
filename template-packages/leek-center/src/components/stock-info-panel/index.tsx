@@ -1,14 +1,12 @@
 import { LeekTreeItem } from '@/../types/shim-background';
-import { Layout, Card, Row, Col, Tooltip } from 'antd';
+import { Layout, Card, Tooltip, Spin } from 'antd';
 import StockInfoHeader from './info-header';
 import StockRemind from '../stock-remind';
-import { fetchHexin } from '@/utils/fetch';
-import { formatNumber, updownClassName } from '@/utils/common';
-import { classes } from '@/utils/ui';
+import { formatNumber } from '@/utils/common';
 
 import './index.less';
-import { useEffect } from 'react';
 import { useXinheData } from './services';
+import { useHistory } from 'react-router-dom';
 
 const { Content, Sider } = Layout;
 
@@ -18,7 +16,10 @@ const { Content, Sider } = Layout;
  * @returns
  */
 function renderOrganizationReports(xinheData: StockXinHeDataType) {
-  if (!xinheData.organizationReports || !xinheData.organizationReports.length)
+  if (
+    !xinheData.hotData?.organizationReports ||
+    !xinheData.hotData?.organizationReports.length
+  )
     return null;
 
   return (
@@ -26,7 +27,7 @@ function renderOrganizationReports(xinheData: StockXinHeDataType) {
       <table style={{ width: '100%' }}>
         <thead>
           <tr>
-            {xinheData.organizationReports[0].map((r) => {
+            {xinheData.hotData.organizationReports[0].map((r) => {
               return (
                 <th
                   key={r.title}
@@ -37,7 +38,7 @@ function renderOrganizationReports(xinheData: StockXinHeDataType) {
           </tr>
         </thead>
         <tbody>
-          {xinheData.organizationReports.map((or, index) => (
+          {xinheData.hotData.organizationReports.map((or, index) => (
             <tr key={index}>
               {or.map((r) => (
                 <td key={r.title}>
@@ -67,7 +68,8 @@ function renderCommunityData(xinheData: StockXinHeDataType | undefined) {
   return (
     <Card title="社区热度">
       <p>
-        同花顺人气热度：{xinheData?.hot ? formatNumber(xinheData.hot) : '--'}
+        同花顺人气热度：
+        {xinheData?.hotData?.hot ? formatNumber(xinheData.hotData?.hot) : '--'}
       </p>
       <p>雪球社区关注量：-- </p>
     </Card>
@@ -80,10 +82,10 @@ function renderCommunityData(xinheData: StockXinHeDataType | undefined) {
 function renderPriceWarningTips(xinheData: StockXinHeDataType | undefined) {
   return (
     <Card title="止盈止损价">
-      <p>压力位：{xinheData?.ylw ?? '--'}</p>
-      <p>支撑位：{xinheData?.zcw ?? '--'}</p>
-      <p>止盈位：{xinheData?.zyw ?? '--'}</p>
-      <p>止损位：{xinheData?.zsw ?? '--'}</p>
+      <p>压力位：{xinheData?.hotData?.ylw ?? '--'}</p>
+      <p>支撑位：{xinheData?.hotData?.zcw ?? '--'}</p>
+      <p>止盈位：{xinheData?.hotData?.zyw ?? '--'}</p>
+      <p>止损位：{xinheData?.hotData?.zsw ?? '--'}</p>
     </Card>
   );
 }
@@ -137,7 +139,7 @@ function renderConcept(xinheData: StockXinHeDataType) {
               >
                 {c.content ? (
                   <Tooltip title={c.content}>
-                    <a>{c.title}</a>
+                    <a href="void(0)">{c.title}</a>
                   </Tooltip>
                 ) : (
                   c.title
@@ -152,22 +154,27 @@ function renderConcept(xinheData: StockXinHeDataType) {
 }
 
 export default function StockInfoPanel({ stock }: { stock: LeekTreeItem }) {
-  const { xinheData } = useXinheData(stock);
+  let history = useHistory();
+  console.log('history: ', history);
+
+  const { xinheData, loading } = useXinheData(stock);
   return (
     <div className="stock-info-panel">
       <StockInfoHeader stock={stock}></StockInfoHeader>
-      <Layout style={{ marginTop: 10 }}>
-        <Content style={{ marginRight: 10 }}>
-          {!!xinheData && renderNiuxTips(xinheData)}
-          {!!xinheData && renderConcept(xinheData)}
-          {!!xinheData && renderOrganizationReports(xinheData)}
-        </Content>
-        <Sider style={{ background: 'none' }}>
-          <StockRemind stock={stock} />
-          {renderPriceWarningTips(xinheData)}
-          {renderCommunityData(xinheData)}
-        </Sider>
-      </Layout>
+      <Spin spinning={loading} delay={200} tip="loading">
+        <Layout style={{ marginTop: 10 }}>
+          <Content style={{ marginRight: 10 }}>
+            {!!xinheData && renderNiuxTips(xinheData)}
+            {!!xinheData && renderConcept(xinheData)}
+            {!!xinheData && renderOrganizationReports(xinheData)}
+          </Content>
+          <Sider style={{ background: 'none' }}>
+            <StockRemind stock={stock} />
+            {renderPriceWarningTips(xinheData)}
+            {renderCommunityData(xinheData)}
+          </Sider>
+        </Layout>
+      </Spin>
     </div>
   );
 }

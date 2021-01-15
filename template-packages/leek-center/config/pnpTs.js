@@ -1,4 +1,4 @@
-'use strict';
+
 
 const { resolveModuleName } = require('ts-pnp');
 

@@ -16,7 +16,7 @@ import checkForUpdate from './shared/update';
 import { colorOptionList, randomColor } from './shared/utils';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
-import fundFlow from './webview/fundFlow';
+import fundFlow, { mainFundFlow } from './webview/fundFlow';
 import fundHistory from './webview/fundHistory';
 import fundPosition from './webview/fundPosition';
 import fundRank from './webview/fundRank';
@@ -177,6 +177,7 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(fundService));
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
+  commands.registerCommand('leek-fund.viewMainFundFlow', () => mainFundFlow());
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
     LeekFundConfig.setFundTopCfg(target.id, () => {

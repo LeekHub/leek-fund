@@ -28,6 +28,7 @@ class StockStore {
           this.stockPanelInfo = stock;
           return true;
         }
+        return false
       });
     }
   }

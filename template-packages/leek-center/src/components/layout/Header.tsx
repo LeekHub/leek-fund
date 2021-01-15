@@ -1,6 +1,5 @@
-import { Layout, Space, Divider, Button, Menu } from 'antd';
+import { Layout, Menu } from 'antd';
 import Styles from './Header.module.less';
-import { postMessage } from '@/utils/common';
 import { useHistory } from 'react-router-dom';
 import { MenuInfo } from 'rc-menu/lib/interface';
 import { useEffect, useState } from 'react';
@@ -11,13 +10,18 @@ export default function LHeader() {
   let history = useHistory();
 
   const [defaultSelectedKeys, setDefaultSelectedKeys] = useState('');
+
   useEffect(() => {
     const currentRootPathname = history.location.pathname.split('/')[1];
     setDefaultSelectedKeys('/' + currentRootPathname);
-  }, [history.location.pathname]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log('defaultSelectedKeys: ', defaultSelectedKeys);
 
   function handleClick(e: MenuInfo) {
-    history.push(e.key.toString());
+    setDefaultSelectedKeys(e.key.toString());
+    history.replace(e.key.toString());
   }
 
   return (

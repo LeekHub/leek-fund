@@ -77,7 +77,8 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
         window.showErrorMessage('[开发] 获取 http://localhost:3030/ 失败，请先启动服务');
       });
   } else {
-    panel.webview.html = getTemplateFileContent('stocks-view.html', panel.webview);
+    console.log(getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview));
+    panel.webview.html = getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview);
   }
 }
 

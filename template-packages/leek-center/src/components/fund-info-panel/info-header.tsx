@@ -1,9 +1,8 @@
-import { FundInfo, LeekTreeItem } from '@/../types/shim-background';
+import { LeekTreeItem } from '@/../types/shim-background';
 import { Space, Button } from 'antd';
 import { updownClassName, postMessage } from '@/utils/common';
 import { classes } from '@/utils/ui';
-import { useEffect, useState, Fragment } from 'react';
-import fetch from '@/utils/fetch';
+import { Fragment } from 'react';
 
 const FundMoreDataKeyMapLabel: Record<string, string> = {
   latest1m: '近1个月',
@@ -19,7 +18,7 @@ export default function StockInfoHeader({
   fundInfoMoreData,
 }: {
   fund: LeekTreeItem;
-  fundInfoMoreData: FundMoreDataType | undefined;
+  fundInfoMoreData: FundData;
 }) {
   console.log('fundInfoMoreData: ', fundInfoMoreData);
   const { info } = fund;
@@ -75,13 +74,13 @@ export default function StockInfoHeader({
         </div>
 
         <div className="stock-info-base-info">
-          {fundInfoMoreData && (
+          {!!fundInfoMoreData.baseData && (
             <table className="stock-info-base-info-table">
               <tbody>
                 {([
                   ['latest1m', 'latest3m', 'latest6m'],
                   ['latest12m', 'latest36m', 'sinceToday'],
-                ] as (keyof FundMoreDataType)[][]).map((keyArr, index) => (
+                ] as (keyof FundBaseData)[][]).map((keyArr, index) => (
                   <tr key={'tr_' + index}>
                     {keyArr.map((key) => (
                       <Fragment key={'label_' + (key as string)}>
@@ -91,13 +90,14 @@ export default function StockInfoHeader({
                             'val',
                             info &&
                               (parseFloat(
-                                fundInfoMoreData[key]?.toString() ?? '0'
+                                fundInfoMoreData.baseData![key]?.toString() ??
+                                  '0'
                               ) > 0
                                 ? 'red'
                                 : 'green')
                           )}
                         >
-                          {fundInfoMoreData[key]}
+                          {fundInfoMoreData.baseData![key]}
                         </td>
                       </Fragment>
                     ))}

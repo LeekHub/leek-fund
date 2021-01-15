@@ -11,11 +11,12 @@ export default function LFooter() {
         split={<Divider type="vertical" />}
       >
         <Button
-          href="https://support.qq.com/products/302926"
-          target="_blank"
+          onClick={() => {
+            postMessage('executeCommand', 'leek-fund.tucaoForum');
+          }}
           type="link"
         >
-          🌐 韭菜盒子社区
+          韭菜盒子社区
         </Button>
         <Button
           onClick={() => {
@@ -23,7 +24,15 @@ export default function LFooter() {
           }}
           type="link"
         >
-          🏦 资金流向
+          北向资金流向
+        </Button>
+        <Button
+          onClick={() => {
+            postMessage('executeCommand', 'leek-fund.viewMainFundFlow');
+          }}
+          type="link"
+        >
+          主力资金流向
         </Button>
       </Space>
     </Footer>

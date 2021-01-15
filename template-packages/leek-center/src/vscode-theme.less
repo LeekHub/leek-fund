@@ -20,7 +20,6 @@
 // Collapse
 // ---
 @collapse-header-padding:2px 4px;
-@collapse-content-bg: var(--vscode-editor-background, #282c34);
 
 //CollapsePanel
 @collapse-header-bg: var(--vscode-titleBar-activeBackground, #282c34);
@@ -56,6 +55,45 @@
 @card-radius: 0;
 @card-head-tabs-margin-bottom: -17px;
 @card-head-extra-color: @text-color;
+
+// Table
+// --
+@table-bg: transparent;
+@table-header-bg: transparent;
+@table-header-color: @card-head-color;
+@table-header-sort-bg: @background-color-base;
+@table-body-sort-bg: #fafafa;
+@table-row-hover-bg: transparent;
+@table-selected-row-color: inherit;
+@table-selected-row-bg: @primary-1;
+@table-body-selected-sort-bg: @table-selected-row-bg;
+@table-selected-row-hover-bg: darken(@table-selected-row-bg, 2%);
+@table-expanded-row-bg: #fbfbfb;
+@table-padding-vertical: 16px;
+@table-padding-horizontal: 16px;
+@table-padding-vertical-md: (@table-padding-vertical * 3 / 4);
+@table-padding-horizontal-md: (@table-padding-horizontal / 2);
+@table-padding-vertical-sm: (@table-padding-vertical / 2);
+@table-padding-horizontal-sm: (@table-padding-horizontal / 2);
+@table-border-radius-base: @border-radius-base;
+@table-footer-bg: @background-color-light;
+@table-footer-color: @heading-color;
+@table-header-bg-sm: @table-header-bg;
+@table-font-size: @font-size-base;
+@table-font-size-md: @table-font-size;
+@table-font-size-sm: @table-font-size;
+// Sorter
+// Legacy: `table-header-sort-active-bg` is used for hover not real active
+@table-header-sort-active-bg: darken(@table-header-bg, 3%);
+// Filter
+@table-header-filter-active-bg: darken(@table-header-sort-active-bg, 5%);
+@table-filter-btns-bg: inherit;
+@table-filter-dropdown-bg: @component-background;
+@table-expand-icon-bg: @component-background;
+@table-selection-column-width: 32px;
+// Sticky
+@table-sticky-scroll-bar-bg: fade(#000, 35%);
+@table-sticky-scroll-bar-radius: 4px;
 
 // Modal
 // --
@@ -105,7 +143,7 @@
   }
 }
 
-.ant-card{
+.ant-card {
   margin-bottom: 10px;
 }
 .ant-card-bordered,
@@ -114,4 +152,22 @@
     --vscode-editorOverviewRuler-border,
     rgba(127, 127, 127, 0.3)
   );
+}
+
+.ant-spin-dot-item {
+  background: @link-color;
+}
+.ant-spin {
+  color: @link-color;
+}
+.ant-spin-nested-loading > div > .ant-spin .ant-spin-text {
+  text-shadow: none;
+}
+.ant-spin-container::after {
+  background: @layout-body-background;
+}
+
+.ant-table-tbody tr td.ant-table-cell {
+  border-bottom: 1px solid
+    var(--vscode-editorOverviewRuler-border, rgba(127, 127, 127, 0.3));
 }

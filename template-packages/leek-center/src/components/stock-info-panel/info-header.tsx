@@ -1,5 +1,5 @@
 import { LeekTreeItem } from '@/../types/shim-background';
-import { Space, Button } from 'antd';
+import { Space } from 'antd';
 import { updownClassName } from '@/utils/common';
 import { classes } from '@/utils/ui';
 

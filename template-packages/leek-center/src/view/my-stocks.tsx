@@ -1,6 +1,4 @@
-import { Layout, Space, Divider } from 'antd';
-import LHeader from '@/components/layout/Header';
-import LFooter from '@/components/layout/Footer';
+import { Layout } from 'antd';
 import SideBarList from '@/components/stockList/SideBarList';
 import { LeekTreeItem } from '@/../types/shim-background';
 import state from '@/stores/index';
@@ -9,7 +7,7 @@ import FundInfoPanel from '@/components/fund-info-panel';
 import { useState } from 'react';
 import { useObserver } from 'mobx-react';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 function RenderMyStockContent() {
   return useObserver(() => {
