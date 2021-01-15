@@ -83,6 +83,7 @@
     "workbox-webpack-plugin": "5.1.4"
   },
   "scripts": {
+    "prebuild": "yarn --frozen-lockfile",
     "start": "node scripts/start.js",
     "build": "cross-env GENERATE_SOURCEMAP=false node scripts/build.js",
     "test": "node scripts/test.js"

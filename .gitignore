@@ -7,5 +7,9 @@ yarn.lock
 package-lock.json
 demo/donate.html
 demo/api.html
-template-packages/.DS_Store
+
+.DS_Store
+
 template/leek-center/build
+template-packages/leek-center/.eslintcache
+!template-packages/leek-center/yarn.lock

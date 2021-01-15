@@ -577,6 +577,7 @@
     "pretest": "yarn run compile && yarn run lint",
     "test": "node ./out/_test/runTest.js",
     "deploy": "vsce publish --yarn",
+    "package": "vsce package --yarn -o ./",
     "commitmsg": "commitlint -e $GIT_PARAMS"
   },
   "config": {
