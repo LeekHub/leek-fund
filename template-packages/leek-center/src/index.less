@@ -154,11 +154,21 @@ html {
   background: rgba(0, 0, 0, 0.1);
 }
 
-.red {
+.red,
+.red .ant-descriptions-item-content {
   color: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39);
 }
-.green {
+.green,
+.green .ant-descriptions-item-content {
   color: var(--vscode-gitDecoration-untrackedResourceForeground, #73c991);
+}
+
+.mode-moyu {
+  opacity: 0.7;
+  color: var(--vscode-input-placeholderForeground, rgba(204, 204, 204, 0.5));
+  * {
+    color: inherit !important;
+  }
 }
 
 .small {

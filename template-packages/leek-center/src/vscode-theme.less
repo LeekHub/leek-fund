@@ -125,6 +125,8 @@
 
 @message-notice-content-bg: var(--vscode-titleBar-activeBackground, #282c34);
 
+@descriptions-bg: var(--vscode-list-activeSelectionBackground, #2c313a);
+
 .ant-collapse {
   .ant-collapse-item {
     border: none;
@@ -170,4 +172,11 @@
 .ant-table-tbody tr td.ant-table-cell {
   border-bottom: 1px solid
     var(--vscode-editorOverviewRuler-border, rgba(127, 127, 127, 0.3));
+}
+
+.ant-switch {
+  background-color: @input-bg;
+  &-checked {
+    background-color: @link-color;
+  }
 }

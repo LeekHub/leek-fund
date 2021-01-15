@@ -145,10 +145,34 @@ async function fetchFundPJDatas(info: FundInfo) {
 }
 
 /**
- * 获取评级数据
+ * 获取盈利概率
  * @param info
- * @returns
  */
+async function fetchFundYLGL(info: FundInfo) {
+  try {
+    const res = await fetch({
+      url: 'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNCSDiag',
+      method: 'GET',
+      params: {
+        version: '10.0',
+        deviceid: 0,
+        product: 'EFund',
+        plat: 'Iphone',
+        FCODE: info.code,
+      },
+    });
+    console.log('fetchFundYLGL: ', res);
+    const { data } = res;
+    if (data.ErrCode === 0) {
+      return data.Datas;
+    }
+    return void 0;
+  } catch (err) {
+    console.error(err);
+    return void 0;
+  }
+}
+
 export function useFetchFundMoreInfo(
   info: FundInfo
 ): {
@@ -162,11 +186,10 @@ export function useFetchFundMoreInfo(
       setLoading(true);
       try {
         const result: FundData = {};
-        // result.baseData = await fetchFundMoreInfo(info);
-        // result.PJDatas = await fetchFundPJDatas(info);
-        [result.baseData, result.PJDatas] = await Promise.all([
+        [result.baseData, result.PJDatas, result.mncsdiag] = await Promise.all([
           fetchTryHandler(fetchFundMoreInfo, info),
           fetchTryHandler(fetchFundPJDatas, info),
+          fetchTryHandler(fetchFundYLGL, info),
         ]);
         console.log('result: ', result);
         setFundMoreData(result);

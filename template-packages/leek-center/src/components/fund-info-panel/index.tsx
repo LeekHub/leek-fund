@@ -1,9 +1,9 @@
 import { LeekTreeItem } from '@/../types/shim-background';
-import { Layout, Card, Row, Col, Spin, Table } from 'antd';
+import { Layout, Card, Row, Col, Spin, Table, Descriptions } from 'antd';
 import { StarFilled } from '@ant-design/icons';
 import FundInfoHeader from './info-header';
 import { useFetchFundMoreInfo } from './services';
-import { classes } from '@/utils/ui';
+import { calcRGColorStyleValue, classes } from '@/utils/ui';
 import '../stock-info-panel/index.less';
 import './index.less';
 
@@ -49,39 +49,80 @@ function renderPositionStocksCard(fundMoreData: FundData) {
 function renderFundBaseInfoPanel(fundMoreData: FundData) {
   if (fundMoreData.baseData) {
     const { baseData } = fundMoreData;
+    const DItem = Descriptions.Item;
     return (
       <Card title="基本信息">
-        <div className="info">
-          <span className="label">基金类型：</span>
-          <span className="value">{baseData.fundType}</span>
-        </div>
-        <div className="info">
-          <span className="label">成立日期：</span>
-          <span className="value">{baseData.setupDate}</span>
-        </div>
-        <div className="info">
-          <span className="label">基金经理：</span>
-          <span className="value">{baseData.fundManager}</span>
-        </div>
-        <div className="info">
-          <span className="label">基金规模：</span>
-          <span className="value">{baseData.fundMoneySize}</span>
-        </div>
-        <div className="info">
-          <span className="label">综合评级：</span>
-          <span className="value">
+        <Descriptions style={{ marginTop: 10, marginBottom: -10 }}>
+          <DItem label="基金类型">{baseData.fundType}</DItem>
+          <DItem label="成立日期">{baseData.setupDate}</DItem>
+          <DItem label="基金经理">{baseData.fundManager}</DItem>
+          <DItem contentStyle={{ alignItems: 'center' }} label="综合评级">
             {baseData.jjpj
-              ? new Array(baseData.jjpj).fill(1).map((_, index) => (
-                  <StarFilled key={index}></StarFilled>
-                ))
+              ? new Array(baseData.jjpj)
+                  .fill(1)
+                  .map((_, index) => <StarFilled key={index}></StarFilled>)
               : '--'}
-          </span>
-        </div>
+          </DItem>
+          <DItem label="基金规模" span={2}>
+            {baseData.fundMoneySize}
+          </DItem>
+        </Descriptions>
       </Card>
     );
   }
   return null;
 }
+
+/**
+ * 盈利概率
+ * @param fundMoreData
+ * @returns
+ */
+const renderMNCSDiagData = (fundMoreData: FundData) => {
+  const { mncsdiag } = fundMoreData;
+  if (!mncsdiag) return null;
+  const DItem = Descriptions.Item;
+  return (
+    <Card title="基金盈利概率">
+      <Descriptions style={{ marginTop: 10, marginBottom: -10 }}>
+        <DItem label="综合评分">{mncsdiag.DIAGONSEACH.PROWIN}</DItem>
+        <DItem label="基金评分">{mncsdiag.DIAGONSEACH.FGOLD}</DItem>
+        <DItem
+          label="持有7天盈利概率"
+          contentStyle={{
+            color: calcRGColorStyleValue(mncsdiag.PROFIT_Z, 20),
+          }}
+        >
+          {mncsdiag.PROFIT_Z}%
+        </DItem>
+        <DItem
+          label="持有3月盈利概率"
+          contentStyle={{
+            color: calcRGColorStyleValue(mncsdiag.PROFIT_3Y, 50),
+          }}
+        >
+          {mncsdiag.PROFIT_Z}%
+        </DItem>
+        <DItem
+          label="持有6月盈利概率"
+          contentStyle={{
+            color: calcRGColorStyleValue(mncsdiag.PROFIT_3Y, 70),
+          }}
+        >
+          {mncsdiag.PROFIT_3Y}%
+        </DItem>
+        <DItem
+          label="持有1年盈利概率"
+          contentStyle={{
+            color: calcRGColorStyleValue(mncsdiag.PROFIT_1N, 90),
+          }}
+        >
+          {mncsdiag.PROFIT_1N}%
+        </DItem>
+      </Descriptions>
+    </Card>
+  );
+};
 
 /**
  * 机构评级
@@ -195,6 +236,7 @@ export default function FundInfoPanel({ fund }: { fund: LeekTreeItem }) {
         <Layout style={{ marginTop: 10 }}>
           <Content style={{ marginRight: 10 }}>
             {renderFundBaseInfoPanel(fundMoreData)}
+            {renderMNCSDiagData(fundMoreData)}
             {renderPJDatasPanel(fundMoreData)}
             {renderSameKindFundRank(fundMoreData)}
           </Content>
