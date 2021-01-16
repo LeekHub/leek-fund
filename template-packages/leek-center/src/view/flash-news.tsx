@@ -49,7 +49,7 @@ export default function FlashNewsView() {
         }
       }
     },
-    [newsFilter, setNewsFilter]
+    [checkedTempFilter, setNewsFilter]
   );
 
   return (

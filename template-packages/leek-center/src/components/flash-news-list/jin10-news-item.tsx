@@ -1,5 +1,3 @@
-import { classes } from '@/utils/ui';
-import React from 'react';
 import { NewsItemFunctionComponent } from '.';
 
 function isTagNews(content: string) {
@@ -18,7 +16,7 @@ function pickTitleAndSummary(content: string) {
 }
 
 const Jin10NewsItem: NewsItemFunctionComponent = function ({ news }) {
-  const { type, time, important, remark, id, data } = news;
+  const { type, data } = news;
   if (type === 0) {
     const contentNews = pickTitleAndSummary(data.content);
     return (
