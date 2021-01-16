@@ -34,7 +34,7 @@ export default function LHeader() {
         selectedKeys={[defaultSelectedKeys]}
       >
         <Menu.Item key="/my-stocks">我的自选</Menu.Item>
-        <Menu.Item key="/data-center">新闻快讯</Menu.Item>
+        <Menu.Item key="/news">新闻快讯</Menu.Item>
         <Menu.Item key="/data-center">数据中心</Menu.Item>
         <SubMenu key="3" title="工具">
           <Menu.Item key="3">我的预警</Menu.Item>

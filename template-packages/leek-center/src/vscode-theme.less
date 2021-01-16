@@ -30,6 +30,18 @@
 @collapse-header-arrow-left: 6px;
 @collapse-content-padding: 0px;
 
+// Timeline
+// ---
+@timeline-width: 2px;
+@timeline-color: var(
+  --vscode-editorOverviewRuler-border,
+  rgba(127, 127, 127, 0.3)
+);
+@timeline-dot-border-width: 2px;
+@timeline-dot-color: @link-color;
+@timeline-dot-bg: transparent;
+@timeline-item-padding-bottom: 20px;
+
 // Card
 // ---
 @card-head-color: var(
@@ -110,6 +122,16 @@
 );
 @modal-header-border-style: none;
 
+// Tree
+// ---
+@tree-bg: transparent;
+@tree-title-height: 24px;
+@tree-child-padding: 18px;
+@tree-directory-selected-color: #fff;
+@tree-directory-selected-bg: @primary-color;
+@tree-node-hover-bg: var(--vscode-list-activeSelectionBackground, #2c313a);
+@tree-node-selected-bg: @link-active-color;
+
 // Input
 @input-placeholder-color: var(
   --vscode-input-placeholderForeground,
@@ -180,3 +202,4 @@
     background-color: @link-color;
   }
 }
+

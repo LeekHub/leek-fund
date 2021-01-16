@@ -1,0 +1,45 @@
+.flash-news {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  &-date {
+    font-size: 120%;
+  }
+  &-time {
+    width: 6em;
+  }
+  &-com {
+    flex: 1;
+    max-width: 600px;
+  }
+  &-title {
+    font-size: 110%;
+    font-weight: bold;
+  }
+  &-summary {
+    margin-bottom: 10px;
+    opacity: 0.6;
+  }
+  &-bk,
+  &-stock {
+    margin-bottom: 10px;
+    > span {
+      padding: 2px 8px;
+      border: 1px solid var(--vscode-foreground, #ccc);
+      margin-right: 12px;
+      > .name {
+        background: var(--vscode-foreground, #ccc);
+        padding: 2px 8px;
+        margin: -2px -8px;
+        margin-right: 7px;
+        color: var(--vscode-panel-background, #282c34);
+        border-right: 1px solid transparent;
+        opacity: 0.9;
+        .mode-moyu & {
+          background: var(--vscode-background, #282c34);
+          border-right: 1px solid var(--vscode-foreground, #ccc);
+        }
+      }
+    }
+  }
+}

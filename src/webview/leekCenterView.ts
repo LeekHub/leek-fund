@@ -6,13 +6,12 @@ import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { events, getTemplateFileContent, formatHTMLWebviewResourcesUrl } from '../shared/utils';
-// import fundFlow, { mainFundFlow } from './fundFlow';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import tucaoForum from './tucaoForum';
 
-// import { transceiverFactory } from '../shared/WVMessageUtils';
+import LeekCenterFlashNewsView from './leek-center/flash-news-view';
 
 import axios from 'axios';
+import { FlashNewsServerInterface } from '../output/flash-news/NewsFlushServiceAbstractClass';
 
 let _INITED = false;
 
@@ -27,11 +26,13 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
   if (_INITED) return;
   _INITED = true;
   panelEvents = new EventEmitter();
+
+  let flashNewsServer: FlashNewsServerInterface | undefined;
   // const transceiver = transceiverFactory(panel.webview); 备用
 
   setList(panel.webview, panelEvents, stockService, fundServices);
   setStocksRemind(panel.webview, panelEvents);
-  setDiscussions(panel.webview, panelEvents);
+  // setDiscussions(panel.webview, panelEvents);
 
   panel.webview.onDidReceiveMessage((message) => {
     panelEvents.emit('onDidReceiveMessage', message);
@@ -43,6 +44,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
         window.showErrorMessage('保存失败！');
         return;
       case 'pageReady':
+        flashNewsServer = new LeekCenterFlashNewsView(panel.webview);
         panelEvents.emit('pageReady');
         return;
       case 'executeCommand':
@@ -60,6 +62,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
 
   panel.onDidDispose(() => {
     panelEvents.emit('onDidDispose');
+    flashNewsServer?.destory();
     _INITED = false;
   });
 
@@ -78,7 +81,10 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
       });
   } else {
     console.log(getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview));
-    panel.webview.html = getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview);
+    panel.webview.html = getTemplateFileContent(
+      ['leek-center', 'build', 'index.html'],
+      panel.webview
+    );
   }
 }
 

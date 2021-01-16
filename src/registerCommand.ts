@@ -10,6 +10,7 @@ import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
 import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
 import checkForUpdate from './shared/update';
@@ -35,7 +36,7 @@ export function registerViewEvent(
   fundProvider: FundProvider,
   stockProvider: StockProvider,
   newsProvider: NewsProvider,
-  flashNewsDaemon: FlashNewsDaemon,
+  flashNewsOutputServer: FlashNewsOutputServer,
   binanceProvider?: BinanceProvider
 ) {
   const leekModel = new LeekFundConfig();
@@ -50,7 +51,7 @@ export function registerViewEvent(
   });
 
   commands.registerCommand('leek-fund.flash-news-show', () => {
-    flashNewsDaemon.showOutput();
+    flashNewsOutputServer.showOutput();
   });
 
   // Fund operation
