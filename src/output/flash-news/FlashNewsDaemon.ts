@@ -32,7 +32,8 @@ export default class FlashNewsDaemon {
     this.flashNewsBarItem.command = 'leek-fund.flash-news-show';
     this.flashNewsBarItem.show();
 
-    new Jin10FlushService(this);
+    // 暂时不要金十快讯，金十更适合期货。
+    // new Jin10FlushService(this); 
     new XuanGuBaoFlushService(this);
   }
 
