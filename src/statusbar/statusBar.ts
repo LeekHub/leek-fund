@@ -59,7 +59,7 @@ export class StatusBar {
   }
 
   refreshStockStatusBar() {
-    if (!this.stockService.stockList.length) return;
+    if (this.hideStatusBarStock || !this.stockService.stockList.length) return;
 
     let sz: LeekTreeItem | null = null;
     const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
@@ -104,10 +104,7 @@ export class StatusBar {
   }
 
   udpateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
-    // 隐藏股市状态栏
-    if (!item || this.hideStatusBarStock) {
-      return;
-    }
+    if (!item) return;
 
     const { type, symbol, price, percent, open, yestclose, high, low, updown } = item.info;
     const deLow = percent.indexOf('-') === -1;
