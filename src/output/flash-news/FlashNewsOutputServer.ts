@@ -35,7 +35,7 @@ export default class FlashNewsOutputServer implements FlashNewsServerInterface {
     if (this.isEnableOutput !== _enable) {
       this.isEnableOutput = _enable;
       if (!_enable) {
-        this.destory()
+        this.destory();
       } else {
         this.setup();
       }

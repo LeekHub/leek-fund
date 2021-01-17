@@ -75,7 +75,7 @@ export default class FlashNewsDaemon {
    * 销毁
    */
   destory() {
-    this.caches.length = 0
+    this.caches.length = 0;
     this.flushServices.forEach((service) => {
       service.destory();
     });
