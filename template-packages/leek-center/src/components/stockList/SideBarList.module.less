@@ -1,0 +1,57 @@
+.stock-list {
+  // background: var(--vscode-editor-background, #282c34);
+  // color: var(--vscode-editor-foreground, #abb2bf);
+  border: none;
+  :global {
+
+    .stock-item {
+      padding: 6px 5px 4px;
+      cursor: pointer;
+      display: flex;
+      border-bottom: 1px solid transparent;
+      border-color: var(
+        --vscode-panelSection-border,
+        rgba(128, 128, 128, 0.35)
+      );
+      &:last-child {
+        border: none;
+      }
+      .label {
+        width: 12em;
+        margin-right: 10px;
+        line-height: 1.5;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        .code {
+          color: var(--vscode-descriptionForeground, rgba(204, 204, 204, 0.7));
+        }
+      }
+      .price {
+        text-align: right;
+        opacity: 0.7;
+       /*  &.red {
+          color: var(--vscode-gitDecoration-deletedResourceForeground, #c74e39);
+        }
+        &.green {
+          color: var(
+            --vscode-gitDecoration-untrackedResourceForeground,
+            #73c991
+          );
+        } */
+      }
+      .percent,
+      .code {
+        font-size: 86%;
+        margin: 0;
+        padding: 0;
+      }
+    }
+    .stock-item:hover,
+    .stock-item.selected {
+      background: var(--vscode-list-activeSelectionBackground, #2c313a);
+      color: #fff;
+    }
+  }
+}
