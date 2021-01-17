@@ -128,6 +128,12 @@
   // 配置股票跌的颜色，默认为 green
   "leek-fund.fallColor": "black"
 
+  // 隐藏股市状态栏
+  "leek-fund.hideStatusBarStock": false
+
+  // 隐藏基金状态栏
+  "leek-fund.hideFundBarItem": false
+
 ```
 
 ## 状态栏、侧栏模板
