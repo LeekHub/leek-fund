@@ -442,7 +442,7 @@ function isRemoteLink(link: string) {
   return /^(https?|vscode-webview-resource|javascript):/.test(link);
 }
 
-function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
+export function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
   const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
   let matcher = LinkRegexp.exec(html);
 

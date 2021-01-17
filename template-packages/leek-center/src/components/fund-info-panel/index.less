@@ -1,0 +1,53 @@
+.fund-info-price {
+  border-right: 1px solid
+    var(--vscode-panelSection-border, rgba(128, 128, 128, 0.35));
+  padding-right: 20px;
+  margin-right: 10px;
+
+  .fund-update-time {
+    padding-left: 10px;
+    font-size: 90%;
+    opacity: 0.5;
+    top: 0;
+    left: 0;
+  }
+  .stock-info-price {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+  }
+}
+
+.position-stocks {
+  line-height: 1.8;
+  .percent {
+    float: right;
+  }
+}
+
+
+
+.fund-rank-item {
+  display: flex;
+  .fund-info {
+    flex: 1;
+  }
+  .fund-name {
+    font-size: 110%;
+    width: 100%;
+  }
+  .fund-code {
+    font-size: 80%;
+    opacity: 0.8;
+  }
+  .fund-rate {
+    text-align: right;
+    .date {
+      opacity: 0.7;
+      margin-right: 4px;
+    }
+    .rate {
+      font-size: 110%;
+    }
+  }
+}

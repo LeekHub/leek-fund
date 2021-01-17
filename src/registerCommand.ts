@@ -10,13 +10,14 @@ import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
 import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
 import checkForUpdate from './shared/update';
 import { colorOptionList, randomColor } from './shared/utils';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
-import fundFlow from './webview/fundFlow';
+import fundFlow, { mainFundFlow } from './webview/fundFlow';
 import fundHistory from './webview/fundHistory';
 import fundPosition from './webview/fundPosition';
 import fundRank from './webview/fundRank';
@@ -35,7 +36,7 @@ export function registerViewEvent(
   fundProvider: FundProvider,
   stockProvider: StockProvider,
   newsProvider: NewsProvider,
-  flashNewsDaemon: FlashNewsDaemon,
+  flashNewsOutputServer: FlashNewsOutputServer,
   binanceProvider?: BinanceProvider
 ) {
   const leekModel = new LeekFundConfig();
@@ -50,7 +51,7 @@ export function registerViewEvent(
   });
 
   commands.registerCommand('leek-fund.flash-news-show', () => {
-    flashNewsDaemon.showOutput();
+    flashNewsOutputServer.showOutput();
   });
 
   // Fund operation
@@ -177,6 +178,7 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.viewFundTrend', () => allFundTrend(fundService));
   // 资金流向
   commands.registerCommand('leek-fund.viewFundFlow', () => fundFlow());
+  commands.registerCommand('leek-fund.viewMainFundFlow', () => mainFundFlow());
   // 基金置顶
   commands.registerCommand('leek-fund.setFundTop', (target) => {
     LeekFundConfig.setFundTopCfg(target.id, () => {

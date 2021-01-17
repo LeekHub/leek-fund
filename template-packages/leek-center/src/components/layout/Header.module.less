@@ -1,0 +1,45 @@
+.logo {
+  // padding: 20px 20px;
+  // width: 100%;
+  margin-top: 4px;
+  font-size: 18px;
+  line-height: 42px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  float: left;
+  margin-right: 20px;
+  &::before {
+    content: '';
+    display: inline-block;
+    background: url(https://txc.gtimg.com/data/302926/2021/0105/e82a625beb0ac89feb5a6d9a7f932c11.png)
+      no-repeat;
+    background-size: 36px 36px;
+    width: 36px;
+    height: 36px;
+    margin-right: 6px;
+  }
+}
+
+.header {
+  height: 50px;
+  padding: 0 10px;
+  line-height: 50px;
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  :global {
+    .ant-menu {
+      &-horizontal {
+        background: none;
+      }
+      .ant-menu-item-selected {
+        background-color: var(--vscode-tab-activeBackground, #282c34);
+      }
+      .ant-menu-item:hover {
+        background-color: var(--vscode-tab-hoverBackground, #323842);
+      }
+    }
+  }
+}

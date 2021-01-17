@@ -581,11 +581,13 @@
   "scripts": {
     "vscode:prepublish": "yarn run compile",
     "compile": "tsc -p ./",
+    "postcompile": "yarn --cwd ./template-packages/leek-center run build",
     "lint": "eslint src --ext ts  --ignore-path .gitignore",
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "test": "node ./out/_test/runTest.js",
     "deploy": "vsce publish --yarn",
+    "package": "vsce package --yarn -o ./",
     "commitmsg": "commitlint -e $GIT_PARAMS"
   },
   "config": {

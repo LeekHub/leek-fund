@@ -67,6 +67,7 @@ export default class FundService extends LeekService {
           code: FCODE,
           price: GSZ, // 今日估值
           percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
+          yestpercent: NAVCHGRT,
           yestclose: NAV, // 昨日净值
           showLabel: this.showLabel,
           earnings: toFixed(earnings), // 盈亏
@@ -78,6 +79,7 @@ export default class FundService extends LeekService {
           t2: GSZZL === '--' ? true : false, // 海外基金t2
           time: GSZZL === '--' ? PDATE : GZTIME, // 更新时间
           showEarnings: keyLength > 0 && amount !== 0,
+          yestPriceDate: PDATE,
         };
         updateTime = obj.time;
         totalAmount += amount;

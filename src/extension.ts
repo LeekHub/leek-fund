@@ -24,6 +24,8 @@ import { StatusBar } from './statusbar/statusBar';
 import { ProfitStatusBar } from './statusbar/Profit';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
+import { events } from './shared/utils';
+import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -31,11 +33,13 @@ let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
 let binanceTreeView: TreeView<any> | null = null;
 
-let flashNewsDaemon: FlashNewsDaemon | null = null;
+let flashNewsOutputServer: FlashNewsOutputServer | null = null;
 let profitBar: ProfitStatusBar | null = null;
 
 export function activate(context: ExtensionContext) {
   console.log('🐥Congratulations, your extension "leek-fund" is now active!');
+
+  globalState.isDevelopment = process.env.NODE_ENV === 'development';
   globalState.context = context;
 
   const telemetry = new Telemetry();
@@ -52,7 +56,7 @@ export function activate(context: ExtensionContext) {
   setGlobalVariable();
   updateAmount();
 
-  flashNewsDaemon = new FlashNewsDaemon();
+  flashNewsOutputServer = new FlashNewsOutputServer();
 
   const fundService = new FundService(context);
   const stockService = new StockService(context);
@@ -163,7 +167,8 @@ export function activate(context: ExtensionContext) {
     nodeStockProvider.refresh();
     newsProvider.refresh();
     binanceProvider.refresh();
-    flashNewsDaemon?.reload();
+    flashNewsOutputServer?.reload();
+    events.emit('onDidChangeConfiguration');
     profitBar?.reload();
   });
 
@@ -175,7 +180,7 @@ export function activate(context: ExtensionContext) {
     nodeFundProvider,
     nodeStockProvider,
     newsProvider,
-    flashNewsDaemon,
+    flashNewsOutputServer,
     binanceProvider
   );
 
@@ -207,7 +212,7 @@ function setGlobalVariable() {
 // this method is called when your extension is deactivated
 export function deactivate() {
   console.log('🐥deactivate');
-  flashNewsDaemon?.destory();
+  FlashNewsDaemon.KillAllServer();
   profitBar?.destroy();
   if (loopTimer) {
     clearInterval(loopTimer);

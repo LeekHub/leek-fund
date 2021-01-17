@@ -28,6 +28,8 @@ let isHolidayChina = false; // 初始化状态，默认是false，免得API有�
 let showStockErrorInfo = true; // 控制只显示一次错误弹窗（临时处理）
 let immersiveBackground = true; // 基金图表是否沉浸式背景
 
+let isDevelopment = false; // 是否开发环境
+
 export default {
   context,
   telemetry,
@@ -51,4 +53,5 @@ export default {
   labelFormat,
   showStockErrorInfo,
   immersiveBackground,
+  isDevelopment,
 };

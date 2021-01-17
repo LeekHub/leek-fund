@@ -9,6 +9,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
   private ws: WebSocket | undefined;
   private isDone: boolean = false;
   private heartbeatTimer: NodeJS.Timeout | undefined;
+  private idIndexs: string[] = [];
   constructor(readonly daemon: FlashNewsDaemon) {
     super(daemon);
     try {
@@ -74,7 +75,15 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     const dataLen = bf.readUInt16LE(2);
     if (type === MSG_NEWS_FLASH) {
       const data = JSON.parse(bf.toString('utf-8', 4, 4 + dataLen));
-      const { type, time, important, remark, id } = data;
+      console.log('金十快讯: ', data);
+      const { type, time, important, remark, id, action, channel } = data;
+      if (
+        ~this.idIndexs.indexOf(id) ||
+        action !== 1 ||
+        !(channel.includes(1) || channel.includes(5))
+      )
+        return;
+      this.idIndexs.push(id);
       // console.log('data: ', data);
       // if (!important) return; // 去掉判断显示更多的内容
 
@@ -82,11 +91,20 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
 
       if (type === 0) {
         const content = this.formatContent(data.data.content);
-        content && this.print(`${content}${contentSuffix}`);
+        content &&
+          this.print(`${content}${contentSuffix}`, {
+            type: 'jin10',
+            data,
+            time: new Date(data.time).getTime(),
+          });
       }
       if (type === 1) {
         const { country, time_period, name, actual, unit } = data.data;
-        this.print(`${country}${time_period}${name}:${actual}${unit}${contentSuffix}`);
+        this.print(`${country}${time_period}${name}:${actual}${unit}${contentSuffix}`, {
+          type: 'jin10',
+          data,
+          time: new Date(data.time).getTime(),
+        });
       }
     }
   }
