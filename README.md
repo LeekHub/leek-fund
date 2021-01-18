@@ -75,6 +75,8 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 ![概览](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
+![韭菜中心](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/leek-center.png)
+
 ## 插件设置
 
 **添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)

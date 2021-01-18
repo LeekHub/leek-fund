@@ -481,6 +481,16 @@
           "default": "#C9AD06",
           "description": "股票跌的颜色"
         },
+        "leek-fund.hideFundBarItem": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏基金状态栏"
+        },
+        "leek-fund.hideStatusBarStock": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏股票状态栏"
+        },
         "leek-fund.newsUserIds": {
           "type": "array",
           "default": [

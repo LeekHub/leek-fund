@@ -1,32 +1,5 @@
 ## 开发
 
-#### `canvas` 依赖问题
-
-依赖卡住不动建议设置镜像为淘宝
-
-```
-npm install canvas --canvas_binary_host_mirror=https://npm.taobao.org/mirrors/node-canvas-prebuilt/
-```
-
-启动报错
-
-```
-canvas.node' was compiled against a different Node.js version using NODE_MODULE_VERSION 88. This version of Node.js requires NODE_MODULE_VERSION 80. Please try re-compiling or re-installing the module (for instance, using `npm rebuild` or `npm install`)..
-```
-
-解决方案
-
-```
-npm install canvas --build-from-source
-```
-
-还有错误参考：
-
-` brew install cairo pango pixman`
-
-- https://github.com/Automattic/node-canvas#installation
-- https://github.com/Automattic/node-canvas/issues/1065
-
 ## 接口说明
 
 > 需要学习开发的可以了解
