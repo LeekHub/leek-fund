@@ -62,7 +62,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
 
   panel.onDidDispose(() => {
     panelEvents.emit('onDidDispose');
-    flashNewsServer?.destory();
+    flashNewsServer?.destroy();
     _INITED = false;
   });
 
