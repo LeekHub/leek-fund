@@ -6,7 +6,7 @@ import FlashNewsDaemon from './FlashNewsDaemon';
  */
 export default abstract class NewsFlushServiceAbstractClass {
   constructor(readonly daemon: FlashNewsDaemon) {}
-  abstract destory(): void;
+  abstract destroy(): void;
   pause() {}
   print(content: string, source: { type: string; data: any; time: number }) {
     this.daemon.print(`${content}`, source);
@@ -18,5 +18,5 @@ export default abstract class NewsFlushServiceAbstractClass {
  */
 export interface FlashNewsServerInterface {
   print: (content: string, source?: any) => void;
-  destory: () => void;
+  destroy: () => void;
 }

@@ -13,7 +13,7 @@ export default class LeekCenterFlashNewsViewServer implements FlashNewsServerInt
       data: source,
     });
   }
-  destory() {
+  destroy() {
     this.unregisterServer?.();
   }
 }

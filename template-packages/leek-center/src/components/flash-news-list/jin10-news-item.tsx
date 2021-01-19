@@ -7,8 +7,11 @@ function isTagNews(content: string) {
 function pickTitleAndSummary(content: string) {
   const result: Record<string, string> = {};
   if (content[0] === '【' && !isTagNews(content)) {
-    result.title = content.substring(0, content.indexOf('】') + 1);
-    result.summary = content.substring(content.indexOf('】') + 1);
+    const endTagIndex = content.indexOf('】');
+    result.title = content.substring(0, endTagIndex + 1);
+    result.summary = content
+      .substring(endTagIndex + 1)
+      .replace(/^<br\s*\/>/, '');
   } else {
     result.title = content;
   }
@@ -29,6 +32,22 @@ const Jin10NewsItem: NewsItemFunctionComponent = function ({ news }) {
           className="flash-news-summary"
           dangerouslySetInnerHTML={{ __html: contentNews.summary }}
         ></div>
+        {data.pic ? (
+          <div className="flash-news-pic">
+            <a href={data.pic}>
+              <img
+                style={{
+                  width: 256,
+                  height: 144,
+                  objectFit: 'cover',
+                  objectPosition: 'top center',
+                }}
+                src={data.pic}
+                alt=""
+              />
+            </a>
+          </div>
+        ) : null}
       </>
     );
   }

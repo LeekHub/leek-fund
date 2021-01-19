@@ -55,7 +55,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       }
     });
   }
-  destory() {
+  destroy() {
     console.log('销毁 金十 快讯服务');
     this.isDone = true;
     this.heartbeatTimer && clearInterval(this.heartbeatTimer);
@@ -70,6 +70,13 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       this.ws.send('');
     }, 10000);
   }
+  /**
+   * 是否广告
+   * @param content
+   */
+  private isAD(content: string) {
+    return /^<a.*?>\s*<img.*?\/><\/a>$/.test(content);
+  }
   private processData(bf: Buffer) {
     const type = bf.readUInt16LE();
     const dataLen = bf.readUInt16LE(2);
@@ -80,7 +87,8 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
       if (
         ~this.idIndexs.indexOf(id) ||
         action !== 1 ||
-        !(channel.includes(1) || channel.includes(5))
+        !(channel.includes(1) || channel.includes(5)) ||
+        this.isAD(data.data.content)
       )
         return;
       this.idIndexs.push(id);

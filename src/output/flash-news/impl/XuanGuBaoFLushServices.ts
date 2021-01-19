@@ -91,7 +91,7 @@ export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass
       }
     );
   }
-  destory(): void {
+  destroy(): void {
     console.log('销毁 选股宝快讯 服务');
     this.pollingTimer && clearTimeout(this.pollingTimer);
     this.isStop = true;

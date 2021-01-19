@@ -15,7 +15,7 @@ export default class FlashNewsDaemon {
   public flushServices = new Set<NewsFlushServiceAbstractClass>();
   public caches: any[][] = [];
 
-  isDestory = false;
+  isDestroy = false;
 
   constructor() {
     this.initServices();
@@ -24,10 +24,10 @@ export default class FlashNewsDaemon {
   static KillAllServer() {
     if (instance) {
       instance.depServers.forEach((dep) => {
-        dep.destory();
+        dep.destroy();
         instance?.depServers.delete(dep);
       });
-      instance.destory();
+      instance.destroy();
     }
   }
 
@@ -41,12 +41,12 @@ export default class FlashNewsDaemon {
       return dep.print.apply(dep, [params[0], params[1]]);
     });
 
-    if (instance.isDestory) {
+    if (instance.isDestroy) {
       instance.initServices();
     }
     return function cancelServer() {
       instance?.depServers.delete(dep);
-      instance?.tryDestory();
+      instance?.tryDestroy();
     };
   }
 
@@ -54,7 +54,7 @@ export default class FlashNewsDaemon {
     // 暂时不要金十快讯，金十更适合期货。
     this.flushServices.add(new Jin10FlushService(this));
     this.flushServices.add(new XuanGuBaoFlushService(this));
-    this.isDestory = false;
+    this.isDestroy = false;
   }
 
   print(news: string, source?: { type: string; data: any; time: number }) {
@@ -65,21 +65,21 @@ export default class FlashNewsDaemon {
     });
   }
 
-  tryDestory() {
+  tryDestroy() {
     if (this.depServers.size < 1) {
-      this.destory();
+      this.destroy();
     }
   }
 
   /**
    * 销毁
    */
-  destory() {
-    this.caches.length = 0;
+  destroy() {
+    this.caches.length = 0
     this.flushServices.forEach((service) => {
-      service.destory();
+      service.destroy();
     });
-    this.isDestory = true;
+    this.isDestroy = true;
   }
 
   reload() {}
