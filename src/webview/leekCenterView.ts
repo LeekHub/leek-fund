@@ -44,8 +44,8 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
         window.showErrorMessage('保存失败！');
         return;
       case 'pageReady':
-        flashNewsServer = new LeekCenterFlashNewsView(panel.webview);
         panelEvents.emit('pageReady');
+        flashNewsServer = new LeekCenterFlashNewsView(panel.webview);
         return;
       case 'executeCommand':
         commands.executeCommand(message.data);

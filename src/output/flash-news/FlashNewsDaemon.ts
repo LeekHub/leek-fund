@@ -59,7 +59,7 @@ export default class FlashNewsDaemon {
 
   print(news: string, source?: { type: string; data: any; time: number }) {
     this.caches.unshift([news, source]);
-    this.caches.slice(0, 30);
+    this.caches = this.caches.slice(0, 100);
     this.depServers.forEach((dep) => {
       dep.print(news, source);
     });
