@@ -336,7 +336,7 @@ table.jlchg .tor {
     <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」持仓明细</p>
     ${content}
     </div>
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/lib/antv/g2/4.1.0-beta.1/dist/g2.min.js"></script>
     <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.data-set-0.11.1/dist/data-set.js"></script>
     <script>
