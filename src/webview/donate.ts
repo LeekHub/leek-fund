@@ -14,7 +14,7 @@ function getWebViewContent() {
   <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
     <title>打赏</title>
     <style type="text/css">
       .content {

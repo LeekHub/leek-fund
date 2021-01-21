@@ -40,8 +40,8 @@ async function setAmount(fundService: FundService) {
       case 'refresh':
         const list = fundDataHandler(fundService);
         // console.log(list);
-        panel.webview.html = `<h3>loading</h3>`;
-        getWebviewContent(panel);
+        // panel.webview.html = `<h3>loading</h3>`;
+        // getWebviewContent(panel);
         panel.webview.postMessage({
           command: 'init',
           data: list,
@@ -56,13 +56,13 @@ async function setAmount(fundService: FundService) {
 
   getWebviewContent(panel);
 
-  panel.onDidChangeViewState((event) => {
+  /* panel.onDidChangeViewState((event) => {
     // console.log(event);
     panel.webview.postMessage({
       command: 'init',
       data: list,
     });
-  });
+  }); */
 }
 
 function fundDataHandler(fundService: FundService) {

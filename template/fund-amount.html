@@ -188,7 +188,7 @@
       </div>
     </div>
 
-    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
     <script src="vendors/html2canvas.min.js"></script>
     <script src="vendors/toastify.js"></script>
     <script src="vendors/canvas-text.js"></script>
@@ -211,6 +211,10 @@
             sortType = msg.sortType || 'default';
             dateStr = msg.dateStr; // 懒得再写格式化日期
             init(msg.data);
+            Toastify({
+              text: '数据已刷新！',
+              duration: 1000,
+            }).showToast();
             break;
         }
       });
@@ -573,10 +577,12 @@
         return new Blob([ab], { type: type });
       }
 
-      Toastify({
-        text: '数据已刷新！',
-        duration: 1000,
-      }).showToast();
+
+      vscode.postMessage({
+        command: 'refresh'
+      });
+
+      
     </script>
 
     <script></script>
