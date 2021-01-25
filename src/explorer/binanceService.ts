@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-12-04 13:37:38
  * @LastEditors: John Trump
- * @LastEditTime: 2020-12-06 19:49:09
+ * @LastEditTime: 2021-01-25 20:03:57
  */
 
 import Axios from 'axios';
@@ -58,6 +58,19 @@ export default class BinanceService extends LeekService {
     const pairList: Array<LeekTreeItem> = [];
 
     const promises = codes.map((i) => this._fetchPairData(i));
+    /* Shim for Promise.allSettled */
+    if (!Promise.allSettled) {
+      // @ts-ignore
+      Promise.allSettled = (promises) => {
+        let wrappedPromises = promises.map((p) =>
+          Promise.resolve(p).then(
+            (val) => ({ status: 'fulfilled', value: val }),
+            (err) => ({ status: 'rejected', reason: err })
+          )
+        );
+        return Promise.all(wrappedPromises);
+      };
+    }
     // @ts-ignore
     const results = await Promise.allSettled(promises);
     // console.log('results=', results);
