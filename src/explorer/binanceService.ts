@@ -2,7 +2,7 @@
  * @Author: John Trump
  * @Date: 2020-12-04 13:37:38
  * @LastEditors: John Trump
- * @LastEditTime: 2021-01-25 20:03:57
+ * @LastEditTime: 2021-01-26 23:14:24
  */
 
 import Axios from 'axios';
@@ -61,7 +61,7 @@ export default class BinanceService extends LeekService {
     /* Shim for Promise.allSettled */
     if (!Promise.allSettled) {
       // @ts-ignore
-      Promise.allSettled = (promises) => {
+      Promise.allSettled = (promises: Promise<any>[]) => {
         let wrappedPromises = promises.map((p) =>
           Promise.resolve(p).then(
             (val) => ({ status: 'fulfilled', value: val }),
