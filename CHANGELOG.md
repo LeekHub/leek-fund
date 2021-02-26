@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.9.6]
+
+- fix: 韭菜中心>基金详情，持有 3 月盈利概率数据显示错误
+- fix: Promise.allSettled is not a function hack
+
 ## [1.9.5]
 
 - chore: 更新基金数据

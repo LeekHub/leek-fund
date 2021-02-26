@@ -101,7 +101,7 @@ const renderMNCSDiagData = (fundMoreData: FundData) => {
             color: calcRGColorStyleValue(mncsdiag.PROFIT_3Y, 50),
           }}
         >
-          {mncsdiag.PROFIT_Z}%
+          {mncsdiag.PROFIT_3Y}%
         </DItem>
         <DItem
           label="持有6月盈利概率"
