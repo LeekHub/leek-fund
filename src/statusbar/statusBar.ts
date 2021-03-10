@@ -54,12 +54,14 @@ export class StatusBar {
 
   refresh() {
     this.refreshFundStatusBar();
-    // this.statusBarList.forEach((bar) => bar.hide());
     this.refreshStockStatusBar();
   }
 
   refreshStockStatusBar() {
-    if (this.hideStatusBarStock || !this.stockService.stockList.length) return;
+    if (this.hideStatusBarStock || !this.stockService.stockList.length) {
+      this.statusBarList.forEach((bar) => bar.hide());
+      return;
+    }
 
     let sz: LeekTreeItem | null = null;
     const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
@@ -131,7 +133,10 @@ export class StatusBar {
 
   refreshFundStatusBar() {
     // 隐藏基金状态栏
-    if (this.hideFundBarItem) return;
+    if (this.hideFundBarItem) {
+      this.fundBarItem.hide();
+      return ;
+    }
 
     this.fundBarItem.text = `🐥$(pulse)`;
     this.fundBarItem.color = this.riseColor;
