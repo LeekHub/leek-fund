@@ -21,7 +21,7 @@ export class StatusBar {
     this.refreshStockStatusBar();
     this.bindEvents();
     /* events.on('updateConfig:leek-fund.statusBarStock',()=>{
-
+      
     }) */
   }
 
@@ -37,7 +37,10 @@ export class StatusBar {
   get hideStatusBarStock(): boolean {
     return LeekFundConfig.getConfig('leek-fund.hideStatusBarStock');
   }
-
+  /** 隐藏状态栏 */
+  get hideStatusBar(): boolean {
+    return LeekFundConfig.getConfig('leek-fund.hideStatusBar');
+  }
   /** 隐藏基金状态栏 */
   get hideFundBarItem(): boolean {
     return LeekFundConfig.getConfig('leek-fund.hideFundBarItem');
@@ -58,8 +61,11 @@ export class StatusBar {
   }
 
   refreshStockStatusBar() {
-    if (this.hideStatusBarStock || !this.stockService.stockList.length) {
-      this.statusBarList.forEach((bar) => bar.hide());
+    if (this.hideStatusBar||this.hideStatusBarStock || !this.stockService.stockList.length) {
+      if(this.statusBarList.length){
+        this.statusBarList.forEach((bar) =>bar.dispose());
+        this.statusBarList=[];
+      }
       return;
     }
 
@@ -133,7 +139,7 @@ export class StatusBar {
 
   refreshFundStatusBar() {
     // 隐藏基金状态栏
-    if (this.hideFundBarItem) {
+    if (this.hideStatusBar||this.hideFundBarItem) {
       this.fundBarItem.hide();
       return ;
     }

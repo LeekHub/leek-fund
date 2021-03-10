@@ -15,6 +15,7 @@ const PREFIX = '💰';
 export class ProfitStatusBar {
   fundBarItem: StatusBarItem | undefined;
   isEnable: boolean = false;
+  hideStatusBar: boolean = false;
   unsubscribe: Function = () => {};
   fallColor: string = 'green';
   riseColor: string = 'red';
@@ -24,7 +25,8 @@ export class ProfitStatusBar {
 
   init() {
     this.isEnable = LeekFundConfig.getConfig('leek-fund.showEarnings');
-    if (this.isEnable) {
+    this.hideStatusBar = LeekFundConfig.getConfig('leek-fund.hideStatusBar');
+    if (this.isEnable || !this.hideStatusBar  ) {
       this.riseColor = LeekFundConfig.getConfig('leek-fund.riseColor');
       this.fallColor = LeekFundConfig.getConfig('leek-fund.fallColor');
       this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 2);
@@ -47,9 +49,11 @@ export class ProfitStatusBar {
     this.riseColor = LeekFundConfig.getConfig('leek-fund.riseColor');
     this.fallColor = LeekFundConfig.getConfig('leek-fund.fallColor');
     const enable: boolean = LeekFundConfig.getConfig('leek-fund.showEarnings');
-    if (this.isEnable !== enable) {
+    const hideStatusBar: boolean = LeekFundConfig.getConfig('leek-fund.hideStatusBar');
+    if (this.isEnable !== enable ||this.hideStatusBar !== hideStatusBar ) {
       this.isEnable = enable;
-      if (!enable) {
+      this.hideStatusBar = hideStatusBar;
+      if (hideStatusBar ||!enable) {
         this.destroy();
       } else {
         this.init();
@@ -83,6 +87,7 @@ export class ProfitStatusBar {
 
   destroy() {
     this.unsubscribe();
+    // this.fundBarItem?.hide();
     this.fundBarItem?.dispose();
   }
 }

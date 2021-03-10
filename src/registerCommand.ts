@@ -506,6 +506,10 @@ export function registerViewEvent(
       globalState.immersiveBackground = isChecked;
     })
   );
-
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.switchStatusBarVisible', () => {
+      LeekFundConfig.setConfig('leek-fund.hideStatusBar', !LeekFundConfig.getConfig('leek-fund.hideStatusBar'));
+    })
+  );
   checkForUpdate();
 }
