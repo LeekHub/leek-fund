@@ -26,7 +26,8 @@ export class ProfitStatusBar {
   init() {
     this.isEnable = LeekFundConfig.getConfig('leek-fund.showEarnings');
     this.hideStatusBar = LeekFundConfig.getConfig('leek-fund.hideStatusBar');
-    if (this.isEnable || !this.hideStatusBar  ) {
+    //如果显示收益 && 显示状态栏
+    if (this.isEnable && !this.hideStatusBar  ) {
       this.riseColor = LeekFundConfig.getConfig('leek-fund.riseColor');
       this.fallColor = LeekFundConfig.getConfig('leek-fund.fallColor');
       this.fundBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 2);
@@ -53,6 +54,7 @@ export class ProfitStatusBar {
     if (this.isEnable !== enable ||this.hideStatusBar !== hideStatusBar ) {
       this.isEnable = enable;
       this.hideStatusBar = hideStatusBar;
+       //如果隐藏状态栏 || 隐藏收益
       if (hideStatusBar ||!enable) {
         this.destroy();
       } else {
