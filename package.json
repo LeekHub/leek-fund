@@ -491,6 +491,11 @@
           "default": false,
           "description": "是否隐藏股票状态栏"
         },
+        "leek-fund.hideStatusBar": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏状态栏"
+        },
         "leek-fund.newsUserIds": {
           "type": "array",
           "default": [
