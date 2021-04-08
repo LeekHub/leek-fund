@@ -195,6 +195,10 @@
         "title": "删除股票"
       },
       {
+        "command": "leek-fund.addStockToBar",
+        "title": "添加至状态栏"
+      },
+      {
         "command": "leek-fund.stockTrendPic",
         "title": "股票走势（图片版）"
       },
@@ -387,6 +391,11 @@
           "command": "leek-fund.deleteStock",
           "when": "view == leekFundView.stock  && viewItem != category",
           "group": "group5"
+        },
+        {
+          "command": "leek-fund.addStockToBar",
+          "when": "view == leekFundView.stock  && viewItem != category",
+          "group": "group6"
         },
         {
           "command": "leek-fund.deletePair",

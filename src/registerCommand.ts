@@ -105,6 +105,11 @@ export function registerViewEvent(
       stockProvider.refresh();
     });
   });
+  commands.registerCommand('leek-fund.addStockToBar', (target) => {
+    LeekFundConfig.addStockToBarCfg(target.id, () => {
+      stockProvider.refresh();
+    });
+  });
   commands.registerCommand('leek-fund.leekCenterView', () => {
     if (stockService.stockList.length === 0 && fundService.fundList.length === 0) {
       window.showWarningMessage('数据刷新中，请稍候！');
@@ -472,7 +477,10 @@ export function registerViewEvent(
             description: `${item.info.code}`,
           };
         });
-
+      stockNameList.unshift({
+        label: `删除`,
+        description: `-1`,
+      });
       window
         .showQuickPick(stockNameList, {
           placeHolder: '更换状态栏个股',
@@ -483,12 +491,18 @@ export function registerViewEvent(
           const newCfg = [...statusBarStocks];
           const newStockId = res.description;
           const index = newCfg.indexOf(stockId);
-          if (statusBarStocks.includes(newStockId)) {
-            window.showWarningMessage(`「${res.label}」已在状态栏`);
-            return;
-          }
-          if (index > -1) {
-            newCfg[newCfg.indexOf(stockId)] = res.description;
+          if(newStockId ==='-1'){
+            if (index > -1) {
+              newCfg.splice(index,1);
+            }
+          }else{
+            if (statusBarStocks.includes(newStockId)) {
+              window.showWarningMessage(`「${res.label}」已在状态栏`);
+              return;
+            }
+            if (index > -1) {
+              newCfg[index] = res.description;
+            }
           }
           LeekFundConfig.updateStatusBarStockCfg(newCfg, () => {
             const handler = window.setStatusBarMessage(`下次数据刷新见效`);
