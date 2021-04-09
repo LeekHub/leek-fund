@@ -645,5 +645,5 @@
     "public-ip": "^4.0.3",
     "ws": "^7.4.1"
   },
-  "extensionKind": ["ui", "workspace"],
+  "extensionKind": ["ui", "workspace"]
 }
