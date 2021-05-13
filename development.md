@@ -242,3 +242,17 @@ https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=11
 参数列表:version=6.2.4&plat=Android&appType=ttjj&FCODE=005919&onFundCache=3&keeeeeyparam=FCODE&deviceid=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me&igggggnoreburst=true&product=EFund&MobileKey=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me
 
 https://fundmobapi.eastmoney.com/FundMNewApi/FundMNNBasicInformation?version=6.2.4&plat=Android&appType=ttjj&FCODE=320007&onFundCache=3&keeeeeyparam=FCODE&deviceid=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me&igggggnoreburst=true&product=EFund&MobileKey=656c09923c567b89bb44801020bc59ab%7C%7Ciemi_tluafed_me
+
+## 股票接口
+
+`secid` 是参数，`000725` 为 `0.000725`
+
+```
+https://push2his.eastmoney.com/api/qt/stock/trends2/get?secid=0.000725&fields1=f1%2Cf2%2Cf3%2Cf4%2Cf5%2Cf6%2Cf7%2Cf8%2Cf9%2Cf10%2Cf11%2Cf12%2Cf13%2Cf14&fields2=f51%2Cf53%2Cf54%2Cf55%2Cf56%2Cf57%2Cf58&iscr=0&iscca=0&ut=f057cbcbce2a86e2866ab8877db1d059&ndays=1
+```
+
+`600031` 为 `1.600031` :
+
+```
+https://push2.eastmoney.com/api/qt/stock/get?secid=1.600031&ut=f057cbcbce2a86e2866ab8877db1d059&fields=f107,f111,f182
+```

@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "1.9.6",
+  "version": "1.9.7",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -645,5 +645,8 @@
     "public-ip": "^4.0.3",
     "ws": "^7.4.1"
   },
-  "extensionKind": ["ui", "workspace"]
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ]
 }
