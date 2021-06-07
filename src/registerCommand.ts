@@ -50,6 +50,11 @@ export function registerViewEvent(
     });
   });
 
+  commands.registerCommand('leek-fund.refreshFollow', () => {
+    newsProvider.refresh();
+    window.showInformationMessage(`刷新成功`);
+  });
+
   commands.registerCommand('leek-fund.flash-news-show', () => {
     flashNewsOutputServer.showOutput();
   });
@@ -508,7 +513,10 @@ export function registerViewEvent(
   );
   context.subscriptions.push(
     commands.registerCommand('leek-fund.switchStatusBarVisible', () => {
-      LeekFundConfig.setConfig('leek-fund.hideStatusBar', !LeekFundConfig.getConfig('leek-fund.hideStatusBar'));
+      LeekFundConfig.setConfig(
+        'leek-fund.hideStatusBar',
+        !LeekFundConfig.getConfig('leek-fund.hideStatusBar')
+      );
     })
   );
   checkForUpdate();

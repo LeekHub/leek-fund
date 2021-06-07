@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [1.9.8]
+
+- chore: 优化雪球 cookie 问题，自动获取 cookie，无需手动设置
+- chore: 新增支持新基金。
+
 ## [1.9.7]
 
 - fix: VSCode 1.56.0 版本 icon 不能自适应 bug
