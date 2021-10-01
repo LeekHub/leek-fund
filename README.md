@@ -36,9 +36,7 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 - 基金实时涨跌，实时数据，支持海外基展示
 - 股票实时涨跌，支持 A 股、港股、美股
-- 左侧菜单面板
 - 底部状态栏信息
-- 手动刷新
 - 开市自动刷新，节假日关闭轮询
 - 支持升序/降序排序、基金持仓金额升序/降序
 - 基金实时走势图和历史走势图
@@ -52,13 +50,14 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 - 自定义涨跌图标（吃面、吃肉、烤韭菜、烤肉、喝酒）
 - 基金持仓金额设置（用于动态计算盈亏）
 - 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏）
-- 支持维护持仓成本价，自动计算收益率 `v1.6.7`
+- 支持维护持仓成本价，自动计算收益率
 - 基金趋势统计图
 - 股票支持分组展示（A 股、港股、美股）
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
-- 持续更新……（欢迎 PR 和 Star >>> [Github 源码](https://github.com/LeekHub/leek-fund)）
+- 数据中心>牛熊风向标数据统计
+- 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)）
 
 ## 安装使用
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Statistic, StatisticCard } from '@ant-design/pro-card';
-import { omit, pick, sum } from 'lodash';
+import { pick, sum } from 'lodash';
 
 const { Divider } = StatisticCard;
 

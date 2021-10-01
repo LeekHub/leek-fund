@@ -1,12 +1,4 @@
-import {
-  Annotation,
-  Axis,
-  Chart,
-  Interaction,
-  Interval,
-  Legend,
-  Tooltip,
-} from 'bizcharts';
+import { Axis, Chart, Interaction, Interval, Legend, Tooltip } from 'bizcharts';
 import { useMemo } from 'react';
 
 function dataConvert(obj: any = {}) {
