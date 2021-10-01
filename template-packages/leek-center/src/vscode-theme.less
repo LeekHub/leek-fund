@@ -132,6 +132,10 @@
 @tree-node-hover-bg: var(--vscode-list-activeSelectionBackground, #2c313a);
 @tree-node-selected-bg: @link-active-color;
 
+// Menu
+// ---
+@menu-bg: transparent;
+
 // Input
 @input-placeholder-color: var(
   --vscode-input-placeholderForeground,
@@ -167,15 +171,25 @@
   }
 }
 
-.ant-card {
+.ant-card,
+.ant-pro-card {
   margin-bottom: 10px;
 }
 .ant-card-bordered,
-.ant-card-head {
+.ant-card-head,
+.ant-pro-card-header,
+.ant-pro-card-border {
   border-color: var(
     --vscode-editorOverviewRuler-border,
     rgba(127, 127, 127, 0.3)
-  );
+  ) !important;
+}
+
+.ant-pro-card-divider {
+  background-color: var(
+    --vscode-editorOverviewRuler-border,
+    rgba(127, 127, 127, 0.3)
+  ) !important;
 }
 
 .ant-spin-dot-item {
@@ -203,3 +217,13 @@
   }
 }
 
+.ant-pro-card {
+  color: @text-color !important;
+  background-color: @layout-body-background !important;
+  .ant-pro-card-statistic .ant-statistic-title {
+    color: @text-color !important;
+  }
+  .ant-statistic-content {
+    color: @text-color;
+  }
+}

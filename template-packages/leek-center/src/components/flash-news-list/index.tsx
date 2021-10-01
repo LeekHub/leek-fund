@@ -42,7 +42,7 @@ export default function FlashNewsList({
     const newsList = store.news.newsList.filter((news) =>
       filterNews(newsFilter, news)
     );
-    console.log('newsList: ', newsList);
+    // console.log('newsList: ', newsList);
     if (!newsList.length) {
       return (
         <div style={{ padding: '100px 0' }} className="empty">

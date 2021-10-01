@@ -21,14 +21,14 @@ export default function LFooter() {
         align="end"
         split={<Divider type="vertical" />}
       >
-        <Button
+        {/*   <Button
           onClick={() => {
             postMessage('executeCommand', 'leek-fund.tucaoForum');
           }}
           type="link"
         >
           韭菜盒子社区
-        </Button>
+        </Button> */}
         <Button
           onClick={() => {
             postMessage('executeCommand', 'leek-fund.viewFundFlow');

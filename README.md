@@ -13,8 +13,6 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 
 </div>
 
-**论坛**交流：[韭菜盒子社区](https://support.qq.com/products/302926)，**电报群** [邀请链接](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg) 和每个人一起沟通交流
-
 ## Table of contents
 
 - [leek-fund（韭菜盒子）](#leek-fund韭菜盒子)
@@ -90,11 +88,6 @@ Leek box - VSCode can also see the real-time data of stock & fund, do the most u
 关注公众号，回复："加群"，获取群主微信二维码，加好友后邀请加入**插件（养 🐥）微信交流群**：
 
 <img width="300" alt="微信公众号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
-
-其他交流方式：
-
-- **论坛**交流：[韭菜盒子社区](https://support.qq.com/products/302926)
-- **电报群** [邀请链接](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg)
 
 ## 赞助支持一下！
 

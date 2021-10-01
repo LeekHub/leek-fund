@@ -3,6 +3,7 @@
 /// <reference types="react-dom" />
 /// <reference types="./fund.d.ts" />
 /// <reference types="./stock.d.ts" />
+/// <reference types="./nxfxb.d.ts" />
 
 declare namespace NodeJS {
   interface ProcessEnv {

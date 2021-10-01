@@ -14,9 +14,9 @@ function App() {
           {routes.map((routeConfig) => (
             <Route
               key={
-                Array.isArray(routeConfig.path)
+                (Array.isArray(routeConfig.path)
                   ? routeConfig.path.join(',')
-                  : routeConfig.path
+                  : routeConfig.path) as any
               }
               {...routeConfig}
             ></Route>
