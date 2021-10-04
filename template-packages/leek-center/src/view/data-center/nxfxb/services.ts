@@ -33,11 +33,27 @@ async function fetchHotTheme() {
     const res = await fetch(
       'https://emdatah5.eastmoney.com/dc/NXFXB/GetHotTheme'
     ).then((response) => response.json());
-
     if (res?.length > 0) {
       return res[0]['Data'];
     }
     return [];
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+/**
+ * 沪深港通数据
+ * @param info
+ */
+async function fetchHsgtData() {
+  try {
+    const res = await fetch(
+      'https://emdatah5.eastmoney.com/dc/NXFXB/GetHSGT?type=1'
+    ).then((response) => response.json());
+
+    return res || [];
   } catch (err) {
     console.error(err);
     return [];
@@ -52,9 +68,10 @@ export function useFetchNxfxbInfo() {
       setLoading(true);
       try {
         const result: NxfxbData = {};
-        [result.updownData, result.hotThemeData] = await Promise.all([
+        [result.updownData, result.hotThemeData, result.hsgtData] = await Promise.all([
           fetchTryHandler(fetchUpDownData),
           fetchTryHandler(fetchHotTheme),
+          fetchTryHandler(fetchHsgtData),
         ]);
         setNxfxbData(result);
       } catch (err) {

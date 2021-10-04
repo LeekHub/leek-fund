@@ -41,7 +41,7 @@ function UpDownChart({ data }: { data: Record<string, any> }) {
     return dataConvert(data);
   }, [data]);
   return (
-    <Chart padding={[60]} autoFit height={400} data={barData} scale={scale}>
+    <Chart padding={[60]} autoFit height={360} data={barData} scale={scale}>
       <Axis name="type" />
       <Axis name="value" {...(axisCfg as any)} visible={false} line={false} />
       <Interaction type="active-region" />
