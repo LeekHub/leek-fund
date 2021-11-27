@@ -29,7 +29,8 @@ export default class StockService extends LeekService {
     }
     // const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
 
-    const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
+    const _codes = codes.map(it=>it.startsWith("cnf_")?it.substr(4):it)
+    const url = `https://hq.sinajs.cn/list=${_codes.join(',')}`;
     try {
       const resp = await Axios.get(url, {
         // axios 乱码解决
@@ -71,6 +72,7 @@ export default class StockService extends LeekService {
       let aStockCount = 0;
       let usStockCount = 0;
       let hkStockCount = 0;
+      let cnfStockCount = 0;
       let noDataStockCount = 0;
       for (let i = 0; i < splitData.length - 1; i++) {
         const code = splitData[i].split('="')[0].split('var hq_str_')[1];
@@ -165,6 +167,47 @@ export default class StockService extends LeekService {
             };
             type = code.substr(0, 4);
             usStockCount += 1;
+          } else if(/^[A-Z]/.test(code)) { // code 大写字母开头表示期货
+            symbol = code;
+            const _code = `cnf_${code}`;
+            /* 解析格式，与股票略有不同
+            var hq_str_V2201="PVC2201,230000,
+            8585.00, 8692.00, 8467.00, 8641.00, // params[2,3,4,5] 开，高，低，昨收
+            8673.00, 8674.00, // params[6, 7] 买一、卖一价
+            8675.00, // 现价 params[8]
+            8630.00, // 均价
+            8821.00, // 昨日结算价【一般软件的行情涨跌幅按这个价格显示涨跌幅】（后续考虑配置项，设置按收盘价还是结算价显示涨跌幅）
+            109, // 买一量
+            2, // 卖一量
+            289274, // 持仓量
+            230643, //总量
+            连, // params[8 + 7] 交易所名称 ["连","沪", "郑"]
+            PVC,2021-11-26,1,9243.000,8611.000,9243.000,8251.000,9435.000,8108.000,13380.000,8108.000,445.541";
+            */
+            let name = params[0];
+            let open = params[2];
+            let high = params[3];
+            let low = params[4];
+            let yestclose = params[5];
+            let price = params[8];
+            let yestCallPrice = params[8 + 2];
+            let volume = params[8 + 6]; // 成交量
+            fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+            stockItem = {
+              code: _code,
+              name: name,
+              open: formatNumber(open, fixedNumber, false),
+              yestclose: formatNumber(yestclose, fixedNumber, false),
+              yestcallprice: formatNumber(yestCallPrice, fixedNumber, false),
+              price: formatNumber(price, fixedNumber, false),
+              low: formatNumber(low, fixedNumber, false),
+              high: formatNumber(high, fixedNumber, false),
+              volume: formatNumber(volume, 2),
+              amount: '接口无数据',
+              percent: '',
+            };
+            type = "cnf_"; 
+            cnfStockCount += 1;
           }
           if (stockItem) {
             const { yestclose, open } = stockItem;
@@ -229,6 +272,7 @@ export default class StockService extends LeekService {
       globalState.aStockCount = aStockCount;
       globalState.hkStockCount = hkStockCount;
       globalState.usStockCount = usStockCount;
+      globalState.cnfStockCount = cnfStockCount;
       globalState.noDataStockCount = noDataStockCount;
       return res;
     } catch (err) {
@@ -251,9 +295,16 @@ export default class StockService extends LeekService {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
+
+    // 期货大写字母开头
+    const isFuture = /^[A-Z]/.test(searchText[0]);
+    if(isFuture){
+      type = '85,86,88'
+    }
     const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
       searchText
     )}`;
+
     try {
       console.log('getStockSuggestList: getting...');
       const response = await Axios.get(url, {
@@ -267,11 +318,6 @@ export default class StockService extends LeekService {
         headers: randHeader(),
       });
       const text = response.data.slice(18, -1);
-      if (text.length <= 1 && !this.searchStockKeyMap[searchText]) {
-        this.searchStockKeyMap[searchText] = true;
-        // 兼容一些查询不到的股票，如sz123044
-        return this.getStockSuggestList(searchText, '');
-      }
       this.searchStockKeyMap = {};
       const tempArr = text.split(';');
       const result: QuickPickItem[] = [];
@@ -287,8 +333,9 @@ export default class StockService extends LeekService {
         if (code === 'hkhsi' || code === 'hkhscei') {
           code = code.toUpperCase().replace('HK', 'hk');
         }
+
         // 过滤多余的 us. 开头的股干扰
-        if (STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) {
+        if ((STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) || isFuture) {
           result.push({
             label: `${code} | ${arr[4]}`,
             description: arr[7] && arr[7].replace(/"/g, ''),

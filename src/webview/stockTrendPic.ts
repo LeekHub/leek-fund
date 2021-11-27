@@ -16,6 +16,7 @@ function stockTrendPic(code: string, name: string, stockCode: string) {
     normal: 'https://image.sinajs.cn/newchart',
     usstock: 'https://image.sinajs.cn/newchart/v5/usstock',
     hk_stock: 'http://image.sinajs.cn/newchart/hk_stock',
+    cn_future: 'http://image.sinajs.cn/newchart/v5/futures/china'
   };
   let sszsImg = code;
   let imageName = stockCode.toLowerCase();
@@ -45,7 +46,14 @@ function stockTrendPic(code: string, name: string, stockCode: string) {
     dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
     weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
     monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
-    // console.log(dailyK);
+  } else if (stockCode.indexOf('cnf') === 0) {
+    // sina 数据源问题，无法规避。周线以上行情存在开盘价错乱问题
+    imageName = stockCode.replace('cnf_', '');
+    sszsImg = imageName;
+    timeK = `${codeByImgPath.cn_future}/min/${sszsImg}.gif?${timestamp}`;
+    dailyK = `${codeByImgPath.cn_future}/daily/${sszsImg}.gif?${timestamp}`;
+    weeklyK = `${codeByImgPath.cn_future}/weekly/${sszsImg}.gif?${timestamp}`;
+    monthlyK = `${codeByImgPath.cn_future}/monthly/${sszsImg}.gif?${timestamp}`;
   }
 
   panel.webview.html = panel.webview.html = `<html><body style="background:#eee;color:#333">

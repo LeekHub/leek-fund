@@ -147,7 +147,7 @@ export function registerViewEvent(
         return;
       }
       // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
-      const newCode = code.replace('gb', 'gb_').replace('us', 'usr_');
+      const newCode = code.replace('gb', 'gb_').replace('us', 'usr_').replace(/^[A-Z]/, it=>`cnf_${it}`);
       LeekFundConfig.updateStockCfg(newCode, () => {
         stockProvider.refresh();
       });

@@ -186,12 +186,18 @@ export class LeekTreeItem extends TreeItem {
     }
 
     if (this._itemType === TreeItemType.STOCK) {
+      const labelText = !showLabel ? name : '';
+      
+      const isFuture = type === "cnf_";
+      // type字段：期货没有前缀，去掉自定义的 `cnf_`。股票的 type 是交易所 (sz,sh) 
+      const typeText = isFuture? symbol?.replace("cnf_", ""): type; 
+      const symbolText = isFuture? '': symbol;
+      console.log({labelText, typeText, symbolText});
+      
       if (type === 'nodata') {
         this.tooltip = '接口不支持，右键删除关注';
       } else {
-        this.tooltip = `【今日行情】${
-          !showLabel ? name : ''
-        }${type}${symbol}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       }
     } else if (this._itemType === TreeItemType.BINANCE) {
       this.tooltip = `【今日行情】${name}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
