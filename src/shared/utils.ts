@@ -347,7 +347,9 @@ export function allMarkets(): Array<string> {
       market = StockCategory.HK;
     } else if (/^(usr_)/.test(item)) {
       market = StockCategory.US;
-    }
+    } else if (/^(cnf_)/.test(item)) {
+      market = StockCategory.Future;
+    } 
     if (!result.includes(market)) {
       result.push(market);
     }
@@ -361,7 +363,7 @@ export function allStockTimes(): Map<string, Array<number>> {
   stocks.set(StockCategory.HK, [9, 16]);
   // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
   stocks.set(StockCategory.US, [21, 5]);
-
+  stocks.set(StockCategory.Future, [21, 15]);
   return stocks;
 }
 
@@ -503,6 +505,7 @@ export function formatLabelString(str: string, params: Record<string, any>) {
       }
     });
   } catch (err) {
+    // @ts-ignore
     window.showErrorMessage(`fail: Label format Error, ${str};\n${err.message}`);
     return '模板格式错误！';
   }

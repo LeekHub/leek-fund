@@ -40,6 +40,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
           return this.getHkStockNodes(resultPromise);
         case StockCategory.US:
           return this.getUsStockNodes(resultPromise);
+        case StockCategory.Future:
+            return this.getFutureStockNodes(resultPromise);
         case StockCategory.NODATA:
           return this.getNoDataStockNodes(resultPromise);
         default:
@@ -104,6 +106,16 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         undefined,
         true
       ),
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.Future,
+          name: `${StockCategory.Future}${
+            globalState.cnfStockCount > 0 ? `(${globalState.cnfStockCount})` : ''
+          }`,
+        }),
+        undefined,
+        true
+      )
     ];
     // 显示接口不支持的股票，避免用户老问为什么添加了股票没反应
     if (globalState.noDataStockCount) {
@@ -136,6 +148,11 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   getUsStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
     return stocks.then((res: LeekTreeItem[]) =>
       res.filter((item: LeekTreeItem) => /^(usr_)/.test(item.type || ''))
+    );
+  }
+  getFutureStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    return stocks.then((res: LeekTreeItem[]) =>
+      res.filter((item: LeekTreeItem) => /^(cnf_)/.test(item.type || ''))
     );
   }
   getNoDataStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
