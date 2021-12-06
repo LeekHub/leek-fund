@@ -17,5 +17,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
-      - run: yarn deploy -p ${{ secrets.VSCE_TOKEN }}
+        # Get commit message
+      - name: Get commit message
+        run: |
+          COMMIT_MESSAGE=$(git log --format=%s -n 1)
+          echo "commitmsg=${COMMIT_MESSAGE}" >> $GITHUB_ENV
+      - name: Deploy
+        run: |
+          yarn
+          yarn deploy -p ${{ secrets.VSCE_TOKEN }}
