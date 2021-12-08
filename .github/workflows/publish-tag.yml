@@ -1,4 +1,4 @@
-name: Deploy VSCode extension
+name: Deploy By Tag
 
 on:
   create:
