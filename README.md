@@ -58,6 +58,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - 状态栏、侧栏支持自定义模板格式
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
 - 数据中心>牛熊风向标数据统计
+- 新增支持期货
 - 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)）
 
 ## 安装使用
@@ -115,6 +116,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - [wujunchuan](https://github.com/wujunchuan)
 - [laampui](https://github.com/laampui)
 - [xiaohai](https://github.com/xiaohaiGitHub)
+- [zxj5470](https://github.com/zxj5470)
 
 更多贡献者 [contributors](https://github.com/LeekHub/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
