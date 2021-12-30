@@ -91,7 +91,30 @@ export class LeekFundConfig extends BaseConfig {
       }
     });
   }
+  //addStockToBarCfg
+  static addStockToBarCfg(code: string, cb?: Function) {
+    let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
+    if(configArr.length >=4){
+      window.showInformationMessage(`StatusBar Exceeding Length.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    }else if(configArr.includes(code)){
+      window.showInformationMessage(`StatusBar Already Have.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    }else{
+      configArr.push(code);
+      this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
+        window.showInformationMessage(`Stock Successfully add to statusBar.`);
+        if (cb && typeof cb === 'function') {
+          cb(code);
+        }
+      });
+    }
 
+  }
   static setStockTopCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.stocks');
 
