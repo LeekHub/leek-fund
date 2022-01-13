@@ -15,7 +15,7 @@ export default class StockService extends LeekService {
 
   private context: ExtensionContext;
   private defaultBarStock: LeekTreeItem | null = null;
-  private searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
+  // private searchStockKeyMap: any = {}; // 标记搜索不到记录，避免死循环
 
   constructor(context: ExtensionContext) {
     super();
@@ -29,7 +29,7 @@ export default class StockService extends LeekService {
     }
     // const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
 
-    const _codes = codes.map(it=>it.startsWith("cnf_")?it.substr(4):it)
+    const _codes = codes.map((it) => (it.startsWith('cnf_') ? it.substr(4) : it));
     const url = `https://hq.sinajs.cn/list=${_codes.join(',')}`;
     try {
       const resp = await Axios.get(url, {
@@ -99,7 +99,7 @@ export default class StockService extends LeekService {
               high: formatNumber(high, fixedNumber, false),
               volume: formatNumber(params[8], 2),
               amount: formatNumber(params[9], 2),
-              time:`${params[30]} ${params[31]}`,
+              time: `${params[30]} ${params[31]}`,
               percent: '',
             };
             aStockCount += 1;
@@ -167,7 +167,8 @@ export default class StockService extends LeekService {
             };
             type = code.substr(0, 4);
             usStockCount += 1;
-          } else if(/^[A-Z]/.test(code)) { // code 大写字母开头表示期货
+          } else if (/^[A-Z]/.test(code)) {
+            // code 大写字母开头表示期货
             symbol = code;
             const _code = `cnf_${code}`;
             /* 解析格式，与股票略有不同
@@ -206,7 +207,7 @@ export default class StockService extends LeekService {
               amount: '接口无数据',
               percent: '',
             };
-            type = "cnf_"; 
+            type = 'cnf_';
             cnfStockCount += 1;
           }
           if (stockItem) {
@@ -291,15 +292,15 @@ export default class StockService extends LeekService {
     }
   }
 
-  async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
+  async getStockSuggestList(searchText = '', type = ''): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
 
     // 期货大写字母开头
     const isFuture = /^[A-Z]/.test(searchText[0]);
-    if(isFuture){
-      type = '85,86,88'
+    if (isFuture) {
+      type = '85,86,88';
     }
     const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
       searchText
@@ -317,13 +318,21 @@ export default class StockService extends LeekService {
         ],
         headers: randHeader(),
       });
-      const text = response.data.slice(18, -1);
-      this.searchStockKeyMap = {};
-      const tempArr = text.split(';');
+      const text = response.data.slice(18, -2);
+      // if (text.length <= 1 && !this.searchStockKeyMap[searchText]) {
+      //   this.searchStockKeyMap[searchText] = true;
+      //   // 兼容一些查询不到的股票，如sz123044
+      //   return this.getStockSuggestList(searchText, '');
+      // }
+      // this.searchStockKeyMap = {};
       const result: QuickPickItem[] = [];
+      if (text === '') {
+        return result;
+      }
+      const tempArr = text.split(';');
       tempArr.forEach((item: string) => {
         const arr = item.split(',');
-        let code = arr[0];
+        let code = arr[3];
         if (code.substr(0, 2) === 'of') {
           // 修改lof以及etf的前缀，防止被过滤
           // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
