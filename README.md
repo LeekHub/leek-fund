@@ -118,6 +118,11 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - [xiaohai](https://github.com/xiaohaiGitHub)
 - [zxj5470](https://github.com/zxj5470)
 - [sungongwei ](https://github.com/sungongwei)
+- [gittig11 ](https://github.com/gittig11)
+
+<!-- <a href="https://github.com/giscafer/leek-fund/graphs/contributors">
+  <img src="https://opencollective.com/leek-fund/contributors.svg?width=960&button=false" alt="contributors" />
+</a> -->
 
 更多贡献者 [contributors](https://github.com/LeekHub/leek-fund/graphs/contributors)，欢迎来贡献 PR~
 
