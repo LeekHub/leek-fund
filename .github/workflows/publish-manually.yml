@@ -1,9 +1,10 @@
-name: Deploy  By Commit
+name: Deploy By Manually
 
 on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,13 +18,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        # Get commit message
-      - name: Get commit message
-        run: |
-          COMMIT_MESSAGE=$(git log --format=%s -n 1)
-          echo "commitmsg=${COMMIT_MESSAGE}" >> $GITHUB_ENV
       - name: Deploy
-        if: startsWith( env.commitmsg , 'chore(release):' )
         run: |
           yarn
           yarn deploy -p ${{ secrets.VSCE_TOKEN }}
