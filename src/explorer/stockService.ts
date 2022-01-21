@@ -41,7 +41,10 @@ export default class StockService extends LeekService {
             return body;
           },
         ],
-        headers: randHeader(),
+        headers: {
+          ...randHeader(),
+          Referer: 'http://finance.sina.com.cn/'
+        },
       });
       let stockList: Array<LeekTreeItem> = [];
       // const barStockList: Array<LeekTreeItem> = [];
