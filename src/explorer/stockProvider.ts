@@ -64,7 +64,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         label: element.info.name,
         // tooltip: this.getSubCategoryTooltip(element),
         collapsibleState:
-          element.id === StockCategory.A
+          element.id === StockCategory.A || element.id === StockCategory.HK
             ? TreeItemCollapsibleState.Expanded
             : TreeItemCollapsibleState.Collapsed,
         // iconPath: this.parseIconPathFromProblemState(element),
