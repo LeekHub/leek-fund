@@ -22,7 +22,6 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
   - [插件介绍](#插件介绍)
   - [插件设置](#插件设置)
   - [交流群](#交流群)
-  - [赞助支持一下！](#赞助支持一下)
   - [Todo List](#todo-list)
   - [感谢 PR](#感谢-pr)
   - [Changelog](#changelog)
@@ -59,7 +58,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
 - 数据中心>牛熊风向标数据统计
 - 新增支持期货
-- 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)）
+- 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)
 
 ## 安装使用
 
@@ -84,9 +83,11 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 
 ![](./screenshot/settings.png)
 
-## 交流群
+## 社区交流
 
-关注公众号，回复："加群"，获取群主微信二维码，加好友后邀请加入**插件（养 🐥）微信交流群**：
+> 因恶意举报，不再提供官方群聊
+
+公众号：
 
 <img width="300" alt="微信公众号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
 
@@ -108,7 +109,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - [iporer](https://github.com/iporer)
 - [zomixi](https://github.com/zomixi)
 - [httpcheck](https://github.com/httpcheck)
-- [JayHuangTnT](https://github.com/JayHuangTnT) （:heart: Logo Designer）
+- [JayHuangTnT](https://github.com/JayHuangTnT)
 - [yiliang114](https://github.com/yiliang114)
 - [SubinY](https://github.com/SubinY)
 - [gordongxm](https://github.com/gordongxm)
@@ -117,8 +118,8 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - [laampui](https://github.com/laampui)
 - [xiaohai](https://github.com/xiaohaiGitHub)
 - [zxj5470](https://github.com/zxj5470)
-- [sungongwei ](https://github.com/sungongwei)
-- [gittig11 ](https://github.com/gittig11)
+- [sungongwei](https://github.com/sungongwei)
+- [gittig11](https://github.com/gittig11)
 
 <!-- <a href="https://github.com/giscafer/leek-fund/graphs/contributors">
   <img src="https://opencollective.com/leek-fund/contributors.svg?width=960&button=false" alt="contributors" />
@@ -132,7 +133,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 
 ## 代码目录说明
 
-> 历史原因，仓库中类文件并没有大小开头，导致有些文件不好区分是函数方式书写还是面向对象类的写法。
+> 历史原因，仓库中类文件并没有以`PascalCase`规范，导致有些文件不好区分是函数方式书写还是面向对象类的写法。
 
 ```shell
 
