@@ -342,7 +342,8 @@ export default class StockService extends LeekService {
           // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
           code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
         }
-        if (code === 'hkhsi' || code === 'hkhscei') {
+        // 期货 suggest 请求返回的 code 小写开头改为大写
+        if (code === 'hkhsi' || code === 'hkhscei' || isFuture) {
           code = code.toUpperCase().replace('HK', 'hk');
         }
 
