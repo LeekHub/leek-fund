@@ -12,10 +12,18 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   private service: StockService;
   private order: SortType;
+  private expandAStock: boolean;
+  private expandHKStock: boolean;
+  private expandUSStock: boolean;
+  private expandCNFuture: boolean;
 
   constructor(service: StockService) {
     this.service = service;
     this.order = LeekFundConfig.getConfig('leek-fund.stockSort') || SortType.NORMAL;
+    this.expandAStock = LeekFundConfig.getConfig('leek-fund.expandAStock', true);
+    this.expandHKStock = LeekFundConfig.getConfig('leek-fund.expandHKStock', false);
+    this.expandUSStock = LeekFundConfig.getConfig('leek-fund.expandUSStock', false);
+    this.expandCNFuture = LeekFundConfig.getConfig('leek-fund.expandCNFuture', false);
   }
 
   refresh(): any {
@@ -64,7 +72,10 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         label: element.info.name,
         // tooltip: this.getSubCategoryTooltip(element),
         collapsibleState:
-          element.id === StockCategory.A
+          (element.id === StockCategory.A && this.expandAStock) ||
+          (element.id === StockCategory.HK && this.expandHKStock) ||
+          (element.id === StockCategory.US && this.expandUSStock) ||
+          (element.id === StockCategory.Future && this.expandCNFuture)
             ? TreeItemCollapsibleState.Expanded
             : TreeItemCollapsibleState.Collapsed,
         // iconPath: this.parseIconPathFromProblemState(element),
