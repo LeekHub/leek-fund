@@ -43,7 +43,7 @@ export default class StockService extends LeekService {
         ],
         headers: {
           ...randHeader(),
-          Referer: 'http://finance.sina.com.cn/'
+          Referer: 'http://finance.sina.com.cn/',
         },
       });
       let stockList: Array<LeekTreeItem> = [];
@@ -294,8 +294,8 @@ export default class StockService extends LeekService {
       return [];
     }
   }
-
-  async getStockSuggestList(searchText = '', type = ''): Promise<QuickPickItem[]> {
+  // https://github.com/LeekHub/leek-fund/issues/266
+  async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }

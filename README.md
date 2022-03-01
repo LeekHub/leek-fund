@@ -91,14 +91,6 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 
 <img width="300" alt="微信公众号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
 
-## 赞助支持一下！
-
-[Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
-
-## Todo List
-
-- [版本迭代需求池（想法）](https://github.com/LeekHub/leek-fund/projects)
-
 ## Core Contributors
 
 - [giscafer](https://github.com/giscafer)
@@ -120,6 +112,7 @@ Leek box - VSCode can also see the real-time data of stock & fund & future, do t
 - [zxj5470](https://github.com/zxj5470)
 - [sungongwei](https://github.com/sungongwei)
 - [gittig11](https://github.com/gittig11)
+- [James-chok](https://github.com/James-chok)
 
 <!-- <a href="https://github.com/giscafer/leek-fund/graphs/contributors">
   <img src="https://opencollective.com/leek-fund/contributors.svg?width=960&button=false" alt="contributors" />
@@ -172,6 +165,10 @@ src
 └── webview   # webview 页面
 
 ```
+
+## 赞助支持一下 ↓↓
+
+[Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
 
 ## License
 

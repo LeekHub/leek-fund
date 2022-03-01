@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [2.0.6]
+
+- fix: 港股搜索 bug
+- feat: 新增可选默认展开对应股票市场的选项
+
 ## [2.0.5]
 
 - fix: 股票接口问题 pr by @gittig11
