@@ -580,6 +580,26 @@
           "type": "boolean",
           "default": false,
           "description": "开启快讯输出（查看 - 输出 - 韭菜盒子快讯）"
+        },
+        "leek-fund.expandAStock": {
+          "type": "boolean",
+          "default": true,
+          "description": "默认展开A股"
+        },
+        "leek-fund.expandHKStock": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开港股"
+        },
+        "leek-fund.expandUSStock": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开美股"
+        },
+        "leek-fund.expandCNFuture": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开期货"
         }
       }
     },
