@@ -477,10 +477,10 @@
             ammountObj[item.code].earnings = earnings;
           });
 
-          fetchInfo(fundList, ({ Expansion, Datas }) => {
+          fetchInfo(fundList, ({ Expansion = {}, Datas = [] }) => {
             const dates = [
-              Expansion.FSRQ.substr(5, 5),
-              Expansion.GZTIME.substr(5, 5),
+              Expansion?.FSRQ?.substr?.(5, 5),
+              Expansion?.GZTIME?.substr?.(5, 5),
             ];
             const result = [];
             totalMoney = 0;
@@ -577,12 +577,9 @@
         return new Blob([ab], { type: type });
       }
 
-
       vscode.postMessage({
-        command: 'refresh'
+        command: 'refresh',
       });
-
-      
     </script>
 
     <script></script>
