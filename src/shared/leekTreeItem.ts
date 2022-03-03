@@ -163,7 +163,7 @@ export class LeekTreeItem extends TreeItem {
           : `${formatTreeText(`${_percent}%`)}「${code}」`;
     }
 
-    this.label = text;
+    this.label = grow ? { label: text, highlights: [[0, text.length]] } : text;
     this.id = info.id || code;
 
     if (this._itemType === TreeItemType.STOCK || this._itemType === TreeItemType.FUND) {
