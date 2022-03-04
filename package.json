@@ -600,6 +600,11 @@
           "type": "boolean",
           "default": false,
           "description": "默认展开期货"
+        },
+        "leek-fund.enableHighlights": {
+          "type": "number",
+          "default": -1,
+          "description": "是否打开涨跌高亮（0关闭，1涨高亮，-1跌高亮）"
         }
       }
     },

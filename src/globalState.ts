@@ -18,6 +18,7 @@ let remindSwitch = 1; // 是否打开提示
 let newsIntervalTime = 20000; // 新闻刷新频率（毫秒）
 let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
 let labelFormat = DEFAULT_LABEL_FORMAT;
+let enableHighlights = -1; // 是否打开高亮
 
 let aStockCount = 0;
 let usStockCount = 0;
@@ -53,6 +54,7 @@ export default {
   stocksRemind,
   remindSwitch,
   labelFormat,
+  enableHighlights,
   showStockErrorInfo,
   immersiveBackground,
   isDevelopment,

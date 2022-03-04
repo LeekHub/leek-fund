@@ -206,6 +206,8 @@ function setGlobalVariable() {
 
   globalState.labelFormat = LeekFundConfig.getConfig('leek-fund.labelFormat');
 
+  globalState.enableHighlights = LeekFundConfig.getConfig('leek-fund.enableHighlights', -1);
+
   globalState.immersiveBackground = LeekFundConfig.getConfig('leek-fund.immersiveBackground', true);
 }
 
