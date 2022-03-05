@@ -664,7 +664,7 @@
     "@types/lodash.throttle": "^4.1.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
-    "@types/vscode": "1.64.0",
+    "@types/vscode": "1.44.0",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
