@@ -199,7 +199,6 @@
         Math.random().toString(32).substr(2);
 
       let sortType = 'default';
-      let totalEarnings = 0;
       const list = $('.list');
       let fundList = [];
       let priceDate = new Date().toDateString();
@@ -221,10 +220,6 @@
 
       function init(data) {
         // const fundList = ${JSON.stringify(list)};
-        let listStr = '';
-        totalEarnings = 0;
-        let totalMoney = 0;
-
         if (sortType !== 'default') {
           fundList = data.sort((a, b) => {
             const ae = a.earningPercent || 0;
@@ -234,9 +229,15 @@
         } else {
           fundList = data;
         }
-
         // console.log(fundList);
+        
+        init2()
+      }
 
+      function init2() {
+        let listStr = '';
+        let totalMoney = 0;
+        let totalEarnings = 0;
         fundList.forEach((item, index) => {
           const amount = item.amount || 0;
           const unitPrice = item.unitPrice || 0;
@@ -471,6 +472,13 @@
             item.amount = amount; // 持仓金额
             item.unitPrice = unitPrice; // 成本价
             totalMoney += amount; // 持仓金额
+            // 收益率
+            if (unitPrice !== 0) {
+              profitPercent = (item.price - unitPrice) / unitPrice * 100;
+              item.earningPercent = profitPercent.toFixed(2);
+            } else {
+              item.earningPercent = 0;
+            }
 
             // if (typeof ammountObj[item.code] !== 'object') {
             //   ammountObj[item.code] = {};
@@ -481,6 +489,7 @@
             // ammountObj[item.code].earnings = earnings;
           });
           $('#totalMoney').html(totalMoney.toFixed(2));
+          init2()
           vscode.postMessage({
             command: 'success',
             text: JSON.stringify(fundList),
