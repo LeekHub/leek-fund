@@ -461,21 +461,31 @@
           }
         });
         $('#save').click(() => {
-          const ammountObj = {};
+          // const ammountObj = {};
+          let totalMoney = 0;
           fundList.forEach((item) => {
             let amount = $('#' + item.code).val();
             let unitPrice = $('#' + item.code + '_unit').val();
             amount = isNaN(Number(amount)) ? 0 : Number(amount);
             unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
+            item.amount = amount; // 持仓金额
+            item.unitPrice = unitPrice; // 成本价
+            totalMoney += amount; // 持仓金额
 
-            if (typeof ammountObj[item.code] !== 'object') {
-              ammountObj[item.code] = {};
-            }
-            ammountObj[item.code].amount = amount;
-            ammountObj[item.code].unitPrice = unitPrice;
-            const earnings = item.earnings || 0;
-            ammountObj[item.code].earnings = earnings;
+            // if (typeof ammountObj[item.code] !== 'object') {
+            //   ammountObj[item.code] = {};
+            // }
+            // ammountObj[item.code].amount = amount;
+            // ammountObj[item.code].unitPrice = unitPrice;
+            // const earnings = item.earnings || 0;
+            // ammountObj[item.code].earnings = earnings;
           });
+          $('#totalMoney').html(totalMoney.toFixed(2));
+          vscode.postMessage({
+            command: 'success',
+            text: JSON.stringify(fundList),
+          });
+          return
 
           fetchInfo(fundList, ({ Expansion = {}, Datas = [] }) => {
             const dates = [
