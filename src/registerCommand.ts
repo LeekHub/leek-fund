@@ -152,7 +152,10 @@ export function registerViewEvent(
         return;
       }
       // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
-      const newCode = code.replace('gb', 'gb_').replace('us', 'usr_').replace(/^[A-Z]/, it=>`cnf_${it}`);
+      const newCode = code
+        .replace('gb', 'gb_')
+        .replace('us', 'usr_')
+        .replace(/^[A-Z]/, (it) => `cnf_${it}`);
       LeekFundConfig.updateStockCfg(newCode, () => {
         stockProvider.refresh();
       });
@@ -271,7 +274,6 @@ export function registerViewEvent(
         if (!cookie) {
           return;
         }
-        console.log(cookie);
         LeekFundConfig.setConfig('leek-fund.xueqiuCookie', cookie).then(() => {
           newsProvider.refresh();
         });
@@ -496,11 +498,11 @@ export function registerViewEvent(
           const newCfg = [...statusBarStocks];
           const newStockId = res.description;
           const index = newCfg.indexOf(stockId);
-          if(newStockId ==='-1'){
+          if (newStockId === '-1') {
             if (index > -1) {
-              newCfg.splice(index,1);
+              newCfg.splice(index, 1);
             }
-          }else{
+          } else {
             if (statusBarStocks.includes(newStockId)) {
               window.showWarningMessage(`「${res.label}」已在状态栏`);
               return;

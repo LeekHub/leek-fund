@@ -29,7 +29,7 @@ export default class FundService extends LeekService {
     if (!fundCodes.length) {
       return [];
     }
-    console.log('fetching fund data……');
+    // console.log('fetching fund data……');
     try {
       let totalAmount = 0; // 总持仓
       let totalProfit = 0; // 总收益
