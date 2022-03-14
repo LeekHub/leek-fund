@@ -14,7 +14,7 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 const cloneDeep = require('lodash.clonedeep');
 
 async function setAmount(fundService: FundService) {
-  const list = fundDataHandler(fundService);
+  // const list = fundDataHandler(fundService);
   const panel = ReusedWebviewPanel.create(
     'setFundAmountWebview',
     `基金持仓金额设置`,
@@ -76,9 +76,11 @@ function fundDataHandler(fundService: FundService) {
       amount: amountObj[item.info?.code]?.amount || 0,
       earningPercent: item.info?.earningPercent,
       unitPrice: item.info?.unitPrice,
-      priceDate: formatDate(item.info?.time),
+      // priceDate: formatDate(item.info?.time),
       earnings: item.info?.earnings || 0,
       yestEarnings: amountObj[item.info.code]?.earnings || 0,
+      price: item.info?.yestclose,
+      priceDate: item.info?.yestPriceDate,
     };
   });
 

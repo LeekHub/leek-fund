@@ -3,7 +3,7 @@ name: Deploy By Manually
 on:
   push:
     branches:
-      - master
+      # - master
   workflow_dispatch:
 
 jobs:

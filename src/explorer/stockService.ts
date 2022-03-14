@@ -23,7 +23,7 @@ export default class StockService extends LeekService {
   }
 
   async getData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
-    console.log('fetching stock data…');
+    // console.log('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }

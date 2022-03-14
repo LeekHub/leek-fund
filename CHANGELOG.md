@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [2.0.7]
+
+- fix: https://github.com/LeekHub/leek-fund/issues/280
+
 ## [2.0.6]
 
 - fix: 港股搜索 bug
