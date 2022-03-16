@@ -31,7 +31,7 @@ export default class FundService extends LeekService {
     let idArray: Array<string> = [];
     let newAllFundsList: Array<LeekTreeItem> = [];
     this.allFundsList.forEach((fund: LeekTreeItem) => {
-      if (fund.id && idArray.indexOf(fund.id) == -1) {
+      if (fund.id && idArray.indexOf(fund.id) === -1) {
         idArray.push(fund.id);
         newAllFundsList.push(fund);
       }

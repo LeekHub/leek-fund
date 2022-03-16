@@ -102,11 +102,11 @@ export function activate(context: ExtensionContext) {
   // 迁移用户的基金代码到分组模式
   const migrateFunds = () => {
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
-    if (typeof fundLists[0] == 'string' || fundLists[0] instanceof String) {
+    if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
       const newFundLists = [fundLists];
       LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
     }
-  }
+  };
 
   migrateFunds();
 
