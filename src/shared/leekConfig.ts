@@ -69,7 +69,7 @@ export class LeekFundConfig extends BaseConfig {
           }
         });
       } else {
-        window.showInformationMessage(`Cancel .`);
+        window.showInformationMessage(`Cancel.`);
         if (cb && typeof cb === 'function') {
           cb(groupId);
         }
