@@ -59,10 +59,20 @@ export class LeekFundConfig extends BaseConfig {
       const id: string = `fundGroup_${index}`;
       return id !== groupId;
     });
-    config.update('leek-fund.funds', updatedCfg, true).then(() => {
-      window.showInformationMessage(`Fund Successfully delete.`);
-      if (cb && typeof cb === 'function') {
-        cb(groupId);
+
+    window.showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消').then((res) => {
+      if (res === '好的') {
+        config.update('leek-fund.funds', updatedCfg, true).then(() => {
+          window.showInformationMessage(`Fund Group Successfully delete.`);
+          if (cb && typeof cb === 'function') {
+            cb(groupId);
+          }
+        });
+      } else {
+        window.showInformationMessage(`Cancel .`);
+        if (cb && typeof cb === 'function') {
+          cb(groupId);
+        }
       }
     });
   }
