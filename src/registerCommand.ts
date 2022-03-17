@@ -72,7 +72,7 @@ export function registerViewEvent(
       fundProvider.refresh();
     });
   });
-  commands.registerCommand('leek-fund.addFund', () => {
+  commands.registerCommand('leek-fund.addFund', (target) => {
     /* if (!service.fundSuggestList.length) {
       service.getFundSuggestList();
       window.showInformationMessage(`获取基金数据中，请稍后再试`);
@@ -83,9 +83,19 @@ export function registerViewEvent(
       if (!code) {
         return;
       }
-      LeekFundConfig.updateFundCfg(code.split('|')[0], () => {
+      LeekFundConfig.addFundCfg(target.id, code.split('|')[0], () => {
         fundProvider.refresh();
       });
+    });
+  });
+  commands.registerCommand('leek-fund.addFundGroup', () => {
+    LeekFundConfig.addFundGroupCfg(() => {
+      fundProvider.refresh();
+    });
+  });
+  commands.registerCommand('leek-fund.removeFundGroup', (target) => {
+    LeekFundConfig.removeFundGroupCfg(target.id, () => {
+      fundProvider.refresh();
     });
   });
   commands.registerCommand('leek-fund.sortFund', () => {
@@ -116,7 +126,7 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.leekCenterView', () => {
-    if (stockService.stockList.length === 0 && fundService.fundList.length === 0) {
+    if (stockService.stockList.length === 0 && fundService.allFundsList.length === 0) {
       window.showWarningMessage('数据刷新中，请稍候！');
       return;
     }
@@ -206,7 +216,7 @@ export function registerViewEvent(
   });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
-    if (fundService.fundList.length === 0) {
+    if (fundService.allFundsList.length === 0) {
       window.showWarningMessage('数据刷新中，请重试！');
       return;
     }

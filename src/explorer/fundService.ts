@@ -18,14 +18,28 @@ const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jso
 
 export default class FundService extends LeekService {
   private context: ExtensionContext;
-  public fundList: Array<LeekTreeItem> = [];
+  private fundList: Array<LeekTreeItem> = [];
+  public allFundsList: Array<LeekTreeItem> = [];
 
   constructor(context: ExtensionContext) {
     super();
     this.context = context;
   }
 
-  async getData(fundCodes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+  setAllFundsList(fundList: Array<LeekTreeItem>) {
+    this.allFundsList = [...this.allFundsList, ...fundList];
+    let idArray: Array<string> = [];
+    let newAllFundsList: Array<LeekTreeItem> = [];
+    this.allFundsList.forEach((fund: LeekTreeItem) => {
+      if (fund.id && idArray.indexOf(fund.id) === -1) {
+        idArray.push(fund.id);
+        newAllFundsList.push(fund);
+      }
+    });
+    this.allFundsList = newAllFundsList;
+  }
+
+  async getData(fundCodes: Array<string>, order: number, groupId: string): Promise<Array<LeekTreeItem>> {
     if (!fundCodes.length) {
       return [];
     }
@@ -63,6 +77,7 @@ export default class FundService extends LeekService {
         }
 
         const obj = {
+          id: `${groupId}_${FCODE}`,
           name: SHORTNAME,
           code: FCODE,
           price: GSZ, // 今日估值
@@ -91,6 +106,7 @@ export default class FundService extends LeekService {
       executeStocksRemind(res, this.fundList);
       const oldFundList = this.fundList;
       this.fundList = res;
+      this.setAllFundsList(this.fundList);
       events.emit('fundListUpdate', this.fundList, oldFundList);
       events.emit('updateBar:profit-refresh', {
         fundProfit: toFixed(totalProfit),

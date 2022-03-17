@@ -1,7 +1,7 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { SortType } from '../shared/typed';
+import { defaultFundInfo, SortType } from '../shared/typed';
 import FundService from './fundService';
 
 export class FundProvider implements TreeDataProvider<LeekTreeItem> {
@@ -21,9 +21,45 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
-    const fundCodes = LeekFundConfig.getConfig('leek-fund.funds') || [];
-    return this.service.getData(fundCodes, this.order);
+  getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
+    if (!element) {
+      return this.getRootNodes(fundLists);
+    } else {
+      return this.getChildrenNodes(element, fundLists);
+    }
+  }
+
+  getRootNodes(fundLists: Array<Object>): Array<LeekTreeItem> {
+    let nodes: Array<LeekTreeItem> = [];
+    fundLists.forEach((value, index) => {
+      const funds = value as Array<string>;
+      nodes.push(
+        new LeekTreeItem(
+          Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+            id: `fundGroup_${index}`,
+            name: `Fund Group ${index} ${funds.length > 0 ? `(${funds.length})` : ''}`,
+          }),
+          undefined,
+          true)
+      );
+    });
+    return nodes;
+  }
+
+  getChildrenNodes(element: LeekTreeItem, fundLists: Array<Object>): Promise<Array<LeekTreeItem>> {
+    let groupId: string = '';
+    let fundCodes: Array<string> = [];
+    fundLists.forEach((value, index) => {
+      const funds = value as Array<string>;
+      const id: string = `fundGroup_${index}`;
+      if (element.id === id) {
+        groupId = id;
+        fundCodes = funds;
+        return;
+      }
+    });
+    return this.service.getData(fundCodes, this.order, groupId);
   }
 
   getParent(element: LeekTreeItem): LeekTreeItem | null {
@@ -31,7 +67,19 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getTreeItem(element: LeekTreeItem): TreeItem {
-    return element;
+    if (!element.isCategory) {
+      return element;
+    } else {
+      return {
+        id: element.id,
+        label: element.info.name,
+        // tooltip: this.getSubCategoryTooltip(element),
+        collapsibleState: TreeItemCollapsibleState.Expanded,
+        // iconPath: this.parseIconPathFromProblemState(element),
+        command: undefined,
+        contextValue: element.contextValue,
+      };
+    }
   }
 
   changeOrder(): void {

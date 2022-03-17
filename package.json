@@ -115,6 +115,14 @@
         }
       },
       {
+        "command": "leek-fund.addFundGroup",
+        "title": "添加分组",
+        "icon": {
+          "light": "resources/light/add-group.svg",
+          "dark": "resources/dark/add-group.svg"
+        }
+      },
+      {
         "command": "leek-fund.setFundAmount",
         "title": "设置基金持仓金额",
         "icon": {
@@ -141,6 +149,10 @@
       {
         "command": "leek-fund.viewFundPosition",
         "title": "持仓信息"
+      },
+      {
+        "command": "leek-fund.removeFundGroup",
+        "title": "删除分组"
       },
       {
         "command": "leek-fund.refreshFund",
@@ -299,7 +311,7 @@
           "group": "navigation"
         },
         {
-          "command": "leek-fund.addFund",
+          "command": "leek-fund.addFundGroup",
           "when": "view == leekFundView.fund",
           "group": "navigation"
         },
@@ -362,27 +374,37 @@
       "view/item/context": [
         {
           "command": "leek-fund.viewFundHistory",
-          "when": "view == leekFundView.fund",
+          "when": "view == leekFundView.fund && viewItem != category",
           "group": "group2"
         },
         {
           "command": "leek-fund.viewFundPosition",
-          "when": "view == leekFundView.fund",
+          "when": "view == leekFundView.fund && viewItem != category",
           "group": "group2"
         },
         {
           "command": "leek-fund.setFundTop",
-          "when": "view == leekFundView.fund",
+          "when": "view == leekFundView.fund && viewItem != category  && viewItem!=nodata",
           "group": "group1"
         },
         {
           "command": "leek-fund.setFundTop",
-          "when": "view == leekFundView.fund",
+          "when": "view == leekFundView.fund && viewItem != category  && viewItem!=nodata",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.addFund",
+          "when": "view == leekFundView.fund && viewItem == category",
           "group": "inline"
         },
         {
           "command": "leek-fund.deleteFund",
-          "when": "view == leekFundView.fund",
+          "when": "view == leekFundView.fund && viewItem != category",
+          "group": "group4"
+        },
+        {
+          "command": "leek-fund.removeFundGroup",
+          "when": "view == leekFundView.fund && viewItem == category",
           "group": "group4"
         },
         {
@@ -458,14 +480,16 @@
         "leek-fund.funds": {
           "type": "array",
           "default": [
-            "001632",
-            "420009",
-            "320007",
-            "003096",
-            "001102",
-            "003885",
-            "001071",
-            "005963"
+            [
+              "001632",
+              "420009",
+              "320007",
+              "003096",
+              "001102",
+              "003885",
+              "001071",
+              "005963"
+            ]
           ],
           "description": "配置需要监控的基金代码（建议通过界面新增）"
         },

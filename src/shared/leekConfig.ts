@@ -41,17 +41,91 @@ export class LeekFundConfig extends BaseConfig {
     super();
   }
   // Fund Begin
-  static updateFundCfg(codes: string, cb?: Function) {
-    this.updateConfig('leek-fund.funds', codes.split(',')).then(() => {
+  static addFundGroupCfg(cb?: Function) {
+    const config = workspace.getConfiguration();
+    const updatedCfg = [...config.get('leek-fund.funds', []), []];
+    config.update('leek-fund.funds', updatedCfg, true).then(() => {
+      window.showInformationMessage(`Fund Group Successfully add.`);
+      if (cb && typeof cb === 'function') {
+        cb();
+      }
+    });
+  }
+
+  static removeFundGroupCfg(groupId: string, cb?: Function) {
+    const config = workspace.getConfiguration();
+    const sourceCfg = config.get('leek-fund.funds', []);
+    const updatedCfg = sourceCfg.filter((item, index) => {
+      const id: string = `fundGroup_${index}`;
+      return id !== groupId;
+    });
+    config.update('leek-fund.funds', updatedCfg, true).then(() => {
+      window.showInformationMessage(`Fund Successfully delete.`);
+      if (cb && typeof cb === 'function') {
+        cb(groupId);
+      }
+    });
+  }
+
+  static addFundCfg(groupId: string, code: string, cb?: Function) {
+    const config = workspace.getConfiguration();
+    let sourceCfg = config.get('leek-fund.funds', []);
+    let updatedFunds = undefined;
+    let start = 0;
+    sourceCfg.forEach((value, index) => {
+      const id: string = `fundGroup_${index}`;
+      if (id === groupId) {
+        const funds = value as Array<string>;
+        updatedFunds = [...funds, code];
+        updatedFunds = clean(updatedFunds);
+        updatedFunds = uniq(updatedFunds);
+        start = index;
+        return;
+      }
+    });
+
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
+    }
+
+    config.update('leek-fund.funds', sourceCfg, true).then(() => {
       window.showInformationMessage(`Fund Successfully add.`);
       if (cb && typeof cb === 'function') {
-        cb(codes);
+        cb(code);
       }
     });
   }
 
   static removeFundCfg(code: string, cb?: Function) {
-    this.removeConfig('leek-fund.funds', code).then(() => {
+    const config = workspace.getConfiguration();
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Fund Id error.`);
+      return;
+    }
+    const groupId: string = `${codeComponents[0]}_${codeComponents[1]}`;
+    const fundCode: string = `${codeComponents[2]}`;
+    let sourceCfg = config.get('leek-fund.funds', []);
+    let updatedFunds = undefined;
+    let start = 0;
+    sourceCfg.forEach((value, index) => {
+      const id: string = `fundGroup_${index}`;
+      if (id === groupId) {
+        const funds = value as Array<string>;
+        updatedFunds = funds;
+        updatedFunds.splice(updatedFunds.indexOf(fundCode), 1);
+        updatedFunds = clean(updatedFunds);
+        updatedFunds = uniq(updatedFunds);
+        start = index;
+        return;
+      }
+    });
+
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
+    }
+
+    config.update('leek-fund.funds', sourceCfg, true).then(() => {
       window.showInformationMessage(`Fund Successfully delete.`);
       if (cb && typeof cb === 'function') {
         cb(code);
@@ -60,12 +134,33 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setFundTopCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getConfig('leek-fund.funds');
+    const config = workspace.getConfiguration();
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Fund Id error.`);
+      return;
+    }
+    const groupId: string = `${codeComponents[0]}_${codeComponents[1]}`;
+    const fundCode: string = `${codeComponents[2]}`;
+    let sourceCfg = config.get('leek-fund.funds', []);
+    let updatedFunds = undefined;
+    let start = 0;
+    sourceCfg.forEach((value, index) => {
+      const id: string = `fundGroup_${index}`;
+      if (id === groupId) {
+        const funds = value as Array<string>;
+        updatedFunds = [fundCode, ...funds.filter((item) => item !== fundCode)];
+        start = index;
+        return;
+      }
+    });
 
-    configArr = [code, ...configArr.filter((item) => item !== code)];
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
+    }
 
-    this.setConfig('leek-fund.funds', configArr).then(() => {
-      window.showInformationMessage(`Fund successfully set to top.`);
+    config.update('leek-fund.funds', sourceCfg, true).then(() => {
+      window.showInformationMessage(`Fund Successfully set to top.`);
       if (cb && typeof cb === 'function') {
         cb(code);
       }
@@ -94,17 +189,17 @@ export class LeekFundConfig extends BaseConfig {
   //addStockToBarCfg
   static addStockToBarCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
-    if(configArr.length >=4){
+    if (configArr.length >= 4) {
       window.showInformationMessage(`StatusBar Exceeding Length.`);
       if (cb && typeof cb === 'function') {
         cb(code);
       }
-    }else if(configArr.includes(code)){
+    } else if (configArr.includes(code)) {
       window.showInformationMessage(`StatusBar Already Have.`);
       if (cb && typeof cb === 'function') {
         cb(code);
       }
-    }else{
+    } else {
       configArr.push(code);
       this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
         window.showInformationMessage(`Stock Successfully add to statusBar.`);

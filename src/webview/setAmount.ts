@@ -66,7 +66,7 @@ async function setAmount(fundService: FundService) {
 }
 
 function fundDataHandler(fundService: FundService) {
-  const fundList: LeekTreeItem[] = cloneDeep(fundService.fundList);
+  const fundList: LeekTreeItem[] = cloneDeep(fundService.allFundsList);
   const amountObj: any = globalState.fundAmount || {};
   const list = fundList.map((item: LeekTreeItem) => {
     return {
