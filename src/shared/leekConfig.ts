@@ -55,11 +55,11 @@ export class LeekFundConfig extends BaseConfig {
   static removeFundGroupCfg(groupId: string, cb?: Function) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get('leek-fund.funds', []);
-    const newCfg = sourceCfg.filter((item, index) => {
+    const updatedCfg = sourceCfg.filter((item, index) => {
       const id: string = `fundGroup_${index}`;
       return id !== groupId;
     });
-    config.update('leek-fund.funds', newCfg, true).then(() => {
+    config.update('leek-fund.funds', updatedCfg, true).then(() => {
       window.showInformationMessage(`Fund Successfully delete.`);
       if (cb && typeof cb === 'function') {
         cb(groupId);
@@ -70,22 +70,22 @@ export class LeekFundConfig extends BaseConfig {
   static addFundCfg(groupId: string, code: string, cb?: Function) {
     const config = workspace.getConfiguration();
     let sourceCfg = config.get('leek-fund.funds', []);
-    let newFunds = undefined;
+    let updatedFunds = undefined;
     let start = 0;
     sourceCfg.forEach((value, index) => {
       const id: string = `fundGroup_${index}`;
       if (id === groupId) {
         const funds = value as Array<string>;
-        newFunds = [...funds, code];
-        newFunds = clean(newFunds);
-        newFunds = uniq(newFunds);
+        updatedFunds = [...funds, code];
+        updatedFunds = clean(updatedFunds);
+        updatedFunds = uniq(updatedFunds);
         start = index;
         return;
       }
     });
 
-    if (newFunds) {
-      sourceCfg.splice(start, 1, newFunds as never);
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
     }
 
     config.update('leek-fund.funds', sourceCfg, true).then(() => {
@@ -106,23 +106,23 @@ export class LeekFundConfig extends BaseConfig {
     const groupId: string = `${codeComponents[0]}_${codeComponents[1]}`;
     const fundCode: string = `${codeComponents[2]}`;
     let sourceCfg = config.get('leek-fund.funds', []);
-    let newFunds = undefined;
+    let updatedFunds = undefined;
     let start = 0;
     sourceCfg.forEach((value, index) => {
       const id: string = `fundGroup_${index}`;
       if (id === groupId) {
         const funds = value as Array<string>;
-        newFunds = funds;
-        newFunds.splice(newFunds.indexOf(fundCode), 1);
-        newFunds = clean(newFunds);
-        newFunds = uniq(newFunds);
+        updatedFunds = funds;
+        updatedFunds.splice(updatedFunds.indexOf(fundCode), 1);
+        updatedFunds = clean(updatedFunds);
+        updatedFunds = uniq(updatedFunds);
         start = index;
         return;
       }
     });
 
-    if (newFunds) {
-      sourceCfg.splice(start, 1, newFunds as never);
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
     }
 
     config.update('leek-fund.funds', sourceCfg, true).then(() => {
@@ -143,21 +143,20 @@ export class LeekFundConfig extends BaseConfig {
     const groupId: string = `${codeComponents[0]}_${codeComponents[1]}`;
     const fundCode: string = `${codeComponents[2]}`;
     let sourceCfg = config.get('leek-fund.funds', []);
-    let newFunds = undefined;
+    let updatedFunds = undefined;
     let start = 0;
     sourceCfg.forEach((value, index) => {
       const id: string = `fundGroup_${index}`;
       if (id === groupId) {
         const funds = value as Array<string>;
-        newFunds = funds;
-        newFunds = [fundCode, ...newFunds.filter((item) => item !== fundCode)];
+        updatedFunds = [fundCode, ...funds.filter((item) => item !== fundCode)];
         start = index;
         return;
       }
     });
 
-    if (newFunds) {
-      sourceCfg.splice(start, 1, newFunds as never);
+    if (updatedFunds) {
+      sourceCfg.splice(start, 1, updatedFunds as never);
     }
 
     config.update('leek-fund.funds', sourceCfg, true).then(() => {
