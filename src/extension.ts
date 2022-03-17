@@ -87,6 +87,17 @@ export function activate(context: ExtensionContext) {
     treeDataProvider: newsProvider,
   });
 
+  // 迁移用户的基金代码到分组模式
+  const migrateFunds = () => {
+    const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
+    if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
+      const newFundLists = [fundLists];
+      LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
+    }
+  };
+
+  migrateFunds();
+
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
@@ -98,17 +109,6 @@ export function activate(context: ExtensionContext) {
   };
 
   manualRequest();
-
-  // 迁移用户的基金代码到分组模式
-  const migrateFunds = () => {
-    const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
-    if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
-      const newFundLists = [fundLists];
-      LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
-    }
-  };
-
-  migrateFunds();
 
   // loop
   const loopCallback = () => {
