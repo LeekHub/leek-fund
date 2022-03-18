@@ -55,26 +55,36 @@ export class LeekFundConfig extends BaseConfig {
   static removeFundGroupCfg(groupId: string, cb?: Function) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get('leek-fund.funds', []);
+    let removedFundGroup: Array<string> = [];
     const updatedCfg = sourceCfg.filter((item, index) => {
       const id: string = `fundGroup_${index}`;
-      return id !== groupId;
+      if (id !== groupId) {
+        return true;
+      } else {
+        removedFundGroup = item;
+        return false;
+      }
     });
 
-    window.showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消').then((res) => {
-      if (res === '好的') {
-        config.update('leek-fund.funds', updatedCfg, true).then(() => {
-          window.showInformationMessage(`Fund Group Successfully delete.`);
-          if (cb && typeof cb === 'function') {
-            cb(groupId);
-          }
-        });
-      } else {
-        window.showInformationMessage(`Cancel.`);
+    if (removedFundGroup.length) {
+      window.showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消').then((res) => {
+        if (res === '好的') {
+          config.update('leek-fund.funds', updatedCfg, true).then(() => {
+            window.showInformationMessage(`Fund Group Successfully delete.`);
+            if (cb && typeof cb === 'function') {
+              cb(groupId);
+            }
+          });
+        }
+      });
+    } else {
+      config.update('leek-fund.funds', updatedCfg, true).then(() => {
+        window.showInformationMessage(`Fund Group Successfully delete.`);
         if (cb && typeof cb === 'function') {
           cb(groupId);
         }
-      }
-    });
+      });
+    }
   }
 
   static addFundCfg(groupId: string, code: string, cb?: Function) {
