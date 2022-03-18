@@ -5,7 +5,7 @@
 
 **韭菜盒子**——VSCode 里也可以看股票 & 基金 & 期货实时数据，做最好用的投资插件。
 
-Leek box - VSCode can also see the real-time data of stock & fund & future, do the most useful investment plug-in
+Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the most excellent investment extension.
 
 [![Marketplace](https://img.shields.io/visual-studio-marketplace/v/giscafer.leek-fund.svg?label=Marketplace&style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
