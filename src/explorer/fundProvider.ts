@@ -22,15 +22,20 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    const fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups') || [];
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
     if (!element) {
-      return this.getRootNodes(fundLists);
+      return this.getRootNodes(fundGroups, fundLists);
     } else {
       return this.getChildrenNodes(element, fundLists);
     }
   }
 
-  getRootNodes(fundLists: Array<Object>): Array<LeekTreeItem> {
+  getRootNodes(fundGroups: Array<string>, fundLists: Array<Object>): Array<LeekTreeItem> {
+    if (fundGroups.length < fundLists.length) {
+      return [];
+    }
+
     let nodes: Array<LeekTreeItem> = [];
     fundLists.forEach((value, index) => {
       if (value instanceof Array) {
@@ -39,7 +44,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
           new LeekTreeItem(
             Object.assign({ contextValue: 'category' }, defaultFundInfo, {
               id: `fundGroup_${index}`,
-              name: `Fund Group ${index} ${funds.length > 0 ? `(${funds.length})` : ''}`,
+              name: `${fundGroups[index]}${funds.length > 0 ? `(${funds.length})` : ''}`,
             }),
             undefined,
             true)

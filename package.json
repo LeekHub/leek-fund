@@ -493,6 +493,13 @@
           ],
           "description": "配置需要监控的基金代码（建议通过界面新增）"
         },
+        "leek-fund.fundGroups": {
+          "type": "array",
+          "default": [
+            "我的基金"
+          ],
+          "description": "配置基金分组名称（建议通过界面新增）"
+        },
         "leek-fund.binance": {
           "type": "array",
           "default": [
