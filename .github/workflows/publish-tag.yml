@@ -3,7 +3,8 @@ name: Deploy By Tag
 on:
   create:
     tags:
-      - v*
+      # - v*
+      - giscafer-v # 禁用，使用 deploy.yml
 
 jobs:
   build:

@@ -663,7 +663,7 @@
     "postcompile": "yarn --cwd ./template-packages/leek-center run build",
     "lint": "eslint src --fix --ext ts  --ignore-path .gitignore",
     "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
+    "pretest": "yarn run lint && yarn run compile",
     "test": "node ./out/_test/runTest.js",
     "deploy": "vsce publish --yarn",
     "package": "vsce package --yarn -o ./",

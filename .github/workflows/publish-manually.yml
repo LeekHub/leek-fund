@@ -24,9 +24,7 @@ jobs:
       - name: Create Tag
         run: |
           yarn release
-      - name: Deploy
-        run: |
-          yarn deploy -p ${{ secrets.VSCE_TOKEN }}
+      # 推送tag会触发插件发布流程
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
