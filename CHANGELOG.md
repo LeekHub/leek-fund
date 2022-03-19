@@ -1,4 +1,38 @@
-# ChangeLog
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [2.1.0](https://github.com/giscafer/leek-fund/compare/v2.0.0...v2.1.0) (2022-03-19)
+
+
+### Features
+
+* **fund:** 增加基金分组删除确认 ([90f7b8d](https://github.com/giscafer/leek-fund/commit/90f7b8df0b63fd1fe91f89bcc29371c5274571ad))
+* **fund:** 增加基金分组删除确认 ([e6256d6](https://github.com/giscafer/leek-fund/commit/e6256d6425908a6bd8f1e1223ae07414b0cb3526))
+* **fund:** 增加基金分组删除确认 ([10ab782](https://github.com/giscafer/leek-fund/commit/10ab7826d5b46b976e6a6edbb5ff41b8edc70e23))
+* **fund:** 增加基金分组功能 ([30ec485](https://github.com/giscafer/leek-fund/commit/30ec485a2444bed5f41b113c180bf8fc52af3623))
+* **fund:** 增加基金分组功能 ([5b39f69](https://github.com/giscafer/leek-fund/commit/5b39f6955fa86f47e93a20cbabbb1ecdca78efdb))
+* **fund:** 增加基金分组功能 ([d7bf9f1](https://github.com/giscafer/leek-fund/commit/d7bf9f18393b2372bbb81b54bfa25683bd61b43c))
+* **fund:** 增加基金分组自定义名称功能 ([19143c2](https://github.com/giscafer/leek-fund/commit/19143c2cc92f7127f21784431e78a0f8591e257a))
+* **leektreeitem:** 新增启用高亮选项 ([a755700](https://github.com/giscafer/leek-fund/commit/a7557003cf4af52b15297965d2f14c1c84c158b3))
+* **leektreeitem:** 针对涨的股票或基金，进行高亮显示 ([0292f68](https://github.com/giscafer/leek-fund/commit/0292f683f6cf34f4f3f5eaf6803422f25e6b92de))
+* **readme:** 调整韭菜盒子的英文介绍 ([72dc913](https://github.com/giscafer/leek-fund/commit/72dc9136a987185baffb61bfdb5bbfdfb0a6b406))
+* **stock:** 新增可选默认展开对应股票市场的选项 ([acdfcba](https://github.com/giscafer/leek-fund/commit/acdfcba207a3239314a3ea4849b706ebbba38234))
+* 快捷添加至状态栏按钮，及切换状态栏个股添加删除判读 ([9fcf135](https://github.com/giscafer/leek-fund/commit/9fcf1354f1928d5b6a7ee5a1af0cfd9189de5c12))
+* **数据中心:** add 沪港深通chart ([1172585](https://github.com/giscafer/leek-fund/commit/11725856feea7895e5a9233c0a404fc0203c66fb))
+* 期货功能 ([e6d1522](https://github.com/giscafer/leek-fund/commit/e6d1522e0592750106a448abc1644f24cf804b8f))
+
+
+### Bug Fixes
+
+* eslint warning ([058f598](https://github.com/giscafer/leek-fund/commit/058f5988e59a065522935d16bc69812698fd0180))
+* **fund:** warning ([5f0138c](https://github.com/giscafer/leek-fund/commit/5f0138c60da78d5e33f8f71821534293189b1499))
+* **fund:** 迁移用户基金之后才展示基金数据 ([8954801](https://github.com/giscafer/leek-fund/commit/8954801a1bcec1489e5965587a658cc40fc38ee3))
+* hq.sinajs.cn/list接口添加Referer ([e692d82](https://github.com/giscafer/leek-fund/commit/e692d825b873c2fe9dd3189ef89a853dcfc84f98))
+* 修复无法保存持仓金额的问题 ([79f5e0f](https://github.com/giscafer/leek-fund/commit/79f5e0faf699c46d750a7d5e3018258fcf5731e8))
+* 修复期货在添加建议后不支持的问题 ([fb74913](https://github.com/giscafer/leek-fund/commit/fb7491303a0427c66c91ecf5dcd140f1b00ac60a))
+* 搜索建议取消type 解决一些股票搜不到的问题 ([5af88ba](https://github.com/giscafer/leek-fund/commit/5af88baeba0110ccda17f9bd1b52bd91c433ea10))
+* 更新持仓金额和成本价后，更新基金收益率 ([a43edde](https://github.com/giscafer/leek-fund/commit/a43eddeac58f8b1d46d0d6f6f325a32e42f00746))
 
 ## [2.0.7]
 
