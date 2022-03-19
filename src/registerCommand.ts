@@ -89,8 +89,13 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.addFundGroup', () => {
-    LeekFundConfig.addFundGroupCfg(() => {
-      fundProvider.refresh();
+    window.showInputBox({ placeHolder: '请输入基金分组名称' }).then((name) => {
+      if (!name) {
+        return;
+      }
+      LeekFundConfig.addFundGroupCfg(name, () => {
+        fundProvider.refresh();
+      });
     });
   });
   commands.registerCommand('leek-fund.removeFundGroup', (target) => {

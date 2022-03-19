@@ -22,27 +22,34 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    const fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups') || [];
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
     if (!element) {
-      return this.getRootNodes(fundLists);
+      return this.getRootNodes(fundGroups, fundLists);
     } else {
       return this.getChildrenNodes(element, fundLists);
     }
   }
 
-  getRootNodes(fundLists: Array<Object>): Array<LeekTreeItem> {
+  getRootNodes(fundGroups: Array<string>, fundLists: Array<Object>): Array<LeekTreeItem> {
+    if (fundGroups.length < fundLists.length) {
+      return [];
+    }
+
     let nodes: Array<LeekTreeItem> = [];
     fundLists.forEach((value, index) => {
-      const funds = value as Array<string>;
-      nodes.push(
-        new LeekTreeItem(
-          Object.assign({ contextValue: 'category' }, defaultFundInfo, {
-            id: `fundGroup_${index}`,
-            name: `Fund Group ${index} ${funds.length > 0 ? `(${funds.length})` : ''}`,
-          }),
-          undefined,
-          true)
-      );
+      if (value instanceof Array) {
+        const funds = value as Array<string>;
+        nodes.push(
+          new LeekTreeItem(
+            Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+              id: `fundGroup_${index}`,
+              name: `${fundGroups[index]}${funds.length > 0 ? `(${funds.length})` : ''}`,
+            }),
+            undefined,
+            true)
+        );
+      }
     });
     return nodes;
   }
@@ -51,12 +58,14 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     let groupId: string = '';
     let fundCodes: Array<string> = [];
     fundLists.forEach((value, index) => {
-      const funds = value as Array<string>;
-      const id: string = `fundGroup_${index}`;
-      if (element.id === id) {
-        groupId = id;
-        fundCodes = funds;
-        return;
+      if (value instanceof Array) {
+        const funds = value as Array<string>;
+        const id: string = `fundGroup_${index}`;
+        if (element.id === id) {
+          groupId = id;
+          fundCodes = funds;
+          return;
+        }
       }
     });
     return this.service.getData(fundCodes, this.order, groupId);

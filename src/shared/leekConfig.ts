@@ -41,30 +41,62 @@ export class LeekFundConfig extends BaseConfig {
     super();
   }
   // Fund Begin
-  static addFundGroupCfg(cb?: Function) {
+  static addFundGroupCfg(name: string, cb?: Function) {
     const config = workspace.getConfiguration();
-    const updatedCfg = [...config.get('leek-fund.funds', []), []];
-    config.update('leek-fund.funds', updatedCfg, true).then(() => {
-      window.showInformationMessage(`Fund Group Successfully add.`);
-      if (cb && typeof cb === 'function') {
-        cb();
-      }
+    const updatedFundGroupCfg = [...config.get('leek-fund.fundGroups', []), name];
+    config.update('leek-fund.fundGroups', updatedFundGroupCfg, true).then(() => {
+      const updatedCfg = [...config.get('leek-fund.funds', []), []];
+      config.update('leek-fund.funds', updatedCfg, true).then(() => {
+        window.showInformationMessage(`Fund Group Successfully add.`);
+        if (cb && typeof cb === 'function') {
+          cb();
+        }
+      });
     });
   }
 
   static removeFundGroupCfg(groupId: string, cb?: Function) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get('leek-fund.funds', []);
+    let removedFundGroup: Array<string> = [];
+    let removedFundGroupIndex = -1;
     const updatedCfg = sourceCfg.filter((item, index) => {
       const id: string = `fundGroup_${index}`;
-      return id !== groupId;
-    });
-    config.update('leek-fund.funds', updatedCfg, true).then(() => {
-      window.showInformationMessage(`Fund Successfully delete.`);
-      if (cb && typeof cb === 'function') {
-        cb(groupId);
+      if (id !== groupId) {
+        return true;
+      } else {
+        removedFundGroup = item;
+        removedFundGroupIndex = index;
+        return false;
       }
     });
+
+    const removeFundGroup = () => {
+      if (removedFundGroupIndex !== -1) {
+        config.update('leek-fund.funds', updatedCfg, true).then(() => {
+          const updatedFundGroupCfg = config.get('leek-fund.fundGroups', []);
+          updatedFundGroupCfg.splice(removedFundGroupIndex, 1);
+          config.update('leek-fund.fundGroups', updatedFundGroupCfg, true).then(() => {
+            window.showInformationMessage(`Fund Group Successfully delete.`);
+            if (cb && typeof cb === 'function') {
+              cb(groupId);
+            }
+          });
+        });
+      } else {
+        window.showInformationMessage(`Fund Group Unsuccessfully delete.`);
+      }
+    };
+
+    if (removedFundGroup.length) {
+      window.showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消').then((res) => {
+        if (res === '好的') {
+          removeFundGroup();
+        }
+      });
+    } else {
+      removeFundGroup();
+    }
   }
 
   static addFundCfg(groupId: string, code: string, cb?: Function) {
