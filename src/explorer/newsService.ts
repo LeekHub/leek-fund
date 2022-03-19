@@ -46,7 +46,6 @@ export class NewsService {
           })
           .filter((h: string) => h !== '')
           .join(';') + ';';
-      console.log('xueQiu cookies=', this.cookies);
     });
   }
 
