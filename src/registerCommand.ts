@@ -9,7 +9,6 @@ import { NewsService } from './explorer/newsService';
 import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
-import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
 import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
@@ -39,7 +38,6 @@ export function registerViewEvent(
   flashNewsOutputServer: FlashNewsOutputServer,
   binanceProvider?: BinanceProvider
 ) {
-  const leekModel = new LeekFundConfig();
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
 
@@ -278,7 +276,7 @@ export function registerViewEvent(
     });
   });
 
-  commands.registerCommand('leek-fund.setXueqiuCookie', (target) => {
+  commands.registerCommand('leek-fund.setXueqiuCookie', () => {
     window
       .showInputBox({
         placeHolder:

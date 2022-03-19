@@ -21,7 +21,7 @@ export class StatusBar {
     this.refreshStockStatusBar();
     this.bindEvents();
     /* events.on('updateConfig:leek-fund.statusBarStock',()=>{
-      
+
     }) */
   }
 
@@ -61,10 +61,10 @@ export class StatusBar {
   }
 
   refreshStockStatusBar() {
-    if (this.hideStatusBar||this.hideStatusBarStock || !this.stockService.stockList.length) {
-      if(this.statusBarList.length){
-        this.statusBarList.forEach((bar) =>bar.dispose());
-        this.statusBarList=[];
+    if (this.hideStatusBar || this.hideStatusBarStock || !this.stockService.stockList.length) {
+      if (this.statusBarList.length) {
+        this.statusBarList.forEach((bar) => bar.dispose());
+        this.statusBarList = [];
       }
       return;
     }
@@ -114,7 +114,7 @@ export class StatusBar {
   udpateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
     if (!item) return;
 
-    const { type, symbol, price, percent, open, yestclose, high, low, updown } = item.info;
+    const { type, symbol, percent, open, yestclose, high, low, updown } = item.info;
     const deLow = percent.indexOf('-') === -1;
     /* stockBarItem.text = `「${this.stockService.showLabel ? item.info.name : item.id}」${price}  ${
       deLow ? '📈' : '📉'
@@ -139,9 +139,9 @@ export class StatusBar {
 
   refreshFundStatusBar() {
     // 隐藏基金状态栏
-    if (this.hideStatusBar||this.hideFundBarItem) {
+    if (this.hideStatusBar || this.hideFundBarItem) {
       this.fundBarItem.hide();
-      return ;
+      return;
     }
 
     this.fundBarItem.text = `🐥$(pulse)`;

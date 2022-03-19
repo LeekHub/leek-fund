@@ -1,6 +1,7 @@
 import { ExtensionContext, ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function donate(context: ExtensionContext) {
   const panel = ReusedWebviewPanel.create('donateWebview', '打赏作者@giscafer', ViewColumn.One, {
     enableScripts: true,

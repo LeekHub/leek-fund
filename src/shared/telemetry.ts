@@ -55,11 +55,11 @@ export class Telemetry {
       return;
     }
 
-    let data = {
+    /*   let data = {
       ...params,
       distinct_id: this.userId,
       ip: this.ip,
-    };
+    }; */
 
     // Amplitude
     this.amplitude.track({
@@ -70,7 +70,7 @@ export class Telemetry {
     });
   }
 
-  configurationChanged(e: vscode.ConfigurationChangeEvent) {
+  configurationChanged() {
     // vscode.window.showInformationMessage('Updated');
     this.getSettingFromConfig();
   }

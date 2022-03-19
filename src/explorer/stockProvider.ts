@@ -49,7 +49,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         case StockCategory.US:
           return this.getUsStockNodes(resultPromise);
         case StockCategory.Future:
-            return this.getFutureStockNodes(resultPromise);
+          return this.getFutureStockNodes(resultPromise);
         case StockCategory.NODATA:
           return this.getNoDataStockNodes(resultPromise);
         default:
@@ -59,7 +59,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     }
   }
 
-  getParent(element: LeekTreeItem): LeekTreeItem | undefined {
+  getParent(): LeekTreeItem | undefined {
     return undefined;
   }
 
@@ -126,7 +126,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         }),
         undefined,
         true
-      )
+      ),
     ];
     // 显示接口不支持的股票，避免用户老问为什么添加了股票没反应
     if (globalState.noDataStockCount) {

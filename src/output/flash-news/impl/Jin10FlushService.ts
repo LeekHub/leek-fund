@@ -83,7 +83,7 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     if (type === MSG_NEWS_FLASH) {
       const data = JSON.parse(bf.toString('utf-8', 4, 4 + dataLen));
       console.log('金十快讯: ', data);
-      const { type, time, important, remark, id, action, channel } = data;
+      const { type, time, id, action, channel } = data;
       if (
         ~this.idIndexs.indexOf(id) ||
         action !== 1 ||

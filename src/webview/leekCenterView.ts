@@ -1,17 +1,15 @@
+import axios from 'axios';
 import { EventEmitter } from 'events';
-import { authentication, Uri, ViewColumn, Webview, window, commands } from 'vscode';
+import { commands, ViewColumn, Webview, window } from 'vscode';
 import FundService from '../explorer/fundService';
 import StockService from '../explorer/stockService';
 import globalState from '../globalState';
+import { FlashNewsServerInterface } from '../output/flash-news/NewsFlushServiceAbstractClass';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { events, getTemplateFileContent, formatHTMLWebviewResourcesUrl } from '../shared/utils';
-import ReusedWebviewPanel from './ReusedWebviewPanel';
-
+import { events, formatHTMLWebviewResourcesUrl, getTemplateFileContent } from '../shared/utils';
 import LeekCenterFlashNewsView from './leek-center/flash-news-view';
-
-import axios from 'axios';
-import { FlashNewsServerInterface } from '../output/flash-news/NewsFlushServiceAbstractClass';
+import ReusedWebviewPanel from './ReusedWebviewPanel';
 
 let _INITED = false;
 
@@ -76,7 +74,7 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
           return DEV_URL + link;
         });
       })
-      .catch((err) => {
+      .catch(() => {
         window.showErrorMessage('[开发] 获取 http://localhost:3030/ 失败，请先启动服务');
       });
   } else {
@@ -92,7 +90,7 @@ function postFetchResponseFactory(webview: Webview, success: boolean, sessionId:
   return (response: any) => {
     if (!success) console.log('请求失败');
     console.log('response: ', response);
-    const { request, ...rawResponse } = response;
+    const { ...rawResponse } = response;
     webview.postMessage({
       command: 'fetchResponse',
       data: {
@@ -137,7 +135,73 @@ function setStocksRemind(webview: Webview, panelEvents: EventEmitter) {
   });
 }
 
-function setDiscussions(webview: Webview, panelEvents: EventEmitter) {
+function setList(
+  webview: Webview,
+  panelEvents: EventEmitter,
+  stockService: StockService,
+  fundServices: FundService
+) {
+  const postListFactory = (command: string) => (data: Array<LeekTreeItem>) => {
+    webview.postMessage({
+      command,
+      data,
+    });
+  };
+  /**
+   * 更新列表数据
+   * @param webview
+   * @param defaultStockList
+   */
+  let postStockList: undefined | ReturnType<typeof postListFactory>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function updateStockList(webview: Webview, defaultStockList: Array<LeekTreeItem>) {
+    postStockList = postListFactory('updateStockList');
+    events.on('stockListUpdate', postStockList);
+    return () => {
+      events.off('stockListUpdate', postStockList!);
+    };
+  }
+
+  let postFundList: undefined | ReturnType<typeof postListFactory>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function updateFundList(webview: Webview, defaultFundList: Array<LeekTreeItem>) {
+    postFundList = postListFactory('updateFundList');
+    events.on('fundListUpdate', postFundList);
+    return () => {
+      events.off('fundListUpdate', postFundList!);
+    };
+  }
+
+  const offUpdateStockList = updateStockList(webview, stockService.stockList);
+  const offUpdateFundList = updateFundList(webview, fundServices.allFundsList);
+
+  panelEvents.on('pageReady', () => {
+    postStockList!(stockService.stockList);
+    postFundList!(fundServices.allFundsList);
+  });
+  panelEvents.on('onDidDispose', () => {
+    offUpdateStockList();
+    offUpdateFundList();
+  });
+}
+
+export function setStocksRemindCfgCb(cfg: Object) {
+  LeekFundConfig.setConfig('leek-fund.stocksRemind', cfg).then(
+    () => {
+      window.showInformationMessage('价格预警保存成功！');
+      cacheStocksRemindData(cfg);
+    },
+    (err) => {
+      console.error(err);
+    }
+  );
+}
+
+export function cacheStocksRemindData(remindObj: Object) {
+  globalState.stocksRemind = remindObj;
+}
+
+/* function setDiscussions(webview: Webview, panelEvents: EventEmitter) {
   function login(slient = true) {
     return getGithubToken(slient).then((res) => {
       if (res) {
@@ -171,54 +235,6 @@ function setDiscussions(webview: Webview, panelEvents: EventEmitter) {
   });
 }
 
-function setList(
-  webview: Webview,
-  panelEvents: EventEmitter,
-  stockService: StockService,
-  fundServices: FundService
-) {
-  const postListFactory = (command: string) => (data: Array<LeekTreeItem>) => {
-    webview.postMessage({
-      command,
-      data,
-    });
-  };
-  /**
-   * 更新列表数据
-   * @param webview
-   * @param defaultStockList
-   */
-  let postStockList: undefined | ReturnType<typeof postListFactory>;
-  function updateStockList(webview: Webview, defaultStockList: Array<LeekTreeItem>) {
-    postStockList = postListFactory('updateStockList');
-    events.on('stockListUpdate', postStockList);
-    return () => {
-      events.off('stockListUpdate', postStockList!);
-    };
-  }
-
-  let postFundList: undefined | ReturnType<typeof postListFactory>;
-  function updateFundList(webview: Webview, defaultFundList: Array<LeekTreeItem>) {
-    postFundList = postListFactory('updateFundList');
-    events.on('fundListUpdate', postFundList);
-    return () => {
-      events.off('fundListUpdate', postFundList!);
-    };
-  }
-
-  const offUpdateStockList = updateStockList(webview, stockService.stockList);
-  const offUpdateFundList = updateFundList(webview, fundServices.allFundsList);
-
-  panelEvents.on('pageReady', () => {
-    postStockList!(stockService.stockList);
-    postFundList!(fundServices.allFundsList);
-  });
-  panelEvents.on('onDidDispose', () => {
-    offUpdateStockList();
-    offUpdateFundList();
-  });
-}
-
 function getGithubToken(slient = true) {
   if (!authentication) {
     window.showErrorMessage('当前vscode版本过低，请升级vscode');
@@ -229,21 +245,6 @@ function getGithubToken(slient = true) {
       return res?.accessToken ?? null;
     });
 }
-
-export function setStocksRemindCfgCb(cfg: Object) {
-  LeekFundConfig.setConfig('leek-fund.stocksRemind', cfg).then(
-    () => {
-      window.showInformationMessage('价格预警保存成功！');
-      cacheStocksRemindData(cfg);
-    },
-    (err) => {
-      console.error(err);
-    }
-  );
-}
-
-export function cacheStocksRemindData(remindObj: Object) {
-  globalState.stocksRemind = remindObj;
-}
+*/
 
 export default leekCenterView;

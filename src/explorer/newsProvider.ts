@@ -22,7 +22,7 @@ export class NewsProvider implements TreeDataProvider<NewsTreeItem> {
     return this.service.getNewsUserList(userIds);
   }
 
-  getParent(element: NewsTreeItem): NewsTreeItem | null {
+  getParent(): NewsTreeItem | null {
     return null;
   }
 

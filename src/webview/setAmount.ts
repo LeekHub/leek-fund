@@ -1,15 +1,10 @@
-import { commands, Uri, ViewColumn, WebviewPanel, window } from 'vscode';
+import { commands, ViewColumn, WebviewPanel, window } from 'vscode';
 import FundService from '../explorer/fundService';
 import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
-import {
-  formatDate,
-  getTemplateFileContent,
-  getWebviewResourcesUrl,
-  toFixed,
-} from '../shared/utils';
+import { formatDate, getTemplateFileContent, toFixed } from '../shared/utils';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 const cloneDeep = require('lodash.clonedeep');
 
@@ -88,9 +83,9 @@ function fundDataHandler(fundService: FundService) {
 }
 
 function getWebviewContent(panel: WebviewPanel) {
-  const _getWebviewResourcesUrl = (arr: string[]): Uri[] => {
+  /*   const _getWebviewResourcesUrl = (arr: string[]): Uri[] => {
     return getWebviewResourcesUrl(panel.webview, globalState.context.extensionUri, arr);
-  };
+  }; */
 
   panel.webview.html = getTemplateFileContent('fund-amount.html', panel.webview);
 }
@@ -131,6 +126,7 @@ export async function updateAmount() {
     }
   }
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { Datas = [], Expansion } = await FundService.qryFundInfo(filterCodes);
     Datas.forEach((item: any) => {
       const { FCODE, NAV } = item;

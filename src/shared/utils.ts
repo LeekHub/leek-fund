@@ -17,7 +17,7 @@ const formatNum = (n: number) => {
 
 export const objectToQueryString = (queryParameters: Object): string => {
   return queryParameters
-    ? Object.entries(queryParameters).reduce((queryString, [key, val], index) => {
+    ? Object.entries(queryParameters).reduce((queryString, [key, val]) => {
         const symbol = queryString.length === 0 ? '?' : '&';
         queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
         return queryString;
@@ -349,7 +349,7 @@ export function allMarkets(): Array<string> {
       market = StockCategory.US;
     } else if (/^(cnf_)/.test(item)) {
       market = StockCategory.Future;
-    } 
+    }
     if (!result.includes(market)) {
       result.push(market);
     }
@@ -444,7 +444,10 @@ function isRemoteLink(link: string) {
   return /^(https?|vscode-webview-resource|javascript):/.test(link);
 }
 
-export function formatHTMLWebviewResourcesUrl(html: string, conversionUrlFn: (link: string) => string) {
+export function formatHTMLWebviewResourcesUrl(
+  html: string,
+  conversionUrlFn: (link: string) => string
+) {
   const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
   let matcher = LinkRegexp.exec(html);
 

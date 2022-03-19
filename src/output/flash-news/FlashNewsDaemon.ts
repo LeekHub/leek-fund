@@ -1,13 +1,11 @@
-import { OutputChannel, StatusBarAlignment, StatusBarItem, window } from 'vscode';
-import { LeekFundConfig } from '../../shared/leekConfig';
-import { events } from '../../shared/utils';
 import Jin10FlushService from './impl/Jin10FlushService';
 import XuanGuBaoFlushService from './impl/XuanGuBaoFLushServices';
 import NewsFlushServiceAbstractClass, {
   FlashNewsServerInterface,
 } from './NewsFlushServiceAbstractClass';
 
-const throttle = require('lodash.throttle');
+// const throttle = require('lodash.throttle');
+
 let instance: FlashNewsDaemon | undefined;
 
 export default class FlashNewsDaemon {

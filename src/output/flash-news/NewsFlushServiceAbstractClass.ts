@@ -1,4 +1,3 @@
-import { events } from '../../shared/utils';
 import FlashNewsDaemon from './FlashNewsDaemon';
 
 /**

@@ -2,11 +2,10 @@ import Axios from 'axios';
 import { decode } from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
-import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
 import { STOCK_TYPE } from '../shared/typed';
-import { calcFixedPriceNumber, formatNumber, randHeader, sortData, events } from '../shared/utils';
+import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class StockService extends LeekService {

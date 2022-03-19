@@ -33,7 +33,7 @@ export class LeekTreeItem extends TreeItem {
       volume,
       amount = 0,
       earnings,
-      priceDate,
+      // priceDate,
       time,
       isStop,
       t2,

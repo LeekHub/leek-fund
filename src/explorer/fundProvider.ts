@@ -47,7 +47,8 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
               name: `${fundGroups[index]}${funds.length > 0 ? `(${funds.length})` : ''}`,
             }),
             undefined,
-            true)
+            true
+          )
         );
       }
     });
@@ -71,7 +72,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     return this.service.getData(fundCodes, this.order, groupId);
   }
 
-  getParent(element: LeekTreeItem): LeekTreeItem | null {
+  getParent(): LeekTreeItem | null {
     return null;
   }
 

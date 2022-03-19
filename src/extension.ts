@@ -173,7 +173,7 @@ export function activate(context: ExtensionContext) {
   setIntervalTime();
 
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('🐥>>>Configuration changed');
+    console.log('🐥>>>Configuration changed', e);
     intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
     setIntervalTime();
     setGlobalVariable();

@@ -5,14 +5,12 @@
  * @LastEditTime: 2020-12-06 20:14:01
  */
 
-import { Event, EventEmitter, ProviderResult, TreeDataProvider, TreeItem } from "vscode";
-import { LeekFundConfig } from "../shared/leekConfig";
-import { LeekTreeItem } from "../shared/leekTreeItem";
-import { SortType } from "../shared/typed";
-import BinanceService from "./binanceService";
+import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import { LeekFundConfig } from '../shared/leekConfig';
+import { LeekTreeItem } from '../shared/leekTreeItem';
+import BinanceService from './binanceService';
 
 export class BinanceProvider implements TreeDataProvider<any> {
-
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
   private service: BinanceService;
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
@@ -33,7 +31,7 @@ export class BinanceProvider implements TreeDataProvider<any> {
     return this.service.getData(paris);
   }
 
-  getParent?(element: any) {
+  getParent?() {
     return null;
   }
 
@@ -47,6 +45,6 @@ export class BinanceProvider implements TreeDataProvider<any> {
   /** Modify order */
   changeOrder(): void {
     // leek-fund.binanceSort
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 }

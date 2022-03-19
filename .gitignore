@@ -7,7 +7,7 @@ yarn.lock
 package-lock.json
 demo/donate.html
 demo/api.html
-
+yarn-error.log
 .DS_Store
 
 template/leek-center/build
