@@ -18,10 +18,10 @@ const formatNum = (n: number) => {
 export const objectToQueryString = (queryParameters: Object): string => {
   return queryParameters
     ? Object.entries(queryParameters).reduce((queryString, [key, val]) => {
-        const symbol = queryString.length === 0 ? '?' : '&';
-        queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
-        return queryString;
-      }, '')
+      const symbol = queryString.length === 0 ? '?' : '&';
+      queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
+      return queryString;
+    }, '')
     : '';
 };
 

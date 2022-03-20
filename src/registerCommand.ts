@@ -59,6 +59,8 @@ export function registerViewEvent(
 
   // Fund operation
   commands.registerCommand('leek-fund.refreshFund', () => {
+    globalState.fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups', []);
+    globalState.fundLists = LeekFundConfig.getConfig('leek-fund.funds', []);
     fundProvider.refresh();
     const handler = window.setStatusBarMessage(`基金数据已刷新`);
     setTimeout(() => {
@@ -102,8 +104,13 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.renameFundGroup', (target) => {
-    LeekFundConfig.renameFundGroupCfg(target.id, () => {
-      fundProvider.refresh();
+    window.showInputBox({ placeHolder: '请输入基金分组名称' }).then((name) => {
+      if (!name) {
+        return;
+      }
+      LeekFundConfig.renameFundGroupCfg(target.id, name, () => {
+        fundProvider.refresh();
+      });
     });
   });
   commands.registerCommand('leek-fund.sortFund', () => {

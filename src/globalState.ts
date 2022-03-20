@@ -31,6 +31,9 @@ let immersiveBackground = true; // 基金图表是否沉浸式背景
 
 let isDevelopment = false; // 是否开发环境
 
+let fundGroups: Array<string> = [];
+let fundLists: Array<Array<string>> = [];
+
 export default {
   context,
   telemetry,
@@ -56,4 +59,6 @@ export default {
   showStockErrorInfo,
   immersiveBackground,
   isDevelopment,
+  fundGroups,
+  fundLists,
 };

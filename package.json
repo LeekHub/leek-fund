@@ -409,12 +409,12 @@
         {
           "command": "leek-fund.removeFundGroup",
           "when": "view == leekFundView.fund && viewItem == category",
-          "group": "group4"
+          "group": "group7"
         },
         {
           "command": "leek-fund.renameFundGroup",
           "when": "view == leekFundView.fund && viewItem == category",
-          "group": "group4"
+          "group": "group7"
         },
         {
           "command": "leek-fund.setStockTop",

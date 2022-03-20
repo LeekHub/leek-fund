@@ -87,17 +87,6 @@ export function activate(context: ExtensionContext) {
     treeDataProvider: newsProvider,
   });
 
-  // 迁移用户的基金代码到分组模式
-  const migrateFunds = () => {
-    const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
-    if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
-      const newFundLists = [fundLists];
-      LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
-    }
-  };
-
-  migrateFunds();
-
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
@@ -222,6 +211,19 @@ function setGlobalVariable() {
   globalState.labelFormat = LeekFundConfig.getConfig('leek-fund.labelFormat');
 
   globalState.immersiveBackground = LeekFundConfig.getConfig('leek-fund.immersiveBackground', true);
+
+  const fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups') || [];
+  globalState.fundGroups = fundGroups;
+
+  const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
+  if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
+    // 迁移用户的基金代码到分组模式
+    const newFundLists = [fundLists];
+    globalState.fundLists = newFundLists;
+    LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
+  } else {
+    globalState.fundLists = fundLists;
+  }
 }
 
 // this method is called when your extension is deactivated
