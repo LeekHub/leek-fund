@@ -62,8 +62,8 @@ export class LeekFundConfig extends BaseConfig {
       }
       const config = workspace.getConfiguration();
       const sourceCfg: any = config.get('leek-fund.fundGroups', []);
-      let index: string = groupId.replace('fundGroup_', '')
-      sourceCfg[index] = name
+      let index: string = groupId.replace('fundGroup_', '');
+      sourceCfg[index] = name;
       config.update('leek-fund.fundGroups', sourceCfg, true).then(() => {
         window.showInformationMessage(`Fund Group Successfully rename.`);
         if (cb && typeof cb === 'function') {

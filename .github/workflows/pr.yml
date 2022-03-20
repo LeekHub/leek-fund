@@ -1,12 +1,16 @@
 # This is a basic workflow to help you get started with Actions
 
-name: PULL REQUEST
+name: Test
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   pull_request:
-    branches: [master]
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -21,10 +25,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: '14.x'
 
       - name: Install
         run: |

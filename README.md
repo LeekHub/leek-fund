@@ -73,9 +73,9 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
-![概览](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/overview.png)
+![概览](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
-![韭菜中心](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/leek-center.png)
+![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-center.png)
 
 ## 插件设置
 
@@ -91,7 +91,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 公众号：
 
-<img width="300" alt="微信公众号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+<img width="300" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
 
 ## Core Contributors
 
