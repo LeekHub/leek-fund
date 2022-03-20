@@ -23,6 +23,8 @@ jobs:
           yarn
       - name: Create Tag
         run: |
+          git config --global user.email "leekfund@leekhub.com"
+          git config --global user.name "leek.fund"
           yarn release
       # 推送tag会触发插件发布流程
       - name: Push changes
