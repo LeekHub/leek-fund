@@ -101,6 +101,11 @@ export function registerViewEvent(
       fundProvider.refresh();
     });
   });
+  commands.registerCommand('leek-fund.renameFundGroup', (target) => {
+    LeekFundConfig.renameFundGroupCfg(target.id, () => {
+      fundProvider.refresh();
+    });
+  });
   commands.registerCommand('leek-fund.sortFund', () => {
     fundProvider.changeOrder();
     fundProvider.refresh();
