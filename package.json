@@ -155,6 +155,10 @@
         "title": "删除分组"
       },
       {
+        "command": "leek-fund.renameFundGroup",
+        "title": "修改分组名称"
+      },
+      {
         "command": "leek-fund.refreshFund",
         "title": "刷新数据",
         "icon": {
@@ -404,6 +408,11 @@
         },
         {
           "command": "leek-fund.removeFundGroup",
+          "when": "view == leekFundView.fund && viewItem == category",
+          "group": "group4"
+        },
+        {
+          "command": "leek-fund.renameFundGroup",
           "when": "view == leekFundView.fund && viewItem == category",
           "group": "group4"
         },
