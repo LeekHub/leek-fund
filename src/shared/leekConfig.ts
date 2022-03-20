@@ -55,6 +55,24 @@ export class LeekFundConfig extends BaseConfig {
     });
   }
 
+  static renameFundGroupCfg(groupId: string, cb?: Function) {
+    window.showInputBox({ placeHolder: '请输入基金分组名称' }).then((name) => {
+      if (!name) {
+        return;
+      }
+      const config = workspace.getConfiguration();
+      const sourceCfg: any = config.get('leek-fund.fundGroups', []);
+      let index: string = groupId.replace('fundGroup_', '')
+      sourceCfg[index] = name
+      config.update('leek-fund.fundGroups', sourceCfg, true).then(() => {
+        window.showInformationMessage(`Fund Group Successfully rename.`);
+        if (cb && typeof cb === 'function') {
+          cb(groupId);
+        }
+      });
+    });
+  }
+
   static removeFundGroupCfg(groupId: string, cb?: Function) {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get('leek-fund.funds', []);
