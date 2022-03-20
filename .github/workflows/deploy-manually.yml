@@ -11,25 +11,27 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          fetch-depth: 0
       - name: Install Dependencies
         run: |
           yarn
       - name: Create Tag
         run: |
-          git config --global user.email "leekfund@leekhub.com"
-          git config --global user.name "leek.fund"
+          git config --global user.email ${{ secrets.USER_EMAIL }}
+          git config --global user.name ${{ secrets.USER_NAME }}
           yarn release
-      # 推送tag会触发插件发布流程
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           branch: ${{ github.ref }}
           tags: true
+      - name: Publish extension
+        # if: startsWith( env.commitmsg , 'chore(release):' )
+        run: |
+          yarn
+          yarn deploy -p ${{ secrets.VSCE_TOKEN }}

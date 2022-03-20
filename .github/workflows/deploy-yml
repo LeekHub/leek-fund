@@ -3,7 +3,7 @@ name: Publish extension
 on:
   push:
     branches:
-      - master
+      - master1 # 禁用
 
 jobs:
   build:
