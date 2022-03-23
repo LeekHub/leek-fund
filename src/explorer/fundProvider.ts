@@ -30,30 +30,27 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
     }
   }
 
-  getRootNodes(fundGroups: Array<string>, fundLists: Array<Object>): Array<LeekTreeItem> {
+  getRootNodes(fundGroups: Array<string>, fundLists: Array<Array<string>>): Array<LeekTreeItem> {
     let nodes: Array<LeekTreeItem> = [];
     fundLists.forEach((value, index) => {
-      if (value instanceof Array) {
-        const funds = value as Array<string>;
-        nodes.push(
-          new LeekTreeItem(
-            Object.assign({ contextValue: 'category' }, defaultFundInfo, {
-              id: `fundGroup_${index}`,
-              name: `${fundGroups[index]}${funds.length > 0 ? `(${funds.length})` : ''}`,
-            }),
-            undefined,
-            true
-          )
-        );
-      }
+      nodes.push(
+        new LeekTreeItem(
+          Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+            id: `fundGroup_${index}`,
+            name: `${fundGroups[index]}${value.length > 0 ? `(${value.length})` : ''}`,
+          }),
+          undefined,
+          true
+        )
+      );
     });
     return nodes;
   }
 
-  getChildrenNodes(element: LeekTreeItem, fundLists: Array<Object>): Promise<Array<LeekTreeItem>> {
+  getChildrenNodes(element: LeekTreeItem, fundLists: Array<Array<string>>): Promise<Array<LeekTreeItem>> {
     const groupId = element.id || '';
     const index: number = parseInt(groupId.replace('fundGroup_', ''));
-    const fundCodes: Array<string> = fundLists[index] as Array<string>;
+    const fundCodes: Array<string> = fundLists[index];
     return this.service.getData(fundCodes, this.order, groupId);
   }
 
