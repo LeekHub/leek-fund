@@ -27,15 +27,16 @@ export default class FundService extends LeekService {
   }
 
   setAllFundsList(fundList: Array<LeekTreeItem>) {
-    this.allFundsList = [...this.allFundsList, ...fundList];
-    let idArray: Array<string> = [];
+    this.allFundsList = this.allFundsList.concat(fundList);
+    let hasObj: any = {};
     let newAllFundsList: Array<LeekTreeItem> = [];
-    this.allFundsList.forEach((fund: LeekTreeItem) => {
-      if (fund.id && idArray.indexOf(fund.id) === -1) {
-        idArray.push(fund.id);
+    for (let index = 0; index < this.allFundsList.length; index++) {
+      const fund: LeekTreeItem = this.allFundsList[index];
+      if (!hasObj[fund.info?.code]) {
+        hasObj[fund.info?.code] = true;
         newAllFundsList.push(fund);
       }
-    });
+    }
     this.allFundsList = newAllFundsList;
   }
 
