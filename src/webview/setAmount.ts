@@ -66,7 +66,7 @@ function fundDataHandler(fundService: FundService) {
   const list = fundList.map((item: LeekTreeItem) => {
     return {
       name: item.info?.name,
-      code: item.id,
+      code: item.info?.code,
       percent: item.info?.percent,
       amount: amountObj[item.info?.code]?.amount || 0,
       earningPercent: item.info?.earningPercent,

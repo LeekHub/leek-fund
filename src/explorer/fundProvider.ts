@@ -1,4 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
+import globalState from '../globalState';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType } from '../shared/typed';
@@ -22,20 +23,14 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
-    const fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups') || [];
-    const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
     if (!element) {
-      return this.getRootNodes(fundGroups, fundLists);
+      return this.getRootNodes(globalState.fundGroups, globalState.fundLists);
     } else {
-      return this.getChildrenNodes(element, fundLists);
+      return this.getChildrenNodes(element, globalState.fundLists);
     }
   }
 
   getRootNodes(fundGroups: Array<string>, fundLists: Array<Object>): Array<LeekTreeItem> {
-    if (fundGroups.length < fundLists.length) {
-      return [];
-    }
-
     let nodes: Array<LeekTreeItem> = [];
     fundLists.forEach((value, index) => {
       if (value instanceof Array) {
@@ -56,19 +51,9 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getChildrenNodes(element: LeekTreeItem, fundLists: Array<Object>): Promise<Array<LeekTreeItem>> {
-    let groupId: string = '';
-    let fundCodes: Array<string> = [];
-    fundLists.forEach((value, index) => {
-      if (value instanceof Array) {
-        const funds = value as Array<string>;
-        const id: string = `fundGroup_${index}`;
-        if (element.id === id) {
-          groupId = id;
-          fundCodes = funds;
-          return;
-        }
-      }
-    });
+    const groupId = element.id || '';
+    const index: number = parseInt(groupId.replace('fundGroup_', ''));
+    const fundCodes: Array<string> = fundLists[index] as Array<string>;
     return this.service.getData(fundCodes, this.order, groupId);
   }
 
