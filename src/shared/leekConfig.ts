@@ -64,31 +64,16 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static removeFundGroupCfg(groupId: string, cb?: Function) {
-    let removedFundList: Array<string> = [];
-    let removedFundListIndex = -1;
-    const updatedFundLists = globalState.fundLists.filter((item, index) => {
-      const id: string = `fundGroup_${index}`;
-      if (id !== groupId) {
-        return true;
-      } else {
-        removedFundList = item;
-        removedFundListIndex = index;
-        return false;
-      }
-    });
-
+    const index: number = parseInt(groupId.replace('fundGroup_', ''));
+    const removedFundList: Array<string> = globalState.fundLists[index];
     const removeFundGroup = () => {
-      if (removedFundListIndex !== -1) {
-        globalState.fundGroups.splice(removedFundListIndex, 1);
-        globalState.fundLists = updatedFundLists;
-        this.setConfig('leek-fund.fundGroups', globalState.fundGroups);
-        this.setConfig('leek-fund.funds', globalState.fundLists);
-        window.showInformationMessage(`Fund Group Successfully delete.`);
-        if (cb && typeof cb === 'function') {
-          cb(groupId);
-        }
-      } else {
-        window.showInformationMessage(`Fund Group Unsuccessfully delete.`);
+      globalState.fundGroups.splice(index, 1);
+      globalState.fundLists.splice(index, 1);
+      this.setConfig('leek-fund.fundGroups', globalState.fundGroups);
+      this.setConfig('leek-fund.funds', globalState.fundLists);
+      window.showInformationMessage(`Fund Group Successfully delete.`);
+      if (cb && typeof cb === 'function') {
+        cb(groupId);
       }
     };
 
