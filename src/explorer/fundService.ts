@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import {
@@ -13,6 +13,7 @@ import {
 } from '../shared/utils';
 import { LeekService } from './leekService';
 import { executeStocksRemind } from '../shared/remindNotification';
+import { LeekFundConfig } from '../shared/leekConfig';
 
 const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=`;
 
@@ -40,6 +41,19 @@ export default class FundService extends LeekService {
     this.allFundsList = newAllFundsList;
   }
 
+  filterInvalidFundCodes(fundList: Array<LeekTreeItem>, groupId: string) {
+    const index: number = parseInt(groupId.replace('fundGroup_', ''));
+    if (fundList.length !== globalState.fundLists[index].length) {
+      const updatedFundList: Array<string> = [];
+      fundList.forEach((fund: LeekTreeItem) => {
+        updatedFundList.push(fund.info?.code);
+      });
+      globalState.fundLists[index] = updatedFundList;
+      LeekFundConfig.setConfig('leek-fund.funds', globalState.fundLists);
+      window.showInformationMessage(`Fund Code invalid.`);
+    }
+  }
+
   async getData(fundCodes: Array<string>, order: number, groupId: string): Promise<Array<LeekTreeItem>> {
     if (!fundCodes.length) {
       return [];
@@ -49,7 +63,8 @@ export default class FundService extends LeekService {
       let totalAmount = 0; // 总持仓
       let totalProfit = 0; // 总收益
       let updateTime = ''; // 更新时间
-      const { Datas = [] } = await FundService.qryFundInfo(fundCodes);
+      const fundInfo = await FundService.qryFundInfo(fundCodes);
+      const Datas = fundInfo.Datas || [];
       const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
       const data = Datas.map((item: any) => {
@@ -103,6 +118,7 @@ export default class FundService extends LeekService {
         return new LeekTreeItem(obj, this.context);
       });
 
+      this.filterInvalidFundCodes(data, groupId);
       const res = sortData(data, order);
       executeStocksRemind(res, this.fundList);
       const oldFundList = this.fundList;
