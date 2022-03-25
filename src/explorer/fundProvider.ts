@@ -31,6 +31,7 @@ export class FundProvider implements TreeDataProvider<LeekTreeItem> {
   }
 
   getRootNodes(fundGroups: Array<string>, fundLists: Array<Array<string>>): Array<LeekTreeItem> {
+    this.service.allFundsList = [];
     let nodes: Array<LeekTreeItem> = [];
     fundLists.forEach((value, index) => {
       nodes.push(
