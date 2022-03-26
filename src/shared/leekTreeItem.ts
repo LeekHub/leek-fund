@@ -61,6 +61,8 @@ export class LeekTreeItem extends TreeItem {
     if (grow) {
       if (IconType.ARROW === globalState.iconType) {
         icon = val >= 2 ? 'up' : 'up1';
+      } else if (IconType.ARROW1 === globalState.iconType) {
+        icon = val >= 2 ? 'up2' : 'up3';
       } else if (IconType.FOOD1 === globalState.iconType) {
         icon = 'meat2';
       } else if (IconType.FOOD2 === globalState.iconType) {
@@ -74,6 +76,8 @@ export class LeekTreeItem extends TreeItem {
     } else {
       if (IconType.ARROW === globalState.iconType) {
         icon = val >= 2 ? 'down' : 'down1';
+      } else if (IconType.ARROW1 === globalState.iconType) {
+        icon = val >= 2 ? 'down2' : 'down3';
       } else if (IconType.FOOD1 === globalState.iconType) {
         icon = 'noodles';
       } else if (IconType.FOOD2 === globalState.iconType) {
@@ -114,7 +118,7 @@ export class LeekTreeItem extends TreeItem {
           )}「${name}」`; */
           text = formatLabelString(
             globalState.labelFormat?.['sidebarStockLabelFormat'] ??
-              DEFAULT_LABEL_FORMAT.sidebarStockLabelFormat,
+            DEFAULT_LABEL_FORMAT.sidebarStockLabelFormat,
             {
               ...info,
               icon: !isIconPath ? iconPath : '',
@@ -131,7 +135,7 @@ export class LeekTreeItem extends TreeItem {
           }` + `${t2 ? `(${time})` : ''}`; */
         text = formatLabelString(
           globalState.labelFormat?.['sidebarFundLabelFormat'] ??
-            DEFAULT_LABEL_FORMAT.sidebarFundLabelFormat,
+          DEFAULT_LABEL_FORMAT.sidebarFundLabelFormat,
           {
             ...info,
             icon: !isIconPath ? iconPath : '',
@@ -147,7 +151,7 @@ export class LeekTreeItem extends TreeItem {
       } else if (this._itemType === TreeItemType.BINANCE) {
         text = formatLabelString(
           globalState.labelFormat?.['sidebarBinanceLabelFormat'] ??
-            DEFAULT_LABEL_FORMAT.sidebarBinanceLabelFormat,
+          DEFAULT_LABEL_FORMAT.sidebarBinanceLabelFormat,
           {
             ...info,
             icon: !isIconPath ? iconPath : '',

@@ -435,8 +435,12 @@ export function registerViewEvent(
               .showQuickPick(
                 [
                   {
-                    label: '箭头图标',
+                    label: '箭头图标（红涨绿跌）',
                     description: 'arrow',
+                  },
+                  {
+                    label: '箭头图标（绿涨红跌）',
+                    description: 'arrow1',
                   },
                   {
                     label: '食物图标1（吃面、吃鸡腿）',

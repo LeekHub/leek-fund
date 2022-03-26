@@ -11,6 +11,7 @@ export enum SortType {
 
 export enum IconType {
   ARROW = 'arrow',
+  ARROW1 = 'arrow1',
   FOOD1 = 'food1',
   FOOD2 = 'food2',
   FOOD3 = 'food3',
