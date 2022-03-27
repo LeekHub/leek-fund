@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/giscafer/leek-fund/compare/v2.1.3...v2.2.0) (2022-03-27)
+
+
+### Features
+
+* **icon:** 增加绿涨红跌箭头选择 ([74b3bcc](https://github.com/giscafer/leek-fund/commit/74b3bcc8ce0fde68c0c255ac6a33704335794d80))
+
+
+### Bug Fixes
+
+* **fund:** fixed [#291](https://github.com/giscafer/leek-fund/issues/291) ([da0b63d](https://github.com/giscafer/leek-fund/commit/da0b63d3ba937b6cda2b8b59890a27021885dfe8))
+* **fund:** 自动过滤无法查询到信息的基金代码 ([c1f3742](https://github.com/giscafer/leek-fund/commit/c1f3742cf4a18255cb6a8ffac169227286952c43))
+
 ### [2.1.3](https://github.com/giscafer/leek-fund/compare/v2.1.2...v2.1.3) (2022-03-23)
 
 
