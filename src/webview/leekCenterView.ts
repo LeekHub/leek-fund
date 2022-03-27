@@ -173,11 +173,11 @@ function setList(
   }
 
   const offUpdateStockList = updateStockList(webview, stockService.stockList);
-  const offUpdateFundList = updateFundList(webview, fundServices.allFundsList);
+  const offUpdateFundList = updateFundList(webview, fundServices.fundList);
 
   panelEvents.on('pageReady', () => {
     postStockList!(stockService.stockList);
-    postFundList!(fundServices.allFundsList);
+    postFundList!(fundServices.fundList);
   });
   panelEvents.on('onDidDispose', () => {
     offUpdateStockList();

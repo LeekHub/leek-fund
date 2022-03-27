@@ -19,26 +19,28 @@ const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jso
 
 export default class FundService extends LeekService {
   private context: ExtensionContext;
-  private fundList: Array<LeekTreeItem> = [];
-  public allFundsList: Array<LeekTreeItem> = [];
+  public fundList: Array<LeekTreeItem> = [];
 
   constructor(context: ExtensionContext) {
     super();
     this.context = context;
   }
 
-  setAllFundsList(fundList: Array<LeekTreeItem>) {
-    this.allFundsList = this.allFundsList.concat(fundList);
-    let hasObj: any = {};
-    let newAllFundsList: Array<LeekTreeItem> = [];
-    for (let index = 0; index < this.allFundsList.length; index++) {
-      const fund: LeekTreeItem = this.allFundsList[index];
-      if (!hasObj[fund.info?.code]) {
-        hasObj[fund.info?.code] = true;
-        newAllFundsList.push(fund);
+  setFundList(fundList: Array<LeekTreeItem>) {
+    fundList.forEach((fund) => {
+      let hasInserted = false;
+      for (let index = 0; index < this.fundList.length; index++) {
+        if (this.fundList[index].info?.code === fund.info?.code) {
+          this.fundList.splice(index, 1, fund);
+          hasInserted = true;
+          break;
+        }
       }
-    }
-    this.allFundsList = newAllFundsList;
+      if (!hasInserted) {
+        this.fundList.push(fund);
+        hasInserted = true;
+      }
+    });
   }
 
   filterInvalidFundCodes(fundList: Array<LeekTreeItem>, groupId: string) {
@@ -119,11 +121,10 @@ export default class FundService extends LeekService {
       });
 
       this.filterInvalidFundCodes(data, groupId);
-      const res = sortData(data, order);
-      executeStocksRemind(res, this.fundList);
+      const fundList = sortData(data, order);
+      executeStocksRemind(fundList, this.fundList);
       const oldFundList = this.fundList;
-      this.fundList = res;
-      this.setAllFundsList(this.fundList);
+      this.setFundList(fundList);
       events.emit('fundListUpdate', this.fundList, oldFundList);
       events.emit('updateBar:profit-refresh', {
         fundProfit: toFixed(totalProfit),
@@ -131,10 +132,10 @@ export default class FundService extends LeekService {
         fundProfitPercent: toFixed(totalProfit / totalAmount, 2, 100),
         priceDate: formatDate(updateTime),
       });
-      return this.fundList;
+      return fundList;
     } catch (err) {
       console.log(err);
-      return this.fundList;
+      return [];
     }
   }
 
