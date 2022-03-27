@@ -458,6 +458,10 @@ export function registerViewEvent(
                     label: '食物字体图标（吃面、吃鸡腿）',
                     description: 'iconfood',
                   },
+                  {
+                    label: '无图标',
+                    description: 'none',
+                  },
                 ],
                 {
                   placeHolder: `第二步：选择基金&股票涨跌图标`,
