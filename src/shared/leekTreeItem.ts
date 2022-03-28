@@ -71,6 +71,8 @@ export class LeekTreeItem extends TreeItem {
         icon = 'wine';
       } else if (IconType.ICON_FOOD === globalState.iconType) {
         icon = '🍗';
+      } else if (IconType.NONE === globalState.iconType) {
+        icon = '';
       }
       _percent = '+' + _percent;
     } else {
@@ -86,6 +88,8 @@ export class LeekTreeItem extends TreeItem {
         icon = 'noodles';
       } else if (IconType.ICON_FOOD === globalState.iconType) {
         icon = '🍜';
+      } else if (IconType.NONE === globalState.iconType) {
+        icon = '';
       }
       _percent = '-' + _percent;
     }
@@ -95,7 +99,7 @@ export class LeekTreeItem extends TreeItem {
     let iconPath: string | undefined = '';
     if (showLabel) {
       iconPath =
-        globalState.iconType !== IconType.ICON_FOOD
+        globalState.iconType !== IconType.ICON_FOOD && globalState.iconType !== IconType.NONE
           ? context?.asAbsolutePath(join('resources', `${icon}.svg`))
           : icon;
     }

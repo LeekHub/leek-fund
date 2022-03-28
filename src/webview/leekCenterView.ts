@@ -91,6 +91,7 @@ function postFetchResponseFactory(webview: Webview, success: boolean, sessionId:
     if (!success) console.log('请求失败');
     console.log('response: ', response);
     const { ...rawResponse } = response;
+    delete rawResponse.request;
     webview.postMessage({
       command: 'fetchResponse',
       data: {
@@ -173,11 +174,11 @@ function setList(
   }
 
   const offUpdateStockList = updateStockList(webview, stockService.stockList);
-  const offUpdateFundList = updateFundList(webview, fundServices.allFundsList);
+  const offUpdateFundList = updateFundList(webview, fundServices.fundList);
 
   panelEvents.on('pageReady', () => {
     postStockList!(stockService.stockList);
-    postFundList!(fundServices.allFundsList);
+    postFundList!(fundServices.fundList);
   });
   panelEvents.on('onDidDispose', () => {
     offUpdateStockList();

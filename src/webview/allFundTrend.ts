@@ -3,7 +3,7 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 import FundService from '../explorer/fundService';
 
 async function allFundTrend(service: FundService) {
-  const fundList = service.allFundsList;
+  const fundList = service.fundList;
   const panel = ReusedWebviewPanel.create('allFundTrendWebview', '基金走势一览', ViewColumn.One, {
     enableScripts: true,
     retainContextWhenHidden: true,

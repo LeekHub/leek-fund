@@ -153,7 +153,7 @@ export class StatusBar {
 
   private getFundTooltipText() {
     let fundTemplate = '';
-    for (let fund of this.fundService.allFundsList.slice(0, 14)) {
+    for (let fund of this.fundService.fundList.slice(0, 14)) {
       fundTemplate += `${
         fund.info.percent.indexOf('-') === 0 ? ' ↓ ' : fund.info.percent === '0.00' ? '' : ' ↑ '
       } ${fund.info.percent}%   「${
@@ -161,7 +161,7 @@ export class StatusBar {
       }」\n--------------------------------------------\n`;
     }
     // tooltip 有限定高度，所以只展示最多14只基金
-    const tips = this.fundService.allFundsList.length >= 14 ? '（只展示前14只）' : '';
+    const tips = this.fundService.fundList.length >= 14 ? '（只展示前14只）' : '';
     return `「基金详情」\n\n ${fundTemplate}${tips}`;
   }
 }

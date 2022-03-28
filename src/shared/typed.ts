@@ -16,6 +16,7 @@ export enum IconType {
   FOOD2 = 'food2',
   FOOD3 = 'food3',
   ICON_FOOD = 'iconfood',
+  NONE = 'none',
 }
 
 /** Tree Item Type */

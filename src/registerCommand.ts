@@ -141,7 +141,7 @@ export function registerViewEvent(
     });
   });
   commands.registerCommand('leek-fund.leekCenterView', () => {
-    if (stockService.stockList.length === 0 && fundService.allFundsList.length === 0) {
+    if (stockService.stockList.length === 0 && fundService.fundList.length === 0) {
       window.showWarningMessage('数据刷新中，请稍候！');
       return;
     }
@@ -231,7 +231,7 @@ export function registerViewEvent(
   });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
-    if (fundService.allFundsList.length === 0) {
+    if (fundService.fundList.length === 0) {
       window.showWarningMessage('数据刷新中，请重试！');
       return;
     }
@@ -457,6 +457,10 @@ export function registerViewEvent(
                   {
                     label: '食物字体图标（吃面、吃鸡腿）',
                     description: 'iconfood',
+                  },
+                  {
+                    label: '无图标',
+                    description: 'none',
                   },
                 ],
                 {
