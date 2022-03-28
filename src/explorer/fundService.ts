@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { ExtensionContext, window } from 'vscode';
+import { ExtensionContext } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import {
@@ -13,7 +13,6 @@ import {
 } from '../shared/utils';
 import { LeekService } from './leekService';
 import { executeStocksRemind } from '../shared/remindNotification';
-import { LeekFundConfig } from '../shared/leekConfig';
 
 const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jsonp.php/IO.XSRV2.CallbackList['hLfu5s99aaIUp7D4']/NetValueReturn_Service.NetValueReturnOpen?page=1&num=40&sort=form_year&asc=0&ccode=&type2=0&type3=`;
 
@@ -41,19 +40,6 @@ export default class FundService extends LeekService {
         hasInserted = true;
       }
     });
-  }
-
-  filterInvalidFundCodes(fundList: Array<LeekTreeItem>, groupId: string) {
-    const index: number = parseInt(groupId.replace('fundGroup_', ''));
-    if (fundList.length !== globalState.fundLists[index].length) {
-      const updatedFundList: Array<string> = [];
-      fundList.forEach((fund: LeekTreeItem) => {
-        updatedFundList.push(fund.info?.code);
-      });
-      globalState.fundLists[index] = updatedFundList;
-      LeekFundConfig.setConfig('leek-fund.funds', globalState.fundLists);
-      window.showInformationMessage(`Fund Code invalid.`);
-    }
   }
 
   async getData(fundCodes: Array<string>, order: number, groupId: string): Promise<Array<LeekTreeItem>> {
@@ -120,7 +106,6 @@ export default class FundService extends LeekService {
         return new LeekTreeItem(obj, this.context);
       });
 
-      this.filterInvalidFundCodes(data, groupId);
       const fundList = sortData(data, order);
       executeStocksRemind(fundList, this.fundList);
       const oldFundList = this.fundList;
