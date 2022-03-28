@@ -91,6 +91,7 @@ function postFetchResponseFactory(webview: Webview, success: boolean, sessionId:
     if (!success) console.log('请求失败');
     console.log('response: ', response);
     const { ...rawResponse } = response;
+    delete rawResponse.request;
     webview.postMessage({
       command: 'fetchResponse',
       data: {
