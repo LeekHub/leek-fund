@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/giscafer/leek-fund/compare/v2.2.0...v2.3.0) (2022-03-28)
+
+
+### Features
+
+* **icon:** 增加无图标选项 [#237](https://github.com/giscafer/leek-fund/issues/237) ([65d906f](https://github.com/giscafer/leek-fund/commit/65d906f4b8fe64136bab8d61625f6c59adc0a107))
+
+
+### Bug Fixes
+
+* **fund:** 修复基金提醒功能 ([41128d6](https://github.com/giscafer/leek-fund/commit/41128d6e5aeee76b76d3835e1517d45b158d2a30))
+* **leekcenter:** Fixed [#294](https://github.com/giscafer/leek-fund/issues/294) ([48ac310](https://github.com/giscafer/leek-fund/commit/48ac310fb366676b80b93e7f829ef0a7ec0a7d69))
+
 ## [2.2.0](https://github.com/giscafer/leek-fund/compare/v2.1.3...v2.2.0) (2022-03-27)
 
 
