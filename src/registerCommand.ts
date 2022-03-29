@@ -69,6 +69,7 @@ export function registerViewEvent(
   });
   commands.registerCommand('leek-fund.deleteFund', (target) => {
     LeekFundConfig.removeFundCfg(target.id, () => {
+      fundService.fundList = [];
       fundProvider.refresh();
     });
   });
@@ -100,6 +101,7 @@ export function registerViewEvent(
   });
   commands.registerCommand('leek-fund.removeFundGroup', (target) => {
     LeekFundConfig.removeFundGroupCfg(target.id, () => {
+      fundService.fundList = [];
       fundProvider.refresh();
     });
   });
