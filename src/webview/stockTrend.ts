@@ -3,7 +3,10 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 import stockTrendPic from './stockTrendPic';
 
 function stockTrend(code: string, name: string, stockCode: string) {
-  if (['0dji', '0ixic', '0inx', '0HSI'].includes(code)) {
+  if (['0dji', '0ixic', '0inx'].includes(code)) {
+    return stockTrendPic(code, name, stockCode);
+  }
+  if (/^恒生.*指数$/.test(name)) {
     return stockTrendPic(code, name, stockCode);
   }
   stockCode = stockCode.toLowerCase();

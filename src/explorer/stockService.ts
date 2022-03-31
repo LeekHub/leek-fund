@@ -4,7 +4,6 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
-import { STOCK_TYPE } from '../shared/typed';
 import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
 import { LeekService } from './leekService';
 
@@ -304,7 +303,8 @@ export default class StockService extends LeekService {
             stockList = stockList.concat(await this.getData(new Array(_code), order));
           }
         } else {
-          data.items.forEach((item: any) => {
+          const stocks = data.items || [];
+          stocks.forEach((item: any) => {
             const quote = item.quote;
             let open = quote.open?.toString() || '0';
             let yestclose = quote.last_close?.toString() || '0';
@@ -374,71 +374,115 @@ export default class StockService extends LeekService {
   }
 
   // https://github.com/LeekHub/leek-fund/issues/266
-  async getStockSuggestList(searchText = '', type = '2'): Promise<QuickPickItem[]> {
+  async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
 
+    const result: QuickPickItem[] = [];
+
     // 期货大写字母开头
     const isFuture = /^[A-Z]/.test(searchText[0]);
     if (isFuture) {
-      type = '85,86,88';
-    }
-    const url = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
-      searchText
-    )}`;
-
-    try {
-      console.log('getStockSuggestList: getting...');
-      const response = await Axios.get(url, {
-        responseType: 'arraybuffer',
-        transformResponse: [
-          (data) => {
-            const body = decode(data, 'GB18030');
-            return body;
-          },
-        ],
-        headers: randHeader(),
-      });
-      const text = response.data.slice(18, -2);
-      // if (text.length <= 1 && !this.searchStockKeyMap[searchText]) {
-      //   this.searchStockKeyMap[searchText] = true;
-      //   // 兼容一些查询不到的股票，如sz123044
-      //   return this.getStockSuggestList(searchText, '');
-      // }
-      // this.searchStockKeyMap = {};
-      const result: QuickPickItem[] = [];
-      if (text === '') {
-        return result;
-      }
-      const tempArr = text.split(';');
-      tempArr.forEach((item: string) => {
-        const arr = item.split(',');
-        let code = arr[3];
-        if (code.substr(0, 2) === 'of') {
+      //期货使用新浪数据源
+      const type = '85,86,88';
+      const futureUrl = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(searchText)}`;
+      try {
+        console.log('getFutureSuggestList: getting...');
+        const futureResponse = await Axios.get(futureUrl, {
+          responseType: 'arraybuffer',
+          transformResponse: [
+            (data) => {
+              const body = decode(data, 'GB18030');
+              return body;
+            },
+          ],
+          headers: randHeader(),
+        });
+        const text = futureResponse.data.slice(18, -2);
+        if (text === '') {
+          return result;
+        }
+        const tempArr = text.split(';');
+        tempArr.forEach((item: string) => {
+          const arr = item.split(',');
+          let code = arr[3];
+          // if (code.substr(0, 2) === 'of') {
           // 修改lof以及etf的前缀，防止被过滤
           // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
           // 在上海证券交易所挂牌的证券投资基金使用50～59开头6位数字编码，在深圳证券交易所挂牌的证券投资基金使用15～19开头6位数字编码。
-          code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
-        }
-        // 期货 suggest 请求返回的 code 小写开头改为大写
-        if (code === 'hkhsi' || code === 'hkhscei' || isFuture) {
-          code = code.toUpperCase().replace('HK', 'hk');
-        }
+          // code = code.replace(/^(of)(5[0-9])/g, 'sh$2').replace(/^(of)(1[5-9])/g, 'sz$2');
+          // }
 
-        // 过滤多余的 us. 开头的股干扰
-        if ((STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) || isFuture) {
+          // 期货 suggest 请求返回的 code 小写开头改为大写
+          code = code.toUpperCase();
+
+          // if (code === 'hkhsi' || code === 'hkhscei' || isFuture) {
+          //   code = code.toUpperCase().replace('HK', 'hk');
+          // }
+
+          // 过滤多余的 us. 开头的股干扰
+          // if ((STOCK_TYPE.includes(code.substr(0, 2)) && !code.startsWith('us.')) || isFuture) {
           result.push({
             label: `${code} | ${arr[4]}`,
             description: arr[7] && arr[7].replace(/"/g, ''),
           });
-        }
-      });
-      return result;
-    } catch (err) {
-      console.log(url);
-      console.error(err);
-      return [{ label: '查询失败，请重试' }];
+          // }
+        });
+        return result;
+      } catch (err) {
+        console.log(futureUrl);
+        console.error(err);
+        return [{ label: '期货查询失败，请重试' }];
+      }
+    } else {
+      //股票使用雪球数据源
+      const stockUrl = `https://xueqiu.com/stock/search.json?code=${encodeURIComponent(searchText)}`;
+      try {
+        console.log('getStockSuggestList: getting...');
+        const stockResponse = await Axios.get(stockUrl, {
+          responseType: 'text',
+          transformResponse: [
+            (data) => {
+              const body = JSON.parse(data);
+              return body;
+            },
+          ],
+          headers: {
+            ...randHeader(),
+            Referer: 'https://stock.xueqiu.com/',
+            Cookie: await this.getToken(),
+          },
+        });
+        const stocks = stockResponse.data.stocks || [];
+        stocks.forEach((item: any) => {
+          const { code, name } = item;
+          if (code.startsWith('SH') || code.startsWith('SZ')) {
+            const _code = code.toLowerCase();
+            result.push({
+              label: `${_code} | ${name}`,
+              description: `A股`,
+            });
+          } else if (/^0\d{4}$/.test(code) || /^HK[A-Z].*/.test(code)) { // 港股个股 || 港股指数
+            const _code = code.startsWith('HK') ? code.replace('HK', 'hk') : 'hk' + code;
+            result.push({
+              label: `${_code} | ${name}`,
+              description: `港股`,
+            });
+          } else if (/\.?[A-Z]*[A-Z]$/.test(code)) {
+            const _code = 'us' + code.toLowerCase().replace('.', ''); // 去除美股指数前面的'.'
+            result.push({
+              label: `${_code} | ${name}`,
+              description: `美股`,
+            });
+          }
+        });
+        return result;
+      } catch (err) {
+        console.log(stockUrl);
+        console.error(err);
+        return [{ label: '股票查询失败，请重试' }];
+      }
     }
   }
 }
