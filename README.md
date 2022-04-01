@@ -23,10 +23,10 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
   - [安装使用](#安装使用)
   - [插件介绍](#插件介绍)
   - [插件设置](#插件设置)
-  - [交流群](#交流群)
-  - [Todo List](#todo-list)
+  - [社区交流](#社区交流)
   - [感谢 PR](#感谢-pr)
   - [Changelog](#changelog)
+  - [代码目录说明](#代码目录说明)
   - [License](#license)
 
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
@@ -54,6 +54,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏）
 - 支持维护持仓成本价，自动计算收益率
 - 基金趋势统计图
+- 基金支持分组展示
 - 股票支持分组展示（A 股、港股、美股）
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式

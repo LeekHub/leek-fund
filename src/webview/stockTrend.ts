@@ -3,7 +3,10 @@ import ReusedWebviewPanel from './ReusedWebviewPanel';
 import stockTrendPic from './stockTrendPic';
 
 function stockTrend(code: string, name: string, stockCode: string) {
-  if (['0dji', '0ixic'].includes(code)) {
+  if (['0dji', '0ixic', '0inx'].includes(code)) {
+    return stockTrendPic(code, name, stockCode);
+  }
+  if (/^恒生.*指数$/.test(name)) {
     return stockTrendPic(code, name, stockCode);
   }
   stockCode = stockCode.toLowerCase();
@@ -28,8 +31,8 @@ function stockTrend(code: string, name: string, stockCode: string) {
     stockCode = stockCode.replace('cnf_', '').toUpperCase();
     url = `https://finance.sina.com.cn/futures/quotes/${stockCode}.shtml`;
   }
-  
-  let tabTitle = !isFuture? `股票实时走势(${code})` : `期货实时走势(${name})`;
+
+  let tabTitle = !isFuture ? `股票实时走势(${code})` : `期货实时走势(${name})`;
   const panel = ReusedWebviewPanel.create(
     'stockTrendWebview',
     tabTitle,
