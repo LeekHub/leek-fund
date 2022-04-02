@@ -35,9 +35,9 @@ export default class StockService extends LeekService {
       return [];
     }
 
-    let _codes = codes.map((code) => (code.startsWith('cnf_') ? code.substr(4) : code));
+    let stockCodes = codes.map((code) => (code.startsWith('cnf_') ? code.substr(4) : code));
     const hkCodes: Array<string> = []; // 港股单独请求雪球数据源
-    _codes = _codes.filter((code) => {
+    stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
         const _code = code.startsWith('hk0') ? code.replace('hk', '') : code.toUpperCase(); // 个股去掉'hk', 指数保留'hk'并转为大写
         hkCodes.push(_code);
@@ -48,208 +48,211 @@ export default class StockService extends LeekService {
     });
 
     let stockList: Array<LeekTreeItem> = [];
+    stockList = stockList.concat(await this.getStockData(stockCodes));
+    stockList = stockList.concat(await this.getHKStockData(hkCodes));
+
+    const res = sortData(stockList, order);
+    executeStocksRemind(res, this.stockList);
+    const oldStockList = this.stockList;
+    this.stockList = res;
+    events.emit('stockListUpdate', this.stockList, oldStockList);
+    return res;
+  }
+
+  async getStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+    if ((codes && codes.length === 0) || !codes) {
+      return [];
+    }
+
     let aStockCount = 0;
     let usStockCount = 0;
-    let hkStockCount = 0;
     let cnfStockCount = 0;
     let noDataStockCount = 0;
+    let stockList: Array<LeekTreeItem> = [];
 
-    const url = `https://hq.sinajs.cn/list=${_codes.join(',')}`;
+    const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
     try {
-      if (_codes.length) {
-        const resp = await Axios.get(url, {
-          // axios 乱码解决
-          responseType: 'arraybuffer',
-          transformResponse: [
-            (data) => {
-              const body = decode(data, 'GB18030');
-              return body;
-            },
-          ],
-          headers: {
-            ...randHeader(),
-            Referer: 'http://finance.sina.com.cn/',
+      const resp = await Axios.get(url, {
+        // axios 乱码解决
+        responseType: 'arraybuffer',
+        transformResponse: [
+          (data) => {
+            const body = decode(data, 'GB18030');
+            return body;
           },
-        });
-        if (/FAILED/.test(resp.data)) {
-          if (_codes.length === 1) {
-            window.showErrorMessage(
-              `fail: error Stock code in ${_codes}, please delete error Stock code`
-            );
-            return [
-              {
-                id: _codes[0],
-                type: '',
-                contextValue: 'failed',
-                isCategory: false,
-                info: { code: _codes[0], percent: '0', name: '错误代码' },
-                label: _codes[0] + ' 错误代码，请查看是否缺少交易所信息',
-              },
-            ];
-          }
-          for (const code of _codes) {
-            stockList = stockList.concat(await this.getData(new Array(code), order));
-          }
-        } else {
-          const splitData = resp.data.split(';\n');
-          for (let i = 0; i < splitData.length - 1; i++) {
-            const code = splitData[i].split('="')[0].split('var hq_str_')[1];
-            const params = splitData[i].split('="')[1].split(',');
-            let type = code.substr(0, 2) || 'sh';
-            let symbol = code.substr(2);
-            let stockItem: any;
-            let fixedNumber = 2;
-            if (params.length > 1) {
-              if (/^(sh|sz)/.test(code)) {
-                let open = params[1];
-                let yestclose = params[2];
-                let price = params[3];
-                let high = params[4];
-                let low = params[5];
-                fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
-                stockItem = {
-                  code,
-                  name: params[0],
-                  open: formatNumber(open, fixedNumber, false),
-                  yestclose: formatNumber(yestclose, fixedNumber, false),
-                  price: formatNumber(price, fixedNumber, false),
-                  low: formatNumber(low, fixedNumber, false),
-                  high: formatNumber(high, fixedNumber, false),
-                  volume: formatNumber(params[8], 2),
-                  amount: formatNumber(params[9], 2),
-                  time: `${params[30]} ${params[31]}`,
-                  percent: '',
-                };
-                aStockCount += 1;
-              } else if (/^gb_/.test(code)) {
-                symbol = code.substr(3);
-                let open = params[5];
-                let yestclose = params[26];
-                let price = params[1];
-                let high = params[6];
-                let low = params[7];
-                fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
-                stockItem = {
-                  code,
-                  name: params[0],
-                  open: formatNumber(open, fixedNumber, false),
-                  yestclose: formatNumber(yestclose, fixedNumber, false),
-                  price: formatNumber(price, fixedNumber, false),
-                  low: formatNumber(low, fixedNumber, false),
-                  high: formatNumber(high, fixedNumber, false),
-                  volume: formatNumber(params[10], 2),
-                  amount: '接口无数据',
-                  percent: '',
-                };
-                type = code.substr(0, 3);
-                noDataStockCount += 1;
-              } else if (/^usr_/.test(code)) {
-                symbol = code.substr(4);
-                let open = params[5];
-                let yestclose = params[26];
-                let price = params[1];
-                let high = params[6];
-                let low = params[7];
-                fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
-                stockItem = {
-                  code,
-                  name: params[0],
-                  open: formatNumber(open, fixedNumber, false),
-                  yestclose: formatNumber(yestclose, fixedNumber, false),
-                  price: formatNumber(price, fixedNumber, false),
-                  low: formatNumber(low, fixedNumber, false),
-                  high: formatNumber(high, fixedNumber, false),
-                  volume: formatNumber(params[10], 2),
-                  amount: '接口无数据',
-                  percent: '',
-                };
-                type = code.substr(0, 4);
-                usStockCount += 1;
-              } else if (/^[A-Z]/.test(code)) {
-                // code 大写字母开头表示期货
-                symbol = code;
-                const _code = `cnf_${code}`;
-                /* 解析格式，与股票略有不同
-                var hq_str_V2201="PVC2201,230000,
-                8585.00, 8692.00, 8467.00, 8641.00, // params[2,3,4,5] 开，高，低，昨收
-                8673.00, 8674.00, // params[6, 7] 买一、卖一价
-                8675.00, // 现价 params[8]
-                8630.00, // 均价
-                8821.00, // 昨日结算价【一般软件的行情涨跌幅按这个价格显示涨跌幅】（后续考虑配置项，设置按收盘价还是结算价显示涨跌幅）
-                109, // 买一量
-                2, // 卖一量
-                289274, // 持仓量
-                230643, //总量
-                连, // params[8 + 7] 交易所名称 ["连","沪", "郑"]
-                PVC,2021-11-26,1,9243.000,8611.000,9243.000,8251.000,9435.000,8108.000,13380.000,8108.000,445.541";
-                */
-                let name = params[0];
-                let open = params[2];
-                let high = params[3];
-                let low = params[4];
-                let yestclose = params[5];
-                let price = params[8];
-                let yestCallPrice = params[8 + 2];
-                let volume = params[8 + 6]; // 成交量
-                fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
-                stockItem = {
-                  code: _code,
-                  name: name,
-                  open: formatNumber(open, fixedNumber, false),
-                  yestclose: formatNumber(yestclose, fixedNumber, false),
-                  yestcallprice: formatNumber(yestCallPrice, fixedNumber, false),
-                  price: formatNumber(price, fixedNumber, false),
-                  low: formatNumber(low, fixedNumber, false),
-                  high: formatNumber(high, fixedNumber, false),
-                  volume: formatNumber(volume, 2),
-                  amount: '接口无数据',
-                  percent: '',
-                };
-                type = 'cnf_';
-                cnfStockCount += 1;
-              }
-              if (stockItem) {
-                const { yestclose, open } = stockItem;
-                let { price } = stockItem;
-                /*  if (open === price && price === '0.00') {
-                stockItem.isStop = true;
-              } */
-
-                // 竞价阶段部分开盘和价格为0.00导致显示 -100%
-                try {
-                  if (Number(open) <= 0) {
-                    price = yestclose;
-                  }
-                } catch (err) {
-                  console.error(err);
-                }
-                stockItem.showLabel = this.showLabel;
-                stockItem.isStock = true;
-                stockItem.type = type;
-                stockItem.symbol = symbol;
-                stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
-                stockItem.percent =
-                  (stockItem.updown >= 0 ? '+' : '-') +
-                  formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
-
-                const treeItem = new LeekTreeItem(stockItem, this.context);
-                stockList.push(treeItem);
-              }
-            } else {
-              // 接口不支持的
-              noDataStockCount += 1;
+        ],
+        headers: {
+          ...randHeader(),
+          Referer: 'http://finance.sina.com.cn/',
+        },
+      });
+      if (/FAILED/.test(resp.data)) {
+        if (codes.length === 1) {
+          window.showErrorMessage(`fail: error Stock code in ${codes}, please delete error Stock code.`);
+          return [];
+        }
+        for (const code of codes) {
+          stockList = stockList.concat(await this.getStockData(new Array(code)));
+        }
+      } else {
+        const splitData = resp.data.split(';\n');
+        for (let i = 0; i < splitData.length - 1; i++) {
+          const code = splitData[i].split('="')[0].split('var hq_str_')[1];
+          const params = splitData[i].split('="')[1].split(',');
+          let type = code.substr(0, 2) || 'sh';
+          let symbol = code.substr(2);
+          let stockItem: any;
+          let fixedNumber = 2;
+          if (params.length > 1) {
+            if (/^(sh|sz)/.test(code)) {
+              let open = params[1];
+              let yestclose = params[2];
+              let price = params[3];
+              let high = params[4];
+              let low = params[5];
+              fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
               stockItem = {
-                id: code,
-                name: `接口不支持该股票 ${code}`,
-                showLabel: this.showLabel,
-                isStock: true,
+                code,
+                name: params[0],
+                open: formatNumber(open, fixedNumber, false),
+                yestclose: formatNumber(yestclose, fixedNumber, false),
+                price: formatNumber(price, fixedNumber, false),
+                low: formatNumber(low, fixedNumber, false),
+                high: formatNumber(high, fixedNumber, false),
+                volume: formatNumber(params[8], 2),
+                amount: formatNumber(params[9], 2),
+                time: `${params[30]} ${params[31]}`,
                 percent: '',
-                type: 'nodata',
-                contextValue: 'nodata',
               };
+              aStockCount += 1;
+            } else if (/^gb_/.test(code)) {
+              symbol = code.substr(3);
+              let open = params[5];
+              let yestclose = params[26];
+              let price = params[1];
+              let high = params[6];
+              let low = params[7];
+              fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+              stockItem = {
+                code,
+                name: params[0],
+                open: formatNumber(open, fixedNumber, false),
+                yestclose: formatNumber(yestclose, fixedNumber, false),
+                price: formatNumber(price, fixedNumber, false),
+                low: formatNumber(low, fixedNumber, false),
+                high: formatNumber(high, fixedNumber, false),
+                volume: formatNumber(params[10], 2),
+                amount: '接口无数据',
+                percent: '',
+              };
+              type = code.substr(0, 3);
+              noDataStockCount += 1;
+            } else if (/^usr_/.test(code)) {
+              symbol = code.substr(4);
+              let open = params[5];
+              let yestclose = params[26];
+              let price = params[1];
+              let high = params[6];
+              let low = params[7];
+              fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+              stockItem = {
+                code,
+                name: params[0],
+                open: formatNumber(open, fixedNumber, false),
+                yestclose: formatNumber(yestclose, fixedNumber, false),
+                price: formatNumber(price, fixedNumber, false),
+                low: formatNumber(low, fixedNumber, false),
+                high: formatNumber(high, fixedNumber, false),
+                volume: formatNumber(params[10], 2),
+                amount: '接口无数据',
+                percent: '',
+              };
+              type = code.substr(0, 4);
+              usStockCount += 1;
+            } else if (/^[A-Z]/.test(code)) {
+              // code 大写字母开头表示期货
+              symbol = code;
+              const _code = `cnf_${code}`;
+              /* 解析格式，与股票略有不同
+              var hq_str_V2201="PVC2201,230000,
+              8585.00, 8692.00, 8467.00, 8641.00, // params[2,3,4,5] 开，高，低，昨收
+              8673.00, 8674.00, // params[6, 7] 买一、卖一价
+              8675.00, // 现价 params[8]
+              8630.00, // 均价
+              8821.00, // 昨日结算价【一般软件的行情涨跌幅按这个价格显示涨跌幅】（后续考虑配置项，设置按收盘价还是结算价显示涨跌幅）
+              109, // 买一量
+              2, // 卖一量
+              289274, // 持仓量
+              230643, //总量
+              连, // params[8 + 7] 交易所名称 ["连","沪", "郑"]
+              PVC,2021-11-26,1,9243.000,8611.000,9243.000,8251.000,9435.000,8108.000,13380.000,8108.000,445.541";
+              */
+              let name = params[0];
+              let open = params[2];
+              let high = params[3];
+              let low = params[4];
+              let yestclose = params[5];
+              let price = params[8];
+              let yestCallPrice = params[8 + 2];
+              let volume = params[8 + 6]; // 成交量
+              fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+              stockItem = {
+                code: _code,
+                name: name,
+                open: formatNumber(open, fixedNumber, false),
+                yestclose: formatNumber(yestclose, fixedNumber, false),
+                yestcallprice: formatNumber(yestCallPrice, fixedNumber, false),
+                price: formatNumber(price, fixedNumber, false),
+                low: formatNumber(low, fixedNumber, false),
+                high: formatNumber(high, fixedNumber, false),
+                volume: formatNumber(volume, 2),
+                amount: '接口无数据',
+                percent: '',
+              };
+              type = 'cnf_';
+              cnfStockCount += 1;
+            }
+            if (stockItem) {
+              const { yestclose, open } = stockItem;
+              let { price } = stockItem;
+              /*  if (open === price && price === '0.00') {
+              stockItem.isStop = true;
+            } */
+
+              // 竞价阶段部分开盘和价格为0.00导致显示 -100%
+              try {
+                if (Number(open) <= 0) {
+                  price = yestclose;
+                }
+              } catch (err) {
+                console.error(err);
+              }
+              stockItem.showLabel = this.showLabel;
+              stockItem.isStock = true;
+              stockItem.type = type;
+              stockItem.symbol = symbol;
+              stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
+              stockItem.percent =
+                (stockItem.updown >= 0 ? '+' : '-') +
+                formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+
               const treeItem = new LeekTreeItem(stockItem, this.context);
               stockList.push(treeItem);
             }
+          } else {
+            // 接口不支持的
+            noDataStockCount += 1;
+            stockItem = {
+              id: code,
+              name: `接口不支持该股票 ${code}`,
+              showLabel: this.showLabel,
+              isStock: true,
+              percent: '',
+              type: 'nodata',
+              contextValue: 'nodata',
+            };
+            const treeItem = new LeekTreeItem(stockItem, this.context);
+            stockList.push(treeItem);
           }
         }
       }
@@ -266,45 +269,45 @@ export default class StockService extends LeekService {
       }
     }
 
-    const hkUrl = `https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=${hkCodes.join(',')}`;
+    globalState.aStockCount = aStockCount;
+    globalState.usStockCount = usStockCount;
+    globalState.cnfStockCount = cnfStockCount;
+    globalState.noDataStockCount = noDataStockCount;
+    return stockList;
+  }
+
+  async getHKStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+    if ((codes && codes.length === 0) || !codes) {
+      return [];
+    }
+
+    let hkStockCount = 0;
+    let stockList: Array<LeekTreeItem> = [];
+
+    const url = `https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=${codes.join(',')}`;
     try {
-      if (hkCodes.length) {
-        const hkResp = await Axios.get(hkUrl, {
-          responseType: 'text',
-          transformResponse: [
-            (data) => {
-              const body = JSON.parse(data);
-              return body;
-            },
-          ],
-          headers: {
-            ...randHeader(),
-            Referer: 'https://stock.xueqiu.com/',
-            Cookie: await this.getToken(),
+      const resp = await Axios.get(url, {
+        responseType: 'text',
+        transformResponse: [
+          (data) => {
+            const body = JSON.parse(data);
+            return body;
           },
-        });
-        const { data, error_code, error_description } = hkResp.data;
-        if (error_code) {
-          if (hkCodes.length === 1) {
-            window.showErrorMessage(`fail: a HK Stock request error has occured.(${error_code}, ${error_description})`);
-            return [
-              {
-                id: hkCodes[0],
-                type: '',
-                contextValue: 'failed',
-                isCategory: false,
-                info: { code: hkCodes[0], percent: '0', name: '错误代码' },
-                label: hkCodes[0] + ' 错误代码，请查看是否缺少交易所信息',
-              },
-            ];
-          }
-          for (const code of hkCodes) {
-            const _code = code.startsWith('HK') ? code.replace('HK', 'hk') : 'hk' + code; // 指数以'HK'开头需要转为‘hk’, 个股需要前补'hk'
-            stockList = stockList.concat(await this.getData(new Array(_code), order));
-          }
-        } else {
-          const stocks = data.items || [];
-          stocks.forEach((item: any) => {
+        ],
+        headers: {
+          ...randHeader(),
+          Referer: 'https://stock.xueqiu.com/',
+          Cookie: await this.getToken(),
+        },
+      });
+      const { data, error_code, error_description } = resp.data;
+      if (error_code) {
+        window.showErrorMessage(`fail: a HK Stock request error has occured. (${error_code}, ${error_description})`);
+        return [];
+      } else {
+        const stocks = data.items || [];
+        stocks.forEach((item: any, index: number) => {
+          if (item.quote) {
             const quote = item.quote;
             let open = quote.open?.toString() || '0';
             let yestclose = quote.last_close?.toString() || '0';
@@ -344,33 +347,26 @@ export default class StockService extends LeekService {
               const treeItem = new LeekTreeItem(stockItem, this.context);
               stockList.push(treeItem);
             }
-          });
-        }
+          } else {
+            window.showErrorMessage(`fail: error Stock code in ${codes[index]}, please delete error Stock code.`);
+          }
+        });
       }
     } catch (err) {
-      console.info(hkUrl);
+      console.info(url);
       console.error(err);
       if (globalState.showStockErrorInfo) {
-        window.showErrorMessage(`fail: HK Stock error ` + hkUrl);
+        window.showErrorMessage(`fail: HK Stock error ` + url);
         globalState.showStockErrorInfo = false;
         globalState.telemetry.sendEvent('error: stockService', {
-          hkUrl,
+          url,
           error: err,
         });
       }
     }
 
-    const res = sortData(stockList, order);
-    executeStocksRemind(res, this.stockList);
-    const oldStockList = this.stockList;
-    this.stockList = res;
-    events.emit('stockListUpdate', this.stockList, oldStockList);
-    globalState.aStockCount = aStockCount;
     globalState.hkStockCount = hkStockCount;
-    globalState.usStockCount = usStockCount;
-    globalState.cnfStockCount = cnfStockCount;
-    globalState.noDataStockCount = noDataStockCount;
-    return res;
+    return stockList;
   }
 
   // https://github.com/LeekHub/leek-fund/issues/266
