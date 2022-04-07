@@ -48,8 +48,12 @@ export default class StockService extends LeekService {
     });
 
     let stockList: Array<LeekTreeItem> = [];
-    stockList = stockList.concat(await this.getStockData(stockCodes));
-    stockList = stockList.concat(await this.getHKStockData(hkCodes));
+    const result = await Promise.allSettled([this.getStockData(stockCodes), this.getHKStockData(hkCodes)]);
+    result.forEach((item) => {
+      if (item.status === 'fulfilled') {
+        stockList = stockList.concat(item.value);
+      }
+    });
 
     const res = sortData(stockList, order);
     executeStocksRemind(res, this.stockList);
