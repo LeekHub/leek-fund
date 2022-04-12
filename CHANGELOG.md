@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/giscafer/leek-fund/compare/v2.3.1...v2.4.0) (2022-04-12)
+
+
+### Features
+
+* **stock:** 港股改用雪球数据源 fixed [#296](https://github.com/giscafer/leek-fund/issues/296) ([a63b2e8](https://github.com/giscafer/leek-fund/commit/a63b2e82ba862e396eda750ff3eb7b52f0ffdb4b))
+* **stock:** 股票搜索使用雪球数据源，期货搜索使用新浪数据源 fixed [#303](https://github.com/giscafer/leek-fund/issues/303) ([3b78085](https://github.com/giscafer/leek-fund/commit/3b78085e805fa33e630f4345e4d50cf33fa03943))
+
+
+### Bug Fixes
+
+* **fund:** 移除基金或者基金分组的时候需要清空一下fundList，避免fundList元素数量一直增长 ([ee444ef](https://github.com/giscafer/leek-fund/commit/ee444ef60e55719db4975ff9b2979591c555c64e))
+* **stock:** 点击标普500和恒生指数展示股票实时走势 ([c0f724a](https://github.com/giscafer/leek-fund/commit/c0f724a640daa32c01f5d3ba7b507b133f178afa))
+
 ### [2.3.1](https://github.com/giscafer/leek-fund/compare/v2.3.0...v2.3.1) (2022-03-29)
 
 
