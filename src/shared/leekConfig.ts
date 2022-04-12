@@ -160,30 +160,40 @@ export class LeekFundConfig extends BaseConfig {
       }
     });
   }
-  //addStockToBarCfg
+
   static addStockToBarCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
-    if (configArr.length >= 4) {
-      window.showInformationMessage(`StatusBar Exceeding Length.`);
-      if (cb && typeof cb === 'function') {
-        cb(code);
-      }
-    } else if (configArr.includes(code)) {
-      window.showInformationMessage(`StatusBar Already Have.`);
-      if (cb && typeof cb === 'function') {
-        cb(code);
-      }
-    } else {
-      configArr.push(code);
-      this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
-        window.showInformationMessage(`Stock Successfully add to statusBar.`);
+    const addStockToBar = () => {
+      let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
+      if (configArr.length >= 4) {
+        window.showInformationMessage(`StatusBar Exceeding Length.`);
         if (cb && typeof cb === 'function') {
           cb(code);
         }
-      });
-    }
+      } else if (configArr.includes(code)) {
+        window.showInformationMessage(`StatusBar Already Have.`);
+        if (cb && typeof cb === 'function') {
+          cb(code);
+        }
+      } else {
+        configArr.push(code);
+        this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
+          window.showInformationMessage(`Stock Successfully add to statusBar.`);
+          if (cb && typeof cb === 'function') {
+            cb(code);
+          }
+        });
+      }
+    };
 
+    if (this.getConfig('leek-fund.hideStatusBarStock')) {
+      this.setConfig('leek-fund.hideStatusBarStock', false).then(() => {
+        addStockToBar();
+      });
+    } else {
+      addStockToBar();
+    }
   }
+
   static setStockTopCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.stocks');
 
@@ -230,12 +240,32 @@ export class LeekFundConfig extends BaseConfig {
 
   // StatusBar Begin
   static updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
-    this.setConfig('leek-fund.statusBarStock', codes).then(() => {
-      window.showInformationMessage(`Status Bar Stock Successfully update.`);
-      if (cb && typeof cb === 'function') {
-        cb(codes);
+    const updateStatusBarStock = () => {
+      this.setConfig('leek-fund.statusBarStock', codes).then(() => {
+        window.showInformationMessage(`Status Bar Stock Successfully update.`);
+        if (cb && typeof cb === 'function') {
+          cb(codes);
+        }
+      });
+    };
+
+    if (codes.length) {
+      if (this.getConfig('leek-fund.hideStatusBarStock')) {
+        this.setConfig('leek-fund.hideStatusBarStock', false).then(() => {
+          updateStatusBarStock();
+        });
+      } else {
+        updateStatusBarStock();
       }
-    });
+    } else {
+      if (!this.getConfig('leek-fund.hideStatusBarStock')) {
+        this.setConfig('leek-fund.hideStatusBarStock', true).then(() => {
+          updateStatusBarStock();
+        });
+      } else {
+        updateStatusBarStock();
+      }
+    }
   }
   // StatusBar End
 }
