@@ -160,30 +160,40 @@ export class LeekFundConfig extends BaseConfig {
       }
     });
   }
-  //addStockToBarCfg
+
   static addStockToBarCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
-    if (configArr.length >= 4) {
-      window.showInformationMessage(`StatusBar Exceeding Length.`);
-      if (cb && typeof cb === 'function') {
-        cb(code);
-      }
-    } else if (configArr.includes(code)) {
-      window.showInformationMessage(`StatusBar Already Have.`);
-      if (cb && typeof cb === 'function') {
-        cb(code);
-      }
-    } else {
-      configArr.push(code);
-      this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
-        window.showInformationMessage(`Stock Successfully add to statusBar.`);
+    const addStockToBar = () => {
+      let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
+      if (configArr.length >= 4) {
+        window.showInformationMessage(`StatusBar Exceeding Length.`);
         if (cb && typeof cb === 'function') {
           cb(code);
         }
-      });
-    }
+      } else if (configArr.includes(code)) {
+        window.showInformationMessage(`StatusBar Already Have.`);
+        if (cb && typeof cb === 'function') {
+          cb(code);
+        }
+      } else {
+        configArr.push(code);
+        this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
+          window.showInformationMessage(`Stock Successfully add to statusBar.`);
+          if (cb && typeof cb === 'function') {
+            cb(code);
+          }
+        });
+      }
+    };
 
+    if (this.getConfig('leek-fund.hideStatusBarStock')) {
+      this.setConfig('leek-fund.hideStatusBarStock', false).then(() => {
+        addStockToBar();
+      });
+    } else {
+      addStockToBar();
+    }
   }
+
   static setStockTopCfg(code: string, cb?: Function) {
     let configArr: string[] = this.getConfig('leek-fund.stocks');
 
@@ -195,6 +205,90 @@ export class LeekFundConfig extends BaseConfig {
         cb(code);
       }
     });
+  }
+
+  static setStockUpCfg(code: string, cb?: Function) {
+    const callback = () => {
+      window.showInformationMessage(`Stock successfully move up.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    };
+
+    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    const currentIndex = configArr.indexOf(code);
+    let previousIndex = currentIndex - 1;
+    // 找到前一个同市场的股票
+    for (let index = currentIndex - 1; index >= 0; index--) {
+      const previousCode = configArr[index];
+      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+    }
+    if (previousIndex < 0) {
+      callback();
+    } else {
+      // 交换位置
+      configArr[currentIndex] = configArr.splice(previousIndex, 1, configArr[currentIndex])[0];
+      this.setConfig('leek-fund.stocks', configArr).then(() => {
+        callback();
+      });
+    }
+  }
+
+  static setStockDownCfg(code: string, cb?: Function) {
+    const callback = () => {
+      window.showInformationMessage(`Stock successfully move down.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    };
+
+    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    const currentIndex = configArr.indexOf(code);
+    let nextIndex = currentIndex + 1;
+    //找到后一个同市场的股票
+    for (let index = currentIndex + 1; index < configArr.length; index++) {
+      const previousCode = configArr[index];
+      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+    }
+    if (nextIndex >= configArr.length) {
+      callback();
+    } else {
+      // 交换位置
+      configArr[currentIndex] = configArr.splice(nextIndex, 1, configArr[currentIndex])[0];
+      this.setConfig('leek-fund.stocks', configArr).then(() => {
+        callback();
+      });
+    }
   }
 
   // Stock End
@@ -230,12 +324,32 @@ export class LeekFundConfig extends BaseConfig {
 
   // StatusBar Begin
   static updateStatusBarStockCfg(codes: Array<string>, cb?: Function) {
-    this.setConfig('leek-fund.statusBarStock', codes).then(() => {
-      window.showInformationMessage(`Status Bar Stock Successfully update.`);
-      if (cb && typeof cb === 'function') {
-        cb(codes);
+    const updateStatusBarStock = () => {
+      this.setConfig('leek-fund.statusBarStock', codes).then(() => {
+        window.showInformationMessage(`Status Bar Stock Successfully update.`);
+        if (cb && typeof cb === 'function') {
+          cb(codes);
+        }
+      });
+    };
+
+    if (codes.length) {
+      if (this.getConfig('leek-fund.hideStatusBarStock')) {
+        this.setConfig('leek-fund.hideStatusBarStock', false).then(() => {
+          updateStatusBarStock();
+        });
+      } else {
+        updateStatusBarStock();
       }
-    });
+    } else {
+      if (!this.getConfig('leek-fund.hideStatusBarStock')) {
+        this.setConfig('leek-fund.hideStatusBarStock', true).then(() => {
+          updateStatusBarStock();
+        });
+      } else {
+        updateStatusBarStock();
+      }
+    }
   }
   // StatusBar End
 }
