@@ -22,7 +22,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
     market = stockCode.substring(0, 2) === 'sh' ? '1' : '0';
   }
   let mcid = market + '.' + code.substr(1);
-  let url = `http://quote.eastmoney.com/basic/full.html?mcid=${mcid}`;
+  let url = `https://quote.eastmoney.com/basic/full.html?mcid=${mcid}`;
 
   // TODO：问题1. 需要选择合适的显示页面。上面的 eastmoney 网站不支持期货，market 113在这个网页上不支持。
   // 问题 2. 如果选用东财传统网页，存在交易代码不一致问题。例如甲醇 `MA2201` 在东财上的代码为 `MA201`，`PVC又是 v2201`
