@@ -207,6 +207,22 @@
         }
       },
       {
+        "command": "leek-fund.setStockUp",
+        "title": "股票上移",
+        "icon": {
+          "light": "resources/light/up.svg",
+          "dark": "resources/dark/up.svg"
+        }
+      },
+      {
+        "command": "leek-fund.setStockDown",
+        "title": "股票下移",
+        "icon": {
+          "light": "resources/light/down.svg",
+          "dark": "resources/dark/down.svg"
+        }
+      },
+      {
         "command": "leek-fund.deleteStock",
         "title": "删除股票"
       },
@@ -422,12 +438,32 @@
           "group": "group1"
         },
         {
+          "command": "leek-fund.setStockUp",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "group": "group1"
+        },
+        {
+          "command": "leek-fund.setStockDown",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "group": "group1"
+        },
+        {
           "command": "leek-fund.stockTrendPic",
           "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata",
           "group": "group2"
         },
         {
           "command": "leek-fund.setStockTop",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.setStockUp",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.setStockDown",
           "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
           "group": "inline"
         },

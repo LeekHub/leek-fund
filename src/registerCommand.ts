@@ -231,6 +231,18 @@ export function registerViewEvent(
       fundProvider.refresh();
     });
   });
+  // 股票上移
+  commands.registerCommand('leek-fund.setStockUp', (target) => {
+    LeekFundConfig.setStockUpCfg(target.id, () => {
+      fundProvider.refresh();
+    });
+  });
+  // 股票下移
+  commands.registerCommand('leek-fund.setStockDown', (target) => {
+    LeekFundConfig.setStockDownCfg(target.id, () => {
+      fundProvider.refresh();
+    });
+  });
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
     if (fundService.fundList.length === 0) {

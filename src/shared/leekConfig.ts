@@ -207,6 +207,90 @@ export class LeekFundConfig extends BaseConfig {
     });
   }
 
+  static setStockUpCfg(code: string, cb?: Function) {
+    const callback = () => {
+      window.showInformationMessage(`Stock successfully move up.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    };
+
+    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    const currentIndex = configArr.indexOf(code);
+    let previousIndex = currentIndex - 1;
+    // 找到前一个同市场的股票
+    for (let index = currentIndex - 1; index >= 0; index--) {
+      const previousCode = configArr[index];
+      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+    }
+    if (previousIndex < 0) {
+      callback();
+    } else {
+      // 交换位置
+      configArr[currentIndex] = configArr.splice(previousIndex, 1, configArr[currentIndex])[0];
+      this.setConfig('leek-fund.stocks', configArr).then(() => {
+        callback();
+      });
+    }
+  }
+
+  static setStockDownCfg(code: string, cb?: Function) {
+    const callback = () => {
+      window.showInformationMessage(`Stock successfully move down.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    };
+
+    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    const currentIndex = configArr.indexOf(code);
+    let nextIndex = currentIndex + 1;
+    //找到后一个同市场的股票
+    for (let index = currentIndex + 1; index < configArr.length; index++) {
+      const previousCode = configArr[index];
+      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+    }
+    if (nextIndex >= configArr.length) {
+      callback();
+    } else {
+      // 交换位置
+      configArr[currentIndex] = configArr.splice(nextIndex, 1, configArr[currentIndex])[0];
+      this.setConfig('leek-fund.stocks', configArr).then(() => {
+        callback();
+      });
+    }
+  }
+
   // Stock End
 
   // Binance Begin
