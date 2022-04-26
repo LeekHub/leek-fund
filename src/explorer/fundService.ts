@@ -18,11 +18,19 @@ const FUND_RANK_API = `http://vip.stock.finance.sina.com.cn/fund_center/data/jso
 
 export default class FundService extends LeekService {
   private context: ExtensionContext;
+  private totalAmount: number; // 总持仓
+  private totalProfit: number; // 总收益
+  private updateTime: string; // 更新时间
+  private amountRefreshCount: number; // 在一个轮询周期内，刷新数据的次数
   public fundList: Array<LeekTreeItem> = [];
 
   constructor(context: ExtensionContext) {
     super();
     this.context = context;
+    this.totalAmount = 0;
+    this.totalProfit = 0;
+    this.updateTime = '';
+    this.amountRefreshCount = 0;
   }
 
   setFundList(fundList: Array<LeekTreeItem>) {
@@ -48,9 +56,14 @@ export default class FundService extends LeekService {
     }
     // console.log('fetching fund data……');
     try {
-      let totalAmount = 0; // 总持仓
-      let totalProfit = 0; // 总收益
-      let updateTime = ''; // 更新时间
+      const groupIndex: number = parseInt(groupId.replace('fundGroup_', ''));
+      this.amountRefreshCount = groupIndex === 0 ? 0 : this.amountRefreshCount;
+      if (this.amountRefreshCount === 0) {
+        this.totalAmount = 0;
+        this.totalProfit = 0;
+        this.updateTime = '';
+      }
+
       const fundInfo = await FundService.qryFundInfo(fundCodes);
       const Datas = fundInfo.Datas || [];
       const fundAmountObj: any = globalState.fundAmount;
@@ -100,9 +113,9 @@ export default class FundService extends LeekService {
           showEarnings: keyLength > 0 && amount !== 0,
           yestPriceDate: PDATE,
         };
-        updateTime = obj.time;
-        totalAmount += amount;
-        totalProfit += earnings;
+        this.updateTime = obj.time;
+        this.totalAmount += amount;
+        this.totalProfit += earnings;
         return new LeekTreeItem(obj, this.context);
       });
 
@@ -111,12 +124,17 @@ export default class FundService extends LeekService {
       const oldFundList = this.fundList;
       this.setFundList(fundList);
       events.emit('fundListUpdate', this.fundList, oldFundList);
-      events.emit('updateBar:profit-refresh', {
-        fundProfit: toFixed(totalProfit),
-        fundAmount: toFixed(totalAmount),
-        fundProfitPercent: toFixed(totalProfit / totalAmount, 2, 100),
-        priceDate: formatDate(updateTime),
-      });
+
+      this.amountRefreshCount++;
+      if (this.amountRefreshCount === globalState.fundLists.length) {
+        events.emit('updateBar:profit-refresh', {
+          fundProfit: toFixed(this.totalProfit),
+          fundAmount: toFixed(this.totalAmount),
+          fundProfitPercent: toFixed(this.totalProfit / this.totalAmount, 2, 100),
+          priceDate: formatDate(this.updateTime),
+        });
+      }
+
       return fundList;
     } catch (err) {
       console.log(err);
