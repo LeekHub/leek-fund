@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/giscafer/leek-fund/compare/v2.4.0...v2.5.0) (2022-04-27)
+
+
+### Features
+
+* **statusbar:** 股票状态栏根据需要展示的股票数量进行自动隐藏和显示 fixed [#279](https://github.com/giscafer/leek-fund/issues/279) ([58ee064](https://github.com/giscafer/leek-fund/commit/58ee0646cde23c9a5e61bd7fef3da43099a2edbd))
+* **stock:** 增加股票上移和下移功能 ([135cade](https://github.com/giscafer/leek-fund/commit/135cade9bb00e0e7c16d6a49b2df1d424c752dcf))
+
+
+### Bug Fixes
+
+* **fund:** fixed [#315](https://github.com/giscafer/leek-fund/issues/315) ([088f53a](https://github.com/giscafer/leek-fund/commit/088f53ac7a042eb4a396b3c5e0cb19dc02d9f855))
+* 使用 https 协议，防止在 gitpod coding 等 ide 环境下 http 协议被浏览器安全策略限制 ([1110b75](https://github.com/giscafer/leek-fund/commit/1110b75585c6f7b81a004bd6207f66ddb7a2aacd))
+
 ## [2.4.0](https://github.com/giscafer/leek-fund/compare/v2.3.1...v2.4.0) (2022-04-12)
 
 
