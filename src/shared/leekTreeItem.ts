@@ -175,6 +175,11 @@ export class LeekTreeItem extends TreeItem {
     this.id = info.id || code;
 
     if (this._itemType === TreeItemType.STOCK || this._itemType === TreeItemType.FUND) {
+      let typeAndSymbol = `${type}${symbol}`;
+      const isFuture = /nf_/.test(code) || /hf_/.test(code);
+      if(isFuture){
+        typeAndSymbol = code;
+      }
       this.command = {
         title: name, // 标题
         command:
@@ -185,7 +190,7 @@ export class LeekTreeItem extends TreeItem {
           this._itemType === TreeItemType.STOCK ? '0' + symbol : code, // 基金/股票编码
           name, // 基金/股票名称
           text,
-          `${type}${symbol}`,
+          typeAndSymbol,
         ],
       };
       if (type === 'nodata') {
@@ -196,14 +201,18 @@ export class LeekTreeItem extends TreeItem {
     if (this._itemType === TreeItemType.STOCK) {
       const labelText = !showLabel ? name : '';
 
-      const isFuture = type === 'cnf_';
-      // type字段：期货没有前缀，去掉自定义的 `cnf_`。股票的 type 是交易所 (sz,sh)
-      const typeText = isFuture ? symbol?.replace('cnf_', '') : type;
-      const symbolText = isFuture ? '' : symbol;
+      const isFuture = /nf_/.test(code) || /hf_/.test(code);
+
+      // type字段：国内期货前缀 `nf_` 。股票的 type 是交易所 (sz,sh)
+      const typeText = type;
+      const symbolText = isFuture ? name : symbol;
 
       if (type === 'nodata') {
         this.tooltip = '接口不支持，右键删除关注';
-      } else {
+      } else if(isFuture){
+        this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+      }
+      else {
         this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       }
     } else if (this._itemType === TreeItemType.BINANCE) {

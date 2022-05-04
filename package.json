@@ -518,7 +518,10 @@
             "usr_ixic",
             "usr_dji",
             "usr_inx",
-            "ZC0"
+            "nf_ZC0",
+            "nf_IC0",
+            "hf_OIL",
+            "hf_CHA50CFD"
           ],
           "description": "配置需要监控的股票代码（建议通过界面新增）"
         },
@@ -675,7 +678,12 @@
         "leek-fund.expandCNFuture": {
           "type": "boolean",
           "default": false,
-          "description": "默认展开期货"
+          "description": "默认展开国内期货"
+        },
+        "leek-fund.expandOverseaFuture": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开海外期货"
         }
       }
     },

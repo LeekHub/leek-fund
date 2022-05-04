@@ -347,8 +347,12 @@ export function allMarkets(): Array<string> {
       market = StockCategory.HK;
     } else if (/^(usr_)/.test(item)) {
       market = StockCategory.US;
-    } else if (/^(cnf_)/.test(item)) {
+    } else if (/^(nf_)/.test(item)) {
       market = StockCategory.Future;
+    } else if (/^[A-Z]+/.test(item)){
+      market = StockCategory.Future;
+    } else if (/^(hf_)/.test(item)) {
+      market = StockCategory.OverseaFuture;
     }
     if (!result.includes(market)) {
       result.push(market);
@@ -364,6 +368,7 @@ export function allStockTimes(): Map<string, Array<number>> {
   // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
   stocks.set(StockCategory.US, [21, 5]);
   stocks.set(StockCategory.Future, [21, 15]);
+  stocks.set(StockCategory.OverseaFuture, [9, 7]);
   return stocks;
 }
 

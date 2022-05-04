@@ -46,9 +46,9 @@ function stockTrendPic(code: string, name: string, stockCode: string) {
     dailyK = `${codeByImgPath.usstock}/daily/${sszsImg}.gif?${timestamp}`;
     weeklyK = `${codeByImgPath.usstock}/weekly/${sszsImg}.gif?${timestamp}`;
     monthlyK = `${codeByImgPath.usstock}/monthly/${sszsImg}.gif?${timestamp}`;
-  } else if (stockCode.indexOf('cnf') === 0) {
+  } else if (stockCode.indexOf('nf') === 0) {
     // sina 数据源问题，无法规避。周线以上行情存在开盘价错乱问题
-    imageName = stockCode.replace('cnf_', '');
+    imageName = stockCode.replace('nf_', '');
     sszsImg = imageName;
     timeK = `${codeByImgPath.cn_future}/min/${sszsImg}.gif?${timestamp}`;
     dailyK = `${codeByImgPath.cn_future}/daily/${sszsImg}.gif?${timestamp}`;

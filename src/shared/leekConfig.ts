@@ -33,6 +33,9 @@ export class BaseConfig {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get(cfgKey, []);
     const newCfg = sourceCfg.filter((item) => item !== code);
+    if(sourceCfg.length === newCfg.length){
+      window.showInformationMessage(`删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`);
+    }
     return config.update(cfgKey, newCfg, true);
   }
 }
@@ -233,7 +236,11 @@ export class LeekFundConfig extends BaseConfig {
         previousIndex = index;
         break;
       }
-      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
+        previousIndex = index;
+        break;
+      }
+      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
         previousIndex = index;
         break;
       }
@@ -275,7 +282,11 @@ export class LeekFundConfig extends BaseConfig {
         nextIndex = index;
         break;
       }
-      if (/^(cnf_)/.test(code) && /^(cnf_)/.test(previousCode)) {
+      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
+        nextIndex = index;
+        break;
+      }
+      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
         nextIndex = index;
         break;
       }
