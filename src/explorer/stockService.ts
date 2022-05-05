@@ -35,7 +35,17 @@ export default class StockService extends LeekService {
       return [];
     }
 
-    let stockCodes = codes.map((code) => (code.startsWith('cnf_') ? code.substr(4) : code));
+    // 兼容2.1-2.5版本中以大写开头及cnf_开头的期货代码
+    const transFuture = (code: string) => {
+      if(/^[A-Z]+/.test(code)){
+        return code.replace(/^[A-Z]+/, (it: string) => `nf_${it}`);
+      } else if(/cnf_/.test(code)){
+        return code.replace('cnf_', 'nf_');
+      }
+      return code;
+    };
+
+    let stockCodes = codes.map(transFuture);
     const hkCodes: Array<string> = []; // 港股单独请求雪球数据源
     stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
@@ -71,6 +81,7 @@ export default class StockService extends LeekService {
     let aStockCount = 0;
     let usStockCount = 0;
     let cnfStockCount = 0;
+    let hfStockCount = 0;
     let noDataStockCount = 0;
     let stockList: Array<LeekTreeItem> = [];
 
@@ -173,10 +184,7 @@ export default class StockService extends LeekService {
               };
               type = code.substr(0, 4);
               usStockCount += 1;
-            } else if (/^[A-Z]/.test(code)) {
-              // code 大写字母开头表示期货
-              symbol = code;
-              const _code = `cnf_${code}`;
+            } else if (/nf_/.test(code)) {
               /* 解析格式，与股票略有不同
               var hq_str_V2201="PVC2201,230000,
               8585.00, 8692.00, 8467.00, 8641.00, // params[2,3,4,5] 开，高，低，昨收
@@ -199,9 +207,38 @@ export default class StockService extends LeekService {
               let price = params[8];
               let yestCallPrice = params[8 + 2];
               let volume = params[8 + 6]; // 成交量
+                //股指期货
+              const stockIndexFuture = /nf_IC/.test(code)
+                || /nf_IF/.test(code)
+                || /nf_IH/.test(code)
+                || /nf_TF/.test(code) // 五债
+                || /nf_TS/.test(code) // 二债
+                || /nf_T\d+/.test(code) // 十债
+                ;
+              if(stockIndexFuture){
+                // 0 开盘       1 最高      2  最低     3 收盘
+                // ['5372.000', '5585.000', '5343.000', '5581.600',
+                // 4 成交量                 6 持仓量
+                // '47855', '261716510.000', '124729.000', '5581.600',
+                // '0.000', '5849.800', '4786.200', '0.000', '0.000',
+                //  13 昨收盘   14 昨天结算
+                // '5342.800', '5318.000', '126776.000', '5581.600',
+                // '4', '0.000', '0', '0.000', '0', '0.000', '0', '0.000', '0', '5582.000', '2', '0.000', '0', '0.000', '0', '0.000', '0', '0.000', '0', '2022-04-29', '15:00:00', '300', '0', '', '', '', '', '', '', '', '',
+                // 48        49  名称
+                // '5468.948', '中证500指数期货2206"']
+
+                name = params[49].slice(0, -1); // 最后一位去掉 "
+                open = params[0];
+                high = params[1];
+                low = params[2];
+                price = params[3];
+                volume = params[4];
+                yestclose = params[13];
+                yestCallPrice = params[14];
+              }
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
               stockItem = {
-                code: _code,
+                code: code,
                 name: name,
                 open: formatNumber(open, fixedNumber, false),
                 yestclose: formatNumber(yestclose, fixedNumber, false),
@@ -213,8 +250,45 @@ export default class StockService extends LeekService {
                 amount: '接口无数据',
                 percent: '',
               };
-              type = 'cnf_';
+              type = 'nf_';
               cnfStockCount += 1;
+            } else if (/hf_/.test(code)) {
+              // 海外期货格式
+              // 0 当前价格
+              // ['105.306', '',
+              //  2  买一价  3 卖一价  4  最高价   5 最低价
+              // '105.270', '105.290', '105.540', '102.950',
+              //  6 时间   7 昨日结算价  8 开盘价  9 持仓量
+              // '15:51:34', '102.410', '103.500', '250168.000',
+              // 10 买 11 卖 12 日期      13 名称  14 成交量
+              // '5', '2', '2022-05-04', 'WTI纽约原油2206', '28346"']
+              // 当前价格
+              let price = params[0];
+              // 名称
+              let name = params[13];
+              let open = params[8];
+              let high = params[4];
+              let low = params[5];
+              let yestclose = params[7]; // 昨收盘
+              let yestCallPrice = params[7]; // 昨结算
+              let volume = params[14].slice(0, -1); // 成交量。slice 去掉最后一位 "
+              fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+
+              stockItem = {
+                code: code,
+                name: name,
+                open: formatNumber(open, fixedNumber, false),
+                yestclose: formatNumber(yestclose, fixedNumber, false),
+                yestcallprice: formatNumber(yestCallPrice, fixedNumber, false),
+                price: formatNumber(price, fixedNumber, false),
+                low: formatNumber(low, fixedNumber, false),
+                high: formatNumber(high, fixedNumber, false),
+                volume: formatNumber(volume, 2),
+                amount: '接口无数据',
+                percent: '',
+              };
+              type = 'hf_';
+              hfStockCount += 1;
             }
             if (stockItem) {
               const { yestclose, open } = stockItem;
@@ -276,6 +350,7 @@ export default class StockService extends LeekService {
     globalState.aStockCount = aStockCount;
     globalState.usStockCount = usStockCount;
     globalState.cnfStockCount = cnfStockCount;
+    globalState.hfStockCount = hfStockCount;
     globalState.noDataStockCount = noDataStockCount;
     return stockList;
   }
@@ -382,7 +457,7 @@ export default class StockService extends LeekService {
     const result: QuickPickItem[] = [];
 
     // 期货大写字母开头
-    const isFuture = /^[A-Z]/.test(searchText[0]);
+    const isFuture = /^[A-Z]/.test(searchText[0]) || /nf_/.test(searchText) || /hf_/.test(searchText) || /fx_/.test(searchText);
     if (isFuture) {
       //期货使用新浪数据源
       const type = '85,86,88';
@@ -404,9 +479,20 @@ export default class StockService extends LeekService {
           return result;
         }
         const tempArr = text.split(';');
+        console.log(tempArr);
+
         tempArr.forEach((item: string) => {
           const arr = item.split(',');
           let code = arr[3];
+          let market = arr[1];
+          code = code.toUpperCase();
+          // 国内交易所
+          if(market === '85' || market === '88'){
+            code = 'nf_' + code;
+          }else if(market === '86'){
+            // 海外交易所
+            code = 'hf_' + code;
+          }
           // if (code.substr(0, 2) === 'of') {
           // 修改lof以及etf的前缀，防止被过滤
           // http://www.csisc.cn/zbscbzw/cpbmjj/201212/f3263ab61f7c4dba8461ebbd9d0c6755.shtml
@@ -415,7 +501,6 @@ export default class StockService extends LeekService {
           // }
 
           // 期货 suggest 请求返回的 code 小写开头改为大写
-          code = code.toUpperCase();
 
           // if (code === 'hkhsi' || code === 'hkhscei' || isFuture) {
           //   code = code.toUpperCase().replace('HK', 'hk');
