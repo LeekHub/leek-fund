@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/giscafer/leek-fund/compare/v2.5.0...v2.6.0) (2022-05-06)
+
+
+### Features
+
+* **future:** 期货代码格式统一，新增股指期货和海外期货支持，兼容旧格式代码 ([2b79611](https://github.com/giscafer/leek-fund/commit/2b796117cf2cf4d4cdc8850e6490688eff0ed44d))
+
 ## [2.5.0](https://github.com/giscafer/leek-fund/compare/v2.4.0...v2.5.0) (2022-04-27)
 
 
