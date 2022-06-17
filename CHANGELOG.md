@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/giscafer/leek-fund/compare/v2.6.0...v2.7.0) (2022-06-15)
+
+
+### Features
+
+* **stock:** 韭菜中心=>数据中心 增加板块行情 ([82ef71d](https://github.com/giscafer/leek-fund/commit/82ef71d74ff94cb7724faba7e6eb598732135b11))
+
 ## [2.6.0](https://github.com/giscafer/leek-fund/compare/v2.5.0...v2.6.0) (2022-05-06)
 
 
