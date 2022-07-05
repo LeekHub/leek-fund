@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.1](https://github.com/giscafer/leek-fund/compare/v2.7.0...v2.7.1) (2022-07-05)
+
+
+### Bug Fixes
+
+* 修复状态栏计算收益不准确的问题 ([7c0eaf6](https://github.com/giscafer/leek-fund/commit/7c0eaf68b04bc36ed2d054cb1fcfc9f42956fe8c))
+* **韭菜中心>数据中心:** 板块行情增加默认值，避免点击工具菜单出现无数据现象 ([c082271](https://github.com/giscafer/leek-fund/commit/c08227157b72905ddda49cdcbd64642b45f24f79))
+
 ## [2.7.0](https://github.com/giscafer/leek-fund/compare/v2.6.0...v2.7.0) (2022-06-15)
 
 
