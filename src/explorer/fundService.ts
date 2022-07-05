@@ -22,6 +22,7 @@ export default class FundService extends LeekService {
   private totalProfit: number; // 总收益
   private updateTime: string; // 更新时间
   private amountRefreshCount: number; // 在一个轮询周期内，刷新数据的次数
+  private fundCodesSet: Set<string>; // 存储fundCode的集合
   public fundList: Array<LeekTreeItem> = [];
 
   constructor(context: ExtensionContext) {
@@ -31,6 +32,7 @@ export default class FundService extends LeekService {
     this.totalProfit = 0;
     this.updateTime = '';
     this.amountRefreshCount = 0;
+    this.fundCodesSet = new Set();
   }
 
   setFundList(fundList: Array<LeekTreeItem>) {
@@ -62,6 +64,7 @@ export default class FundService extends LeekService {
         this.totalAmount = 0;
         this.totalProfit = 0;
         this.updateTime = '';
+        this.fundCodesSet.clear();
       }
 
       const fundInfo = await FundService.qryFundInfo(fundCodes);
@@ -114,8 +117,11 @@ export default class FundService extends LeekService {
           yestPriceDate: PDATE,
         };
         this.updateTime = obj.time;
-        this.totalAmount += amount;
-        this.totalProfit += earnings;
+        if (!this.fundCodesSet.has(item.FCODE)) {
+          this.fundCodesSet.add(item.FCODE);
+          this.totalAmount += amount;
+          this.totalProfit += earnings;
+        }
         return new LeekTreeItem(obj, this.context);
       });
 
