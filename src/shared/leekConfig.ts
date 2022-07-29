@@ -269,24 +269,24 @@ export class LeekFundConfig extends BaseConfig {
     let nextIndex = currentIndex + 1;
     //找到后一个同市场的股票
     for (let index = currentIndex + 1; index < configArr.length; index++) {
-      const previousCode = configArr[index];
-      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+      const nextCode = configArr[index];
+      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(nextCode)) {
         nextIndex = index;
         break;
       }
-      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
+      if (/^(hk)/.test(code) && /^(hk)/.test(nextCode)) {
         nextIndex = index;
         break;
       }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
+      if (/^(usr_)/.test(code) && /^(usr_)/.test(nextCode)) {
         nextIndex = index;
         break;
       }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
+      if (/^(nf_)/.test(code) && /^(nf_)/.test(nextCode)) {
         nextIndex = index;
         break;
       }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
+      if (/^(hf_)/.test(code) && /^(hf_)/.test(nextCode)) {
         nextIndex = index;
         break;
       }
