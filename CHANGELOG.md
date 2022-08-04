@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.7.3](https://github.com/giscafer/leek-fund/compare/v2.7.2...v2.7.3) (2022-08-04)
+
+
+### Bug Fixes
+
+* OUTPUT Flash News 开关提示 ([b2f4429](https://github.com/giscafer/leek-fund/commit/b2f44293e4410725222350b12b6ccf1de6b6586f))
+
 ### [2.7.2](https://github.com/giscafer/leek-fund/compare/v2.7.1...v2.7.2) (2022-07-15)
 
 
