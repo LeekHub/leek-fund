@@ -44,7 +44,7 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.toggleFlashNews', () => {
     const isEnable = LeekFundConfig.getConfig('leek-fund.flash-news');
     LeekFundConfig.setConfig('leek-fund.flash-news', !isEnable).then(() => {
-      window.showInformationMessage(`已${isEnable ? '启用' : '关闭'} OUTPUT 的 Flash News！`);
+      window.showInformationMessage(`已${isEnable ? '关闭' : '启用'} OUTPUT 的 Flash News！`);
     });
   });
 
@@ -179,9 +179,7 @@ export function registerViewEvent(
         return;
       }
       // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
-      const newCode = code
-        .replace('gb', 'gb_')
-        .replace('us', 'usr_');
+      const newCode = code.replace('gb', 'gb_').replace('us', 'usr_');
       LeekFundConfig.updateStockCfg(newCode, () => {
         stockProvider.refresh();
       });
