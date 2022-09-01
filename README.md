@@ -116,6 +116,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - [sungongwei](https://github.com/sungongwei)
 - [gittig11](https://github.com/gittig11)
 - [James-chok](https://github.com/James-chok)
+- [ChouBaoDxs](https://github.com/ChouBaoDxs)
 
 <!-- <a href="https://github.com/giscafer/leek-fund/graphs/contributors">
   <img src="https://opencollective.com/leek-fund/contributors.svg?width=960&button=false" alt="contributors" />
