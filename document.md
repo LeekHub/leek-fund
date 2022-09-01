@@ -13,6 +13,7 @@
   _ [排序](#排序)
   _ [趋势图和 K 线图](#趋势图和-k-线图)
   _ [基金历史净值](#基金历史净值)
+  _ [外汇](#外汇)
 - [插件配置说明](#插件配置说明)
 - [问题](#问题)
 - [问题反馈](#问题反馈)
@@ -73,6 +74,12 @@
 ##### 基金历史净值
 
 ![基金历史净值](https://raw.staticdn.net/giscafer/leek-fund/master/screenshot/fund-history.png)
+
+##### 外汇
+<div algin="center">
+  <img width="338" src="https://raw.githubusercontents.com/ChouBaoDxs/leek-fund/master/screenshot/forex.jpg"/>
+</div>
+
 
 ## 插件配置说明
 
