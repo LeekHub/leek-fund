@@ -13,3 +13,5 @@ yarn-error.log
 template/leek-center/build
 template-packages/leek-center/.eslintcache
 !template-packages/leek-center/yarn.lock
+
+.idea
