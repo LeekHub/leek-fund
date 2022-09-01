@@ -1,6 +1,6 @@
 import Axios from 'axios';
 import * as cheerio from 'cheerio';
-import {ExtensionContext, TreeItem, TreeItemCollapsibleState} from 'vscode';
+import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 
 export interface BaseForexItemInfo {
   name: string // 货币名称
@@ -98,10 +98,10 @@ export default class ForexService {
       'name', 'spotBuyPrice', 'cashBuyPrice', 'spotSellPrice',
       'cashSellPrice', 'conversionPrice', 'publishDateTime', 'publishTime',
     ];
-    $('table').eq(1).find('tr').each(function () {
+    $('table').eq(1).find('tr').each(function (i, trElement) {
       let rowData: BocForexDataItem | any = {};
-      $(this).find('td').each(function (j) {
-        let v = $(this).text();
+      $(trElement).find('td').each(function (j, tdElement) {
+        let v = $(tdElement).text();
         let k = keyList[j];
         rowData[k] = v;
       });

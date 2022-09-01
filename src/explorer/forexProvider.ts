@@ -1,5 +1,5 @@
-import {Event, EventEmitter, TreeDataProvider, TreeItem} from 'vscode';
-import ForexService, {ForexTreeItem} from './forexService';
+import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
+import ForexService, { ForexTreeItem } from './forexService';
 
 export class ForexProvider implements TreeDataProvider<ForexTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
