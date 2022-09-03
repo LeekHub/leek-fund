@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.8.0](https://github.com/giscafer/leek-fund/compare/v2.7.3...v2.8.0) (2022-09-03)
+
+
+### Features
+
+* **forex:** 简单的外汇价格查看功能 ([e9b8ad9](https://github.com/giscafer/leek-fund/commit/e9b8ad9a0ac9a235813cf19b6c8accd29100a278))
+
+
+### Bug Fixes
+
+* **forex:** 降低 cheerio 版本以适应 typescript 3.8.3 ([25a6262](https://github.com/giscafer/leek-fund/commit/25a626231366730d05dcc73fdc854eb95ee2146b))
+
 ### [2.7.3](https://github.com/giscafer/leek-fund/compare/v2.7.2...v2.7.3) (2022-08-04)
 
 
