@@ -25,7 +25,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
   let url = `https://quote.eastmoney.com/basic/full.html?mcid=${mcid}`;
 
   // 沪深股票详情地址跳转变更为可查看盘前盘后指数的图表,其他不变
-  if((market === '0' || market === "1") && stockCode.indexOf('sh000') !== 0){
+  if((market === '1' || market === '0') && stockCode.indexOf('sh000') !== 0 && stockCode.indexOf('sz399') !== 0){
     url = `https://quote.eastmoney.com/basic/h5chart-iframe.html?code=${code.substr(1)}&market=${market}`;
   }
 
