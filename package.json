@@ -62,11 +62,6 @@
           "name": "XueQiu News"
         },
         {
-          "id": "leekFundView.forex",
-          "name": "Forex",
-          "visibility": "hidden"
-        },
-        {
           "id": "leekFundView.binance",
           "name": "Binance",
           "visibility": "hidden"
