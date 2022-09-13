@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.9.0](https://github.com/LeekHub/leek-fund/compare/v2.8.2...v2.9.0) (2022-09-13)
+
+
+### Features
+
+* 更新基金数据 ([63a4dea](https://github.com/LeekHub/leek-fund/commit/63a4dea10ffcf259098b3e0b44a443e7e903ad2f))
+
+
+### Bug Fixes
+
+* **stock:** 修复深证指数面板显示bug ([c9572a2](https://github.com/LeekHub/leek-fund/commit/c9572a2419e63477a0ee571833680f37742c032a))
+
 ### [2.8.2](https://github.com/LeekHub/leek-fund/compare/v2.8.0...v2.8.2) (2022-09-03)
 
 ## [2.8.0](https://github.com/giscafer/leek-fund/compare/v2.7.3...v2.8.0) (2022-09-03)
