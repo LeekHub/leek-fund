@@ -24,11 +24,6 @@ function stockTrend(code: string, name: string, stockCode: string) {
   let mcid = market + '.' + code.substr(1);
   let url = `https://quote.eastmoney.com/basic/full.html?mcid=${mcid}`;
 
-  // 沪深股票详情地址跳转变更为可查看盘前盘后指数的图表,其他不变
-  if((market === '1' || market === '0') && stockCode.indexOf('sh000') !== 0 && stockCode.indexOf('sz399') !== 0){
-    url = `https://quote.eastmoney.com/basic/h5chart-iframe.html?code=${code.substr(1)}&market=${market}`;
-  }
-
   // TODO：问题1. 需要选择合适的显示页面。上面的 eastmoney 网站不支持期货，market 113在这个网页上不支持。
   // 问题 2. 如果选用东财传统网页，存在交易代码不一致问题。例如甲醇 `MA2201` 在东财上的代码为 `MA201`，`PVC又是 v2201`
   // 直接采用新浪财经网址，去除 nf的显示
