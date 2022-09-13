@@ -76,7 +76,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ![概览](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
-![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-center.png)
+![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/600036.png)
 
 ## 插件设置
 
