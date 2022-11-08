@@ -1,7 +1,8 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem } from 'vscode';
-import ForexService, { ForexTreeItem } from './forexService';
+import { LeekTreeItem } from '../shared/leekTreeItem';
+import { ForexService } from './forexService';
 
-export default class ForexProvider implements TreeDataProvider<ForexTreeItem> {
+export class ForexProvider implements TreeDataProvider<LeekTreeItem> {
   private _onDidChangeTreeData: EventEmitter<any> = new EventEmitter<any>();
 
   readonly onDidChangeTreeData: Event<any> = this._onDidChangeTreeData.event;
@@ -16,15 +17,11 @@ export default class ForexProvider implements TreeDataProvider<ForexTreeItem> {
     this._onDidChangeTreeData.fire(undefined);
   }
 
-  getChildren(element?: ForexTreeItem): ForexTreeItem[] | Thenable<ForexTreeItem[]> {
-    if (!element) {
-      return this.service.getData();
-    } else {
-      return [];
-    }
+  getChildren(): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
+    return this.service.getData();
   }
 
-  getTreeItem(element: ForexTreeItem): TreeItem {
+  getTreeItem(element: LeekTreeItem): TreeItem {
     return element;
   }
 }

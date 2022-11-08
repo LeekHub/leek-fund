@@ -67,6 +67,11 @@
           "visibility": "hidden"
         },
         {
+          "id": "leekFundView.forex",
+          "name": "Forex",
+          "visibility": "hidden"
+        },
+        {
           "id": "leekFundView.settings",
           "visibility": "visible",
           "name": "Settings"
@@ -301,6 +306,14 @@
           "light": "resources/light/top.svg",
           "dark": "resources/dark/top.svg"
         }
+      },
+      {
+        "command": "leek-fund.refreshForex",
+        "title": "刷新数据",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       }
     ],
     "menus": {
@@ -388,6 +401,11 @@
         {
           "command": "leek-fund.addBinancePair",
           "when": "view == leekFundView.binance",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.refreshForex",
+          "when": "view == leekFundView.forex",
           "group": "navigation"
         }
       ],
@@ -699,6 +717,10 @@
       {
         "view": "leekFundView.binance",
         "contents": "无数据，请检查网络或添加交易对"
+      },
+      {
+        "view": "leekFundView.forex",
+        "contents": "无数据，请检查网络"
       },
       {
         "view": "leekFundView.news",

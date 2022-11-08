@@ -39,6 +39,12 @@ export class LeekTreeItem extends TreeItem {
       t2,
       contextValue,
       _itemType,
+      spotBuyPrice = 0,
+      spotSellPrice = 0,
+      cashBuyPrice = 0,
+      cashSellPrice = 0,
+      conversionPrice = 0,
+      publishDateTime = '',
     } = info;
 
     if (_itemType) {
@@ -162,6 +168,14 @@ export class LeekTreeItem extends TreeItem {
             percent: `${_percent}%`,
           }
         );
+      } else if (this._itemType === TreeItemType.FOREX) {
+        text = formatLabelString(
+          globalState.labelFormat?.['sidebarForexLabelFormat'] ??
+          DEFAULT_LABEL_FORMAT.sidebarForexLabelFormat,
+          {
+            ...info
+          }
+        );
       }
     } else {
       /* `showLabel: false` */
@@ -177,7 +191,7 @@ export class LeekTreeItem extends TreeItem {
     if (this._itemType === TreeItemType.STOCK || this._itemType === TreeItemType.FUND) {
       let typeAndSymbol = `${type}${symbol}`;
       const isFuture = /nf_/.test(code) || /hf_/.test(code);
-      if(isFuture){
+      if (isFuture) {
         typeAndSymbol = code;
       }
       this.command = {
@@ -209,7 +223,7 @@ export class LeekTreeItem extends TreeItem {
 
       if (type === 'nodata') {
         this.tooltip = '接口不支持，右键删除关注';
-      } else if(isFuture){
+      } else if (isFuture) {
         this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       }
       else {
@@ -217,6 +231,8 @@ export class LeekTreeItem extends TreeItem {
       }
     } else if (this._itemType === TreeItemType.BINANCE) {
       this.tooltip = `【今日行情】${name}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+    } else if (this._itemType === TreeItemType.FOREX) {
+      this.tooltip = `现汇买入价：${spotBuyPrice}\n现钞买入价：${cashBuyPrice}\n现汇卖出价：${spotSellPrice}\n现钞卖出价：${cashSellPrice}\n中行折算价：${conversionPrice}\n发布日期：${publishDateTime}`;
     } else {
       this.tooltip = `「${name}」(${code})`;
     }
