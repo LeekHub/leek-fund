@@ -25,11 +25,12 @@ import { ProfitStatusBar } from './statusbar/Profit';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
-// import ForexService from './explorer/forexService';
-// import ForexProvider from './explorer/forexProvider';
+import { ForexService } from './explorer/forexService';
+import { ForexProvider } from './explorer/forexProvider';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
+let forexLoopTimer: NodeJS.Timer | null = null;
 let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
 let forexTreeView: TreeView<any> | null = null;
@@ -63,19 +64,13 @@ export function activate(context: ExtensionContext) {
   const fundService = new FundService(context);
   const stockService = new StockService(context);
   const binanceService = new BinanceService(context);
+  const forexService = new ForexService(context);
 
   const nodeFundProvider = new FundProvider(fundService);
   const nodeStockProvider = new StockProvider(stockService);
   const binanceProvider = new BinanceProvider(binanceService);
+  const forexProvider = new ForexProvider(forexService);
   const newsProvider = new NewsProvider();
-
-  /*
-// 错误关闭注释 './lib/decode_codepoint' is not defined by "exports"
-  const forexService = new ForexService(context);
-  const nodeForexProvider = new ForexProvider(forexService);
-  forexTreeView = window.createTreeView('leekFundView.forex', {
-    treeDataProvider: nodeForexProvider,
-  }); */
 
   const statusBar = new StatusBar(stockService, fundService);
   profitBar = new ProfitStatusBar();
@@ -91,6 +86,10 @@ export function activate(context: ExtensionContext) {
 
   binanceTreeView = window.createTreeView('leekFundView.binance', {
     treeDataProvider: binanceProvider,
+  });
+
+  forexTreeView = window.createTreeView('leekFundView.forex', {
+    treeDataProvider: forexProvider,
   });
 
   window.createTreeView('leekFundView.news', {
@@ -118,10 +117,6 @@ export function activate(context: ExtensionContext) {
         setIntervalTime();
         return;
       }
-      // 汇率变化关注度一般按天，其实不需要跟股票一样频繁轮询
-      // if (forexTreeView?.visible) {
-      //   nodeForexProvider.refresh();
-      // }
 
       if (fundTreeView?.visible) {
         // fix https://github.com/giscafer/leek-fund/issues/78
@@ -172,6 +167,17 @@ export function activate(context: ExtensionContext) {
       // intervalTimeConfig < 3000 ? 3000 : intervalTimeConfig
       300000 // 该功能存在网络问题（一些网络有vpn都无法请求通），这里故意设置长时间
     );
+
+    /* 汇率变化轮询间隔2分钟 */
+    if (forexLoopTimer) {
+      clearTimeout(forexLoopTimer);
+      forexLoopTimer = null;
+    }
+    forexLoopTimer = setInterval(() => {
+      if (forexTreeView?.visible) {
+        forexProvider.refresh();
+      }
+    }, 120000);
   };
 
   setIntervalTime();
@@ -186,6 +192,7 @@ export function activate(context: ExtensionContext) {
     nodeStockProvider.refresh();
     newsProvider.refresh();
     binanceProvider.refresh();
+    forexProvider.refresh();
     flashNewsOutputServer?.reload();
     events.emit('onDidChangeConfiguration');
     profitBar?.reload();
@@ -200,7 +207,8 @@ export function activate(context: ExtensionContext) {
     nodeStockProvider,
     newsProvider,
     flashNewsOutputServer,
-    binanceProvider
+    binanceProvider,
+    forexProvider
   );
 
   // Telemetry Event

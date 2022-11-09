@@ -27,6 +27,8 @@ export enum TreeItemType {
   STOCK = 'stock',
   /** 币安 */
   BINANCE = 'binance',
+  /** 外汇 */
+  FOREX = 'forex',
 }
 
 export interface IAmount {
@@ -72,6 +74,13 @@ export interface FundInfo {
   showEarnings?: boolean;
   isStock?: boolean;
   _itemType?: TreeItemType;
+  spotBuyPrice?: number; // 现汇买入价
+  cashBuyPrice?: number; // 现钞买入价
+  spotSellPrice?: number; // 现汇卖出价
+  cashSellPrice?: number; // 现钞卖出价
+  conversionPrice?: number; // 中行折算价
+  publishDateTime?: string; // 发布日期：年月日 时分秒
+  publishTime?: string; // 发布时间：时分秒
 }
 
 export const defaultFundInfo: FundInfo = {

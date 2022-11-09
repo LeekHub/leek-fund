@@ -2,6 +2,7 @@ import { commands, ExtensionContext, window } from 'vscode';
 import fundSuggestList from './data/fundSuggestData';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
+import { ForexProvider } from './explorer/forexProvider';
 import { FundProvider } from './explorer/fundProvider';
 import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
@@ -36,7 +37,8 @@ export function registerViewEvent(
   stockProvider: StockProvider,
   newsProvider: NewsProvider,
   flashNewsOutputServer: FlashNewsOutputServer,
-  binanceProvider?: BinanceProvider
+  binanceProvider: BinanceProvider,
+  forexProvider: ForexProvider
 ) {
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
@@ -345,6 +347,14 @@ export function registerViewEvent(
       binanceProvider?.refresh();
     });
   });
+
+  /**
+   * Forex command
+   */
+  commands.registerCommand('leek-fund.refreshForex', () => {
+    forexProvider.refresh();
+  });
+
   /**
    * Settings command
    */
