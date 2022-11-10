@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.9.3](https://github.com/LeekHub/leek-fund/compare/v2.9.2...v2.9.3) (2022-11-10)
+
 ### [2.9.2](https://github.com/LeekHub/leek-fund/compare/v2.9.1...v2.9.2) (2022-11-10)
 
 
