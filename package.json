@@ -11,18 +11,18 @@
   "license": "BSD-3-Clause",
   "keywords": [
     "stock",
-    "股票",
     "fund",
+    "LeekFund",
+    "股票",
     "基金",
     "韭菜基金",
     "韭菜盒子",
     "同花顺",
+    "东方财富",
     "天天基金",
     "蚂蚁财富",
     "数字货币",
-    "Binance",
-    "币安",
-    "vscode"
+    "Binance"
   ],
   "publisher": "giscafer",
   "icon": "resources/logo.png",
@@ -762,9 +762,6 @@
       "eslint --fix --ext .js",
       "git add ."
     ]
-  },
-  "resolutions": {
-    "entities": "2.2.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
