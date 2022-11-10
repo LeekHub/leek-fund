@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import * as cheerio from 'cheerio';
+import { load } from 'cheerio';
 import { ExtensionContext } from 'vscode';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { FundInfo, TreeItemType } from '../shared/typed';
@@ -33,7 +33,7 @@ export class ForexService extends LeekService {
         return [];
       }
 
-      const $ = cheerio.load(html);
+      const $ = load(html);
       const bocForexDataList: LeekTreeItem[] = [];
       $('table').eq(1).find('tr').each((i, trElement) => {
         const rowData: FundInfo = {
