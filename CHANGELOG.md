@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.9.2](https://github.com/LeekHub/leek-fund/compare/v2.9.1...v2.9.2) (2022-11-10)
+
+
+### Bug Fixes
+
+* **forex:** 修复cheerio导入错误 ([ee924c1](https://github.com/LeekHub/leek-fund/commit/ee924c19d73493f705d66529068cf5f63ac09080))
+
 ### [2.9.1](https://github.com/LeekHub/leek-fund/compare/v2.9.0...v2.9.1) (2022-11-10)
 
 ## [2.9.0](https://github.com/LeekHub/leek-fund/compare/v2.8.2...v2.9.0) (2022-09-13)
