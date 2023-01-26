@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.10.0](https://github.com/LeekHub/leek-fund/compare/v2.9.4...v2.10.0) (2023-01-26)
+
+
+### Features
+
+* 状态栏最多支持添加6个 close [#366](https://github.com/LeekHub/leek-fund/issues/366) ([40731b9](https://github.com/LeekHub/leek-fund/commit/40731b9fec3c00851b7b4bbebe69eaddb60a01de))
+
 ### [2.9.4](https://github.com/LeekHub/leek-fund/compare/v2.9.3...v2.9.4) (2022-11-10)
 
 ### [2.9.3](https://github.com/LeekHub/leek-fund/compare/v2.9.2...v2.9.3) (2022-11-10)
