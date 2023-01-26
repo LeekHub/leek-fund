@@ -1,4 +1,3 @@
-<div align="center">
 <img src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
 # leek-fund（韭菜盒子）
@@ -14,8 +13,6 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 [![Rating](https://img.shields.io/visual-studio-marketplace/stars/giscafer.leek-fund.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=giscafer.leek-fund)
 
 投资有风险，入市需谨慎！
-
-</div>
 
 ## Table of contents
 
