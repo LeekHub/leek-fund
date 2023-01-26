@@ -40,7 +40,6 @@ let flashNewsOutputServer: FlashNewsOutputServer | null = null;
 let profitBar: ProfitStatusBar | null = null;
 
 export function activate(context: ExtensionContext) {
-  console.log('🐥Congratulations, your extension "leek-fund" is now active!');
 
   globalState.isDevelopment = process.env.NODE_ENV === 'development';
   globalState.context = context;
