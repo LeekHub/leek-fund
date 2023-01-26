@@ -378,7 +378,7 @@ export function registerViewEvent(
       });
       window
         .showQuickPick(stockNameList, {
-          placeHolder: '输入过滤选择，支持多选（限4个）',
+          placeHolder: '输入过滤选择，支持多选（限6个）',
           canPickMany: true,
         })
         .then((res) => {
@@ -386,8 +386,8 @@ export function registerViewEvent(
             res = [];
           }
           let codes = res.map((item) => item.description);
-          if (codes.length > 4) {
-            codes = codes.slice(0, 4);
+          if (codes.length > 6) {
+            codes = codes.slice(0, 6);
           }
           LeekFundConfig.updateStatusBarStockCfg(codes, () => {
             const handler = window.setStatusBarMessage(`下次数据刷新见效`);

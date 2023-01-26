@@ -1,3 +1,4 @@
+<div align="center">
 <img src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
 # leek-fund（韭菜盒子）
@@ -14,6 +15,8 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 投资有风险，入市需谨慎！
 
+</div>
+
 ## Table of contents
 
 - [leek-fund（韭菜盒子）](#leek-fund韭菜盒子)
@@ -22,10 +25,10 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
   - [安装使用](#安装使用)
   - [插件介绍](#插件介绍)
   - [插件设置](#插件设置)
-  - [交流群](#交流群)
-  - [Todo List](#todo-list)
+  - [社区交流](#社区交流)
   - [感谢 PR](#感谢-pr)
   - [Changelog](#changelog)
+  - [代码目录说明](#代码目录说明)
   - [License](#license)
 
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
@@ -53,12 +56,14 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - 基金盈亏展示（根据实时基金涨跌情况动态实时计算盈亏）
 - 支持维护持仓成本价，自动计算收益率
 - 基金趋势统计图
+- 基金支持分组展示
 - 股票支持分组展示（A 股、港股、美股）
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
 - 数据中心>牛熊风向标数据统计
 - 新增支持期货
+- 外汇牌价
 - 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)
 
 ## 安装使用
@@ -72,9 +77,9 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
-![概览](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/overview.png)
+![概览](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
-![韭菜中心](https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/leek-center.png)
+![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/600036.png)
 
 ## 插件设置
 
@@ -86,11 +91,11 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ## 社区交流
 
-> 因恶意举报，不再提供官方群聊
+> 因恶意举报，不再提供微信官方群聊，可加电报群：https://t.me/+P1p3nJoqKR45MzQ1
 
 公众号：
 
-<img width="300" alt="微信公众号" src="https://raw.sevencdn.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+<img width="300" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
 
 ## Core Contributors
 
@@ -114,6 +119,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - [sungongwei](https://github.com/sungongwei)
 - [gittig11](https://github.com/gittig11)
 - [James-chok](https://github.com/James-chok)
+- [ChouBaoDxs](https://github.com/ChouBaoDxs)
 
 <!-- <a href="https://github.com/giscafer/leek-fund/graphs/contributors">
   <img src="https://opencollective.com/leek-fund/contributors.svg?width=960&button=false" alt="contributors" />
@@ -137,6 +143,8 @@ src
 ├── explorer                    # 侧边栏核心代码
 │   ├── binanceProvider.ts      # 数字货币
 │   ├── binanceService.ts
+│   ├── forexProvider.ts        # 外汇
+│   ├── forexService.ts
 │   ├── fundProvider.ts         # 基金
 │   ├── fundService.ts
 │   ├── leekService.ts

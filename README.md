@@ -89,7 +89,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ## 社区交流
 
-> 因恶意举报，不再提供官方群聊
+> 因恶意举报，不再提供微信官方群聊，可加电报群：https://t.me/+P1p3nJoqKR45MzQ1
 
 公众号：
 
