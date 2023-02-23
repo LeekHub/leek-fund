@@ -93,7 +93,11 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 公众号：
 
-<img width="300" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+<img width="200" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+
+知识星球（赞助插件）：
+
+<img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
 
 ## Core Contributors
 
