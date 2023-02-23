@@ -97,6 +97,8 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 知识星球（赞助插件）：
 
+> PR 贡献开发者可以联系我邀请直接加入
+
 <img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
 
 ## Core Contributors
