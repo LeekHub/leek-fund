@@ -616,7 +616,8 @@
           "type": "array",
           "default": [
             "5124430882",
-            "1287305957"
+            "1287305957",
+            "1632326933"
           ],
           "description": "雪球用户id（进入雪球用户首页，复制/u/后的数字即可，比如 https://xueqiu.com/u/5124430882 链接的 5124430882）"
         },
@@ -724,7 +725,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n [🏠️ 韭菜之家](command:leek-fund.leekCenterView) \n [🌈个性化设置](command:leek-fund.customSetting)\n[🛠打开配置页](command:leek-fund.openConfigPage)\n[💰打赏作者@giscafer](command:leek-fund.donate)\n 欢迎使用韭菜盒子^_^，[使用手册](https://github.com/giscafer/leek-fund/issues/23)；论坛[韭菜盒子社区](command:leek-fund.tucaoForum)，源码[Github](https://github.com/giscafer/leek-fund)，加群交流[微信群](https://github.com/giscafer/leek-fund/issues/19)， 电报群[Telegram](https://t.me/joinchat/VKxykRyeRNcibg7I-ykZMg)"
+        "contents": "\n [🏠️ 韭菜之家](command:leek-fund.leekCenterView) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用手册](https://github.com/LeekHub/leek-fund/issues/23)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/LeekHub/leek-fund)"
       }
     ]
   },

@@ -405,17 +405,17 @@ export function registerViewEvent(
       window
         .showQuickPick(
           [
-            { label: '状态栏股票设置', description: 'statusbar-stock' },
-            { label: '状态栏股票涨📈的文字颜色', description: 'statusbar-rise' },
-            { label: '状态栏股票跌📉的文字颜色', description: 'statusbar-fall' },
-            { label: '基金&股票涨跌图标更换', description: 'icontype' },
-            { label: '👀显示/隐藏文本', description: 'hideText' },
+            { label: '📌 状态栏股票设置', description: 'statusbar-stock' },
+            { label: '📈 状态栏股票涨时文字颜色', description: 'statusbar-rise' },
+            { label: '📉 状态栏股票跌时文字颜色', description: 'statusbar-fall' },
+            { label: '🍖 涨跌图标更换', description: 'icontype' },
+            { label: '👀 显示/隐藏文本', description: 'hideText' },
             {
-              label: globalState.showEarnings ? '隐藏盈亏' : '👀显示盈亏',
+              label: globalState.showEarnings ? '隐藏盈亏' : '💰 显示盈亏',
               description: 'earnings',
             },
             {
-              label: globalState.remindSwitch ? '关闭提醒' : '🔔️打开提醒',
+              label: globalState.remindSwitch ? '⏱️ 关闭提醒' : '⏰ 打开提醒',
               description: 'remindSwitch',
             },
           ],

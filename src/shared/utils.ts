@@ -18,10 +18,10 @@ const formatNum = (n: number) => {
 export const objectToQueryString = (queryParameters: Object): string => {
   return queryParameters
     ? Object.entries(queryParameters).reduce((queryString, [key, val]) => {
-      const symbol = queryString.length === 0 ? '?' : '&';
-      queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
-      return queryString;
-    }, '')
+        const symbol = queryString.length === 0 ? '?' : '&';
+        queryString += typeof val !== 'object' ? `${symbol}${key}=${val}` : '';
+        return queryString;
+      }, '')
     : '';
 };
 
@@ -349,7 +349,7 @@ export function allMarkets(): Array<string> {
       market = StockCategory.US;
     } else if (/^(nf_)/.test(item)) {
       market = StockCategory.Future;
-    } else if (/^[A-Z]+/.test(item)){
+    } else if (/^[A-Z]+/.test(item)) {
       market = StockCategory.Future;
     } else if (/^(hf_)/.test(item)) {
       market = StockCategory.OverseaFuture;
@@ -522,12 +522,24 @@ export function formatLabelString(str: string, params: Record<string, any>) {
 
 export function getWebviewResourcesUrl(
   webview: vscode.Webview,
-  _extensionUri: vscode.Uri,
-  args: string[]
+  args: string[],
+  _extensionUri: vscode.Uri = globalState.context.extensionUri
 ) {
   return args.map((arg) => {
     return webview.asWebviewUri(
       vscode.Uri.parse([_extensionUri.toString(), 'template', arg].join('/'))
+    );
+  });
+}
+
+export function getResourcesImageSrc(
+  webview: vscode.Webview,
+  args: string[],
+  _extensionUri: vscode.Uri = globalState.context.extensionUri
+) {
+  return args.map((arg) => {
+    return webview.asWebviewUri(
+      vscode.Uri.parse([_extensionUri.toString(), 'resources', 'images', arg].join('/'))
     );
   });
 }
