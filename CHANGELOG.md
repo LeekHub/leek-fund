@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/LeekHub/leek-fund/compare/v3.0.3...v3.1.0) (2023-02-25)
+
+
+### Features
+
+* **状态栏:** 今日行情新增更新时间字段 ([a0506aa](https://github.com/LeekHub/leek-fund/commit/a0506aa8e7cb07b8e26f69ac805c3232ee4d25ab))
+
 ### [3.0.3](https://github.com/LeekHub/leek-fund/compare/v3.0.2...v3.0.3) (2023-01-26)
 
 ### [3.0.2](https://github.com/LeekHub/leek-fund/compare/v3.0.1...v3.0.2) (2023-01-26)
