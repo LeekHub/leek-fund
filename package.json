@@ -187,8 +187,8 @@
         "command": "leek-fund.leekCenterView",
         "title": "韭菜中心",
         "icon": {
-          "light": "resources/light/remind.svg",
-          "dark": "resources/dark/remind.svg"
+          "light": "resources/light/home.svg",
+          "dark": "resources/dark/home.svg"
         }
       },
       {
