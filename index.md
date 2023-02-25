@@ -24,8 +24,6 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
   - [插件设置](#插件设置)
   - [社区交流](#社区交流)
   - [感谢 PR](#感谢-pr)
-  - [Changelog](#changelog)
-  - [代码目录说明](#代码目录说明)
   - [License](#license)
 
 > 投资其实就是一次心态修炼，稳住心态长期投资都会有收益的！！
@@ -69,22 +67,36 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ## 插件介绍
 
-- [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
+- [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/371)
 - [VSCode 插件开发——韭菜盒子（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
-<!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
+### 概览
 
 ![概览](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/overview.png)
 
-![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/600036.png)
-
-## 插件设置
+### 插件设置
 
 **添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
 
 自定义配置在 **Settings** 视图下：
 
-![](./screenshot/settings.png)
+![设置面板](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/settings.png)
+
+### OUTPUT 快讯消息
+
+除了韭菜中心里的新闻快讯可以查看新闻，在 OUTPUT 还支持查看金十快讯
+
+![OUTPUT 快讯](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/output.png)
+
+### 韭菜中心
+
+1、有两个入口可以进入
+
+![韭菜中心入口](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/home-entry.png)
+
+2、进入之后可以查看基金和股票详情
+
+![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/600036.png)
 
 ## 社区交流
 
@@ -92,7 +104,13 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 公众号：
 
-<img width="300" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+<img width="200" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+
+知识星球（赞助插件）：
+
+> PR 贡献开发者可以联系我邀请直接加入
+
+<img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
 
 ## Core Contributors
 
@@ -123,54 +141,6 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 </a> -->
 
 更多贡献者 [contributors](https://github.com/LeekHub/leek-fund/graphs/contributors)，欢迎来贡献 PR~
-
-## Changelog
-
-[CHANGELOG](./CHANGELOG.md)
-
-## 代码目录说明
-
-> 历史原因，仓库中类文件并没有以`PascalCase`规范，导致有些文件不好区分是函数方式书写还是面向对象类的写法。
-
-```shell
-
-src
-├── data                        # 静态数据
-│   └── fundSuggestData.ts      # 基金数据，执行 `node ./demo/fundSuggestList.js` 更新生成
-├── explorer                    # 侧边栏核心代码
-│   ├── binanceProvider.ts      # 数字货币
-│   ├── binanceService.ts
-│   ├── forexProvider.ts        # 外汇
-│   ├── forexService.ts
-│   ├── fundProvider.ts         # 基金
-│   ├── fundService.ts
-│   ├── leekService.ts
-│   ├── newsProvider.ts         # 雪球新闻
-│   ├── newsService.ts
-│   ├── stockProvider.ts        # 股票
-│   └── stockService.ts
-├── extension.ts                # 插件初始化入口
-├── globalState.ts              # 全局缓存，插件激活到销毁周期内的变量缓存
-├── output                      # Terminal 视图下的OUTPUT栏输出新闻
-│   └── flash-news
-├── registerCommand.ts          # 注册命令
-├── shared                      # 工具函数或者类
-│   ├── WVMessageUtils.ts
-│   ├── constant.ts
-│   ├── holidayHelper.ts
-│   ├── leekConfig.ts
-│   ├── leekTreeItem.ts
-│   ├── remindNotification.ts
-│   ├── telemetry.ts
-│   ├── typed.ts
-│   ├── update.ts
-│   └── utils.ts
-├── statusbar                   # 状态栏
-│   ├── Profit.ts
-│   └── statusBar.ts
-└── webview   # webview 页面
-
-```
 
 ## 赞助支持一下 ↓↓
 

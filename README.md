@@ -70,7 +70,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ## 插件介绍
 
-- [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
+- [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/371)
 - [VSCode 插件开发——韭菜盒子（图片如果展示不了可以看知乎的文章界面功能截图）](https://zhuanlan.zhihu.com/p/166683895)
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
