@@ -89,7 +89,7 @@
   "scripts": {
     "prebuild": "yarn --frozen-lockfile",
     "start": "node scripts/start.js",
-    "build": "cross-env GENERATE_SOURCEMAP=false node scripts/build.js",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env GENERATE_SOURCEMAP=false node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
