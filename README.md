@@ -81,7 +81,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 ## 插件设置
 
-**添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/23)
+**添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/371)
 
 自定义配置在 **Settings** 视图下：
 
