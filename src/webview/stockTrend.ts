@@ -70,7 +70,6 @@ function stockTrend(code: string, name: string, stockCode: string) {
       src="${url}"
       frameborder="0"
       style="width: 100%; height: 900px"
-      sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups"
     ></iframe>
     </div>
   </body>

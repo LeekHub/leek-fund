@@ -227,6 +227,8 @@ function setGlobalVariable() {
 
   globalState.remindSwitch = LeekFundConfig.getConfig('leek-fund.stockRemindSwitch');
 
+  globalState.kLineChartSwitch = LeekFundConfig.getConfig('leek-fund.stockKLineChartSwitch');
+
   globalState.labelFormat = LeekFundConfig.getConfig('leek-fund.labelFormat');
 
   globalState.immersiveBackground = LeekFundConfig.getConfig('leek-fund.immersiveBackground', true);
