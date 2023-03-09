@@ -418,6 +418,10 @@ export function registerViewEvent(
               label: globalState.remindSwitch ? '⏱️ 关闭提醒' : '⏰ 打开提醒',
               description: 'remindSwitch',
             },
+            {
+              label: globalState.kLineChartSwitch ? '🔛 切换为常规k线图' : '📴 切换为筹码分布K线图',
+              description: 'kLineChartSwitch',
+            },
           ],
           {
             placeHolder: '第一步：选择设置项',
@@ -505,6 +509,8 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.hideText');
           } else if (type === 'remindSwitch') {
             commands.executeCommand('leek-fund.toggleRemindSwitch');
+          }else if (type === 'kLineChartSwitch') {
+            commands.executeCommand('leek-fund.toggleKLineChartSwitch');
           }
         });
     })
@@ -524,6 +530,14 @@ export function registerViewEvent(
       const newValue = on !== undefined ? (on ? 1 : 0) : globalState.remindSwitch === 1 ? 0 : 1;
       LeekFundConfig.setConfig('leek-fund.stockRemindSwitch', newValue);
       globalState.remindSwitch = newValue;
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleKLineChartSwitch', (on?: number) => {
+      const newValue = on !== undefined ? (on ? 1 : 0) : globalState.kLineChartSwitch === 1 ? 0 : 1;
+      LeekFundConfig.setConfig('leek-fund.stockKLineChartSwitch', newValue);
+      globalState.kLineChartSwitch = newValue;
     })
   );
 

@@ -656,6 +656,11 @@
           "default": 1,
           "description": "打开/关闭提醒（1打开，0关闭）"
         },
+        "leek-fund.stockKLineChartSwitch": {
+          "type": "number",
+          "default": 0,
+          "description": "筹码分布K线图/常规k线图（1筹码分布K线图，0常规k线图）"
+        },
         "leek-fund.labelFormat": {
           "type": "object",
           "default": {

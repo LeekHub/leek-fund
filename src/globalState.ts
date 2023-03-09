@@ -15,6 +15,7 @@ let fundAmountCacheDate = '2020-10-30'; // 标记缓存时间，解决 VScode �
 let stocksRemind: Record<string, any> = {};
 let showEarnings = 1; // 是否展示盈亏
 let remindSwitch = 1; // 是否打开提示
+let kLineChartSwitch = 0; // k线图类型 1筹码分布K线图，0常规k线图
 let newsIntervalTime = 20000; // 新闻刷新频率（毫秒）
 let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
 let labelFormat = DEFAULT_LABEL_FORMAT;
@@ -57,6 +58,7 @@ export default {
   isHolidayChina,
   stocksRemind,
   remindSwitch,
+  kLineChartSwitch,
   labelFormat,
   showStockErrorInfo,
   immersiveBackground,
