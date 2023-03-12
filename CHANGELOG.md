@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/LeekHub/leek-fund/compare/v3.1.1...v3.2.0) (2023-03-12)
+
+
+### Features
+
+* 增加在个性定制中可切换股票详情K线图样式 ([3d267eb](https://github.com/LeekHub/leek-fund/commit/3d267eb4b685b6c7ec0dbde641909a5243a059e1))
+
+
+### Bug Fixes
+
+* 修复重启vscode后需重新设置选择K线图样式 ([b3e218a](https://github.com/LeekHub/leek-fund/commit/b3e218a4eae3e5c773759eb2112c47c3dc507e45))
+
 ### [3.1.1](https://github.com/LeekHub/leek-fund/compare/v3.1.0...v3.1.1) (2023-02-25)
 
 
