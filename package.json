@@ -110,18 +110,12 @@
       {
         "command": "leek-fund.addFund",
         "title": "添加基金",
-        "icon": {
-          "light": "resources/light/add.svg",
-          "dark": "resources/dark/add.svg"
-        }
+        "icon": "$(add)"
       },
       {
         "command": "leek-fund.addFundGroup",
         "title": "添加分组",
-        "icon": {
-          "light": "resources/light/add-group.svg",
-          "dark": "resources/dark/add-group.svg"
-        }
+        "icon": "$(diff-added)"
       },
       {
         "command": "leek-fund.setFundAmount",
@@ -162,10 +156,7 @@
       {
         "command": "leek-fund.refreshFund",
         "title": "刷新数据",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "leek-fund.sortStock",
@@ -178,26 +169,17 @@
       {
         "command": "leek-fund.addStock",
         "title": "添加股票",
-        "icon": {
-          "light": "resources/light/add.svg",
-          "dark": "resources/dark/add.svg"
-        }
+        "icon": "$(add)"
       },
       {
         "command": "leek-fund.leekCenterView",
         "title": "韭菜中心",
-        "icon": {
-          "light": "resources/light/home.svg",
-          "dark": "resources/dark/home.svg"
-        }
+        "icon": "$(home)"
       },
       {
         "command": "leek-fund.refreshStock",
         "title": "刷新数据",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "leek-fund.setStockTop",
@@ -210,18 +192,12 @@
       {
         "command": "leek-fund.setStockUp",
         "title": "股票上移",
-        "icon": {
-          "light": "resources/light/up.svg",
-          "dark": "resources/dark/up.svg"
-        }
+        "icon": "$(arrow-up)"
       },
       {
         "command": "leek-fund.setStockDown",
         "title": "股票下移",
-        "icon": {
-          "light": "resources/light/down.svg",
-          "dark": "resources/dark/down.svg"
-        }
+        "icon": "$(arrow-down)"
       },
       {
         "command": "leek-fund.deleteStock",
@@ -246,10 +222,7 @@
       {
         "command": "leek-fund.refreshFollow",
         "title": "刷新关注列表",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "leek-fund.toggleFlashNews",
@@ -262,10 +235,7 @@
       {
         "command": "leek-fund.addNews",
         "title": "添加关注雪球用户",
-        "icon": {
-          "light": "resources/light/add.svg",
-          "dark": "resources/dark/add.svg"
-        }
+        "icon": "$(add)"
       },
       {
         "command": "leek-fund.viewUserTimeline",
@@ -278,10 +248,7 @@
       {
         "command": "leek-fund.addBinancePair",
         "title": "添加交易对",
-        "icon": {
-          "light": "resources/light/add.svg",
-          "dark": "resources/dark/add.svg"
-        }
+        "icon": "$(add)"
       },
       {
         "command": "leek-fund.deletePair",
@@ -290,10 +257,7 @@
       {
         "command": "leek-fund.refreshBinance",
         "title": "刷新数据",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       },
       {
         "command": "leek-fund.setPairTop",
@@ -306,10 +270,7 @@
       {
         "command": "leek-fund.refreshForex",
         "title": "刷新数据",
-        "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
-        }
+        "icon": "$(refresh)"
       }
     ],
     "menus": {
@@ -628,7 +589,7 @@
         },
         "leek-fund.fundAmount": {
           "type": "object",
-          "default": {},
+          "default": { },
           "description": "基金持仓金额（不建议手填，格式错误影响功能）"
         },
         "leek-fund.showEarnings": {
