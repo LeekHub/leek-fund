@@ -16,19 +16,15 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [16.19.0]
     steps:
       - name: Checkout
         uses: actions/checkout@v2 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
         with:
           persist-credentials: false
-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
 
       - name: Install
         run: |
@@ -36,6 +32,5 @@ jobs:
 
       # - name: Testing
       #   run: yarn test:ci
-
       - name: Build
         run: yarn pretest
