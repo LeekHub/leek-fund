@@ -49,11 +49,11 @@ async function fetchHotTheme() {
  */
 async function fetchHsgtData() {
   try {
+    // [f51,f54,f52,f53,f58,f56,f57,f62,f60,f61] = [时间,沪净买,沪买入,沪卖出,深净买,深买入,深卖出,北向净买,北向买入,北向卖出]
     const res = await fetch(
-      'https://emdatah5.eastmoney.com/dc/NXFXB/GetHSGT?type=1'
+      'https://push2.eastmoney.com/api/qt/kamtbs.rtmin/get?fields1=f1,f3&fields2=f51,f54,f52,f53,f58,f56,f57,f62,f60,f61'
     ).then((response) => response.json());
-
-    return res || [];
+    return res.data.s2n || [];
   } catch (err) {
     console.error(err);
     return [];

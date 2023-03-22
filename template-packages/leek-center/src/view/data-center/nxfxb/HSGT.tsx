@@ -11,7 +11,7 @@ import { last } from 'lodash';
 import { useMemo } from 'react';
 
 function numberFormat(num: any) {
-  return toFixed(Number(num) / 100000000, 2);
+  return toFixed(Number(num) / 10000, 2);
 }
 
 function dataConvert(data: string[]) {
@@ -27,12 +27,12 @@ function dataConvert(data: string[]) {
     result.push({
       time,
       name: '深股通',
-      value: numberFormat(arr[3]),
+      value: numberFormat(arr[4]),
     });
     result.push({
       time,
       name: '北向资金',
-      value: numberFormat(arr[5]),
+      value: numberFormat(arr[7]),
     });
   });
   return result;
@@ -58,18 +58,19 @@ const HSGT = ({ data = [] }: { data: Record<string, any> }) => {
   }, [data]);
 
   const dataMarkerCfg = useMemo(() => {
-    const item = last(data as []) || '';
+    const list = data.filter((item: string)=>{
+      const arr = item.split(',');
+      return arr[1]!=='-'
+    });
+    const item = last(list as []) || '';
     const arr = item.split(',');
     return {
-      content: `沪股通：当日净流入 ${numberFormat(
-        arr[1]
-      )} 亿，当日余额 ${numberFormat(
-        arr[2]
-      )}亿\n深股通：当日净流入 ${numberFormat(
-        arr[3]
-      )} 亿，当日余额 ${numberFormat(
-        arr[4]
-      )}亿\n北向资金：当日净流入 ${numberFormat(arr[5])} 亿 `,
+      content: `
+      沪股通：净买额 ${numberFormat( arr[1] )} 亿，买入额 ${numberFormat( arr[2] )}亿，卖出额 ${numberFormat( arr[3] )}亿
+      \n
+      深股通：净买额 ${numberFormat( arr[4] )} 亿，买入额 ${numberFormat( arr[5] )}亿，卖出额 ${numberFormat( arr[6] )}亿
+      \n
+      北向资金：净买额 ${numberFormat( arr[7] )} 亿，买入额 ${numberFormat( arr[8] )}亿，卖出额 ${numberFormat( arr[9] )}亿 `,
       style: {
         height: 200,
         textAlign: 'left',
