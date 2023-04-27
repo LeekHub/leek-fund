@@ -214,12 +214,14 @@ export default class StockService extends LeekService {
               let yestclose = params[8 + 2]; 
               let volume = params[8 + 6]; // 成交量
               //股指期货
-              const stockIndexFuture = /nf_IC/.test(code)
-                || /nf_IF/.test(code)
-                || /nf_IH/.test(code)
+              const stockIndexFuture = /nf_IC/.test(code) // 中证500
+                || /nf_IF/.test(code) // 沪深300
+                || /nf_IH/.test(code) // 上证50
+                || /nf_IM/.test(code) // 中证 1000
                 || /nf_TF/.test(code) // 五债
                 || /nf_TS/.test(code) // 二债
                 || /nf_T\d+/.test(code) // 十债
+                || /nf_TL/.test(code) // 三十年国债
                 ;
               if(stockIndexFuture){
                 // 0 开盘       1 最高      2  最低     3 收盘

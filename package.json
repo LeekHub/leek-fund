@@ -493,8 +493,10 @@
             "usr_ixic",
             "usr_dji",
             "usr_inx",
-            "nf_ZC0",
+            "nf_IF0",
+            "nf_IH0",
             "nf_IC0",
+            "nf_IM0",
             "hf_OIL",
             "hf_CHA50CFD"
           ],
