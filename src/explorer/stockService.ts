@@ -203,11 +203,17 @@ export default class StockService extends LeekService {
               let open = params[2];
               let high = params[3];
               let low = params[4];
-              let yestclose = params[5];
+              // let yestclose = params[5]; // 昨收盘。但是这个字段不返回数据。
               let price = params[8];
-              let yestCallPrice = params[8 + 2];
+              let yestCallPrice = params[8 + 2]; // 结算价
+              /*
+                由于期货默认采用结算价计算涨跌幅。本项目的涨跌幅使用【昨收盘】进行计算，
+                新浪接口对于商品期货的 昨收盘返回 0.0，导致无法计算【昨收盘涨跌幅】，只能计算【结算涨跌幅】。
+                使用期货的结算价对应 股票通用的 【昨收盘 yestclose】字段以方便计算涨跌幅的显示。
+              */
+              let yestclose = params[8 + 2]; 
               let volume = params[8 + 6]; // 成交量
-                //股指期货
+              //股指期货
               const stockIndexFuture = /nf_IC/.test(code)
                 || /nf_IF/.test(code)
                 || /nf_IH/.test(code)
