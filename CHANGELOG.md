@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/LeekHub/leek-fund/compare/v3.2.1...v3.3.0) (2023-05-05)
+
+
+### Features
+
+* 新增对中证1000和三十年国债支持。默认期货设置为四个股指期货。 ([13f1a19](https://github.com/LeekHub/leek-fund/commit/13f1a194b6f0684f5c16a87623497449d37557b6))
+
+
+### Bug Fixes
+
+* 修复商品期货盘中使用显示涨跌幅 Inf ([1845a56](https://github.com/LeekHub/leek-fund/commit/1845a56fd9ccb5bb11059f5b401bd5614a4ebaab))
+* 修改期货悬浮窗默认显示昨结算价 ([134bfc9](https://github.com/LeekHub/leek-fund/commit/134bfc9c4d232a491056d0e801c89dc1ed1a62f7))
+
 ### [3.2.1](https://github.com/LeekHub/leek-fund/compare/v3.2.0...v3.2.1) (2023-03-22)
 
 
