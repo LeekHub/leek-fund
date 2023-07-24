@@ -73,8 +73,8 @@ export default class FundService extends LeekService {
       const keyLength = Object.keys(fundAmountObj).length;
       const data = Datas.map((item: any) => {
         const { SHORTNAME, FCODE, GSZ, NAV, PDATE, GZTIME, GSZZL, NAVCHGRT } = item;
-        const time = item.GZTIME.substr(0, 10);
-        const isUpdated = item.PDATE.substr(0, 10) === time; // 判断闭市的时候
+        const time = GZTIME?.substr(0, 10);
+        const isUpdated = PDATE?.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
         let amount = 0;
         let unitPrice = 0;
@@ -116,7 +116,7 @@ export default class FundService extends LeekService {
           showEarnings: keyLength > 0 && amount !== 0,
           yestPriceDate: PDATE,
         };
-        this.updateTime = obj.time;
+        this.updateTime = obj.time || '';
         if (!this.fundCodesSet.has(item.FCODE)) {
           this.fundCodesSet.add(item.FCODE);
           this.totalAmount += amount;
