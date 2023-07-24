@@ -62,7 +62,7 @@ export class LeekTreeItem extends TreeItem {
       _percent = _percent.toFixed(2);
     }
     let icon = 'up';
-    const grow = percent.indexOf('-') === 0 ? false : true;
+    const grow = percent?.indexOf('-') === 0 ? false : true;
     const val = Math.abs(percent);
     if (grow) {
       if (IconType.ARROW === globalState.iconType) {
