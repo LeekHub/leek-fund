@@ -127,11 +127,23 @@ export async function updateAmount() {
   }
   try {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Datas = [], Expansion } = await FundService.qryFundInfo(filterCodes);
-    Datas.forEach((item: any) => {
-      const { FCODE, NAV } = item;
-      const time = item.GZTIME.substr(0, 10);
-      const pdate = item.PDATE.substr(0, 10);
+    const qryFundInfos = filterCodes.map((filterCode) => {
+      return FundService.qryFundInfo(filterCode);
+    });
+    const resultFundInfos = await Promise.allSettled(qryFundInfos);
+    const fundInfos = [];
+    for (const resultFundInfo of resultFundInfos) {
+      if (resultFundInfo.status === 'fulfilled') {
+        const fundStrings = /jsonpgz\((.*)\);/.exec(resultFundInfo.value) || [];
+        const fundString = fundStrings.length === 2 ? fundStrings[1] : '';
+        const fundInfo = JSON.parse(fundString);
+        fundInfos.push(fundInfo);
+      }
+    }
+    fundInfos.forEach((item: any) => {
+      const { fundcode: FCODE, gztime: GZTIME, dwjz: NAV, jzrq: PDATE } = item;
+      const time = GZTIME?.substr(0, 10);
+      const pdate = PDATE?.substr(0, 10);
       const isUpdated = pdate === time; // 判断闭市的时候
       const money = amountObj[FCODE]?.amount || 0;
       const price = amountObj[FCODE]?.price || 0;
@@ -147,7 +159,7 @@ export async function updateAmount() {
         amountObj[FCODE].price = NAV;
       }
     });
-    if (Datas.length > 0) {
+    if (fundInfos.length > 0) {
       LeekFundConfig.setConfig('leek-fund.fundAmount', amountObj).then(() => {
         cacheFundAmountData(amountObj);
         console.log('🐥fundAmount has Updated ');

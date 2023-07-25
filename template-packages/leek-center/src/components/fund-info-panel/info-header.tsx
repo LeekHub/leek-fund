@@ -68,7 +68,7 @@ export default function StockInfoHeader({
             <div className="current">{info.yestclose}</div>
             <div className="other-price-info">
               <p>{info.updown}</p>
-              <p>{info.yestpercent}%</p>
+              {/* <p>{info.yestpercent}%</p> */}
             </div>
           </div>
         </div>
