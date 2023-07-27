@@ -89,7 +89,7 @@
   "scripts": {
     "prebuild": "yarn --frozen-lockfile",
     "start": "node scripts/start.js",
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider && cross-env GENERATE_SOURCEMAP=false node scripts/build.js",
+    "build": "if \"%OS%\" == \"Windows_NT\" (SET NODE_OPTIONS=--openssl-legacy-provider && cross-env GENERATE_SOURCEMAP=false node scripts/build.js) else (export NODE_OPTIONS=--openssl-legacy-provider && cross-env GENERATE_SOURCEMAP=false node scripts/build.js)",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
