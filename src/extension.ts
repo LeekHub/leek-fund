@@ -14,7 +14,7 @@ import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
 import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
-import { registerViewEvent } from './registerCommand';
+import { registerCommandPaletteEvent, registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
 import { LeekFundConfig } from './shared/leekConfig';
 import { Telemetry } from './shared/telemetry';
@@ -209,6 +209,9 @@ export function activate(context: ExtensionContext) {
     binanceProvider,
     forexProvider
   );
+
+  // register command
+  registerCommandPaletteEvent(context, statusBar,);
 
   // Telemetry Event
   telemetry.sendEvent('activate');

@@ -28,6 +28,7 @@ import setAmount from './webview/setAmount';
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
 import tucaoForum from './webview/tucaoForum';
+import { StatusBar } from './statusbar/statusBar';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -509,7 +510,7 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.hideText');
           } else if (type === 'remindSwitch') {
             commands.executeCommand('leek-fund.toggleRemindSwitch');
-          }else if (type === 'kLineChartSwitch') {
+          } else if (type === 'kLineChartSwitch') {
             commands.executeCommand('leek-fund.toggleKLineChartSwitch');
           }
         });
@@ -595,13 +596,13 @@ export function registerViewEvent(
       globalState.immersiveBackground = isChecked;
     })
   );
+  checkForUpdate();
+}
+
+export function registerCommandPaletteEvent(context: ExtensionContext, statusbar: StatusBar) {
   context.subscriptions.push(
-    commands.registerCommand('leek-fund.switchStatusBarVisible', () => {
-      LeekFundConfig.setConfig(
-        'leek-fund.hideStatusBar',
-        !LeekFundConfig.getConfig('leek-fund.hideStatusBar')
-      );
+    commands.registerCommand('leek-fund.toggleStatusBarVisibility', () => {
+      statusbar.toggleVisibility();
     })
   );
-  checkForUpdate();
 }

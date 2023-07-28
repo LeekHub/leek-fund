@@ -271,6 +271,10 @@
         "command": "leek-fund.refreshForex",
         "title": "刷新数据",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "leek-fund.toggleStatusBarVisibility",
+        "title": "LeekFund: Toggle Status Bar Visibility"
       }
     ],
     "menus": {

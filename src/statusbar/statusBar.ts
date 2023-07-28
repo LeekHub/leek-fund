@@ -60,6 +60,11 @@ export class StatusBar {
     this.refreshStockStatusBar();
   }
 
+  toggleVisibility() {
+    LeekFundConfig.setConfig('leek-fund.hideStatusBar', !this.hideStatusBar);
+    this.refresh();
+  }
+
   refreshStockStatusBar() {
     if (this.hideStatusBar || this.hideStatusBarStock || !this.stockService.stockList.length) {
       if (this.statusBarList.length) {
