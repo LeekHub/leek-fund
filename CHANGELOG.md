@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/LeekHub/leek-fund/compare/v3.3.1...v3.4.0) (2023-07-28)
+
+
+### Features
+
+* 添加LeekFund: Toggle Status Bar Visibility命令 ([30fd898](https://github.com/LeekHub/leek-fund/commit/30fd898349cb07861fca44b87550abb26322c3f9))
+
+
+### Bug Fixes
+
+* **fund:** 更换基金数据接口 ([0edc608](https://github.com/LeekHub/leek-fund/commit/0edc608902b7b2acf3b8885c639fb715b67010c7))
+* JSON.parse海外基错误 ([f079f9a](https://github.com/LeekHub/leek-fund/commit/f079f9aeb23008a665e0e50adacb37535c59b80c))
+* 无法显示基金列表 ([478552a](https://github.com/LeekHub/leek-fund/commit/478552a239bdd7516b3146c83fd36cf4f6cd3b78)), closes [#391](https://github.com/LeekHub/leek-fund/issues/391)
+
 ### [3.3.1](https://github.com/LeekHub/leek-fund/compare/v3.3.0...v3.3.1) (2023-07-24)
 
 
