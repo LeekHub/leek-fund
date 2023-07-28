@@ -51,7 +51,11 @@ export default class FundService extends LeekService {
     });
   }
 
-  async getData(fundCodes: Array<string>, order: number, groupId: string): Promise<Array<LeekTreeItem>> {
+  async getData(
+    fundCodes: Array<string>,
+    order: number,
+    groupId: string
+  ): Promise<Array<LeekTreeItem>> {
     if (!fundCodes.length) {
       return [];
     }
@@ -75,14 +79,26 @@ export default class FundService extends LeekService {
         if (resultFundInfo.status === 'fulfilled') {
           const fundStrings = /jsonpgz\((.*)\);/.exec(resultFundInfo.value) || [];
           const fundString = fundStrings.length === 2 ? fundStrings[1] : '';
-          const fundInfo = JSON.parse(fundString);
-          fundInfos.push(fundInfo);
+          // 不支持海外鸡了
+          // https://github.com/LeekHub/leek-fund/pull/390
+          if (fundString) {
+            const fundInfo = JSON.parse(fundString);
+            fundInfos.push(fundInfo);
+          }
         }
       }
       const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
       const data = fundInfos.map((item: any) => {
-        const { name: SHORTNAME, fundcode: FCODE, gsz: GSZ, gztime: GZTIME, gszzl: GSZZL, dwjz: NAV, jzrq: PDATE } = item;
+        const {
+          name: SHORTNAME,
+          fundcode: FCODE,
+          gsz: GSZ,
+          gztime: GZTIME,
+          gszzl: GSZZL,
+          dwjz: NAV,
+          jzrq: PDATE,
+        } = item;
         const time = GZTIME?.substr(0, 10);
         const isUpdated = PDATE?.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
