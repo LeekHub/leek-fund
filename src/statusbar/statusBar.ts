@@ -118,7 +118,6 @@ export class StatusBar {
 
   updateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
     if (!item) return;
-    console.log(2222, item.info);
     const { code, percent, open, yestclose, high, low, updown, amount } = item.info;
     const deLow = percent.indexOf('-') === -1;
     /* stockBarItem.text = `「${this.stockService.showLabel ? item.info.name : item.id}」${price}  ${
@@ -163,10 +162,11 @@ export class StatusBar {
   private getFundTooltipText() {
     let fundTemplate = '';
     for (let fund of this.fundService.fundList.slice(0, 14)) {
+      const detailInfo = fund.info || { percent: '' };
       fundTemplate += `${
-        fund.info.percent.indexOf('-') === 0 ? ' ↓ ' : fund.info.percent === '0.00' ? '' : ' ↑ '
-      } ${fund.info.percent}%   「${
-        fund.info.name
+        detailInfo.percent?.indexOf('-') === 0 ? ' ↓ ' : detailInfo.percent === '0.00' ? '' : ' ↑ '
+      } ${detailInfo.percent}%   「${
+        detailInfo.name
       }」\n--------------------------------------------\n`;
     }
     // tooltip 有限定高度，所以只展示最多14只基金
