@@ -4,7 +4,6 @@ import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import {
   caculateEarnings,
-  objectToQueryString,
   randHeader,
   sortData,
   toFixed,
@@ -67,12 +66,23 @@ export default class FundService extends LeekService {
         this.fundCodesSet.clear();
       }
 
-      const fundInfo = await FundService.qryFundInfo(fundCodes);
-      const Datas = fundInfo.Datas || [];
+      const qryFundInfos = fundCodes.map((fundCode) => {
+        return FundService.qryFundInfo(fundCode);
+      });
+      const resultFundInfos = await Promise.allSettled(qryFundInfos);
+      const fundInfos = [];
+      for (const resultFundInfo of resultFundInfos) {
+        if (resultFundInfo.status === 'fulfilled') {
+          const fundStrings = /jsonpgz\((.*)\);/.exec(resultFundInfo.value) || [];
+          const fundString = fundStrings.length === 2 ? fundStrings[1] : '';
+          const fundInfo = JSON.parse(fundString);
+          fundInfos.push(fundInfo);
+        }
+      }
       const fundAmountObj: any = globalState.fundAmount;
       const keyLength = Object.keys(fundAmountObj).length;
-      const data = Datas.map((item: any) => {
-        const { SHORTNAME, FCODE, GSZ, NAV, PDATE, GZTIME, GSZZL, NAVCHGRT } = item;
+      const data = fundInfos.map((item: any) => {
+        const { name: SHORTNAME, fundcode: FCODE, gsz: GSZ, gztime: GZTIME, gszzl: GSZZL, dwjz: NAV, jzrq: PDATE } = item;
         const time = GZTIME?.substr(0, 10);
         const isUpdated = PDATE?.substr(0, 10) === time; // 判断闭市的时候
         let earnings = 0;
@@ -101,8 +111,8 @@ export default class FundService extends LeekService {
           name: SHORTNAME,
           code: FCODE,
           price: GSZ, // 今日估值
-          percent: isNaN(Number(GSZZL)) ? NAVCHGRT : GSZZL, // 当日估值没有取前日（海外基）
-          yestpercent: NAVCHGRT,
+          percent: isNaN(Number(GSZZL)) ? '0' : GSZZL, // 当日涨跌幅度没有的话取0
+          yestpercent: '0', // 新接口已经没有昨日涨跌幅度
           yestclose: NAV, // 昨日净值
           showLabel: this.showLabel,
           earnings: toFixed(earnings), // 盈亏
@@ -148,24 +158,12 @@ export default class FundService extends LeekService {
     }
   }
 
-  static qryFundInfo(fundCodes: string[]): Promise<any> {
-    const params: any = {
-      pageIndex: 1,
-      pageSize: fundCodes.length,
-      appType: 'ttjj',
-      product: 'EFund',
-      plat: 'Android',
-      deviceid: globalState.deviceId,
-      Version: 1,
-      Fcodes: fundCodes.join(','),
-    };
-
-    return new Promise((resolve) => {
-      if (!params.deviceid || !params.Fcodes) {
-        resolve([]);
+  static qryFundInfo(fundCode: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (!fundCode) {
+        reject('');
       } else {
-        const url =
-          'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo' + objectToQueryString(params);
+        const url = `https://fundgz.1234567.com.cn/js/${fundCode}.js?rt=1589463125600`;
         Axios.get(url, {
           headers: randHeader(),
         })
@@ -174,7 +172,7 @@ export default class FundService extends LeekService {
           })
           .catch((err) => {
             console.error(err);
-            resolve([]);
+            reject('');
           });
       }
     });

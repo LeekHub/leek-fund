@@ -151,7 +151,7 @@ export class LeekTreeItem extends TreeItem {
             icon: !isIconPath ? iconPath : '',
             percent: `${_percent}%`,
             earnings:
-              t2 || !(globalState.showEarnings && amount > 0)
+              t2 || !(globalState.showEarnings && Number(amount) > 0)
                 ? ''
                 : `(${grow ? '盈' : '亏'}：${grow ? '+' : ''}${earnings})`,
             time: t2 ? `(${time})` : '',
