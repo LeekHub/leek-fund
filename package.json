@@ -764,6 +764,7 @@
     "iconv-lite": "^0.6.2",
     "lodash.clonedeep": "^4.5.0",
     "lodash.throttle": "^4.1.1",
+    "moment": "^2.29.4",
     "public-ip": "^4.0.3",
     "ws": "^7.4.1"
   },

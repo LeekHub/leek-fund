@@ -6,6 +6,7 @@ import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
 import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
 import { LeekService } from './leekService';
+import moment = require('moment');
 
 export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
@@ -37,9 +38,9 @@ export default class StockService extends LeekService {
 
     // 兼容2.1-2.5版本中以大写开头及cnf_开头的期货代码
     const transFuture = (code: string) => {
-      if(/^[A-Z]+/.test(code)){
+      if (/^[A-Z]+/.test(code)) {
         return code.replace(/^[A-Z]+/, (it: string) => `nf_${it}`);
-      } else if(/cnf_/.test(code)){
+      } else if (/cnf_/.test(code)) {
         return code.replace('cnf_', 'nf_');
       }
       return code;
@@ -211,7 +212,7 @@ export default class StockService extends LeekService {
                 新浪接口对于商品期货的 昨收盘返回 0.0，导致无法计算【昨收盘涨跌幅】，只能计算【结算涨跌幅】。
                 使用期货的结算价对应 股票通用的 【昨收盘 yestclose】字段以方便计算涨跌幅的显示。
               */
-              let yestclose = params[8 + 2]; 
+              let yestclose = params[8 + 2];
               let volume = params[8 + 6]; // 成交量
               //股指期货
               const stockIndexFuture = /nf_IC/.test(code) // 中证500
@@ -223,7 +224,7 @@ export default class StockService extends LeekService {
                 || /nf_T\d+/.test(code) // 十债
                 || /nf_TL/.test(code) // 三十年国债
                 ;
-              if(stockIndexFuture){
+              if (stockIndexFuture) {
                 // 0 开盘       1 最高      2  最低     3 收盘
                 // ['5372.000', '5585.000', '5343.000', '5581.600',
                 // 4 成交量                 6 持仓量
@@ -413,6 +414,7 @@ export default class StockService extends LeekService {
               volume: formatNumber(quote.volume || 0, 2),
               amount: formatNumber(quote.amount || 0, 2),
               percent: '',
+              time: `${moment(quote.time).format('YYYY-MM-DD HH:mm:ss')}`,
             };
             hkStockCount += 1;
             if (stockItem) {
@@ -495,9 +497,9 @@ export default class StockService extends LeekService {
           let market = arr[1];
           code = code.toUpperCase();
           // 国内交易所
-          if(market === '85' || market === '88'){
+          if (market === '85' || market === '88') {
             code = 'nf_' + code;
-          }else if(market === '86'){
+          } else if (market === '86') {
             // 海外交易所
             code = 'hf_' + code;
           }
