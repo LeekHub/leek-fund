@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.3](https://github.com/LeekHub/leek-fund/compare/v3.4.2...v3.4.3) (2023-08-08)
+
+
+### Bug Fixes
+
+* **stock:** 状态栏中的港股显示更新时间 ([e2b79ce](https://github.com/LeekHub/leek-fund/commit/e2b79ce57d8d922ee3614011c07893c359968930))
+
 ### [3.4.2](https://github.com/LeekHub/leek-fund/compare/v3.4.1...v3.4.2) (2023-07-28)
 
 
