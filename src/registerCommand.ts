@@ -13,7 +13,7 @@ import globalState from './globalState';
 import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
-import checkForUpdate from './shared/update';
+// import checkForUpdate from './shared/update';
 import { colorOptionList, randomColor } from './shared/utils';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
@@ -596,7 +596,7 @@ export function registerViewEvent(
       globalState.immersiveBackground = isChecked;
     })
   );
-  checkForUpdate();
+  // checkForUpdate();
 }
 
 export function registerCommandPaletteEvent(context: ExtensionContext, statusbar: StatusBar) {

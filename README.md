@@ -170,7 +170,6 @@ src
 │   ├── remindNotification.ts
 │   ├── telemetry.ts
 │   ├── typed.ts
-│   ├── update.ts
 │   └── utils.ts
 ├── statusbar                   # 状态栏
 │   ├── Profit.ts
