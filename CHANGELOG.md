@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.4](https://github.com/LeekHub/leek-fund/compare/v3.4.3...v3.4.4) (2023-11-04)
+
+
+### Bug Fixes
+
+* 关闭自动更新提升 ([0954bba](https://github.com/LeekHub/leek-fund/commit/0954bba6524e2f7a7bb27e02f1744c8be8cecee2)), closes [#403](https://github.com/LeekHub/leek-fund/issues/403)
+
 ### [3.4.3](https://github.com/LeekHub/leek-fund/compare/v3.4.2...v3.4.3) (2023-08-08)
 
 
