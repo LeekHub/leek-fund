@@ -1,5 +1,5 @@
 // 支持的股票类型
-export const STOCK_TYPE = ['sh', 'sz', 'hk', 'gb', 'us'];
+export const STOCK_TYPE = ['sh', 'sz', 'bj', 'hk', 'gb', 'us'];
 
 export enum SortType {
   NORMAL = 0, // 基金默认顺序

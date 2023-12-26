@@ -120,7 +120,7 @@ export default class StockService extends LeekService {
           let stockItem: any;
           let fixedNumber = 2;
           if (params.length > 1) {
-            if (/^(sh|sz)/.test(code)) {
+            if (/^(sh|sz|bj)/.test(code)) {
               let open = params[1];
               let yestclose = params[2];
               let price = params[3];
@@ -552,7 +552,7 @@ export default class StockService extends LeekService {
         const stocks = stockResponse.data.stocks || [];
         stocks.forEach((item: any) => {
           const { code, name } = item;
-          if (code.startsWith('SH') || code.startsWith('SZ')) {
+          if (code.startsWith('SH') || code.startsWith('SZ') || code.startsWith('BJ')) {
             const _code = code.toLowerCase();
             result.push({
               label: `${_code} | ${name}`,

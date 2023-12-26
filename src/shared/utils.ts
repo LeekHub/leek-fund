@@ -341,7 +341,7 @@ export function allMarkets(): Array<string> {
   const stocks: Array<string> = LeekFundConfig.getConfig('leek-fund.stocks');
   stocks.forEach((item: string) => {
     let market = StockCategory.NODATA;
-    if (/^(sh|sz)/.test(item)) {
+    if (/^(sh|sz|bj)/.test(item)) {
       market = StockCategory.A;
     } else if (/^(hk)/.test(item)) {
       market = StockCategory.HK;

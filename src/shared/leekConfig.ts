@@ -224,7 +224,7 @@ export class LeekFundConfig extends BaseConfig {
     // 找到前一个同市场的股票
     for (let index = currentIndex - 1; index >= 0; index--) {
       const previousCode = configArr[index];
-      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(previousCode)) {
+      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(previousCode)) {
         previousIndex = index;
         break;
       }
@@ -270,7 +270,7 @@ export class LeekFundConfig extends BaseConfig {
     //找到后一个同市场的股票
     for (let index = currentIndex + 1; index < configArr.length; index++) {
       const nextCode = configArr[index];
-      if (/^(sh|sz)/.test(code) && /^(sh|sz)/.test(nextCode)) {
+      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(nextCode)) {
         nextIndex = index;
         break;
       }

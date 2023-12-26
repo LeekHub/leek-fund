@@ -160,7 +160,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   }
   getAStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
     const aStocks: Promise<LeekTreeItem[]> = stocks.then((res: LeekTreeItem[]) => {
-      const arr = res.filter((item: LeekTreeItem) => /^(sh|sz)/.test(item.type || ''));
+      const arr = res.filter((item: LeekTreeItem) => /^(sh|sz|bj)/.test(item.type || ''));
       return arr;
     });
 

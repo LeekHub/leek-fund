@@ -217,7 +217,7 @@ export class LeekTreeItem extends TreeItem {
 
       const isFuture = /nf_/.test(code) || /hf_/.test(code);
 
-      // type字段：国内期货前缀 `nf_` 。股票的 type 是交易所 (sz,sh)
+      // type字段：国内期货前缀 `nf_` 。股票的 type 是交易所 (sz,sh,bj)
       const typeText = type;
       const symbolText = isFuture ? name : symbol;
 
