@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/LeekHub/leek-fund/compare/v3.4.4...v3.5.0) (2024-01-07)
+
+
+### Features
+
+* 支持北交所股票 ([f6ed36c](https://github.com/LeekHub/leek-fund/commit/f6ed36cd8f0d5c7e598b36db517aaae1b89c648d))
+
 ### [3.4.4](https://github.com/LeekHub/leek-fund/compare/v3.4.3...v3.4.4) (2023-11-04)
 
 
