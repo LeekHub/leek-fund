@@ -143,8 +143,8 @@ export default class FundService extends LeekService {
           yestPriceDate: PDATE,
         };
         this.updateTime = obj.time || '';
-        if (!this.fundCodesSet.has(item.FCODE)) {
-          this.fundCodesSet.add(item.FCODE);
+        if (!this.fundCodesSet.has(item.fundcode)) {
+          this.fundCodesSet.add(item.fundcode);
           this.totalAmount += amount;
           this.totalProfit += earnings;
         }
