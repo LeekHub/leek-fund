@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/LeekHub/leek-fund/compare/v3.5.1...v3.6.0) (2024-01-26)
+
+
+### Features
+
+* **数据中心:** 支持龙虎榜和新股等数据 ([e6c2077](https://github.com/LeekHub/leek-fund/commit/e6c2077bcea0e66ae5e61d85f11a051d0eace443))
+
+
+### Bug Fixes
+
+* eslint error ([4df0399](https://github.com/LeekHub/leek-fund/commit/4df03991a18508c4d3d2d91db8bfce89a9279371))
+
 ### [3.5.1](https://github.com/LeekHub/leek-fund/compare/v3.5.0...v3.5.1) (2024-01-24)
 
 
