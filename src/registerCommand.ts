@@ -25,6 +25,8 @@ import fundTrend from './webview/fundTrend';
 import leekCenterView from './webview/leekCenterView';
 import openNews from './webview/news';
 import setAmount from './webview/setAmount';
+import setStockPrice from './webview/setStockPrice';
+
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
 import tucaoForum from './webview/tucaoForum';
@@ -250,6 +252,14 @@ export function registerViewEvent(
       return;
     }
     setAmount(fundService);
+  });
+  // 设置股票成本价
+  commands.registerCommand('leek-fund.setStockPrice', () => {
+    if (stockService.stockList.length === 0) {
+      window.showWarningMessage('数据刷新中，请重试！');
+      return;
+    }
+    setStockPrice(stockService);
   });
   commands.registerCommand('leek-fund.stockTrendPic', (target) => {
     const { code, name, type, symbol } = target.info;

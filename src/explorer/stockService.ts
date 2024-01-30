@@ -24,7 +24,7 @@ export default class StockService extends LeekService {
     const res = await Axios.get('https://xueqiu.com/');
     const cookies: string[] = res.headers['set-cookie'];
 
-    const param: string = cookies.filter(key => key.includes('xq_a_token'))[0] || '';
+    const param: string = cookies.filter((key) => key.includes('xq_a_token'))[0] || '';
     this.token = param.split(';')[0] || '';
 
     return this.token;
@@ -59,7 +59,10 @@ export default class StockService extends LeekService {
     });
 
     let stockList: Array<LeekTreeItem> = [];
-    const result = await Promise.allSettled([this.getStockData(stockCodes), this.getHKStockData(hkCodes)]);
+    const result = await Promise.allSettled([
+      this.getStockData(stockCodes),
+      this.getHKStockData(hkCodes),
+    ]);
     result.forEach((item) => {
       if (item.status === 'fulfilled') {
         stockList = stockList.concat(item.value);
@@ -70,6 +73,7 @@ export default class StockService extends LeekService {
     executeStocksRemind(res, this.stockList);
     const oldStockList = this.stockList;
     this.stockList = res;
+    events.emit('updateBar:stock-profit-refresh', this);
     events.emit('stockListUpdate', this.stockList, oldStockList);
     return res;
   }
@@ -104,7 +108,9 @@ export default class StockService extends LeekService {
       });
       if (/FAILED/.test(resp.data)) {
         if (codes.length === 1) {
-          window.showErrorMessage(`fail: error Stock code in ${codes}, please delete error Stock code.`);
+          window.showErrorMessage(
+            `fail: error Stock code in ${codes}, please delete error Stock code.`
+          );
           return [];
         }
         for (const code of codes) {
@@ -215,15 +221,15 @@ export default class StockService extends LeekService {
               let yestclose = params[8 + 2];
               let volume = params[8 + 6]; // 成交量
               //股指期货
-              const stockIndexFuture = /nf_IC/.test(code) // 中证500
-                || /nf_IF/.test(code) // 沪深300
-                || /nf_IH/.test(code) // 上证50
-                || /nf_IM/.test(code) // 中证 1000
-                || /nf_TF/.test(code) // 五债
-                || /nf_TS/.test(code) // 二债
-                || /nf_T\d+/.test(code) // 十债
-                || /nf_TL/.test(code) // 三十年国债
-                ;
+              const stockIndexFuture =
+                /nf_IC/.test(code) || // 中证500
+                /nf_IF/.test(code) || // 沪深300
+                /nf_IH/.test(code) || // 上证50
+                /nf_IM/.test(code) || // 中证 1000
+                /nf_TF/.test(code) || // 五债
+                /nf_TS/.test(code) || // 二债
+                /nf_T\d+/.test(code) || // 十债
+                /nf_TL/.test(code); // 三十年国债
               if (stockIndexFuture) {
                 // 0 开盘       1 最高      2  最低     3 收盘
                 // ['5372.000', '5585.000', '5343.000', '5581.600',
@@ -390,7 +396,9 @@ export default class StockService extends LeekService {
       });
       const { data, error_code, error_description } = resp.data;
       if (error_code) {
-        window.showErrorMessage(`fail: a HK Stock request error has occured. (${error_code}, ${error_description})`);
+        window.showErrorMessage(
+          `fail: a HK Stock request error has occured. (${error_code}, ${error_description})`
+        );
         return [];
       } else {
         const stocks = data.items || [];
@@ -404,7 +412,9 @@ export default class StockService extends LeekService {
             let low = quote.low?.toString() || '0';
             const fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
             const stockItem: any = {
-              code: quote.symbol.startsWith('HK') ? quote.symbol.replace('HK', 'hk') : 'hk' + quote.symbol,
+              code: quote.symbol.startsWith('HK')
+                ? quote.symbol.replace('HK', 'hk')
+                : 'hk' + quote.symbol,
               name: quote.name,
               open: formatNumber(open, fixedNumber, false),
               yestclose: formatNumber(yestclose, fixedNumber, false),
@@ -437,7 +447,9 @@ export default class StockService extends LeekService {
               stockList.push(treeItem);
             }
           } else {
-            window.showErrorMessage(`fail: error Stock code in ${codes[index]}, please delete error Stock code.`);
+            window.showErrorMessage(
+              `fail: error Stock code in ${codes[index]}, please delete error Stock code.`
+            );
           }
         });
       }
@@ -467,11 +479,17 @@ export default class StockService extends LeekService {
     const result: QuickPickItem[] = [];
 
     // 期货大写字母开头
-    const isFuture = /^[A-Z]/.test(searchText[0]) || /nf_/.test(searchText) || /hf_/.test(searchText) || /fx_/.test(searchText);
+    const isFuture =
+      /^[A-Z]/.test(searchText[0]) ||
+      /nf_/.test(searchText) ||
+      /hf_/.test(searchText) ||
+      /fx_/.test(searchText);
     if (isFuture) {
       //期货使用新浪数据源
       const type = '85,86,88';
-      const futureUrl = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(searchText)}`;
+      const futureUrl = `http://suggest3.sinajs.cn/suggest/type=${type}&key=${encodeURIComponent(
+        searchText
+      )}`;
       try {
         console.log('getFutureSuggestList: getting...');
         const futureResponse = await Axios.get(futureUrl, {
@@ -532,7 +550,9 @@ export default class StockService extends LeekService {
       }
     } else {
       //股票使用雪球数据源
-      const stockUrl = `https://xueqiu.com/stock/search.json?code=${encodeURIComponent(searchText)}`;
+      const stockUrl = `https://xueqiu.com/stock/search.json?code=${encodeURIComponent(
+        searchText
+      )}`;
       try {
         console.log('getStockSuggestList: getting...');
         const stockResponse = await Axios.get(stockUrl, {
@@ -558,7 +578,8 @@ export default class StockService extends LeekService {
               label: `${_code} | ${name}`,
               description: `A股`,
             });
-          } else if (/^0\d{4}$/.test(code) || /^HK[A-Z].*/.test(code)) { // 港股个股 || 港股指数
+          } else if (/^0\d{4}$/.test(code) || /^HK[A-Z].*/.test(code)) {
+            // 港股个股 || 港股指数
             const _code = code.startsWith('HK') ? code.replace('HK', 'hk') : 'hk' + code;
             result.push({
               label: `${_code} | ${name}`,

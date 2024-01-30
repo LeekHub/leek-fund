@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -170,6 +170,14 @@
         "command": "leek-fund.addStock",
         "title": "添加股票",
         "icon": "$(add)"
+      },
+      {
+        "command": "leek-fund.setStockPrice",
+        "title": "设置股票成本价",
+        "icon": {
+          "light": "resources/light/amount.svg",
+          "dark": "resources/dark/amount.svg"
+        }
       },
       {
         "command": "leek-fund.leekCenterView",
@@ -340,6 +348,11 @@
           "group": "navigation"
         },
         {
+          "command": "leek-fund.setStockPrice",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
           "command": "leek-fund.refreshFollow",
           "when": "view == leekFundView.news",
           "group": "navigation"
@@ -505,6 +518,11 @@
             "hf_CHA50CFD"
           ],
           "description": "配置需要监控的股票代码（建议通过界面新增）"
+        },
+        "leek-fund.stockPrice": {
+          "type": "object",
+          "default": {},
+          "description": "股票持仓金额（不建议手填，格式错误影响功能）"
         },
         "leek-fund.funds": {
           "type": "array",
@@ -744,6 +762,7 @@
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
+    "cross-env": "^7.0.3",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "husky": "^4.3.0",

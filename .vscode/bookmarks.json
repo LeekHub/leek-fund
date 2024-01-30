@@ -1,0 +1,54 @@
+{
+	"files": [
+		{
+			"path": "src/registerCommand.ts",
+			"bookmarks": [
+				{
+					"line": 37,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 257,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "src/explorer/stockService.ts",
+			"bookmarks": [
+				{
+					"line": 66,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "src/extension.ts",
+			"bookmarks": [
+				{
+					"line": 221,
+					"column": 1,
+					"label": ""
+				},
+				{
+					"line": 222,
+					"column": 2,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "src/statusbar/Profit.ts",
+			"bookmarks": [
+				{
+					"line": 77,
+					"column": 1,
+					"label": ""
+				}
+			]
+		}
+	]
+}
