@@ -4,7 +4,7 @@ import { Telemetry } from './shared/telemetry';
 
 const deviceId = Math.random().toString(16).substr(2) + Math.random().toString(32).substr(2);
 
-let context: ExtensionContext = (undefined as unknown) as ExtensionContext;
+let context: ExtensionContext = undefined as unknown as ExtensionContext;
 
 let telemetry: Telemetry | any = null;
 
@@ -36,6 +36,8 @@ let isDevelopment = false; // 是否开发环境
 let fundGroups: Array<string> = [];
 let fundLists: Array<Array<string>> = [];
 
+let stockPrice = {}; // 缓存数据
+let stockPriceCacheDate = '2020-10-30';
 export default {
   context,
   telemetry,
@@ -65,4 +67,7 @@ export default {
   isDevelopment,
   fundGroups,
   fundLists,
+
+  stockPrice,
+  stockPriceCacheDate,
 };

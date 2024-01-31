@@ -24,6 +24,7 @@ import { StatusBar } from './statusbar/statusBar';
 import { ProfitStatusBar } from './statusbar/Profit';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
+import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
 import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { ForexService } from './explorer/forexService';
 import { ForexProvider } from './explorer/forexProvider';
@@ -40,7 +41,6 @@ let flashNewsOutputServer: FlashNewsOutputServer | null = null;
 let profitBar: ProfitStatusBar | null = null;
 
 export function activate(context: ExtensionContext) {
-
   globalState.isDevelopment = process.env.NODE_ENV === 'development';
   globalState.context = context;
 
@@ -57,6 +57,7 @@ export function activate(context: ExtensionContext) {
 
   setGlobalVariable();
   updateAmount();
+  updateStockPrice();
 
   flashNewsOutputServer = new FlashNewsOutputServer();
 
@@ -211,13 +212,15 @@ export function activate(context: ExtensionContext) {
   );
 
   // register command
-  registerCommandPaletteEvent(context, statusBar,);
+  registerCommandPaletteEvent(context, statusBar);
 
   // Telemetry Event
   telemetry.sendEvent('activate');
 }
 
 function setGlobalVariable() {
+  const stockPrice = LeekFundConfig.getConfig('leek-fund.stockPrice') || {};
+  cacheStockPriceData(stockPrice);
   globalState.iconType = LeekFundConfig.getConfig('leek-fund.iconType') || 'arrow';
 
   const fundAmount = LeekFundConfig.getConfig('leek-fund.fundAmount') || {};
