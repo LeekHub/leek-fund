@@ -17,7 +17,16 @@ export default class StockService extends LeekService {
     super();
     this.context = context;
   }
-
+  /**
+   * 获取自选,去掉大盘数据
+   * @returns
+   */
+  getSelfSelected() {
+    const s =
+      'sh000001,sh000300,sh000016,sh000688,usr_ixic,usr_dji,usr_inx,nf_IF0,nf_IH0,nf_IC0,nf_IM0,hf_OIL,hf_CHA50CFD';
+    const maps = s.split(',');
+    return this.stockList.filter((item) => !maps.includes(item.info.code));
+  }
   async getToken(): Promise<string> {
     if (this.token !== '') return this.token;
 
