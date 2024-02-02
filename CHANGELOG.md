@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.7.0](https://github.com/LeekHub/leek-fund/compare/v3.6.1...v3.7.0) (2024-02-02)
+
+
+### Features
+
+* 增加股票收益计算 ([aba2446](https://github.com/LeekHub/leek-fund/commit/aba2446b5ee33324d2aa0e8be05f3eb7c38809f8))
+
+
+### Bug Fixes
+
+* pr workflows ([c1f1919](https://github.com/LeekHub/leek-fund/commit/c1f191993edcdbf8fe7cf7df7f31735a9eb48d10))
+* 修复打包命令错误 ([96f1ec0](https://github.com/LeekHub/leek-fund/commit/96f1ec0219e0b15d6b5c47fb310e28774954d0b2))
+* 修复测试脚本依赖老旧的问题 ([e553fd7](https://github.com/LeekHub/leek-fund/commit/e553fd7237a971a479e1558f3e02f6a5622d5009))
+* 计算股票收益只计算自选的股票 ([e1d8768](https://github.com/LeekHub/leek-fund/commit/e1d8768eaf571b521d7fe0af6f264d38e428ea13))
+
 ### [3.6.1](https://github.com/LeekHub/leek-fund/compare/v3.6.0...v3.6.1) (2024-01-26)
 
 ## [3.6.0](https://github.com/LeekHub/leek-fund/compare/v3.5.1...v3.6.0) (2024-01-26)
