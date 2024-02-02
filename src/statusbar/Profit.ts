@@ -108,7 +108,7 @@ export class ProfitStatusBar {
           unitPrice: number;
         };
       } = globalState.stockPrice;
-      const stockList = data.stockList;
+      const stockList = data.getSelfSelected();
       type StockInfoType = {
         id: string;
         name: string;
@@ -159,8 +159,11 @@ export class ProfitStatusBar {
       const allIncomeToday = stockInfo.reduce((prev, cur) => {
         return prev + Number(cur.incomeToday);
       }, 0);
+      const allIncomeTotal = stockInfo.reduce((prev, cur) => {
+        return prev + Number(cur.incomeTotal);
+      }, 0);
       // Use the year, month, and day variables as needed
-      this.stockBarItem.text = `${PREFIX} ${allIncomeToday}`;
+      this.stockBarItem.text = `${PREFIX} ${allIncomeTotal} | ${allIncomeToday}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
         `「股票收益统计」 ${date}\r\n \r\n` +

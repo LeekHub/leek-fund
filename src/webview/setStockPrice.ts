@@ -62,7 +62,7 @@ async function setStockPrice(stockService: StockService) {
 }
 
 function stockDataHandler(stockService: StockService) {
-  const fundList: LeekTreeItem[] = cloneDeep(stockService.stockList);
+  const fundList: LeekTreeItem[] = cloneDeep(stockService.getSelfSelected());
   console.log('list', fundList);
   const amountObj: any = globalState.stockPrice || {};
   const list = fundList.map((item: LeekTreeItem) => {
