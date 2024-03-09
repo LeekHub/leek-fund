@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.7.1](https://github.com/LeekHub/leek-fund/compare/v3.7.0...v3.7.1) (2024-03-09)
+
+
+### Bug Fixes
+
+* issue[#399](https://github.com/LeekHub/leek-fund/issues/399)当日收益计算字段更换 ([13bd2bd](https://github.com/LeekHub/leek-fund/commit/13bd2bd2bca26d730fc4cac1f6f8badfb9e8111d))
+
 ## [3.7.0](https://github.com/LeekHub/leek-fund/compare/v3.6.1...v3.7.0) (2024-02-02)
 
 
