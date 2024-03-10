@@ -185,3 +185,8 @@ src
 ## License
 
 [LICENSE](./LICENSE)
+
+---
+
+- X [@nicky_lao](https://twitter.com/nicky_lao)
+- YouTobe [@BeAFreelancer](https://www.youtube.com/@BeAFreelancer)
