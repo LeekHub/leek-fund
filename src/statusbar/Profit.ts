@@ -164,7 +164,7 @@ export class ProfitStatusBar {
         return prev + Number(cur.incomeTotal);
       }, 0);
       // Use the year, month, and day variables as needed
-      this.stockBarItem.text = `${PREFIX} ${allIncomeTotal} | ${allIncomeToday}`;
+      this.stockBarItem.text = `${PREFIX} ${parseFloat(allIncomeTotal.toFixed(2))} | ${parseFloat(allIncomeToday.toFixed(2))}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
         `「股票收益统计」 ${date}\r\n \r\n` +
