@@ -524,6 +524,11 @@
           "default": {},
           "description": "股票持仓金额（不建议手填，格式错误影响功能）"
         },
+        "leek-fund.stockHeldTipShow": {
+          "type": "boolean",
+          "default": true,
+          "description": "是否开启股票持仓提示"
+        },
         "leek-fund.funds": {
           "type": "array",
           "default": [
@@ -758,7 +763,7 @@
     "@types/lodash.throttle": "^4.1.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.11.0",
-    "@types/vscode": "1.44.0",
+    "@types/vscode": "1.59.0",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",

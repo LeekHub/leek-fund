@@ -127,6 +127,19 @@ export default class StockService extends LeekService {
         }
       } else {
         const splitData = resp.data.split(';\n');
+        const stockPrice: {
+          [key: string]: {
+            amount: number;
+            earnings: number;
+            name: string;
+            price: string;
+            unitPrice: number;
+          };
+        } = globalState.stockPrice;
+        type HeldData = {
+          heldAmount?: number;
+          heldPrice?: number;
+        };
         for (let i = 0; i < splitData.length - 1; i++) {
           const code = splitData[i].split('="')[0].split('var hq_str_')[1];
           const params = splitData[i].split('="')[1].split(',');
@@ -136,12 +149,20 @@ export default class StockService extends LeekService {
           let fixedNumber = 2;
           if (params.length > 1) {
             if (/^(sh|sz|bj)/.test(code)) {
+              // 大A股
               let open = params[1];
               let yestclose = params[2];
               let price = params[3];
               let high = params[4];
               let low = params[5];
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+              const profitData = stockPrice[code] || {};
+              const heldData: HeldData = {};
+              if (profitData.amount){
+                // 表示是持仓股
+                heldData.heldAmount = profitData.amount;
+                heldData.heldPrice = profitData.unitPrice;
+              }
               stockItem = {
                 code,
                 name: params[0],
@@ -154,6 +175,7 @@ export default class StockService extends LeekService {
                 amount: formatNumber(params[9], 2),
                 time: `${params[30]} ${params[31]}`,
                 percent: '',
+                ...heldData,
               };
               aStockCount += 1;
             } else if (/^gb_/.test(code)) {
@@ -480,7 +502,7 @@ export default class StockService extends LeekService {
   }
 
   // https://github.com/LeekHub/leek-fund/issues/266
-  async getStockSuggestList(searchText = ''): Promise<QuickPickItem[]> {
+  async getStockSuggestList(searchText:string = ''): Promise<QuickPickItem[]> {
     if (!searchText) {
       return [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     }
@@ -489,7 +511,7 @@ export default class StockService extends LeekService {
 
     // 期货大写字母开头
     const isFuture =
-      /^[A-Z]/.test(searchText[0]) ||
+      /^[A-Z]/.test(searchText.charAt(0)) ||
       /nf_/.test(searchText) ||
       /hf_/.test(searchText) ||
       /fx_/.test(searchText);

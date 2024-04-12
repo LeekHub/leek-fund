@@ -1,170 +1,184 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>韭菜盒子</title>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no"
-    />
-    <link
-      href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="vendors/toastify.css" />
-    <style>
-      body,
-      html {
-        height: 100%;
-        -webkit-tap-highlight-color: transparent;
-      }
 
-      div {
-        margin-left: 20px;
-        line-height: 28px;
-      }
-      .list .name,
-      .amount {
-        display: inline-block;
-      }
-      .unit {
-        float: right;
-      }
-      .amount {
-        float: right;
-        width: 220px !important;
-      }
-      .name {
-        font-size: 14px;
-      }
-      .item {
-        margin-top: 10px;
-      }
-      .el-input {
-        width: 160px;
-        height: 28px;
-      }
-      .el-input__inner {
-        height: 28px;
-        width: 120px;
-        background-color: #eee;
-      }
-      .main {
-        margin: 0 auto;
-        width: 980px;
-        padding: 32px;
-      }
-      .footer {
-        width: 560px;
-        margin: 30px auto 10px auto;
-        text-align: center;
-      }
-      .footer .info {
-        font-size: 16px;
-        margin-top: 20px;
-        color: #696666;
-      }
-      .operate {
-        font-size: 12px;
-      }
-      .unitDiv {
-        width: 224px;
-        float: right;
-      }
-      .unitPriceInput {
-        width: 100px;
-      }
-      .red {
-        color: #f56c6c;
-      }
-      .green {
-        color: green;
-      }
-      .html2canvas-container {
-        position: fixed;
-        left: -2000;
-        top: 1000;
-        margin-top: 200px;
-        background-color: #303133;
-      }
-      .imgHACK {
-        display: none;
-      }
+<head>
+  <title>韭菜盒子</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet" />
+  <link rel="stylesheet" href="vendors/toastify.css" />
+  <style>
+    body,
+    html {
+      height: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-      .main-canvas {
-        width: 1000px;
-        background-color: #303133;
-      }
-      .qr {
-        margin: 10px auto;
-        width: 120px;
-      }
-    </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-M5021C8VSH"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
+    div {
+      margin-left: 20px;
+      line-height: 28px;
+    }
 
-      gtag('config', 'G-M5021C8VSH');
-    </script>
-  </head>
+    .list .name,
+    .amount {
+      display: inline-block;
+    }
 
-  <body ontouchstart>
-    <button
-      class="el-button el-button--info el-button--mini"
-      id="refresh"
-      style="
+    .unit {
+      float: right;
+    }
+
+    .amount {
+      float: right;
+      width: 220px !important;
+    }
+
+    .name {
+      font-size: 14px;
+    }
+
+    .item {
+      margin-top: 10px;
+    }
+
+    .el-input {
+      width: 160px;
+      height: 28px;
+    }
+
+    .el-input__inner {
+      height: 28px;
+      width: 120px;
+      background-color: #eee;
+    }
+
+    .main {
+      margin: 0 auto;
+      width: 980px;
+      padding: 32px;
+    }
+
+    .footer {
+      width: 560px;
+      margin: 30px auto 10px auto;
+      text-align: center;
+    }
+
+    .footer .info {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #696666;
+    }
+
+    .operate {
+      font-size: 12px;
+    }
+
+    .unitDiv {
+      width: 224px;
+      float: right;
+    }
+
+    .unitPriceInput {
+      width: 100px;
+    }
+
+    .red {
+      color: #f56c6c;
+    }
+
+    .green {
+      color: green;
+    }
+
+    .html2canvas-container {
+      position: fixed;
+      left: -2000;
+      top: 1000;
+      margin-top: 200px;
+      background-color: #303133;
+    }
+
+    .imgHACK {
+      display: none;
+    }
+
+    .main-canvas {
+      width: 1000px;
+      background-color: #303133;
+    }
+
+    .qr {
+      margin: 10px auto;
+      width: 120px;
+    }
+
+    .el-checkbox-label {
+      display: inline-block;
+      color: #fff;
+    }
+
+    .el-checkbox-input {
+      zoom: 1.2;
+      margin: 0;
+      vertical-align: middle;
+    }
+  </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M5021C8VSH"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'G-M5021C8VSH');
+  </script>
+</head>
+
+<body ontouchstart>
+  <button class="el-button el-button--info el-button--mini" id="refresh" style="
         position: fixed;
         right: 8px;
         top: 20px;
         padding: 4px 8px;
         font-size: 10px;
         border-radius: 3px;
-      "
-    >
-      刷新
-    </button>
-    <button
-      class="el-button el-button--info el-button--mini"
-      id="sort"
-      style="
+      ">
+    刷新
+  </button>
+  <button class="el-button el-button--info el-button--mini" id="sort" style="
         position: fixed;
         right: 8px;
         top: 60px;
         padding: 4px 8px;
         font-size: 10px;
         border-radius: 3px;
-      "
-    >
-      收益率↓
-    </button>
-    <div class="main">
-      <!-- <h2 style="text-align: center; color: #409eff">
+      ">
+    收益率↓
+  </button>
+  <div class="main">
+    <!-- <h2 style="text-align: center; color: #409eff">
         持仓股数 <span id="totalMoney"></span>
       </h2> -->
 
-      <!-- <p style="font-size: 12px; color: #696666; text-align: center">
+    <!-- <p style="font-size: 12px; color: #696666; text-align: center">
         现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额
       </p> -->
-      <div class="list"></div>
-      <div class="footer">
-        <button
-          class="el-button el-button--primary el-button--medium rm"
-          id="save"
-        >
-          保存
-        </button>
-        <div class="info"></div>
-        <div class="operate rm">
-          <!-- <span style="color: #50ba99; cursor: pointer" class="text2image"
+    <div class="list"></div>
+    <div style="margin-top: 20px;">
+      <label class="el-checkbox-label">是否高亮持仓股票</label>
+      <input type="checkbox" checked="true" class="el-checkbox-input" />
+    </div>
+    <div class="footer">
+      <button class="el-button el-button--primary el-button--medium rm" id="save">
+        保存
+      </button>
+      <div class="info"></div>
+      <div class="operate rm">
+        <!-- <span style="color: #50ba99; cursor: pointer" class="text2image"
             >持仓图片分享</span
           >&nbsp;&nbsp;&nbsp;&nbsp;<span
             style="color: #50ba99; cursor: pointer"
@@ -172,435 +186,437 @@
             data-type="shouyi"
             >收益图片分享</span
           > -->
-        </div>
       </div>
     </div>
-    <canvas id="paint" width="1000" height="600" style="display: none"></canvas>
-    <div class="html2canvas-container">
-      <div
-        class="main-canvas"
-        style="width: 1000px; height: auto; background-color: #303133"
-      ></div>
+  </div>
+  <canvas id="paint" width="1000" height="600" style="display: none"></canvas>
+  <div class="html2canvas-container">
+    <div class="main-canvas" style="width: 1000px; height: auto; background-color: #303133"></div>
+  </div>
+  <div class="qr" style="display: none">
+    <div class="imgHACK">
+      <img src="images/qrcode_black.png" alt="" />
     </div>
-    <div class="qr" style="display: none">
-      <div class="imgHACK">
-        <img src="images/qrcode_black.png" alt="" />
-      </div>
-    </div>
+  </div>
 
-    <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
-    <script src="vendors/html2canvas.min.js"></script>
-    <script src="vendors/toastify.js"></script>
-    <script src="vendors/canvas-text.js"></script>
-    <script>
-      const vscode = acquireVsCodeApi();
-      const deviceId =
-        Math.random().toString(16).substr(2) +
-        Math.random().toString(32).substr(2);
+  <script src="https://cdn.staticfile.org/jquery/2.0.0/jquery.min.js"></script>
+  <script src="vendors/html2canvas.min.js"></script>
+  <script src="vendors/toastify.js"></script>
+  <script src="vendors/canvas-text.js"></script>
+  <script>
+    const vscode = acquireVsCodeApi();
+    let showHeldTip = true;
+    const deviceId =
+      Math.random().toString(16).substr(2) +
+      Math.random().toString(32).substr(2);
 
-      let sortType = 'default';
-      const list = $('.list');
-      let fundList = [];
-      let priceDate = new Date().toDateString();
-      window.addEventListener('message', (event) => {
-        const msg = event.data;
-
-        switch (msg.command) {
-          case 'init':
-            sortType = msg.sortType || 'default';
-            dateStr = msg.dateStr; // 懒得再写格式化日期
-            init(msg.data);
-            Toastify({
-              text: '数据已刷新！',
-              duration: 1000,
-            }).showToast();
-            break;
-        }
-      });
-
-      function init(data) {
-        // const fundList = ${JSON.stringify(list)};
-        if (sortType !== 'default') {
-          fundList = data.sort((a, b) => {
-            const ae = a.earningPercent || 0;
-            const be = b.earningPercent || 0;
-            return sortType === 'earningsDesc' ? be - ae : ae - be;
-          });
-        } else {
-          fundList = data;
-        }
-        // console.log(fundList);
-
-        init2();
-      }
-
-      function init2() {
-        let listStr = '';
-        let totalMoney = 0;
-        let totalEarnings = 0;
-        fundList.forEach((item, index) => {
-          const amount = item.amount || 0;
-          const unitPrice = item.unitPrice || 0;
-          const earningPercent = item.earningPercent || 0;
-          if (index === 0) {
-            priceDate = item.priceDate;
-          }
-          if (!priceDate) {
-            priceDate = item.priceDate;
-          }
-          const str =
-            '<div class="item"><div class="name">' +
-            item.name +
-            '（<i class="' +
-            (earningPercent > 0 ? 'red' : 'green') +
-            '">' +
-            earningPercent +
-            '%</i>）' +
-            '</div>' +
-            '<div class="amount el-input">' +
-            '持仓股数：<input type="number" class="amountInput el-input__inner" id="' +
-            item.code +
-            '" value="' +
-            amount +
-            '" /> </div>' +
-            '<div class="unitDiv el-input">' +
-            '持仓成本价：<input type="number" class="unitPriceInput el-input__inner" id="' +
-            item.code +
-            '_unit" value="' +
-            unitPrice +
-            '" /> <span class="unit">元、</span> </div>' +
-            '</div>';
-
-          listStr += str;
-          const earnings = item.earnings || 0;
-
-          totalMoney += amount;
-          totalEarnings += earnings;
-        });
-        list.html(listStr);
-        $('#totalMoney').html(totalMoney.toFixed(2));
-        // $('#priceDate').html(priceDate || '');
-        // 收益统计
-        if (totalEarnings !== 0) {
-          const color = totalEarnings > 0 ? '#f55151' : 'green';
-          let str =
-            priceDate +
-            ' 估算收益为： <span style="font-size:20px;color:' +
-            color +
-            '">' +
-            totalEarnings.toFixed(2) +
-            '</span> 元，' +
-            (totalEarnings > 0
-              ? '继续加油💪！'
-              : '在A股，守住才会有收益，加油💪');
-          if (totalEarnings >= 666) {
-            str +=
-              '<span class="rm">&nbsp;恭喜吃肉，老板 <span style="color:#409EFF;cursor:pointer" id="donate">💰打赏</span> 一下！</span>';
-          }
-
-          $('.footer .info').html(str);
-
-          $('#donate').click(function () {
-            vscode.postMessage({
-              command: 'donate',
-              text: '打赏',
-            });
-          });
-
-          $('.text2image').click((evt) => {
-            const type = evt.target.getAttribute('data-type') || 'all';
-            vscode.postMessage({
-              command: 'telemetry',
-              type,
-            });
-
-            let selector = type === 'shouyi' ? '.footer' : '.main';
-
-            $('.main-canvas').html($(selector).html());
-            const canvasEl = $('.main-canvas');
-            canvasEl.find('.rm').hide();
-            canvasEl.find('.qr').show();
-            canvasEl
-              .find('.amount')
-              .map((i, el) => (el.innerText = '持仓金额：*** 元'));
-            canvasEl.find('#totalMoney').html('*** 元');
-
-            const targetDom = canvasEl[0];
-            const paintCanvas = document.getElementById('paint');
-            const paintCtx = paintCanvas.getContext('2d');
-            const scale = 2;
-            const qrImageWidth = 240;
-            const qrImageHeight = 310;
-            // 自定义绘制
-            if (type === 'shouyi') {
-              paintCanvas.height = qrImageHeight / 2;
-              paintCanvas.width = qrImageWidth * scale;
-              paintCtx.fillStyle = '#303133';
-              paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
-
-              const earnningTxt = totalEarnings.toFixed(2);
-              const title = '今日收益';
-              paintCtx.fillStyle = '#409eff';
-              canvasTxt.fontSize = 20;
-              canvasTxt.lineHeight = 20;
-              canvasTxt.align = 'left';
-              canvasTxt.drawText(paintCtx, title, 100, 10, 120, 40);
-              canvasTxt.drawText(
-                paintCtx,
-                Number(earnningTxt) < 0 ? '🍜' : '🍗',
-                184,
-                10,
-                120,
-                40
-              );
-              paintCtx.fillStyle =
-                Number(earnningTxt) < 0 ? 'green' : '#f55151';
-              canvasTxt.fontSize = Number(earnningTxt) > 10000 ? 30 : 40;
-              // canvasTxt.lineHeight = 20;
-              canvasTxt.drawText(
-                paintCtx,
-                earnningTxt + '元',
-                100,
-                50,
-                200,
-                80
-              );
-              canvasTxt.fontSize = 10;
-              paintCtx.fillStyle = 'gray';
-              canvasTxt.drawText(paintCtx, priceDate, 100, 120, 100, 40);
-
-              paintCtx.drawImage(
-                $('.imgHACK>img')[0],
-                paintCanvas.width - qrImageWidth / 2,
-                0,
-                qrImageWidth / 2,
-                qrImageHeight / 2
-              );
-              return copyImageToClipboard(paintCanvas);
-            }
-            // html截图
-            html2canvas(targetDom, {
-              dpi: window.devicePixelRatio * 3,
-              scale,
-              height: targetDom.offsetHeight,
-              width: targetDom.offsetWidth,
-              scrollY: 0, // 解决偏移问题
-            }).then((htmlcanvas) => {
-              paintCanvas.height =
-                targetDom.offsetHeight * scale + qrImageHeight;
-              paintCanvas.width = targetDom.offsetWidth * scale;
-              paintCtx.fillStyle = '#303133';
-              paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
-              paintCtx.drawImage(
-                htmlcanvas,
-                0,
-                10,
-                htmlcanvas.width,
-                htmlcanvas.height
-              );
-              const imageOffsetWidth = paintCanvas.width / 2 - qrImageWidth / 2;
-              const imageOffsetHeight = paintCanvas.height - qrImageHeight + 8;
-              paintCtx.drawImage(
-                $('.imgHACK>img')[0],
-                imageOffsetWidth,
-                imageOffsetHeight,
-                qrImageWidth,
-                qrImageHeight
-              );
-              canvasTxt.fontSize = 20;
-              paintCtx.fillStyle = 'gray';
-              canvasTxt.drawText(
-                paintCtx,
-                priceDate,
-                imageOffsetWidth - 200,
-                imageOffsetHeight + 100,
-                150,
-                80
-              );
-
-              copyImageToClipboard(paintCanvas);
-              /*  if (document.body.querySelector('canvas')) {
-                document.body.querySelector('canvas').remove();
-                document.body.appendChild(paintCanvas);
-              } */
-            });
-          });
-        }
-      }
-
-      function copyImageToClipboard(canvas) {
-        const base64Data = canvas
-          .toDataURL('image/png')
-          .replace('data:image/png;base64,', '');
-        if (base64Data && base64Data.length < 100) {
+    let sortType = 'default';
+    const list = $('.list');
+    let fundList = [];
+    let priceDate = new Date().toDateString();
+    window.addEventListener('message', (event) => {
+      const msg = event.data;
+      switch (msg.command) {
+        case 'init':
+          sortType = msg.sortType || 'default';
+          dateStr = msg.dateStr; // 懒得再写格式化日期
+          showHeldTip = msg.data.showHeldTip
+          init(msg.data.list);
           Toastify({
-            text: '生成图片失败！',
-            duration: 2000,
-            backgroundColor: '#f56c6c',
-            gravity: 'bottom',
+            text: '数据已刷新！',
+            duration: 1000,
           }).showToast();
-          return;
-        }
-        const blobInput = convertBase64ToBlob(base64Data, 'image/png');
-        const clipboardItemInput = new ClipboardItem({
-          'image/png': blobInput,
+          break;
+      }
+    });
+
+    function init(data) {
+      // const fundList = ${JSON.stringify(list)};
+      $('.el-checkbox-input').prop('checked', showHeldTip);
+      if (sortType !== 'default') {
+        fundList = data.sort((a, b) => {
+          const ae = a.earningPercent || 0;
+          const be = b.earningPercent || 0;
+          return sortType === 'earningsDesc' ? be - ae : ae - be;
         });
-        navigator.clipboard.write([clipboardItemInput]);
+      } else {
+        fundList = data;
+      }
+      // console.log(fundList);
+
+      init2();
+    }
+
+    function init2() {
+      let listStr = '';
+      let totalMoney = 0;
+      let totalEarnings = 0;
+      fundList.forEach((item, index) => {
+        const amount = item.amount || 0;
+        const unitPrice = item.unitPrice || 0;
+        const earningPercent = item.earningPercent || 0;
+        if (index === 0) {
+          priceDate = item.priceDate;
+        }
+        if (!priceDate) {
+          priceDate = item.priceDate;
+        }
+        const str =
+          '<div class="item"><div class="name">' +
+          item.name +
+          '（<i class="' +
+          (earningPercent > 0 ? 'red' : 'green') +
+          '">' +
+          earningPercent +
+          '%</i>）' +
+          '</div>' +
+          '<div class="amount el-input">' +
+          '持仓股数：<input type="number" class="amountInput el-input__inner" id="' +
+          item.code +
+          '" value="' +
+          amount +
+          '" /> </div>' +
+          '<div class="unitDiv el-input">' +
+          '持仓成本价：<input type="number" class="unitPriceInput el-input__inner" id="' +
+          item.code +
+          '_unit" value="' +
+          unitPrice +
+          '" /> <span class="unit">元、</span> </div>' +
+          '</div>';
+
+        listStr += str;
+        const earnings = item.earnings || 0;
+
+        totalMoney += amount;
+        totalEarnings += earnings;
+      });
+      list.html(listStr);
+      $('#totalMoney').html(totalMoney.toFixed(2));
+      // $('#priceDate').html(priceDate || '');
+      // 收益统计
+      if (totalEarnings !== 0) {
+        const color = totalEarnings > 0 ? '#f55151' : 'green';
+        let str =
+          priceDate +
+          ' 估算收益为： <span style="font-size:20px;color:' +
+          color +
+          '">' +
+          totalEarnings.toFixed(2) +
+          '</span> 元，' +
+          (totalEarnings > 0
+            ? '继续加油💪！'
+            : '在A股，守住才会有收益，加油💪');
+        if (totalEarnings >= 666) {
+          str +=
+            '<span class="rm">&nbsp;恭喜吃肉，老板 <span style="color:#409EFF;cursor:pointer" id="donate">💰打赏</span> 一下！</span>';
+        }
+
+        $('.footer .info').html(str);
+
+        $('#donate').click(function () {
+          vscode.postMessage({
+            command: 'donate',
+            text: '打赏',
+          });
+        });
+
+        $('.text2image').click((evt) => {
+          const type = evt.target.getAttribute('data-type') || 'all';
+          vscode.postMessage({
+            command: 'telemetry',
+            type,
+          });
+
+          let selector = type === 'shouyi' ? '.footer' : '.main';
+
+          $('.main-canvas').html($(selector).html());
+          const canvasEl = $('.main-canvas');
+          canvasEl.find('.rm').hide();
+          canvasEl.find('.qr').show();
+          canvasEl
+            .find('.amount')
+            .map((i, el) => (el.innerText = '持仓金额：*** 元'));
+          canvasEl.find('#totalMoney').html('*** 元');
+
+          const targetDom = canvasEl[0];
+          const paintCanvas = document.getElementById('paint');
+          const paintCtx = paintCanvas.getContext('2d');
+          const scale = 2;
+          const qrImageWidth = 240;
+          const qrImageHeight = 310;
+          // 自定义绘制
+          if (type === 'shouyi') {
+            paintCanvas.height = qrImageHeight / 2;
+            paintCanvas.width = qrImageWidth * scale;
+            paintCtx.fillStyle = '#303133';
+            paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+
+            const earnningTxt = totalEarnings.toFixed(2);
+            const title = '今日收益';
+            paintCtx.fillStyle = '#409eff';
+            canvasTxt.fontSize = 20;
+            canvasTxt.lineHeight = 20;
+            canvasTxt.align = 'left';
+            canvasTxt.drawText(paintCtx, title, 100, 10, 120, 40);
+            canvasTxt.drawText(
+              paintCtx,
+              Number(earnningTxt) < 0 ? '🍜' : '🍗',
+              184,
+              10,
+              120,
+              40
+            );
+            paintCtx.fillStyle =
+              Number(earnningTxt) < 0 ? 'green' : '#f55151';
+            canvasTxt.fontSize = Number(earnningTxt) > 10000 ? 30 : 40;
+            // canvasTxt.lineHeight = 20;
+            canvasTxt.drawText(
+              paintCtx,
+              earnningTxt + '元',
+              100,
+              50,
+              200,
+              80
+            );
+            canvasTxt.fontSize = 10;
+            paintCtx.fillStyle = 'gray';
+            canvasTxt.drawText(paintCtx, priceDate, 100, 120, 100, 40);
+
+            paintCtx.drawImage(
+              $('.imgHACK>img')[0],
+              paintCanvas.width - qrImageWidth / 2,
+              0,
+              qrImageWidth / 2,
+              qrImageHeight / 2
+            );
+            return copyImageToClipboard(paintCanvas);
+          }
+          // html截图
+          html2canvas(targetDom, {
+            dpi: window.devicePixelRatio * 3,
+            scale,
+            height: targetDom.offsetHeight,
+            width: targetDom.offsetWidth,
+            scrollY: 0, // 解决偏移问题
+          }).then((htmlcanvas) => {
+            paintCanvas.height =
+              targetDom.offsetHeight * scale + qrImageHeight;
+            paintCanvas.width = targetDom.offsetWidth * scale;
+            paintCtx.fillStyle = '#303133';
+            paintCtx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+            paintCtx.drawImage(
+              htmlcanvas,
+              0,
+              10,
+              htmlcanvas.width,
+              htmlcanvas.height
+            );
+            const imageOffsetWidth = paintCanvas.width / 2 - qrImageWidth / 2;
+            const imageOffsetHeight = paintCanvas.height - qrImageHeight + 8;
+            paintCtx.drawImage(
+              $('.imgHACK>img')[0],
+              imageOffsetWidth,
+              imageOffsetHeight,
+              qrImageWidth,
+              qrImageHeight
+            );
+            canvasTxt.fontSize = 20;
+            paintCtx.fillStyle = 'gray';
+            canvasTxt.drawText(
+              paintCtx,
+              priceDate,
+              imageOffsetWidth - 200,
+              imageOffsetHeight + 100,
+              150,
+              80
+            );
+
+            copyImageToClipboard(paintCanvas);
+            /*  if (document.body.querySelector('canvas')) {
+              document.body.querySelector('canvas').remove();
+              document.body.appendChild(paintCanvas);
+            } */
+          });
+        });
+      }
+    }
+
+    function copyImageToClipboard(canvas) {
+      const base64Data = canvas
+        .toDataURL('image/png')
+        .replace('data:image/png;base64,', '');
+      if (base64Data && base64Data.length < 100) {
         Toastify({
-          text: '复制图片成功，可以去粘贴发送分享了！',
-          duration: 2500,
-          backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
+          text: '生成图片失败！',
+          duration: 2000,
+          backgroundColor: '#f56c6c',
           gravity: 'bottom',
         }).showToast();
+        return;
       }
+      const blobInput = convertBase64ToBlob(base64Data, 'image/png');
+      const clipboardItemInput = new ClipboardItem({
+        'image/png': blobInput,
+      });
+      navigator.clipboard.write([clipboardItemInput]);
+      Toastify({
+        text: '复制图片成功，可以去粘贴发送分享了！',
+        duration: 2500,
+        backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
+        gravity: 'bottom',
+      }).showToast();
+    }
 
-      $(function () {
-        $('.amountInput,.unitPriceInput').on('input', function (e) {
-          const value = e.target.value;
-          if (value.length > 12) {
-            e.target.value = value.slice(0, 12);
+    $(function () {
+      $('.amountInput,.unitPriceInput').on('input', function (e) {
+        const value = e.target.value;
+        if (value.length > 12) {
+          e.target.value = value.slice(0, 12);
+        }
+      });
+      $('#save').click(() => {
+        // const ammountObj = {};
+        let totalMoney = 0;
+        fundList.forEach((item) => {
+          let amount = $('#' + item.code).val();
+          let unitPrice = $('#' + item.code + '_unit').val();
+          amount = isNaN(Number(amount)) ? 0 : Number(amount);
+          unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
+          item.amount = amount; // 持仓金额
+          item.unitPrice = unitPrice; // 成本价
+          totalMoney += amount; // 持仓金额
+          // 收益率
+          if (unitPrice !== 0) {
+            profitPercent = ((item.price - unitPrice) / unitPrice) * 100;
+            item.earningPercent = profitPercent.toFixed(2);
+          } else {
+            item.earningPercent = 0;
           }
-        });
-        $('#save').click(() => {
-          // const ammountObj = {};
-          let totalMoney = 0;
-          fundList.forEach((item) => {
-            let amount = $('#' + item.code).val();
-            let unitPrice = $('#' + item.code + '_unit').val();
-            amount = isNaN(Number(amount)) ? 0 : Number(amount);
-            unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
-            item.amount = amount; // 持仓金额
-            item.unitPrice = unitPrice; // 成本价
-            totalMoney += amount; // 持仓金额
-            // 收益率
-            if (unitPrice !== 0) {
-              profitPercent = ((item.price - unitPrice) / unitPrice) * 100;
-              item.earningPercent = profitPercent.toFixed(2);
-            } else {
-              item.earningPercent = 0;
-            }
 
-            // if (typeof ammountObj[item.code] !== 'object') {
-            //   ammountObj[item.code] = {};
-            // }
-            // ammountObj[item.code].amount = amount;
-            // ammountObj[item.code].unitPrice = unitPrice;
-            // const earnings = item.earnings || 0;
-            // ammountObj[item.code].earnings = earnings;
+          // if (typeof ammountObj[item.code] !== 'object') {
+          //   ammountObj[item.code] = {};
+          // }
+          // ammountObj[item.code].amount = amount;
+          // ammountObj[item.code].unitPrice = unitPrice;
+          // const earnings = item.earnings || 0;
+          // ammountObj[item.code].earnings = earnings;
+        });
+        $('#totalMoney').html(totalMoney.toFixed(2));
+        init2();
+        vscode.postMessage({
+          command: 'success',
+          text: JSON.stringify({
+            stockList: fundList,
+            stockHeldTipShow: $('.el-checkbox-input').prop('checked')
+          }),
+        });
+        return;
+        fetchInfo(fundList, ({ Expansion = {}, Datas = [] }) => {
+          const dates = [
+            Expansion?.FSRQ?.substr?.(5, 5),
+            Expansion?.GZTIME?.substr?.(5, 5),
+          ];
+          const result = [];
+          totalMoney = 0;
+          Datas.forEach((item) => {
+            const amount = ammountObj[item.FCODE].amount;
+            const unitPrice = ammountObj[item.FCODE].unitPrice;
+            const obj = {
+              code: item.FCODE,
+              name: item.SHORTNAME,
+              unitPrice: unitPrice, // 成本价
+              amount: amount, // 持仓金额
+              earnings: ammountObj[item.FCODE].earnings,
+              price: item.NAV, // 净值
+              priceDate: item.PDATE, // 净值时间
+              isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
+            };
+            totalMoney += amount;
+            result.push(obj);
           });
           $('#totalMoney').html(totalMoney.toFixed(2));
-          init2();
+          // 和 vscode webview 通信
           vscode.postMessage({
             command: 'success',
-            text: JSON.stringify(fundList),
+            text: JSON.stringify(result),
           });
-          return;
+        });
+      });
 
-          fetchInfo(fundList, ({ Expansion = {}, Datas = [] }) => {
-            const dates = [
-              Expansion?.FSRQ?.substr?.(5, 5),
-              Expansion?.GZTIME?.substr?.(5, 5),
-            ];
-            const result = [];
-            totalMoney = 0;
-            Datas.forEach((item) => {
-              const amount = ammountObj[item.FCODE].amount;
-              const unitPrice = ammountObj[item.FCODE].unitPrice;
-              const obj = {
-                code: item.FCODE,
-                name: item.SHORTNAME,
-                unitPrice: unitPrice, // 成本价
-                amount: amount, // 持仓金额
-                earnings: ammountObj[item.FCODE].earnings,
-                price: item.NAV, // 净值
-                priceDate: item.PDATE, // 净值时间
-                isUpdated: item.PDATE.substr(5, 5) === item.GZTIME.substr(5, 5),
-              };
-              totalMoney += amount;
-              result.push(obj);
-            });
-            $('#totalMoney').html(totalMoney.toFixed(2));
-            // 和 vscode webview 通信
+      $('#refresh').click(() => {
+        vscode.postMessage({
+          command: 'refresh',
+          sortType,
+        });
+      });
+      $('#sort').click(() => {
+        sortType =
+          sortType === 'earningsDesc' ? 'earningsAsc' : 'earningsDesc';
+        vscode.postMessage({
+          command: 'refresh',
+          sortType,
+        });
+      });
+    });
+
+    function fetchInfo(fundList, cb) {
+      const params = {
+        pageIndex: 1,
+        pageSize: fundList.length,
+        plat: 'Android',
+        appType: 'ttjj',
+        product: 'EFund',
+        Version: 1,
+        deviceid: deviceId,
+        Fcodes: fundList
+          .reduce((arr, item) => [...arr, item.code], [])
+          .join(','),
+      };
+      if (!params.deviceid || !params.Fcodes) return;
+
+      const paramsArr = [];
+      for (let key in params) {
+        if (key && params[key]) {
+          paramsArr.push(key + '=' + params[key]);
+        }
+      }
+
+      window
+        .fetch(
+          'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' +
+          paramsArr.join('&')
+        )
+        .then((res) => {
+          if (res.status !== 200) {
+            // console.log('获取数据失败');
             vscode.postMessage({
-              command: 'success',
-              text: JSON.stringify(result),
+              command: 'alert',
+              text: '获取数据失败',
             });
-          });
-        });
-
-        $('#refresh').click(() => {
-          vscode.postMessage({
-            command: 'refresh',
-            sortType,
-          });
-        });
-        $('#sort').click(() => {
-          sortType =
-            sortType === 'earningsDesc' ? 'earningsAsc' : 'earningsDesc';
-          vscode.postMessage({
-            command: 'refresh',
-            sortType,
-          });
-        });
-      });
-
-      function fetchInfo(fundList, cb) {
-        const params = {
-          pageIndex: 1,
-          pageSize: fundList.length,
-          plat: 'Android',
-          appType: 'ttjj',
-          product: 'EFund',
-          Version: 1,
-          deviceid: deviceId,
-          Fcodes: fundList
-            .reduce((arr, item) => [...arr, item.code], [])
-            .join(','),
-        };
-        if (!params.deviceid || !params.Fcodes) return;
-
-        const paramsArr = [];
-        for (let key in params) {
-          if (key && params[key]) {
-            paramsArr.push(key + '=' + params[key]);
+            return;
           }
-        }
-
-        window
-          .fetch(
-            'https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?' +
-              paramsArr.join('&')
-          )
-          .then((res) => {
-            if (res.status !== 200) {
-              // console.log('获取数据失败');
-              vscode.postMessage({
-                command: 'alert',
-                text: '获取数据失败',
-              });
-              return;
-            }
-            res.json().then(function (d) {
-              cb(d);
-            });
+          res.json().then(function (d) {
+            cb(d);
           });
+        });
+    }
+
+    function convertBase64ToBlob(base64, type) {
+      var bytes = window.atob(base64);
+      var ab = new ArrayBuffer(bytes.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < bytes.length; i++) {
+        ia[i] = bytes.charCodeAt(i);
       }
+      return new Blob([ab], { type: type });
+    }
 
-      function convertBase64ToBlob(base64, type) {
-        var bytes = window.atob(base64);
-        var ab = new ArrayBuffer(bytes.length);
-        var ia = new Uint8Array(ab);
-        for (var i = 0; i < bytes.length; i++) {
-          ia[i] = bytes.charCodeAt(i);
-        }
-        return new Blob([ab], { type: type });
-      }
+    vscode.postMessage({
+      command: 'refresh',
+    });
+  </script>
 
-      vscode.postMessage({
-        command: 'refresh',
-      });
-    </script>
+  <script></script>
+</body>
 
-    <script></script>
-  </body>
 </html>

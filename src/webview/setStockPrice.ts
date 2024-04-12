@@ -24,8 +24,10 @@ async function setStockPrice(stockService: StockService) {
   panel.webview.onDidReceiveMessage((message) => {
     switch (message.command) {
       case 'success':
-        console.log(JSON.parse(message.text));
-        setStockPriceCfgCb(JSON.parse(message.text));
+        const { stockHeldTipShow, stockList } = JSON.parse(message.text);
+        LeekFundConfig.setConfig('leek-fund.stockHeldTipShow', stockHeldTipShow);
+        globalState.stockHeldTipShow = stockHeldTipShow;
+        setStockPriceCfgCb(stockList);
         return;
       case 'alert':
         window.showErrorMessage('保存失败！');
@@ -40,7 +42,11 @@ async function setStockPrice(stockService: StockService) {
         // getWebviewContent(panel);
         panel.webview.postMessage({
           command: 'init',
-          data: list,
+          data: {
+            list,
+            // 初始值
+            showHeldTip: globalState.stockHeldTipShow,
+          },
           sortType: message.sortType,
         });
         return;
@@ -63,7 +69,6 @@ async function setStockPrice(stockService: StockService) {
 
 function stockDataHandler(stockService: StockService) {
   const fundList: LeekTreeItem[] = cloneDeep(stockService.getSelfSelected());
-  console.log('list', fundList);
   const amountObj: any = globalState.stockPrice || {};
   const list = fundList.map((item: LeekTreeItem) => {
     return {
