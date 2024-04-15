@@ -221,10 +221,11 @@ export function activate(context: ExtensionContext) {
 function setGlobalVariable() {
   const stockPrice = LeekFundConfig.getConfig('leek-fund.stockPrice') || {};
   cacheStockPriceData(stockPrice);
-  globalState.iconType = LeekFundConfig.getConfig('leek-fund.iconType') || 'arrow';
 
   const fundAmount = LeekFundConfig.getConfig('leek-fund.fundAmount') || {};
   cacheFundAmountData(fundAmount);
+
+  globalState.stockHeldTipShow = LeekFundConfig.getConfig('leek-fund.stockHeldTipShow') ?? true;
 
   const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind') || {};
   cacheStocksRemindData(stocksRemind);
