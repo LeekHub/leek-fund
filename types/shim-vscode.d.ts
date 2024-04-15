@@ -1,5 +1,5 @@
 declare module 'vscode' {
-	export interface ExtensionContext {
+  export interface ExtensionContext {
     readonly extensionUri: Uri;
   }
   /**
@@ -136,11 +136,5 @@ declare module 'vscode' {
       scopes: string[],
       options?: AuthenticationGetSessionOptions
     ): Thenable<AuthenticationSession | undefined>;
-
-    /**
-     * An [event](#Event) which fires when the authentication sessions of an authentication provider have
-     * been added, removed, or changed.
-     */
-    export const onDidChangeSessions: Event<AuthenticationSessionsChangeEvent>;
   }
 }
