@@ -189,7 +189,7 @@ export class LeekTreeItem extends TreeItem {
     if (heldAmount && globalState.stockHeldTipShow) {
       this.label = {
         label: text,
-        highlights: [[-1, -(info.name?.length || 0) - 1]],
+        highlights: [[0, text.length]],
       };
       this.description = '（持仓）';
     } else {
