@@ -225,6 +225,8 @@ function setGlobalVariable() {
   const fundAmount = LeekFundConfig.getConfig('leek-fund.fundAmount') || {};
   cacheFundAmountData(fundAmount);
 
+  globalState.iconType = LeekFundConfig.getConfig('leek-fund.iconType') || 'arrow';
+
   globalState.stockHeldTipShow = LeekFundConfig.getConfig('leek-fund.stockHeldTipShow') ?? true;
 
   const stocksRemind = LeekFundConfig.getConfig('leek-fund.stocksRemind') || {};
