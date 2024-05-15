@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://github.com/LeekHub/leek-fund/compare/v3.7.1...v3.8.0) (2024-05-15)
+
+
+### Features
+
+* update api version ([19c1a67](https://github.com/LeekHub/leek-fund/commit/19c1a675bf5f90c9759da9e054e3b304782daa72))
+
 ### [3.7.1](https://github.com/LeekHub/leek-fund/compare/v3.7.0...v3.7.1) (2024-03-09)
 
 
