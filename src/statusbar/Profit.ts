@@ -8,9 +8,8 @@ import { StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { TIPS_LOSE, TIPS_WIN } from '../shared/constant';
 import { LeekFundConfig } from '../shared/leekConfig';
 import { ProfitStatusBarInfo } from '../shared/typed';
-import { events, formatDate } from '../shared/utils';
+import { events, formatDate, toFixed } from '../shared/utils';
 import StockService from '../explorer/stockService';
-import globalState from '../globalState';
 
 const PREFIX = '💰';
 
@@ -99,15 +98,6 @@ export class ProfitStatusBar {
   // TODO
   updateStockBarItem(data: StockService) {
     if (this.stockBarItem) {
-      const stockPrice: {
-        [key: string]: {
-          amount: number;
-          earnings: number;
-          name: string;
-          price: string;
-          unitPrice: number;
-        };
-      } = globalState.stockPrice;
       const stockList = data.getSelfSelected();
       type StockInfoType = {
         id: string;
@@ -126,20 +116,17 @@ export class ProfitStatusBar {
       stockList.forEach((s) => {
         let tmp = {} as StockInfoType;
         const { id, info } = s;
-        const { high, low, open, yestclose, percent, price, name } = info;
+        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice } = info;
         if (id && open && price) {
-          const config = stockPrice[id];
-          if (!config || config.amount === 0 || config.unitPrice === 0) {
+          if (!heldAmount || !heldPrice) {
             return false;
           }
-          const unitPrice = config?.unitPrice || 0;
-          const amount = config?.amount || 0;
           // const incomeTotal = amount * (Number(price).toFixed(2) - unitPrice.toFixed(2));
           // const incomeToday = amount * (Number(price).toFixed(2) - Number(open).toFixed(2));
-          const incomeTotal = (amount * (Number(price) - unitPrice)).toFixed(2);
+          const incomeTotal = (heldAmount * (Number(price) - heldPrice)).toFixed(2);
           // fix #399，在昨日收盘价没有的时候使用今日开盘价
-          const incomeToday = (amount * (Number(price) - Number(yestclose || open))).toFixed(2);
-          const percentTotal = ((Number(incomeTotal) / (unitPrice * amount)) * 100).toFixed(2);
+          const incomeToday = (heldAmount * (Number(price) - Number(yestclose || open))).toFixed(2);
+          const percentTotal = ((Number(incomeTotal) / (heldPrice * heldAmount)) * 100).toFixed(2);
           tmp = {
             id,
             name,
@@ -148,7 +135,7 @@ export class ProfitStatusBar {
             open,
             percent,
             price,
-            amount,
+            amount: heldAmount,
             incomeTotal,
             incomeToday,
             percentTotal,
@@ -164,7 +151,7 @@ export class ProfitStatusBar {
         return prev + Number(cur.incomeTotal);
       }, 0);
       // Use the year, month, and day variables as needed
-      this.stockBarItem.text = `${PREFIX} ${allIncomeTotal} | ${allIncomeToday}`;
+      this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal)} | ${toFixed(allIncomeToday)}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
         `「股票收益统计」 ${date}\r\n \r\n` +

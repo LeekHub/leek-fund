@@ -30,7 +30,6 @@ export enum TreeItemType {
   /** 外汇 */
   FOREX = 'forex',
 }
-
 export interface IAmount {
   name: string;
   price: number | string;
@@ -81,6 +80,8 @@ export interface FundInfo {
   conversionPrice?: number; // 中行折算价
   publishDateTime?: string; // 发布日期：年月日 时分秒
   publishTime?: string; // 发布时间：时分秒
+  heldAmount?: number; // 持仓数
+  heldPrice?: number; // 持仓价
 }
 
 export const defaultFundInfo: FundInfo = {
@@ -106,3 +107,8 @@ export interface ProfitStatusBarInfo {
   fundAmount: number;
   priceDate: string;
 }
+
+export type HeldData = {
+  heldAmount?: number;
+  heldPrice?: number;
+};

@@ -433,6 +433,10 @@ export function registerViewEvent(
               label: globalState.kLineChartSwitch ? '🔛 切换为常规k线图' : '📴 切换为筹码分布K线图',
               description: 'kLineChartSwitch',
             },
+            {
+              label: globalState.stockHeldTipShow ? '关闭持仓股高亮展示' : '关闭持仓股高亮展示',
+              description: 'stockHeldTipShow',
+            },
           ],
           {
             placeHolder: '第一步：选择设置项',
@@ -522,6 +526,8 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.toggleRemindSwitch');
           } else if (type === 'kLineChartSwitch') {
             commands.executeCommand('leek-fund.toggleKLineChartSwitch');
+          } else if (type === 'stockHeldTipShow') {
+            commands.executeCommand('leek-fund.toggleStockHeldTipShow');
           }
         });
     })
@@ -549,6 +555,14 @@ export function registerViewEvent(
       const newValue = on !== undefined ? (on ? 1 : 0) : globalState.kLineChartSwitch === 1 ? 0 : 1;
       LeekFundConfig.setConfig('leek-fund.stockKLineChartSwitch', newValue);
       globalState.kLineChartSwitch = newValue;
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleStockHeldTipShow', () => {
+      const newValue = !globalState.stockHeldTipShow;
+      LeekFundConfig.setConfig('leek-fund.stockHeldTipShow', newValue);
+      globalState.stockHeldTipShow = newValue;
     })
   );
 

@@ -20,6 +20,8 @@ let newsIntervalTime = 20000; // 新闻刷新频率（毫秒）
 let newsIntervalTimer: NodeJS.Timer | any = null; // 计算器控制
 let labelFormat = DEFAULT_LABEL_FORMAT;
 
+let stockHeldTipShow = true; // 是否开启股票持仓提示
+
 let aStockCount = 0;
 let usStockCount = 0;
 let hkStockCount = 0;
@@ -70,4 +72,6 @@ export default {
 
   stockPrice,
   stockPriceCacheDate,
+
+  stockHeldTipShow,
 };
