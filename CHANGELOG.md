@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.9.0](https://github.com/LeekHub/leek-fund/compare/v3.8.0...v3.9.0) (2024-05-25)
+
+
+### Features
+
+* [#427](https://github.com/LeekHub/leek-fund/issues/427)增加悬浮窗持仓股展示和持仓股高亮展示 ([d4a3dc4](https://github.com/LeekHub/leek-fund/commit/d4a3dc4e04ac8727e10e01ecd3a4217c802fd3c6))
+
+
+### Bug Fixes
+
+* ([#428](https://github.com/LeekHub/leek-fund/issues/428))优化statusBar底部profit小数展示 ([0191428](https://github.com/LeekHub/leek-fund/commit/01914287b9f5c8fd2236f4a9124cc7147a06045f))
+* ts问题更改 ([c7315b1](https://github.com/LeekHub/leek-fund/commit/c7315b136bf35c30ae7ec7fb1d17a8bcf4473964))
+* 关闭持仓高亮相关文字 ([b53cd42](https://github.com/LeekHub/leek-fund/commit/b53cd42baf53e3151f3fdf8a0f7b484882519696))
+
 ## [3.8.0](https://github.com/LeekHub/leek-fund/compare/v3.7.1...v3.8.0) (2024-05-15)
 
 
