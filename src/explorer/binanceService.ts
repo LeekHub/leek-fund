@@ -44,7 +44,7 @@ export default class BinanceService extends LeekService {
       params: { symbols },
       headers: randHeader(),
     }).then(res => symbolsWithSplit.map(symbol => {
-      const target = (res.data as any).find((data: any) => data.symbol === symbol.split('_').join(''))
+      const target = (res.data as any).find((data: any) => data.symbol === symbol.split('_').join(''));
       return ({ data: target, symbol });
     })).catch((err) => {
       globalState.telemetry.sendEvent('error: binanceService', {
