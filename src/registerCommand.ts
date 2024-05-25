@@ -434,7 +434,7 @@ export function registerViewEvent(
               description: 'kLineChartSwitch',
             },
             {
-              label: globalState.stockHeldTipShow ? '关闭持仓股高亮展示' : '关闭持仓股高亮展示',
+              label: globalState.stockHeldTipShow ? '关闭持仓高亮' : '开启持仓高亮',
               description: 'stockHeldTipShow',
             },
           ],
