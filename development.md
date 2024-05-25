@@ -183,7 +183,7 @@ http://blog.haoji.me/vscode-plugin-overview.html
 |GZTIME|估值的日期|
 
 ```
-https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=11&appType=ttjj&product=EFund&plat=Android&deviceid=9e16077fca2fcr78ep0ltn98&Version=1&Fcodes=161725,320007,001632,161726,001071,007874,004857,420009,377240,002207,004855
+https://fundmobapi.eastmoney.com/FundMNewApi/FundMNFInfo?pageIndex=1&pageSize=11&appType=ttjj&product=EFund&plat=Android&deviceid=9e16077fca2fcr78ep0ltn98&Version=1&Fcodes=161725,377240,002207,270023
 ```
 
 - 获取基金历史净值
