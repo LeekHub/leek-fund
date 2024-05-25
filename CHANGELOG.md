@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.9.1](https://github.com/LeekHub/leek-fund/compare/v3.9.0...v3.9.1) (2024-05-25)
+
+
+### Bug Fixes
+
+* Consider upgrade engines.vscode or use an older @types/vscode version ([0829649](https://github.com/LeekHub/leek-fund/commit/082964974104d5a4c3ce9a860003ec0cdb388274))
+
 ## [3.9.0](https://github.com/LeekHub/leek-fund/compare/v3.8.0...v3.9.0) (2024-05-25)
 
 
