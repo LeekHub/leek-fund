@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.9.2](https://github.com/LeekHub/leek-fund/compare/v3.9.1...v3.9.2) (2024-07-14)
+
+
+### Bug Fixes
+
+* 金十数据因为ws问题引起重连卡顿 ([86e5e9e](https://github.com/LeekHub/leek-fund/commit/86e5e9e4a61cdc658c2489a72b39e2a68d02a2c4)), closes [#447](https://github.com/LeekHub/leek-fund/issues/447)
+
 ### [3.9.1](https://github.com/LeekHub/leek-fund/compare/v3.9.0...v3.9.1) (2024-05-25)
 
 
