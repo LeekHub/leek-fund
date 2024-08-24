@@ -34,33 +34,17 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   getChildren(element?: LeekTreeItem | undefined): LeekTreeItem[] | Thenable<LeekTreeItem[]> {
     if (!element) {
-      // Root view
-      const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-      return this.service.getData(stockCodes, this.order).then(() => {
-        return this.getRootNodes();
-      });
+      return this.getRootNodes(globalState.stockGroups, globalState.stockLists);
     } else {
-      const resultPromise = Promise.resolve(this.service.stockList || []);
-      switch (
-        element.id // First-level
-      ) {
-        case StockCategory.A:
-          return this.getAStockNodes(resultPromise);
-        case StockCategory.HK:
-          return this.getHkStockNodes(resultPromise);
-        case StockCategory.US:
-          return this.getUsStockNodes(resultPromise);
-        case StockCategory.Future:
-          return this.getFutureStockNodes(resultPromise);
-        case StockCategory.OverseaFuture:
-          return this.getOverseaFutureStockNodes(resultPromise);
-        case StockCategory.NODATA:
-          return this.getNoDataStockNodes(resultPromise);
-        default:
-          return [];
-        // return this.getChildrenNodesById(element.id);
-      }
+      return this.getChildrenNodes(element, globalState.stockLists);
     }
+  }
+
+  getChildrenNodes(element: LeekTreeItem, stockLists: Array<Array<string>>): Promise<Array<LeekTreeItem>> {
+    const groupId = element.id || '';
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    const stockCodes: Array<string> = stockLists[index];
+    return this.service.getData(stockCodes, this.order, groupId);
   }
 
   getParent(): LeekTreeItem | undefined {
@@ -90,7 +74,26 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     }
   }
 
-  getRootNodes(): LeekTreeItem[] {
+  getRootNodes(stockGroups: Array<string>, stockLists: Array<Array<string>>): Array<LeekTreeItem> {
+    let nodes: Array<LeekTreeItem> = [];
+    stockLists.forEach((value, index) => {
+      nodes.push(
+        new LeekTreeItem(
+          Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+            id: `stockGroup_${index}`,
+            name: `${stockGroups[index]}${value.length > 0 ? `(${value.length})` : ''}`,
+            isStock: true,
+          }),
+          undefined,
+          true
+        )
+      );
+    });
+    return nodes;
+  }
+
+  // hide
+  getRootNodes1(): LeekTreeItem[] {
     const nodes = [
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
