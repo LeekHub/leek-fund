@@ -38,6 +38,9 @@ let isDevelopment = false; // 是否开发环境
 let fundGroups: Array<string> = [];
 let fundLists: Array<Array<string>> = [];
 
+let stockGroups: Array<string> = [];
+let stockLists: Array<Array<string>> = [];
+
 let stockPrice = {}; // 缓存数据
 let stockPriceCacheDate = '2020-10-30';
 export default {
@@ -69,6 +72,8 @@ export default {
   isDevelopment,
   fundGroups,
   fundLists,
+  stockGroups,
+  stockLists,
 
   stockPrice,
   stockPriceCacheDate,

@@ -131,6 +131,8 @@ export function registerViewEvent(
 
   // Stock operation
   commands.registerCommand('leek-fund.refreshStock', () => {
+    globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups', []);
+    globalState.stockLists = LeekFundConfig.getConfig('leek-fund.stocks', []);
     stockProvider.refresh();
     const handler = window.setStatusBarMessage(`股票数据已刷新`);
     setTimeout(() => {
@@ -154,7 +156,7 @@ export function registerViewEvent(
     }
     leekCenterView(stockService, fundService);
   });
-  commands.registerCommand('leek-fund.addStock', () => {
+  commands.registerCommand('leek-fund.addStock', (target) => {
     // vscode QuickPick 不支持动态查询，只能用此方式解决
     // https://github.com/microsoft/vscode/issues/23633
     const qp = window.createQuickPick();
@@ -185,7 +187,7 @@ export function registerViewEvent(
       }
       // 存储到配置的时候是接口的参数格式，接口请求时不需要再转换
       const newCode = code.replace('gb', 'gb_').replace('us', 'usr_');
-      LeekFundConfig.updateStockCfg(newCode, () => {
+      LeekFundConfig.addStockCfg(target.id, newCode, () => {
         stockProvider.refresh();
       });
       qp.hide();
@@ -195,6 +197,32 @@ export function registerViewEvent(
   commands.registerCommand('leek-fund.sortStock', () => {
     stockProvider.changeOrder();
     stockProvider.refresh();
+  });
+  commands.registerCommand('leek-fund.addStockGroup', () => {
+    window.showInputBox({ placeHolder: '请输入股票分组名称' }).then((name) => {
+      if (!name) {
+        return;
+      }
+      LeekFundConfig.addStockGroupCfg(name, () => {
+        stockProvider.refresh();
+      });
+    });
+  });
+  commands.registerCommand('leek-fund.removeStockGroup', (target) => {
+    LeekFundConfig.removeStockGroupCfg(target.id, () => {
+      stockService.stockList = [];
+      stockProvider.refresh();
+    });
+  });
+  commands.registerCommand('leek-fund.renameStockGroup', (target) => {
+    window.showInputBox({ placeHolder: '请输入股票分组名称' }).then((name) => {
+      if (!name) {
+        return;
+      }
+      LeekFundConfig.renameStockGroupCfg(target.id, name, () => {
+        stockProvider.refresh();
+      });
+    });
   });
 
   /**

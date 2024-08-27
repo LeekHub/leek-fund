@@ -172,6 +172,19 @@
         "icon": "$(add)"
       },
       {
+        "command": "leek-fund.addStockGroup",
+        "title": "添加股票分组",
+        "icon": "$(diff-added)"
+      },
+      {
+        "command": "leek-fund.renameStockGroup",
+        "title": "修改分组名称"
+      },
+      {
+        "command": "leek-fund.removeStockGroup",
+        "title": "删除分组"
+      },
+      {
         "command": "leek-fund.setStockPrice",
         "title": "设置股票成本价",
         "icon": {
@@ -333,7 +346,7 @@
           "group": "navigation"
         },
         {
-          "command": "leek-fund.addStock",
+          "command": "leek-fund.addStockGroup",
           "when": "view == leekFundView.stock",
           "group": "navigation"
         },
@@ -410,6 +423,11 @@
           "group": "inline"
         },
         {
+          "command": "leek-fund.addStock",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "inline"
+        },
+        {
           "command": "leek-fund.deleteFund",
           "when": "view == leekFundView.fund && viewItem != category",
           "group": "group4"
@@ -423,6 +441,16 @@
           "command": "leek-fund.renameFundGroup",
           "when": "view == leekFundView.fund && viewItem == category",
           "group": "group7"
+        },
+        {
+          "command": "leek-fund.removeStockGroup",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "group8"
+        },
+        {
+          "command": "leek-fund.renameStockGroup",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "group8"
         },
         {
           "command": "leek-fund.setStockTop",
@@ -518,6 +546,13 @@
             "hf_CHA50CFD"
           ],
           "description": "配置需要监控的股票代码（建议通过界面新增）"
+        },
+        "leek-fund.stockGroups": {
+          "type": "array",
+          "default": [
+            "My Stocks"
+          ],
+          "description": "配置股票分组名称（建议通过界面新增）"
         },
         "leek-fund.stockPrice": {
           "type": "object",

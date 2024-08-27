@@ -146,13 +146,64 @@ export class LeekFundConfig extends BaseConfig {
   // Fund End
 
   // Stock Begin
-  static updateStockCfg(codes: string, cb?: Function) {
-    this.updateConfig('leek-fund.stocks', codes.split(',')).then(() => {
-      window.showInformationMessage(`Stock Successfully add.`);
+  static addStockGroupCfg(name: string, cb?: Function) {
+    globalState.stockGroups.push(name);
+    globalState.stockLists.push([]);
+    this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    this.setConfig('leek-fund.stocks', globalState.stockLists);
+    window.showInformationMessage(`Stock Group Successfully add.`);
+    if (cb && typeof cb === 'function') {
+      cb(name);
+    }
+  }
+
+  static renameStockGroupCfg(groupId: string, name: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    globalState.stockGroups[index] = name;
+    this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    window.showInformationMessage(`Stock Group Successfully rename.`);
+    if (cb && typeof cb === 'function') {
+      cb(groupId);
+    }
+  }
+
+  static removeStockGroupCfg(groupId: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    const removedStockList: Array<string> = globalState.stockLists[index];
+    const removeStockGroup = () => {
+      globalState.stockGroups.splice(index, 1);
+      globalState.stockLists.splice(index, 1);
+      this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+      this.setConfig('leek-fund.stocks', globalState.stockLists);
+      window.showInformationMessage(`Stock Group Successfully delete.`);
       if (cb && typeof cb === 'function') {
-        cb(codes);
+        cb(groupId);
       }
-    });
+    };
+
+    if (removedStockList.length) {
+      window.showInformationMessage('删除分组会清空股票数据无法恢复，请确认！！', '好的', '取消').then((res) => {
+        if (res === '好的') {
+          removeStockGroup();
+        }
+      });
+    } else {
+      removeStockGroup();
+    }
+  }
+
+  static addStockCfg(groupId: string, codes: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    const stocks = globalState.stockLists[index] as Array<string | number>;
+    let updatedStocks = [...stocks, ...codes.split(',')];
+    updatedStocks = clean(updatedStocks);
+    updatedStocks = uniq(updatedStocks);
+    globalState.stockLists[index] = updatedStocks as never;
+    this.setConfig('leek-fund.stocks', globalState.stockLists);
+    window.showInformationMessage(`Fund Successfully add.`);
+    if (cb && typeof cb === 'function') {
+      cb(codes);
+    }
   }
 
   static removeStockCfg(code: string, cb?: Function) {
@@ -198,7 +249,7 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setStockTopCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
 
@@ -218,7 +269,7 @@ export class LeekFundConfig extends BaseConfig {
       }
     };
 
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
     const currentIndex = configArr.indexOf(code);
     let previousIndex = currentIndex - 1;
     // 找到前一个同市场的股票
@@ -264,7 +315,7 @@ export class LeekFundConfig extends BaseConfig {
       }
     };
 
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
     const currentIndex = configArr.indexOf(code);
     let nextIndex = currentIndex + 1;
     //找到后一个同市场的股票

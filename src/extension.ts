@@ -100,10 +100,13 @@ export function activate(context: ExtensionContext) {
   const manualRequest = () => {
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
     fundLists.forEach((value: Array<string>, index: number) => {
-      fundService.getData(value, SortType.NORMAL, `fundGroup_${index}`);
+      Array.isArray(value) && fundService.getData(value, SortType.NORMAL, `fundGroup_${index}`);
     });
 
-    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL);
+    const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+    stockLists.forEach((value: Array<string>, index: number) => {
+      Array.isArray(value) && stockService.getData(value, SortType.NORMAL, `stockGroup_${index}`);
+    });
   };
 
   manualRequest();
@@ -252,6 +255,19 @@ function setGlobalVariable() {
     LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
   } else {
     globalState.fundLists = fundLists;
+  }
+
+  globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups') || [];
+
+  const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+  if (typeof stockLists[0] === 'string' || stockLists[0] instanceof String) {
+    // 迁移用户的股票代码到分组模式
+    const newStockLists = [stockLists];
+    globalState.stockLists = newStockLists;
+    LeekFundConfig.setConfig('leek-fund.stocks', newStockLists);
+    LeekFundConfig.setConfig('leek-fund.stockGroups', ['My Stocks']);
+  } else {
+    globalState.stockLists = stockLists;
   }
 }
 

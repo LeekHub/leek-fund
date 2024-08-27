@@ -40,7 +40,11 @@ export default class StockService extends LeekService {
     return this.token;
   }
 
-  async getData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+  async getData(
+    codes: Array<string>,
+    order: number,
+    groupId: string,
+  ): Promise<Array<LeekTreeItem>> {
     // console.log('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
@@ -70,8 +74,8 @@ export default class StockService extends LeekService {
 
     let stockList: Array<LeekTreeItem> = [];
     const result = await Promise.allSettled([
-      this.getStockData(stockCodes),
-      this.getHKStockData(hkCodes),
+      this.getStockData(stockCodes, groupId),
+      this.getHKStockData(hkCodes, groupId),
     ]);
     result.forEach((item) => {
       if (item.status === 'fulfilled') {
@@ -88,7 +92,7 @@ export default class StockService extends LeekService {
     return res;
   }
 
-  async getStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+  async getStockData(codes: Array<string>, groupId: string): Promise<Array<LeekTreeItem>> {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
@@ -124,7 +128,7 @@ export default class StockService extends LeekService {
           return [];
         }
         for (const code of codes) {
-          stockList = stockList.concat(await this.getStockData(new Array(code)));
+          stockList = stockList.concat(await this.getStockData(new Array(code), groupId));
         }
       } else {
         const splitData = resp.data.split(';\n');
@@ -349,6 +353,7 @@ export default class StockService extends LeekService {
               } catch (err) {
                 console.error(err);
               }
+              stockItem.id = `${groupId}_${code}`;
               stockItem.showLabel = this.showLabel;
               stockItem.isStock = true;
               stockItem.type = type;
@@ -365,7 +370,7 @@ export default class StockService extends LeekService {
             // 接口不支持的
             noDataStockCount += 1;
             stockItem = {
-              id: code,
+              id: `${groupId}_${code}`,
               name: `接口不支持该股票 ${code}`,
               showLabel: this.showLabel,
               isStock: true,
@@ -399,7 +404,7 @@ export default class StockService extends LeekService {
     return stockList;
   }
 
-  async getHKStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+  async getHKStockData(codes: Array<string>, groupId: string): Promise<Array<LeekTreeItem>> {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
@@ -463,6 +468,7 @@ export default class StockService extends LeekService {
               if (Number(open) <= 0) {
                 price = yestclose;
               }
+              stockItem.id = `${groupId}_${stockItem.code}`;
               stockItem.showLabel = this.showLabel;
               stockItem.isStock = true;
               stockItem.type = 'hk';
