@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.10.0](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.10.0) (2024-08-27)
+
+
+### Features
+
+* 新增股票分组功能 ([3afd173](https://github.com/LeekHub/leek-fund/commit/3afd173a9478467d0251dc56c916b7e2ea8da6ab))
+
 ### [3.9.2](https://github.com/LeekHub/leek-fund/compare/v3.9.1...v3.9.2) (2024-07-14)
 
 
