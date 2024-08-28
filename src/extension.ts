@@ -260,9 +260,21 @@ function setGlobalVariable() {
   globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups') || [];
 
   const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-  if (typeof stockLists[0] === 'string' || stockLists[0] instanceof String) {
-    // 迁移用户的股票代码到分组模式
-    const newStockLists = [stockLists];
+  // 如果不是分组时，迁移用户的股票代码到分组模式
+  if (!(Array.isArray(stockLists[0]))) {
+    // fix: https://github.com/LeekHub/leek-fund/issues/459
+
+    const newStockLists = [];
+    const defaultGroup: string[] = [];
+    stockLists.forEach((code: string | string[]) => {
+      if (!code) return;
+      if (typeof code === 'string') {
+        defaultGroup.push(code);
+      } else if (Array.isArray(code)) {
+        newStockLists.push(code);
+      }
+    });
+    newStockLists.unshift(defaultGroup);
     globalState.stockLists = newStockLists;
     LeekFundConfig.setConfig('leek-fund.stocks', newStockLists);
     LeekFundConfig.setConfig('leek-fund.stockGroups', ['My Stocks']);
