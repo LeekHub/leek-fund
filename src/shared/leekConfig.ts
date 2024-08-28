@@ -249,6 +249,7 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setStockTopCfg(code: string, cb?: Function) {
+    if(!code) return;
     let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
 
     configArr = [code, ...configArr.filter((item) => item !== code)];
