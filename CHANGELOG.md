@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.10.2](https://github.com/LeekHub/leek-fund/compare/v3.10.1...v3.10.2) (2024-08-28)
+
+
+### Bug Fixes
+
+* [#459](https://github.com/LeekHub/leek-fund/issues/459) 修复分组升级无法使用问题 ([4c975f2](https://github.com/LeekHub/leek-fund/commit/4c975f2eab5cec5d6d5a22f4b3a702406e3237ab))
+
 ### [3.10.1](https://github.com/LeekHub/leek-fund/compare/v3.10.0...v3.10.1) (2024-08-28)
 
 ## [3.10.0](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.10.0) (2024-08-27)
