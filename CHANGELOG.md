@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.10.3](https://github.com/LeekHub/leek-fund/compare/v3.10.2...v3.10.3) (2024-08-29)
+
+
+### Bug Fixes
+
+* 修复股票的移动、置顶、删除、状态栏设置股票等功能 ([dff72fa](https://github.com/LeekHub/leek-fund/commit/dff72fa93b1b7202ef5ea666433c94eab15fad8d))
+
 ### [3.10.2](https://github.com/LeekHub/leek-fund/compare/v3.10.1...v3.10.2) (2024-08-28)
 
 
