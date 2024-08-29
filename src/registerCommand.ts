@@ -618,7 +618,13 @@ export function registerViewEvent(
           const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
           const newCfg = [...statusBarStocks];
           const newStockId = res.description;
-          const index = newCfg.indexOf(stockId);
+          const codeComponents = stockId.split('_');
+          if (codeComponents.length < 3) {
+            window.showInformationMessage(`Stock Id error.`);
+            return;
+          }
+          const stockCode: string = codeComponents[2];
+          const index = newCfg.indexOf(stockCode);
           if (newStockId === '-1') {
             if (index > -1) {
               newCfg.splice(index, 1);
