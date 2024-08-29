@@ -207,15 +207,34 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static removeStockCfg(code: string, cb?: Function) {
-    this.removeConfig('leek-fund.stocks', code).then(() => {
-      window.showInformationMessage(`Stock Successfully delete.`);
-      if (cb && typeof cb === 'function') {
-        cb(code);
-      }
-    });
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string | number>;
+    let updatedStocks = stocks;
+    updatedStocks.splice(updatedStocks.indexOf(stockCode), 1);
+    updatedStocks = clean(updatedStocks);
+    updatedStocks = uniq(updatedStocks);
+    globalState.stockLists[index] = updatedStocks as never;
+    this.setConfig('leek-fund.stocks', globalState.stockLists);
+    window.showInformationMessage(`Stock Successfully delete.`);
+    if (cb && typeof cb === 'function') {
+      cb(code);
+    }
   }
 
   static addStockToBarCfg(code: string, cb?: Function) {
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
+    const stockCode: string = codeComponents[2];
+
     const addStockToBar = () => {
       let configArr: string[] = this.getConfig('leek-fund.statusBarStock');
       if (configArr.length >= 4) {
@@ -223,13 +242,13 @@ export class LeekFundConfig extends BaseConfig {
         if (cb && typeof cb === 'function') {
           cb(code);
         }
-      } else if (configArr.includes(code)) {
+      } else if (configArr.includes(stockCode)) {
         window.showInformationMessage(`StatusBar Already Have.`);
         if (cb && typeof cb === 'function') {
           cb(code);
         }
       } else {
-        configArr.push(code);
+        configArr.push(stockCode);
         this.setConfig('leek-fund.statusBarStock', configArr).then(() => {
           window.showInformationMessage(`Stock Successfully add to statusBar.`);
           if (cb && typeof cb === 'function') {
@@ -250,11 +269,19 @@ export class LeekFundConfig extends BaseConfig {
 
   static setStockTopCfg(code: string, cb?: Function) {
     if(!code) return;
-    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
-
-    configArr = [code, ...configArr.filter((item) => item !== code)];
-
-    this.setConfig('leek-fund.stocks', configArr).then(() => {
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string | number>;
+    let updatedStocks = [stockCode, ...stocks.filter(item => item !== stockCode)];
+    updatedStocks = clean(updatedStocks);
+    updatedStocks = uniq(updatedStocks);
+    globalState.stockLists[index] = updatedStocks as never;
+    this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
       window.showInformationMessage(`Stock successfully set to top.`);
       if (cb && typeof cb === 'function') {
         cb(code);
@@ -263,97 +290,62 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setStockUpCfg(code: string, cb?: Function) {
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
     const callback = () => {
       window.showInformationMessage(`Stock successfully move up.`);
       if (cb && typeof cb === 'function') {
         cb(code);
       }
     };
-
-    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
-    const currentIndex = configArr.indexOf(code);
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string | number>;
+    let currentIndex = stocks.indexOf(stockCode);
     let previousIndex = currentIndex - 1;
-    // 找到前一个同市场的股票
-    for (let index = currentIndex - 1; index >= 0; index--) {
-      const previousCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-    }
     if (previousIndex < 0) {
       callback();
     } else {
       // 交换位置
-      configArr[currentIndex] = configArr.splice(previousIndex, 1, configArr[currentIndex])[0];
-      this.setConfig('leek-fund.stocks', configArr).then(() => {
+      [stocks[currentIndex], stocks[previousIndex]] = [stocks[previousIndex], stocks[currentIndex]]
+      globalState.stockLists[index] = stocks as never;
+      this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
         callback();
       });
     }
   }
 
   static setStockDownCfg(code: string, cb?: Function) {
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
     const callback = () => {
       window.showInformationMessage(`Stock successfully move down.`);
       if (cb && typeof cb === 'function') {
         cb(code);
       }
     };
-
-    let configArr: string[] = this.getConfig('leek-fund.stocks').flat();
-    const currentIndex = configArr.indexOf(code);
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string | number>;
+    let currentIndex = stocks.indexOf(stockCode);
     let nextIndex = currentIndex + 1;
-    //找到后一个同市场的股票
-    for (let index = currentIndex + 1; index < configArr.length; index++) {
-      const nextCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-    }
-    if (nextIndex >= configArr.length) {
+    if (nextIndex >= stocks.length) {
       callback();
     } else {
       // 交换位置
-      configArr[currentIndex] = configArr.splice(nextIndex, 1, configArr[currentIndex])[0];
-      this.setConfig('leek-fund.stocks', configArr).then(() => {
+      [stocks[currentIndex], stocks[nextIndex]] = [stocks[nextIndex], stocks[currentIndex]]
+      globalState.stockLists[index] = stocks as never;
+      this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
         callback();
       });
     }
   }
-
   // Stock End
 
   // Binance Begin
