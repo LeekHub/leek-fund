@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.2](https://github.com/LeekHub/leek-fund/compare/v3.11.1...v3.11.2) (2024-09-04)
+
+
+### Bug Fixes
+
+* 临时解决token问题 ([f8745c2](https://github.com/LeekHub/leek-fund/commit/f8745c2ed3846a2fce168ced95e9aaf09ae8ef9b))
+
 ### [3.11.1](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.11.1) (2024-09-04)
 
 
