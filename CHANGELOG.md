@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.1](https://github.com/LeekHub/leek-fund/compare/v3.9.2...v3.11.1) (2024-09-04)
+
+
+### Bug Fixes
+
+* lodash type compile error ([2b772df](https://github.com/LeekHub/leek-fund/commit/2b772df168c810f08757a0d0d3092c0ec328e648))
+
 ### [3.9.2](https://github.com/LeekHub/leek-fund/compare/v3.9.1...v3.9.2) (2024-07-14)
 
 
