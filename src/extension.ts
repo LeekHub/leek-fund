@@ -1,12 +1,16 @@
 /*--------------------------------------------------------------
- *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
+ *  Copyright (c) Nicky<giscafer@outlook.com>. All rights reserved.
  *  Licensed under the BSD-3-Clause License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
+import { compare } from 'compare-versions';
+import { compact, flattenDeep, uniq } from 'lodash';
+import { ConfigurationChangeEvent, ExtensionContext, extensions, TreeView, window, workspace } from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
+import { ForexProvider } from './explorer/forexProvider';
+import { ForexService } from './explorer/forexService';
 import { FundProvider } from './explorer/fundProvider';
 import FundService from './explorer/fundService';
 import { NewsProvider } from './explorer/newsProvider';
@@ -14,20 +18,18 @@ import { StockProvider } from './explorer/stockProvider';
 import StockService from './explorer/stockService';
 import globalState from './globalState';
 import FlashNewsDaemon from './output/flash-news/FlashNewsDaemon';
+import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { registerCommandPaletteEvent, registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
 import { LeekFundConfig } from './shared/leekConfig';
 import { Telemetry } from './shared/telemetry';
 import { SortType } from './shared/typed';
 import { events, formatDate, isStockTime } from './shared/utils';
-import { StatusBar } from './statusbar/statusBar';
 import { ProfitStatusBar } from './statusbar/Profit';
+import { StatusBar } from './statusbar/statusBar';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
-import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
-import { ForexService } from './explorer/forexService';
-import { ForexProvider } from './explorer/forexProvider';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -252,6 +254,16 @@ function setGlobalVariable() {
     LeekFundConfig.setConfig('leek-fund.funds', newFundLists);
   } else {
     globalState.fundLists = fundLists;
+  }
+  // 临时解决3.10.1~3.10.3 pr产生的分组bug
+  const leekFundExt = extensions.getExtension('giscafer.leek-fund');
+  const currentVersion = leekFundExt?.packageJSON?.version;
+  console.log("🚀 ~ LeekFund ~ version:", currentVersion);
+  if (compare(currentVersion, '3.9.2', '>=') && compare(currentVersion, '3.10.3', '<=')) {
+    const arr = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+    const stockList = uniq(compact(flattenDeep(arr)));
+    console.log("🚀 ~ leek-fund.stocks ~ arr:", stockList)
+    LeekFundConfig.setConfig('leek-fund.stocks', stockList);
   }
 }
 

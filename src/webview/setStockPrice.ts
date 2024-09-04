@@ -7,7 +7,7 @@ import { LeekTreeItem } from '../shared/leekTreeItem';
 import { IAmount } from '../shared/typed';
 import { formatDate, getTemplateFileContent, toFixed } from '../shared/utils';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-const cloneDeep = require('lodash.clonedeep');
+import { cloneDeep } from 'lodash';
 
 async function setStockPrice(stockService: StockService) {
   // const list = fundDataHandler(fundService);
@@ -122,7 +122,7 @@ export async function updateStockPrice() {
   if (codes.length === 0) {
     return;
   }
-  const filterCodes = [];
+  const filterCodes: string[] = [];
   for (const code of codes) {
     const amount = amountObj[code]?.amount;
     if (amount > 0) {
@@ -135,7 +135,7 @@ export async function updateStockPrice() {
       return FundService.qryFundInfo(filterCode);
     });
     const resultFundInfos = await Promise.allSettled(qryFundInfos);
-    const fundInfos = [];
+    const fundInfos: any[] = [];
     for (const resultFundInfo of resultFundInfos) {
       if (resultFundInfo.status === 'fulfilled') {
         const fundStrings = /jsonpgz\((.*)\);/.exec(resultFundInfo.value) || [];

@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
- *  Copyright (c) Nickbing Lao<giscafer@outlook.com>. All rights reserved.
+ *  Copyright (c) Nicky<giscafer@outlook.com>. All rights reserved.
  *  Licensed under the MIT License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
@@ -7,6 +7,7 @@
 import { window, workspace } from 'vscode';
 import globalState from '../globalState';
 import { clean, uniq, events } from './utils';
+import { flattenDeep } from 'lodash';
 
 export class BaseConfig {
   static getConfig(key: string, defaultValue?: any): any {
@@ -33,7 +34,7 @@ export class BaseConfig {
     const config = workspace.getConfiguration();
     const sourceCfg = config.get(cfgKey, []);
     const newCfg = sourceCfg.filter((item) => item !== code);
-    if(sourceCfg.length === newCfg.length){
+    if (sourceCfg.length === newCfg.length) {
       window.showInformationMessage(`删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`);
     }
     return config.update(cfgKey, newCfg, true);
@@ -198,11 +199,12 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setStockTopCfg(code: string, cb?: Function) {
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
+    let arr: string[] = this.getConfig('leek-fund.stocks');
+    // 临时解决3.10.1~3.10.3 pr产生的分组bug
+    const stockList = flattenDeep(arr).filter?.((item) => item !== code);
+    stockList.unshift(code);
 
-    configArr = [code, ...configArr.filter((item) => item !== code)];
-
-    this.setConfig('leek-fund.stocks', configArr).then(() => {
+    this.setConfig('leek-fund.stocks', stockList).then(() => {
       window.showInformationMessage(`Stock successfully set to top.`);
       if (cb && typeof cb === 'function') {
         cb(code);

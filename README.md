@@ -189,4 +189,4 @@ src
 ---
 
 - X [@nicky_lao](https://twitter.com/nicky_lao)
-- YouTobe [@LeekHuber](https://www.youtube.com/@LeekHuber)
+- Youtube [@LeekHuber](https://www.youtube.com/@LeekHuber)

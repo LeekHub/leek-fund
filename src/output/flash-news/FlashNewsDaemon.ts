@@ -4,7 +4,7 @@ import NewsFlushServiceAbstractClass, {
   FlashNewsServerInterface,
 } from './NewsFlushServiceAbstractClass';
 
-// const throttle = require('lodash.throttle');
+
 
 let instance: FlashNewsDaemon | undefined;
 

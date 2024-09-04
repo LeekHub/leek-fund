@@ -1,4 +1,4 @@
-import throttle = require('lodash.throttle');
+import { throttle } from 'lodash';
 import { OutputChannel, StatusBarAlignment, StatusBarItem, window } from 'vscode';
 import { LeekFundConfig } from '../../shared/leekConfig';
 import FlashNewsDaemon from './FlashNewsDaemon';
