@@ -258,11 +258,11 @@ function setGlobalVariable() {
   // 临时解决3.10.1~3.10.3 pr产生的分组bug
   const leekFundExt = extensions.getExtension('giscafer.leek-fund');
   const currentVersion = leekFundExt?.packageJSON?.version;
-  if (compare(currentVersion, '3.9.2', '>=')) {
+  // if (compare(currentVersion, '3.9.2', '>=')) {
     const arr = LeekFundConfig.getConfig('leek-fund.stocks') || [];
     const stockList = uniq(compact(flattenDeep(arr)));
     LeekFundConfig.setConfig('leek-fund.stocks', stockList);
-  }
+  // }
 }
 
 // this method is called when your extension is deactivated
