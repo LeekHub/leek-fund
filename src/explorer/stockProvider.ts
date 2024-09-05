@@ -37,7 +37,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     if (!element) {
       // Root view
       const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-      const stockList = uniq(compact(flattenDeep(stockCodes)));
+      const stockList: string[] = uniq(compact(flattenDeep(stockCodes)));
       return this.service.getData(stockList, this.order).then(() => {
         return this.getRootNodes();
       });
