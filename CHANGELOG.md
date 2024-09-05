@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.5](https://github.com/LeekHub/leek-fund/compare/v3.11.4...v3.11.5) (2024-09-05)
+
+
+### Bug Fixes
+
+*  Argument of type 'Falsey[]' is not assignable to parameter of type 'string[] ([cdf00da](https://github.com/LeekHub/leek-fund/commit/cdf00da67e1405084762952f4534b11d94923724))
+
 ### [3.11.4](https://github.com/LeekHub/leek-fund/compare/v3.11.3...v3.11.4) (2024-09-05)
 
 ### [3.11.3](https://github.com/LeekHub/leek-fund/compare/v3.11.2...v3.11.3) (2024-09-04)
