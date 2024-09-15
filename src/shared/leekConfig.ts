@@ -7,7 +7,7 @@
 import { window, workspace } from 'vscode';
 import globalState from '../globalState';
 import { clean, uniq, events } from './utils';
-import { flattenDeep } from 'lodash';
+import { compact, flattenDeep } from 'lodash';
 
 export class BaseConfig {
   static getConfig(key: string, defaultValue?: any): any {
@@ -22,12 +22,13 @@ export class BaseConfig {
     return config.update(cfgKey, cfgValue, true);
   }
 
-  static updateConfig(cfgKey: string, codes: Array<any>) {
+  static async updateConfig(cfgKey: string, codes: Array<string>) {
     const config = workspace.getConfiguration();
-    const updatedCfg = [...config.get(cfgKey, []), ...codes];
-    let newCodes = clean(updatedCfg);
-    newCodes = uniq(newCodes);
-    return config.update(cfgKey, newCodes, true);
+    const origin: string[] = config.get(cfgKey, []);
+    let newCodes = uniq(compact(origin.concat(codes)));
+    console.log(`🚀 ~ BaseConfig ~ updateConfig ~ ${cfgKey}:`, newCodes);
+    await config.update(cfgKey, newCodes, true);
+    return newCodes;
   }
 
   static removeConfig(cfgKey: string, code: string) {
@@ -147,11 +148,16 @@ export class LeekFundConfig extends BaseConfig {
   // Fund End
 
   // Stock Begin
-  static updateStockCfg(codes: string, cb?: Function) {
-    this.updateConfig('leek-fund.stocks', codes.split(',')).then(() => {
+  static updateStockCfg(list: string, cb?: Function) {
+    const cfgKey = 'leek-fund.stocks';
+    const config = workspace.getConfiguration();
+    const origin: string[] = config.get(cfgKey, []);
+    let codes = typeof list === 'string' ? list.split(',') : list;
+    let newCodes = uniq(compact(flattenDeep(origin).concat(codes)));
+    config.update(cfgKey, newCodes, true).then(() => {
       window.showInformationMessage(`Stock Successfully add.`);
       if (cb && typeof cb === 'function') {
-        cb(codes);
+        cb(codes, newCodes);
       }
     });
   }

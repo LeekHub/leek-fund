@@ -4,9 +4,7 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
-import { compare } from 'compare-versions';
-import { compact, flattenDeep, uniq } from 'lodash';
-import { ConfigurationChangeEvent, ExtensionContext, extensions, TreeView, window, workspace } from 'vscode';
+import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
 import { ForexProvider } from './explorer/forexProvider';
@@ -22,6 +20,7 @@ import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { registerCommandPaletteEvent, registerViewEvent } from './registerCommand';
 import { HolidayHelper } from './shared/holidayHelper';
 import { LeekFundConfig } from './shared/leekConfig';
+import Log from './shared/log';
 import { Telemetry } from './shared/telemetry';
 import { SortType } from './shared/typed';
 import { events, formatDate, isStockTime } from './shared/utils';
@@ -134,7 +133,7 @@ export function activate(context: ExtensionContext) {
         manualRequest();
       }
     } else {
-      console.log('StockMarket Closed! Polling closed!');
+      Log.info('StockMarket Closed! Polling closed!');
       // 闭市时增加轮询间隔时长
       if (intervalTime === intervalTimeConfig) {
         intervalTime = intervalTimeConfig * 100;
@@ -184,8 +183,9 @@ export function activate(context: ExtensionContext) {
 
   setIntervalTime();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    console.log('🐥>>>Configuration changed', e);
+    Log.info('Configuration changed');
     intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
     setIntervalTime();
     setGlobalVariable();
@@ -256,18 +256,23 @@ function setGlobalVariable() {
     globalState.fundLists = fundLists;
   }
   // 临时解决3.10.1~3.10.3 pr产生的分组bug
-  const leekFundExt = extensions.getExtension('giscafer.leek-fund');
-  const currentVersion = leekFundExt?.packageJSON?.version;
+  // const leekFundExt = extensions.getExtension('giscafer.leek-fund');
+  // const currentVersion = leekFundExt?.packageJSON?.version;
   // if (compare(currentVersion, '3.9.2', '>=')) {
-    const arr = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-    const stockList = uniq(compact(flattenDeep(arr)));
-    LeekFundConfig.setConfig('leek-fund.stocks', stockList);
+  // const arr = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+  // const flag = arr.some((a: any) => Array.isArray(a));
+  // if (flag) {
+  //   const stockList = uniq(compact(flattenDeep(arr)));
+  //   Log.info(" ~ setGlobalVariable ~ stockList:", stockList);
+  //   LeekFundConfig.setConfig('leek-fund.stocks', stockList);
+  // }
+
   // }
 }
 
 // this method is called when your extension is deactivated
 export function deactivate() {
-  console.log('🐥deactivate');
+  Log.info('deactivate');
   FlashNewsDaemon.KillAllServer();
   profitBar?.destroy();
   if (loopTimer) {

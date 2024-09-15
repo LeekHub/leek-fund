@@ -1,5 +1,5 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
-import { compact, flattenDeep, uniq } from 'lodash';
+// import { compact, flattenDeep, uniq } from 'lodash';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
@@ -37,8 +37,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     if (!element) {
       // Root view
       const stockCodes = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-      const stockList: string[] = uniq(compact(flattenDeep(stockCodes)));
-      return this.service.getData(stockList, this.order).then(() => {
+      // const stockList: string[] = uniq(compact(flattenDeep(stockCodes)));
+      return this.service.getData(stockCodes, this.order).then(() => {
         return this.getRootNodes();
       });
     } else {

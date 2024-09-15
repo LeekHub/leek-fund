@@ -3,11 +3,13 @@ import { decode } from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { HeldData } from '../shared/typed';
 import { executeStocksRemind } from '../shared/remindNotification';
+import { HeldData } from '../shared/typed';
 import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
+import { getXueQiuToken } from '../shared/xueqiu-helper';
 import { LeekService } from './leekService';
 import moment = require('moment');
+import Log from '../shared/log';
 
 export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
@@ -28,21 +30,16 @@ export default class StockService extends LeekService {
     const maps = s.split(',');
     return this.stockList.filter((item) => !maps.includes(item.info.code));
   }
+
   async getToken(): Promise<string> {
     if (this.token !== '') return this.token;
-
-    const res = await Axios.get('https://xueqiu.com/');
-    const cookies: string[] = res.headers['set-cookie'];
-
-    const param: string = cookies.filter((key) => key.includes('xq_a_token'))[0] || '';
-    this.token = param.split(';')[0] || '';
-    console.log("🚀 ~ StockService ~ getToken ~ this.token:", this.token);
-
+    const res = await getXueQiuToken();
+    this.token = res;
     return this.token;
   }
 
   async getData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
-    // console.log('fetching stock data…');
+    // Log.info('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
@@ -421,9 +418,7 @@ export default class StockService extends LeekService {
         headers: {
           ...randHeader(),
           Referer: 'https://stock.xueqiu.com/',
-          // 雪球token规则变化，临时解决
-          // Cookie: await this.getToken(),
-          "cookie": "acw_tc=2760826017254576052523235e0b5e24ba6432d19252e786e33ed3e0ee2db8; acw_sc__v2=66d864c5c68f742d150271b6da3a371072df5bc6; xq_a_token=49c5e355d2fc1b871fde601c659cf9ae1457a889; xqat=49c5e355d2fc1b871fde601c659cf9ae1457a889; xq_r_token=250d5a132310b89c6cf1193e084989736506a297; xq_id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1aWQiOi0xLCJpc3MiOiJ1YyIsImV4cCI6MTcyNzkxNjc3OCwiY3RtIjoxNzI1NDU3NTg4MjU3LCJjaWQiOiJkOWQwbjRBWnVwIn0.ggqWWe7vvq1GcgRDS6e6abMOSiu6EqfW84QXQjeYQrLuja8zFA-KGrQBlcH6vV74bL6_NR1qROWqKp5fF7acOYagqLEUIXH4xG9M_Pf_EvscNzcp9IitW-0a5CEivezAIoms_ajKpEOp-toXQq7aOG4KfNw6Paktzr4nlrBXtmuXb9V0eaIFXnQAhjVK2_2-X351YGYfUesT0io22BYJUus037if8O_H3GmSF9xWTFcBWZ3seQl2wG_w1fwVhzP1SzcjiIzEEIU8QXttFMMUmUkG8SWsFV18JFKYEu618ZTItxE6-ijxL5Dk0oKt8MV58uz9chQ4o4vlukd_-UguTA; cookiesu=411725457605875; u=411725457605875; Hm_lvt_1db88642e346389874251b5a1eded6e3=1725457610; HMACCOUNT=2546BEF12550F4D4; device_id=a0814ba472ea428d8488ca48833b7db8; smidV2=2024090421465125ea22186efc27f3de9c33bd7df8002b00f1792dfda7b5c90; is_overseas=0; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1725457619; .thumbcache_f24b8bbe5a5934237bbc0eda20c1b6e7=gyo2b8VGfAxa5SfTipuQx8ezwddhs93f7FW74dnOzyirEbx849B+Ff3Z7VnhDgFgOEPO8rw+tAuePz+dXrbBXQ%3D%3D; ssxmod_itna=eqRxyDciDQG=Dtmx0dGQDHFySC7fYDnG7nD8eK9cx0yDReGzDAxn40iDt=a5/j7OxAPYi0424Dun2Dh3UKWOhLINTInBw5jDbxiTD4q07Db4GkDAqiOD7kRwoD435GwD0eG+DD4DWtXI=D7rXgUkNXWq=07TNDmb=uDGQcDiU3xi5Z/L=/8eGWnqGfDDoDYbNSAeQDGkKDbTQDITXKb8hxqcj7Ha=2CPDuCa6YcqDLfQFHxB=ulmPSWFODtw=cnnQ2UAX=OuTd4hp3WxA3GuAxb8GY4rEKWhZxf6AifG+3fB3ST3e4Gw+UI04DDWDEd4D===; ssxmod_itna2=eqRxyDciDQG=Dtmx0dGQDHFySC7fYDnG7nD8eK9xn9S4DsLDwxqjKG7d4D==",
+          Cookie: await this.getToken()
         },
       });
       const { data, error_code, error_description } = resp.data;
@@ -523,7 +518,7 @@ export default class StockService extends LeekService {
         searchText
       )}`;
       try {
-        console.log('getFutureSuggestList: getting...');
+        Log.info('getFutureSuggestList: getting...');
         const futureResponse = await Axios.get(futureUrl, {
           responseType: 'arraybuffer',
           transformResponse: [
@@ -539,7 +534,7 @@ export default class StockService extends LeekService {
           return result;
         }
         const tempArr = text.split(';');
-        console.log(tempArr);
+        Log.info(tempArr);
 
         tempArr.forEach((item: string) => {
           const arr = item.split(',');
@@ -576,7 +571,7 @@ export default class StockService extends LeekService {
         });
         return result;
       } catch (err) {
-        console.log(futureUrl);
+        Log.info(futureUrl);
         console.error(err);
         return [{ label: '期货查询失败，请重试' }];
       }
@@ -586,7 +581,7 @@ export default class StockService extends LeekService {
         searchText
       )}`;
       try {
-        console.log('getStockSuggestList: getting...');
+        Log.info('getStockSuggestList: getting...');
         const stockResponse = await Axios.get(stockUrl, {
           responseType: 'text',
           transformResponse: [
@@ -600,8 +595,11 @@ export default class StockService extends LeekService {
             Referer: 'https://stock.xueqiu.com/',
             Cookie: await this.getToken(),
           },
+        }).catch(() => {
+          this.token = '';
+          return { data: {} };
         });
-        const stocks = stockResponse.data.stocks || [];
+        const stocks = stockResponse.data?.stocks || [];
         stocks.forEach((item: any) => {
           const { code, name } = item;
           if (code.startsWith('SH') || code.startsWith('SZ') || code.startsWith('BJ')) {
@@ -627,7 +625,7 @@ export default class StockService extends LeekService {
         });
         return result;
       } catch (err) {
-        console.log(stockUrl);
+        Log.info(stockUrl);
         console.error(err);
         return [{ label: '股票查询失败，请重试' }];
       }

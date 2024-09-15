@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { formatDate } from './utils';
+import { formatDate, randHeader } from './utils';
+import Log from './log';
 
 export class HolidayHelper {
   /**
@@ -11,7 +12,12 @@ export class HolidayHelper {
     // https://timor.tech/api/holiday/year/2020
     const url = `https://timor.tech/api/holiday/info/${year}`;
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          ...randHeader(),
+          Referer: 'https://timor.tech/',
+        }
+      });
       const data = response.data;
       // 返回的结构体如下：
       // 解释：
@@ -53,8 +59,14 @@ export class HolidayHelper {
     // https://timor.tech/api/holiday/info/2020-09-18
     const url = `https://timor.tech/api/holiday/info/${formatDate(date)}`;
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          ...randHeader(),
+          Referer: 'https://timor.tech/',
+        }
+      });
       const data = response.data;
+
       // 返回的结构体如下：
       // 实例： {"code":0,"type":{"type":0,"name":"周五","week":5},"holiday":null}
       // 解释：
@@ -91,7 +103,8 @@ export class HolidayHelper {
     let dataObj = await HolidayHelper.getHolidayDataByDate(date);
 
     if (dataObj) {
-      tof = dataObj.type.type === 2;
+      tof = dataObj.type?.type === 2;
+      Log.info("HolidayHelper ~ 节假日= ~ :", dataObj?.type?.name);
     }
 
     return tof;
