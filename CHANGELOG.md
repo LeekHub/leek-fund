@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.11.6](https://github.com/LeekHub/leek-fund/compare/v3.11.5...v3.11.6) (2024-09-15)
+
+
+### Bug Fixes
+
+* 雪球搜索股票bug ([fc32583](https://github.com/LeekHub/leek-fund/commit/fc32583b370dd426797194c43191ecb1a36f3cdc)), closes [#454](https://github.com/LeekHub/leek-fund/issues/454)
+
 ### [3.11.5](https://github.com/LeekHub/leek-fund/compare/v3.11.4...v3.11.5) (2024-09-05)
 
 
