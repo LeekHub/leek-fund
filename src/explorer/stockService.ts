@@ -10,6 +10,7 @@ import { getXueQiuToken } from '../shared/xueqiu-helper';
 import { LeekService } from './leekService';
 import moment = require('moment');
 import Log from '../shared/log';
+import { getTencentHKStockData, searchStockList } from '../shared/tencentStock';
 
 export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
@@ -405,89 +406,57 @@ export default class StockService extends LeekService {
     let hkStockCount = 0;
     let stockList: Array<LeekTreeItem> = [];
 
-    const url = `https://stock.xueqiu.com/v5/stock/batch/quote.json?symbol=${codes.join(',')}`;
     try {
-      const resp = await Axios.get(url, {
-        responseType: 'text',
-        transformResponse: [
-          (data) => {
-            const body = JSON.parse(data);
-            return body;
-          },
-        ],
-        headers: {
-          ...randHeader(),
-          Referer: 'https://stock.xueqiu.com/',
-          Cookie: await this.getToken()
-        },
-      });
-      const { data, error_code, error_description } = resp.data;
-      if (error_code) {
-        window.showErrorMessage(
-          `fail: a HK Stock request error has occured. (${error_code}, ${error_description})`
-        );
+      const stockData = await getTencentHKStockData(codes.map((code) => `hk${code}`));
+      if (!stockData) {
         return [];
       } else {
-        const stocks = data.items || [];
-        stocks.forEach((item: any, index: number) => {
-          if (item.quote) {
-            const quote = item.quote;
-            let open = quote.open?.toString() || '0';
-            let yestclose = quote.last_close?.toString() || '0';
-            let price = quote.current?.toString() || '0';
-            let high = quote.high?.toString() || '0';
-            let low = quote.low?.toString() || '0';
-            const fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
-            const stockItem: any = {
-              code: quote.symbol.startsWith('HK')
-                ? quote.symbol.replace('HK', 'hk')
-                : 'hk' + quote.symbol,
-              name: quote.name,
-              open: formatNumber(open, fixedNumber, false),
-              yestclose: formatNumber(yestclose, fixedNumber, false),
-              price: formatNumber(price, fixedNumber, false),
-              low: formatNumber(low, fixedNumber, false),
-              high: formatNumber(high, fixedNumber, false),
-              volume: formatNumber(quote.volume || 0, 2),
-              amount: formatNumber(quote.amount || 0, 2),
-              percent: '',
-              time: `${moment(quote.time).format('YYYY-MM-DD HH:mm:ss')}`,
-            };
-            hkStockCount += 1;
-            if (stockItem) {
-              const { yestclose, open } = stockItem;
-              let { price } = stockItem;
-              // 竞价阶段部分开盘和价格为0.00导致显示 -100%
-              if (Number(open) <= 0) {
-                price = yestclose;
-              }
-              stockItem.showLabel = this.showLabel;
-              stockItem.isStock = true;
-              stockItem.type = 'hk';
-              stockItem.symbol = quote.code;
-              stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
-              stockItem.percent =
-                (stockItem.updown >= 0 ? '+' : '-') +
-                formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
-
-              const treeItem = new LeekTreeItem(stockItem, this.context);
-              stockList.push(treeItem);
+        const stocks = stockData;
+        stocks.forEach((item: any) => {
+          const { open, yestclose, price, high, low, volume, amount, time } = item;
+          const fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+          const stockItem: any = {
+            ...item,
+            open: formatNumber(open, fixedNumber, false),
+            yestclose: formatNumber(yestclose, fixedNumber, false),
+            price: formatNumber(price, fixedNumber, false),
+            low: formatNumber(low, fixedNumber, false),
+            high: formatNumber(high, fixedNumber, false),
+            volume: formatNumber(volume || 0, 2),
+            amount: formatNumber(amount || 0, 2),
+            percent: '',
+            time: `${moment(time).format('YYYY-MM-DD HH:mm:ss')}`,
+          };
+          hkStockCount += 1;
+          if (stockItem) {
+            const { yestclose, open } = stockItem;
+            let { price } = stockItem;
+            // 竞价阶段部分开盘和价格为0.00导致显示 -100%
+            if (Number(open) <= 0) {
+              price = yestclose;
             }
-          } else {
-            window.showErrorMessage(
-              `fail: error Stock code in ${codes[index]}, please delete error Stock code.`
-            );
+            stockItem.showLabel = this.showLabel;
+            stockItem.isStock = true;
+            stockItem.type = 'hk';
+            stockItem.symbol = stockItem.code.replace('hk', '');
+            stockItem.updown = formatNumber(+price - +yestclose, fixedNumber, false);
+            stockItem.percent =
+              (stockItem.updown >= 0 ? '+' : '-') +
+              formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
+
+            const treeItem = new LeekTreeItem(stockItem, this.context);
+            stockList.push(treeItem);
           }
         });
       }
     } catch (err) {
-      console.info(url);
+      console.info(codes);
       console.error(err);
       if (globalState.showStockErrorInfo) {
-        window.showErrorMessage(`fail: HK Stock error ` + url);
+        window.showErrorMessage(`fail: HK Stock error ` + codes);
         globalState.showStockErrorInfo = false;
         globalState.telemetry.sendEvent('error: stockService', {
-          url,
+          codes,
           error: err,
         });
       }
@@ -576,56 +545,34 @@ export default class StockService extends LeekService {
         return [{ label: '期货查询失败，请重试' }];
       }
     } else {
-      //股票使用雪球数据源
-      const stockUrl = `https://xueqiu.com/stock/search.json?code=${encodeURIComponent(
-        searchText
-      )}`;
+      // 改为腾讯数据源
       try {
-        Log.info('getStockSuggestList: getting...');
-        const stockResponse = await Axios.get(stockUrl, {
-          responseType: 'text',
-          transformResponse: [
-            (data) => {
-              const body = JSON.parse(data);
-              return body;
-            },
-          ],
-          headers: {
-            ...randHeader(),
-            Referer: 'https://stock.xueqiu.com/',
-            Cookie: await this.getToken(),
-          },
-        }).catch(() => {
-          this.token = '';
-          return { data: {} };
-        });
-        const stocks = stockResponse.data?.stocks || [];
+        const stocks = await searchStockList(searchText);
         stocks.forEach((item: any) => {
-          const { code, name } = item;
-          if (code.startsWith('SH') || code.startsWith('SZ') || code.startsWith('BJ')) {
-            const _code = code.toLowerCase();
+          const { code, name, market } = item;
+          const _code = `${market}${code}`;
+          if (['sz', 'sh'].includes(market)) {
             result.push({
               label: `${_code} | ${name}`,
               description: `A股`,
             });
-          } else if (/^0\d{4}$/.test(code) || /^HK[A-Z].*/.test(code)) {
+          } else if (['hk'].includes(market)) {
             // 港股个股 || 港股指数
-            const _code = code.startsWith('HK') ? code.replace('HK', 'hk') : 'hk' + code;
             result.push({
               label: `${_code} | ${name}`,
               description: `港股`,
             });
-          } else if (/\.?[A-Z]*[A-Z]$/.test(code)) {
-            const _code = 'us' + code.toLowerCase().replace('.', ''); // 去除美股指数前面的'.'
+          } else if (['us'].includes(market)) {
+            const usCode = _code.split('.')[0]; // 去除美股指数.后的内容
             result.push({
-              label: `${_code} | ${name}`,
+              label: `${usCode} | ${name}`,
               description: `美股`,
             });
           }
         });
         return result;
       } catch (err) {
-        Log.info(stockUrl);
+        Log.info('searchStockList error: ', searchText);
         console.error(err);
         return [{ label: '股票查询失败，请重试' }];
       }
