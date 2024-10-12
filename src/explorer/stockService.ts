@@ -551,7 +551,7 @@ export default class StockService extends LeekService {
         stocks.forEach((item: any) => {
           const { code, name, market } = item;
           const _code = `${market}${code}`;
-          if (['sz', 'sh'].includes(market)) {
+          if (['sz', 'sh', 'bj'].includes(market)) {
             result.push({
               label: `${_code} | ${name}`,
               description: `A股`,

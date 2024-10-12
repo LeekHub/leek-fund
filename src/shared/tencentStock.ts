@@ -2,26 +2,21 @@ import Axios from 'axios';
 import Log from './log';
 import { decode } from 'iconv-lite';
 
-const searchUrl = 'https://proxy.finance.qq.com/smartboxgtimg/s3/index.php';
+const searchUrl = 'https://proxy.finance.qq.com/ifzqgtimg/appstock/smartbox/search/get';
 const stockDataUrl = 'https://qt.gtimg.cn/q=';
 export const searchStockList = async (keyword: string) => {
   Log.info('searchStockList keyword: ', keyword);
   const stockResponse = await Axios.get(searchUrl, {
     params: {
-      v: 2,
       q: keyword,
-      t: 'all',
     },
   });
   Log.info('stockResponse: ', stockResponse.data);
-  const stockListStr = unescape(
-    (stockResponse.data || '').replace('v_hint="', '').replace(/"$/, '').replace(/\\u/g, '%u')
-  );
-  Log.info('stockListStr: ', stockListStr, keyword);
-  const stockList = stockListStr.split('^').map((stockItemStr: string) => {
-    const stockItemArr = stockItemStr.split('~');
+  const stockListArray = stockResponse?.data?.data?.stock || [];
+  Log.info('stockListStr: ', stockListArray, keyword);
+  const stockList = stockListArray.map((stockItemArr: string[]) => {
     return {
-      code: stockItemArr[1],
+      code: stockItemArr[1].toLowerCase(),
       name: stockItemArr[2],
       market: stockItemArr[0],
       abbreviation: stockItemArr[3],
