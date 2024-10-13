@@ -18,4 +18,4 @@ const Log = {
   log,
 };
 
-export default Log
+export default Log;

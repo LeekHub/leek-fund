@@ -11,9 +11,9 @@ export const searchStockList = async (keyword: string) => {
       q: keyword,
     },
   });
-  Log.info('stockResponse: ', stockResponse.data);
+  // Log.info('stockResponse: ', stockResponse.data);
   const stockListArray = stockResponse?.data?.data?.stock || [];
-  Log.info('stockListStr: ', stockListArray, keyword);
+  // Log.info('stockListStr: ', stockListArray, keyword);
   const stockList = stockListArray.map((stockItemArr: string[]) => {
     return {
       code: stockItemArr[1].toLowerCase(),
@@ -27,7 +27,7 @@ export const searchStockList = async (keyword: string) => {
 };
 
 export const getTencentHKStockData = async (codes: string[]) => {
-  Log.info('getStockData codes: ', codes);
+  // Log.info('before getStockData codes: ', codes);
   const stockDataResponse = await Axios.get(stockDataUrl, {
     responseType: 'arraybuffer',
     transformResponse: [
@@ -40,8 +40,8 @@ export const getTencentHKStockData = async (codes: string[]) => {
       q: codes.join(','),
     },
   });
-  Log.info('stockDataResponse: ', stockDataResponse.data);
-  const stockDataList = (stockDataResponse.data || '').split(';').map((stockItemStr: string) => {
+  // Log.info('stockDataResponse: ', stockDataResponse.data);
+  const stockDataList = (stockDataResponse.data || '').split(';').slice(0,codes.length).map((stockItemStr: string) => {
     const stockItemArr = stockItemStr.split('~');
     return {
       code: 'hk' + stockItemArr[2],
@@ -58,6 +58,6 @@ export const getTencentHKStockData = async (codes: string[]) => {
       time: stockItemArr[30],
     };
   });
-  Log.info('stockDataList: ', stockDataList, codes);
+  // Log.info('stockDataList: ', stockDataList, codes);
   return stockDataList;
 };
