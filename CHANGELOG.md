@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.12.0](https://github.com/LeekHub/leek-fund/compare/v3.11.6...v3.12.0) (2024-10-13)
+
+
+### Features
+
+* 更换搜索接口为腾讯自选股wap ([19a8c1d](https://github.com/LeekHub/leek-fund/commit/19a8c1d19353ca64157833841671a4a489ff7009))
+
+
+### Bug Fixes
+
+* 多余hk的数据 ([bbd7300](https://github.com/LeekHub/leek-fund/commit/bbd7300db5138ba903001ef905461d140f7fc572))
+* 替换雪球源为腾讯自选股 ([0dcd520](https://github.com/LeekHub/leek-fund/commit/0dcd52048855b0e21b80ac3043255bd35fc0daeb))
+
 ### [3.11.6](https://github.com/LeekHub/leek-fund/compare/v3.11.5...v3.11.6) (2024-09-15)
 
 
