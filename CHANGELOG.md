@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.12.1](https://github.com/LeekHub/leek-fund/compare/v3.12.0...v3.12.1) (2024-10-14)
+
+
+### Bug Fixes
+
+* 修正腾讯自选股港股接口数据延迟问题 ([45acd46](https://github.com/LeekHub/leek-fund/commit/45acd46b4ca8f8885d284448dbee06383313f215))
+
 ## [3.12.0](https://github.com/LeekHub/leek-fund/compare/v3.11.6...v3.12.0) (2024-10-13)
 
 
