@@ -30,34 +30,38 @@ export const getTencentHKStockData = async (codes: string[]) => {
   // Log.info('before getStockData codes: ', codes);
   const stockDataResponse = await Axios.get(stockDataUrl, {
     responseType: 'arraybuffer',
+    params: {
+      q: codes.map((code) => `r_${code}`).join(','),
+      fmt: 'json',
+    },
     transformResponse: [
       (data) => {
-        const body = decode(data, 'GB18030');
-        return body;
+        const body = decode(data, 'GBK');
+        return JSON.parse(body);
       },
     ],
-    params: {
-      q: codes.join(','),
-    },
   });
-  // Log.info('stockDataResponse: ', stockDataResponse.data);
-  const stockDataList = (stockDataResponse.data || '').split(';').slice(0,codes.length).map((stockItemStr: string) => {
-    const stockItemArr = stockItemStr.split('~');
-    return {
-      code: 'hk' + stockItemArr[2],
-      name: stockItemArr[1],
-      price: stockItemArr[3],
-      yestclose: stockItemArr[4],
-      open: stockItemArr[5],
-      high: stockItemArr[33],
-      low: stockItemArr[34],
-      volume: stockItemArr[36],
-      amount: stockItemArr[37],
-      buy1: stockItemArr[9],
-      sell1: stockItemArr[19],
-      time: stockItemArr[30],
-    };
-  });
+
+  const stockDataList = codes
+    .filter((code) => stockDataResponse.data[`r_${code}`])
+    .map((code: string) => {
+      const rCode = `r_${code}`;
+      const stockItemArr = stockDataResponse.data[rCode];
+      return {
+        code,
+        name: stockItemArr[1],
+        price: stockItemArr[3],
+        yestclose: stockItemArr[4],
+        open: stockItemArr[5],
+        high: stockItemArr[33],
+        low: stockItemArr[34],
+        volume: stockItemArr[36],
+        amount: stockItemArr[37],
+        buy1: stockItemArr[9],
+        sell1: stockItemArr[19],
+        time: stockItemArr[30],
+      };
+    });
   // Log.info('stockDataList: ', stockDataList, codes);
   return stockDataList;
 };
