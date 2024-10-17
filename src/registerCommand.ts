@@ -359,6 +359,11 @@ export function registerViewEvent(
     });
   });
 
+  /* 排序 */
+  commands.registerCommand('leek-fund.binanceSort', () => {
+    binanceProvider.changeOrder();
+  });
+
   /**
    * Forex command
    */
