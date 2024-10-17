@@ -283,6 +283,14 @@
       {
         "command": "leek-fund.toggleStatusBarVisibility",
         "title": "LeekFund: Toggle Status Bar Visibility"
+      },
+      {
+        "command": "leek-fund.binanceSort",
+        "title": "升序/降序/不排序",
+        "icon": {
+          "light": "resources/light/sort.svg",
+          "dark": "resources/dark/sort.svg"
+        }
       }
     ],
     "menus": {
@@ -374,6 +382,11 @@
         },
         {
           "command": "leek-fund.addBinancePair",
+          "when": "view == leekFundView.binance",
+          "group": "navigation"
+        },
+        {
+          "command": "leek-fund.binanceSort",
           "when": "view == leekFundView.binance",
           "group": "navigation"
         },

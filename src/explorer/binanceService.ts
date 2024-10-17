@@ -9,8 +9,8 @@ import Axios from 'axios';
 import { ExtensionContext } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { FundInfo, TreeItemType } from '../shared/typed';
-import { randHeader } from '../shared/utils';
+import { FundInfo, SortType, TreeItemType } from '../shared/typed';
+import { randHeader, sortData } from '../shared/utils';
 import { LeekService } from './leekService';
 
 export default class BinanceService extends LeekService {
@@ -55,7 +55,7 @@ export default class BinanceService extends LeekService {
     });
   }
 
-  async getData(codes: string[]): Promise<LeekTreeItem[]> {
+  async getData(codes: string[], order: SortType): Promise<LeekTreeItem[]> {
     const pairList: Array<LeekTreeItem> = [];
 
     // 20个请求的权重最低
@@ -80,7 +80,6 @@ export default class BinanceService extends LeekService {
     }
 
     const results = await Promise.allSettled(promises);
-    // console.log(results, 'results')
     for (const splitRes of results) {
       // @ts-ignore
       const { status, value, reason } = splitRes;
@@ -123,6 +122,6 @@ export default class BinanceService extends LeekService {
       }
 
     }
-    return pairList;
+    return sortData(pairList, order);
   }
 }
