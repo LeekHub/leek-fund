@@ -55,6 +55,11 @@ export class LeekTreeItem extends TreeItem {
       this._itemType = isStock ? TreeItemType.STOCK : TreeItemType.FUND;
     }
 
+    const isStockItem = this._itemType === TreeItemType.STOCK;
+    const isFundItem = this._itemType === TreeItemType.FUND;
+    const isBinanceItem = this._itemType === TreeItemType.BINANCE;
+    const isForex = this._itemType === TreeItemType.FOREX;
+
     this.type = type;
     this.contextValue = contextValue;
     let _percent: number | string = Math.abs(percent);
@@ -119,7 +124,7 @@ export class LeekTreeItem extends TreeItem {
 
     if (showLabel) {
       /* `showLabel: true` */
-      if (this._itemType === TreeItemType.STOCK) {
+      if (isStockItem) {
         const risePercent = isStop ? '停牌' : `${_percent}%`;
         if (type === 'nodata') {
           text = info.name;
@@ -130,7 +135,7 @@ export class LeekTreeItem extends TreeItem {
           )}「${name}」`; */
           text = formatLabelString(
             globalState.labelFormat?.['sidebarStockLabelFormat'] ??
-              DEFAULT_LABEL_FORMAT.sidebarStockLabelFormat,
+            DEFAULT_LABEL_FORMAT.sidebarStockLabelFormat,
             {
               ...info,
               icon: !isIconPath ? iconPath : '',
@@ -138,7 +143,7 @@ export class LeekTreeItem extends TreeItem {
             }
           );
         }
-      } else if (this._itemType === TreeItemType.FUND) {
+      } else if (isFundItem) {
         /* text =
           `${!isIconPath ? iconPath : ''}${formatTreeText(`${_percent}%`)}「${name}」${
             t2 || !(globalState.showEarnings && amount > 0)
@@ -147,7 +152,7 @@ export class LeekTreeItem extends TreeItem {
           }` + `${t2 ? `(${time})` : ''}`; */
         text = formatLabelString(
           globalState.labelFormat?.['sidebarFundLabelFormat'] ??
-            DEFAULT_LABEL_FORMAT.sidebarFundLabelFormat,
+          DEFAULT_LABEL_FORMAT.sidebarFundLabelFormat,
           {
             ...info,
             icon: !isIconPath ? iconPath : '',
@@ -160,20 +165,20 @@ export class LeekTreeItem extends TreeItem {
           }
         );
         // ${earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''}
-      } else if (this._itemType === TreeItemType.BINANCE) {
+      } else if (isBinanceItem) {
         text = formatLabelString(
           globalState.labelFormat?.['sidebarBinanceLabelFormat'] ??
-            DEFAULT_LABEL_FORMAT.sidebarBinanceLabelFormat,
+          DEFAULT_LABEL_FORMAT.sidebarBinanceLabelFormat,
           {
             ...info,
             icon: !isIconPath ? iconPath : '',
             percent: `${_percent}%`,
           }
         );
-      } else if (this._itemType === TreeItemType.FOREX) {
+      } else if (isForex) {
         text = formatLabelString(
           globalState.labelFormat?.['sidebarForexLabelFormat'] ??
-            DEFAULT_LABEL_FORMAT.sidebarForexLabelFormat,
+          DEFAULT_LABEL_FORMAT.sidebarForexLabelFormat,
           {
             ...info,
           }
@@ -182,7 +187,7 @@ export class LeekTreeItem extends TreeItem {
     } else {
       /* `showLabel: false` */
       text =
-        this._itemType === TreeItemType.STOCK
+        isStockItem
           ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
           : `${formatTreeText(`${_percent}%`)}「${code}」`;
     }
@@ -196,8 +201,7 @@ export class LeekTreeItem extends TreeItem {
       this.label = text;
     }
     this.id = info.id || code;
-
-    if (this._itemType === TreeItemType.STOCK || this._itemType === TreeItemType.FUND) {
+    if (isStockItem || isFundItem || isBinanceItem) {
       let typeAndSymbol = `${type}${symbol}`;
       const isFuture = /nf_/.test(code) || /hf_/.test(code);
       if (isFuture) {
@@ -206,11 +210,12 @@ export class LeekTreeItem extends TreeItem {
       this.command = {
         title: name, // 标题
         command:
-          this._itemType === TreeItemType.STOCK
+          isStockItem
             ? 'leek-fund.stockItemClick'
-            : 'leek-fund.fundItemClick', // 命令 ID
+            : isBinanceItem ? 'leek-fund.binanceItemClick'
+              : 'leek-fund.fundItemClick', // 命令 ID
         arguments: [
-          this._itemType === TreeItemType.STOCK ? '0' + symbol : code, // 基金/股票编码
+          isStockItem ? '0' + symbol : code, // 基金/股票编码
           name, // 基金/股票名称
           text,
           typeAndSymbol,
@@ -221,7 +226,7 @@ export class LeekTreeItem extends TreeItem {
       }
     }
 
-    if (this._itemType === TreeItemType.STOCK) {
+    if (isStockItem) {
       const labelText = !showLabel ? name : '';
 
       const isFuture = /nf_/.test(code) || /hf_/.test(code);
@@ -235,13 +240,12 @@ export class LeekTreeItem extends TreeItem {
       } else if (isFuture) {
         this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨结：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       } else {
-        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${
-          heldAmount ? `持仓数：${volume}   持仓价：${heldPrice}` : ''
-        }`;
+        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${volume}   持仓价：${heldPrice}` : ''
+          }`;
       }
-    } else if (this._itemType === TreeItemType.BINANCE) {
+    } else if (isBinanceItem) {
       this.tooltip = `【今日行情】${name}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
-    } else if (this._itemType === TreeItemType.FOREX) {
+    } else if (isForex) {
       this.tooltip = `现汇买入价：${spotBuyPrice}\n现钞买入价：${cashBuyPrice}\n现汇卖出价：${spotSellPrice}\n现钞卖出价：${cashSellPrice}\n中行折算价：${conversionPrice}\n发布日期：${publishDateTime}`;
     } else {
       this.tooltip = `「${name}」(${code})`;
