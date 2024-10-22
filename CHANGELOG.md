@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.13.0](https://github.com/LeekHub/leek-fund/compare/v3.12.1...v3.13.0) (2024-10-22)
+
+
+### Features
+
+* add biance sort ([e7f9fd3](https://github.com/LeekHub/leek-fund/commit/e7f9fd31d0d1af6e7d9982cd10d64ea197207cbf))
+* add biance trend ([e8cd3e7](https://github.com/LeekHub/leek-fund/commit/e8cd3e72aa16aa1ae1b9094ac20db8d7fa9926bc))
+
 ### [3.12.1](https://github.com/LeekHub/leek-fund/compare/v3.12.0...v3.12.1) (2024-10-14)
 
 
