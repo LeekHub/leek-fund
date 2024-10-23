@@ -29,6 +29,7 @@ import { StatusBar } from './statusbar/statusBar';
 import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
+import { startProxyServer } from './webview/proxyService/proxyService';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -215,6 +216,9 @@ export function activate(context: ExtensionContext) {
 
   // register command
   registerCommandPaletteEvent(context, statusBar);
+
+  // start local proxy server
+  startProxyServer();
 
   // Telemetry Event
   telemetry.sendEvent('activate');
