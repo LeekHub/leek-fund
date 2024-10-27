@@ -2,6 +2,7 @@ import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 import stockTrendPic from './stockTrendPic';
 import globalState from '../globalState';
+import { getEastmoneyHost } from './proxyService/proxyConfig';
 
 function stockTrend(code: string, name: string, stockCode: string) {
   if (['0dji', '0ixic', '0inx'].includes(code)) {
@@ -24,7 +25,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
   }
 
   let mcid = market + '.' + code.substr(1);
-  let url = `https://quote.eastmoney.com/basic/full.html?mcid=${mcid}`;
+  let url = `${getEastmoneyHost()}/basic/full.html?mcid=${mcid}`;
 
   if (!!globalState.kLineChartSwitch) {
     if (
@@ -33,7 +34,7 @@ function stockTrend(code: string, name: string, stockCode: string) {
       stockCode.indexOf('sz399') !== 0
     ) {
       // 沪深股票详情地址可查看盘前盘后指数、买五卖五、筹码分布
-      url = `https://quote.eastmoney.com/basic/h5chart-iframe.html?code=${code.substr(1)}&market=${market}`;
+      url = `${getEastmoneyHost()}/basic/h5chart-iframe.html?code=${code.substr(1)}&market=${market}`;
     }
   }
 
