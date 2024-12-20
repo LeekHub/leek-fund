@@ -212,6 +212,10 @@
         "title": "删除股票"
       },
       {
+        "command": "leek-fund.addMyStock",
+        "title": "加入我的自选"
+      },
+      {
         "command": "leek-fund.addStockToBar",
         "title": "添加至状态栏"
       },
@@ -439,42 +443,47 @@
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != limit",
           "group": "group1"
         },
         {
           "command": "leek-fund.setStockUp",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != limit",
           "group": "group1"
         },
         {
           "command": "leek-fund.setStockDown",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != limit",
           "group": "group1"
         },
         {
           "command": "leek-fund.stockTrendPic",
-          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata && viewItem != limit",
           "group": "group2"
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem != limit && viewItem != limit",
           "group": "inline"
         },
         {
           "command": "leek-fund.setStockUp",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata && viewItem != limit",
           "group": "inline"
         },
         {
           "command": "leek-fund.setStockDown",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata && viewItem != limit",
           "group": "inline"
         },
         {
           "command": "leek-fund.deleteStock",
-          "when": "view == leekFundView.stock  && viewItem != category",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem != limit",
+          "group": "group5"
+        },
+        {
+          "command": "leek-fund.addMyStock",
+          "when": "view == leekFundView.stock && viewItem == limit",
           "group": "group5"
         },
         {
@@ -688,6 +697,16 @@
           "default": true,
           "description": "默认展开A股"
         },
+        "leek-fund.expandAUpStock": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开涨停股"
+        },
+        "leek-fund.expandADownStock": {
+          "type": "boolean",
+          "default": false,
+          "description": "默认展开跌停股"
+        },
         "leek-fund.expandHKStock": {
           "type": "boolean",
           "default": false,
@@ -803,6 +822,7 @@
     "lodash": "4.17.21",
     "moment": "^2.29.4",
     "public-ip": "^4.0.3",
+    "puppeteer": "^23.10.4",
     "ws": "^7.4.1"
   },
   "extensionKind": [

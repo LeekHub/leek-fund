@@ -4,16 +4,21 @@ import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
-import { HeldData } from '../shared/typed';
-import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
+import { FundInfo, HeldData } from '../shared/typed';
+import { calcFixedPriceNumber, events, formatNumber, formatLimitTime, randHeader, sortData } from '../shared/utils';
 import { getXueQiuToken } from '../shared/xueqiu-helper';
 import { LeekService } from './leekService';
 import moment = require('moment');
 import Log from '../shared/log';
 import { getTencentHKStockData, searchStockList } from '../shared/tencentStock';
+import puppeteer from 'puppeteer';
+import { URL } from 'url';
+const querystring = require('querystring');
 
 export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
+  public uplimitStockList: Array<LeekTreeItem> = [];
+  public downlimitStockList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   private token: string = '';
 
@@ -77,6 +82,12 @@ export default class StockService extends LeekService {
         stockList = stockList.concat(item.value);
       }
     });
+    // 自选
+    const customIds = stockList.map((item) => item.id);
+    const upList = await this.getLimitData('ztgc')
+    this.uplimitStockList = upList.filter(item => !customIds.includes(item.id));
+    const downList = await this.getLimitData('dtgc')
+    this.downlimitStockList = downList.filter(item => !customIds.includes(item.id));
 
     const res = sortData(stockList, order);
     executeStocksRemind(res, this.stockList);
@@ -85,6 +96,78 @@ export default class StockService extends LeekService {
     events.emit('updateBar:stock-profit-refresh', this);
     events.emit('stockListUpdate', this.stockList, oldStockList);
     return res;
+  }
+
+  async getLimitData(limitType = 'ztgc') {
+    const requestKey = limitType === 'ztgc' ? 'getTopicZTPool' : 'getTopicDTPool';
+    const stocks: Array<LeekTreeItem> = [];
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setRequestInterception(true);
+    page.on('request', request => {
+         // 只拦截 GET 请求
+        if (request.url().includes(requestKey)) {
+          const url = new URL(request.url());
+          // 修改查询参数
+          url.searchParams.set('pagesize', '500');  // 改变 pagesize 参数
+          // 继续请求，传入修改后的 URL
+          request.continue({ url: url.toString() });
+        } else {
+          // 对其他请求不做修改，直接继续
+          request.continue();
+        }
+    })
+    // 监听网络请求
+    page.on('response', async (response) => {
+      // 检查请求 URL 或请求的类型（可根据需要进行过滤）
+      const url = response.url();
+      // 假设我们要获取某个特定 API 请求的内容
+      if (url.includes(requestKey)) {
+        const paramsObject = querystring.parse(url.split('?')[1]);
+        const data = await response.text();
+        const regex = new RegExp(`^${paramsObject.cb}\\((.*)\\);$`);
+        const matchResult = data.match(regex);
+        if (matchResult && matchResult[1]) {
+          const resData = JSON.parse(matchResult[1]);
+          if (limitType === 'ztgc') {
+            globalState.aLmitUpStockCount = resData.data.tc;
+          } else {
+            globalState.aLmitDownStockCount = resData.data.tc;
+          }
+          resData.data.pool.forEach((item: any) => {
+            const type = item.m === 0 ? 'sz' : item.m === 1 ? 'sh' : 'nodata';
+            const stockItem: FundInfo = {
+              name: item.n,
+              code: type + item.c,
+              symbol: item.c,
+              isStock: true,
+              showLabel: true,
+              hybk: item.hybk,
+              type,
+              lbc: item.lbc,
+              contextValue: 'limit',
+              updown: `${item.zdp.toFixed(2)}%`,
+              percent: item.zdp > 0 ? `+${item.zdp}` : `${item.zdp}`,
+              price: `${item.p / 1000}`,
+              time: formatLimitTime(`${limitType === 'ztgc' ? item.fbt : item.lbt}`),
+              fbt: formatLimitTime(`${item.fbt}`),
+              lbt: formatLimitTime(`${item.lbt}`),
+            }
+            if (limitType === 'ztgc') {
+              stockItem.zttj = `${item.zttj.ct}/${item.zttj.days}`;
+              stockItem.fbzz = formatNumber(item.fund, 2, true);
+            }
+
+            const treeItem = new LeekTreeItem(stockItem, this.context);
+            stocks.push(treeItem);
+          })
+        }
+        await browser.close();
+        return stocks;
+      }
+    });
+    await page.goto(`https://quote.eastmoney.com/ztb/detail#type=${limitType}`);
+    return stocks;
   }
 
   async getStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
@@ -348,6 +431,7 @@ export default class StockService extends LeekService {
               } catch (err) {
                 console.error(err);
               }
+              stockItem.contextValue = 'FavoriteStock';
               stockItem.showLabel = this.showLabel;
               stockItem.isStock = true;
               stockItem.type = type;
@@ -372,6 +456,7 @@ export default class StockService extends LeekService {
               type: 'nodata',
               contextValue: 'nodata',
             };
+            stockItem.contextValue = 'FavoriteStock';
             const treeItem = new LeekTreeItem(stockItem, this.context);
             stockList.push(treeItem);
           }
@@ -435,6 +520,7 @@ export default class StockService extends LeekService {
             if (Number(open) <= 0) {
               price = yestclose;
             }
+            stockItem.contextValue = 'FavoriteStock';
             stockItem.showLabel = this.showLabel;
             stockItem.isStock = true;
             stockItem.type = 'hk';

@@ -23,6 +23,8 @@ let labelFormat = DEFAULT_LABEL_FORMAT;
 let stockHeldTipShow = true; // 是否开启股票持仓提示
 
 let aStockCount = 0;
+let aLmitUpStockCount = 0; // 涨停家数
+let aLmitDownStockCount = 0; // 跌停家数
 let usStockCount = 0;
 let hkStockCount = 0;
 let cnfStockCount = 0; // 期货数量
@@ -51,6 +53,8 @@ export default {
   newsIntervalTime,
   newsIntervalTimer,
   aStockCount,
+  aLmitUpStockCount,
+  aLmitDownStockCount,
   usStockCount,
   hkStockCount,
   cnfStockCount, // 期货

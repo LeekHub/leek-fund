@@ -543,3 +543,14 @@ export function getResourcesImageSrc(
     );
   });
 }
+
+export function formatLimitTime(time: string = '') {
+  return time.padStart(6, '0').split('').reduce((acc, curr, index) => {
+    // 每两个数字之间加上 ':'
+    if (index === 2 || index === 4) {
+      acc += ':';
+    }
+    acc += curr;
+    return acc;
+  }, '')
+}
