@@ -84,9 +84,9 @@ export default class StockService extends LeekService {
     });
     // 自选
     const customIds = stockList.map((item) => item.id);
-    const upList = await this.getLimitData('ztgc')
+    const upList = await this.getLimitData('ztgc');
     this.uplimitStockList = upList.filter(item => !customIds.includes(item.id));
-    const downList = await this.getLimitData('dtgc')
+    const downList = await this.getLimitData('dtgc');
     this.downlimitStockList = downList.filter(item => !customIds.includes(item.id));
 
     const res = sortData(stockList, order);
@@ -116,7 +116,7 @@ export default class StockService extends LeekService {
           // 对其他请求不做修改，直接继续
           request.continue();
         }
-    })
+    });
     // 监听网络请求
     page.on('response', async (response) => {
       // 检查请求 URL 或请求的类型（可根据需要进行过滤）
@@ -152,7 +152,7 @@ export default class StockService extends LeekService {
               time: formatLimitTime(`${limitType === 'ztgc' ? item.fbt : item.lbt}`),
               fbt: formatLimitTime(`${item.fbt}`),
               lbt: formatLimitTime(`${item.lbt}`),
-            }
+            };
             if (limitType === 'ztgc') {
               stockItem.zttj = `${item.zttj.ct}/${item.zttj.days}`;
               stockItem.fbzz = formatNumber(item.fund, 2, true);
@@ -160,7 +160,7 @@ export default class StockService extends LeekService {
 
             const treeItem = new LeekTreeItem(stockItem, this.context);
             stocks.push(treeItem);
-          })
+          });
         }
         await browser.close();
         return stocks;

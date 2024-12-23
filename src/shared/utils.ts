@@ -552,5 +552,5 @@ export function formatLimitTime(time: string = '') {
     }
     acc += curr;
     return acc;
-  }, '')
+  }, '');
 }
