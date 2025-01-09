@@ -146,7 +146,7 @@ export class ProfitStatusBar {
 
           if (forex) {
             if (forex.spotSellPrice) {
-              // 按折算价算汇率
+              // 按现汇卖出价计算
               incomeTodayCNY = (forex.spotSellPrice * Number(incomeToday) / 100).toFixed(2);
               incomeTotalCNY = (forex.spotSellPrice * Number(incomeTotal) / 100).toFixed(2);
             }
