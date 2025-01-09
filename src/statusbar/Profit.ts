@@ -10,6 +10,7 @@ import { LeekFundConfig } from '../shared/leekConfig';
 import { ProfitStatusBarInfo } from '../shared/typed';
 import { events, formatDate, toFixed } from '../shared/utils';
 import StockService from '../explorer/stockService';
+import globalState from '../globalState';
 
 const PREFIX = '💰';
 
@@ -110,13 +111,17 @@ export class ProfitStatusBar {
         amount: number;
         incomeTotal: number | string;
         incomeToday: number | string;
+        incomeTotalCNY: number | string;
+        incomeTodayCNY: number | string;
         percentTotal: string;
       };
       const stockInfo: StockInfoType[] = [];
+
+      const forexList = globalState.forexList;
       stockList.forEach((s) => {
         let tmp = {} as StockInfoType;
         const { id, info } = s;
-        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice } = info;
+        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice, code } = info;
         if (id && open && price) {
           if (!heldAmount || !heldPrice) {
             return false;
@@ -127,6 +132,26 @@ export class ProfitStatusBar {
           // fix #399，在昨日收盘价没有的时候使用今日开盘价
           const incomeToday = (heldAmount * (Number(price) - Number(yestclose || open))).toFixed(2);
           const percentTotal = ((Number(incomeTotal) / (heldPrice * heldAmount)) * 100).toFixed(2);
+
+          let incomeTodayCNY = '';
+          let incomeTotalCNY = '';
+
+          const forex = forexList.find(({ filter }) => {
+            if (typeof filter === 'function') {
+              return filter(code);
+            } else if (filter instanceof RegExp) {
+              return filter.test(code);
+            }
+          });
+
+          if (forex) {
+            if (forex.spotSellPrice) {
+              // 按折算价算汇率
+              incomeTodayCNY = (forex.spotSellPrice * Number(incomeToday) / 100).toFixed(2);
+              incomeTotalCNY = (forex.spotSellPrice * Number(incomeTotal) / 100).toFixed(2);
+            }
+          }
+
           tmp = {
             id,
             name,
@@ -138,6 +163,8 @@ export class ProfitStatusBar {
             amount: heldAmount,
             incomeTotal,
             incomeToday,
+            incomeTodayCNY,
+            incomeTotalCNY,
             percentTotal,
           };
           stockInfo.push(tmp);
@@ -145,10 +172,10 @@ export class ProfitStatusBar {
       });
       const date = formatDate(new Date());
       const allIncomeToday = stockInfo.reduce((prev, cur) => {
-        return prev + Number(cur.incomeToday);
+        return prev + Number(cur.incomeTodayCNY ? cur.incomeTodayCNY : cur.incomeToday);
       }, 0);
       const allIncomeTotal = stockInfo.reduce((prev, cur) => {
-        return prev + Number(cur.incomeTotal);
+        return prev + Number(cur.incomeTotalCNY ? cur.incomeTotalCNY : cur.incomeTotal);
       }, 0);
       // Use the year, month, and day variables as needed
       this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal)} | ${toFixed(allIncomeToday)}`;
@@ -157,9 +184,9 @@ export class ProfitStatusBar {
         `「股票收益统计」 ${date}\r\n \r\n` +
         stockInfo
           .map((v) => {
-            return `${v.name} 总收益:${v.incomeTotal} (${v.percentTotal}%) 今天${
+            return `${v.name} 总收益:${v.incomeTotal} ${v.incomeTotalCNY ? `(CNY: ${v.incomeTotalCNY})` : ''} (${v.percentTotal}%) 今天${
               Number(v.incomeToday) > 0 ? '盈利' : '亏损'
-            }:${v.incomeToday} (${v.percent}%) \r\n`;
+            }:${v.incomeToday} ${v.incomeTodayCNY ? `(CNY: ${v.incomeTodayCNY})` : ''} (${v.percent}%) \r\n`;
           })
           .join('\r\n-----------------------------\r\n');
       this.stockBarItem.show();
