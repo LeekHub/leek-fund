@@ -82,12 +82,6 @@ export interface FundInfo {
   publishTime?: string; // 发布时间：时分秒
   heldAmount?: number; // 持仓数
   heldPrice?: number; // 持仓价
-  hybk?: string; // 行业板块
-  lbc?: number // 连板次数
-  fbt?: string; // 首次封板时间
-  lbt?: string; // 最后封板时间
-  zttj?: string; // 涨停统计
-  fbzz?: string; // 封板资金
 }
 
 export const defaultFundInfo: FundInfo = {
@@ -100,8 +94,6 @@ export const defaultFundInfo: FundInfo = {
 
 export enum StockCategory {
   A = 'A Stock',
-  UP = '涨停盯盘',
-  DOWN = '跌停盯盘',
   US = 'US Stock',
   HK = 'HK Stock',
   Future = 'CN Future',
