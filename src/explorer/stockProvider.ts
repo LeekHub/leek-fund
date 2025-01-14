@@ -14,15 +14,19 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
   private service: StockService;
   private order: SortType;
   private expandAStock: boolean;
-  private expandHKStock: boolean;
-  private expandUSStock: boolean;
-  private expandCNFuture: boolean;
-  private expandOverseaFuture: boolean;
+  private expandAUpStock: boolean = false;
+  private expandADownStock: boolean = false;
+  private expandHKStock: boolean = false;
+  private expandUSStock: boolean = false;
+  private expandCNFuture: boolean = false;
+  private expandOverseaFuture: boolean = false;
 
   constructor(service: StockService) {
     this.service = service;
     this.order = LeekFundConfig.getConfig('leek-fund.stockSort') || SortType.NORMAL;
     this.expandAStock = LeekFundConfig.getConfig('leek-fund.expandAStock', true);
+    this.expandAUpStock = LeekFundConfig.getConfig('leek-fund.expandAUpStock', false);
+    this.expandADownStock = LeekFundConfig.getConfig('leek-fund.expandADownStock', false);
     this.expandHKStock = LeekFundConfig.getConfig('leek-fund.expandHKStock', false);
     this.expandUSStock = LeekFundConfig.getConfig('leek-fund.expandUSStock', false);
     this.expandCNFuture = LeekFundConfig.getConfig('leek-fund.expandCNFuture', false);
@@ -48,6 +52,10 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       ) {
         case StockCategory.A:
           return this.getAStockNodes(resultPromise);
+        case StockCategory.UP:
+          return this.service.uplimitStockList;
+        case StockCategory.DOWN:
+          return this.service.downlimitStockList;
         case StockCategory.HK:
           return this.getHkStockNodes(resultPromise);
         case StockCategory.US:
@@ -79,6 +87,9 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         // tooltip: this.getSubCategoryTooltip(element),
         collapsibleState:
           (element.id === StockCategory.A && this.expandAStock) ||
+          (element.id === StockCategory.UP && this.expandAUpStock) ||
+          (element.id === StockCategory.DOWN && this.expandADownStock) ||
+          (element.id === StockCategory.A && this.expandAStock) ||
           (element.id === StockCategory.HK && this.expandHKStock) ||
           (element.id === StockCategory.US && this.expandUSStock) ||
           (element.id === StockCategory.Future && this.expandCNFuture) ||
@@ -99,6 +110,26 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
           id: StockCategory.A,
           name: `${StockCategory.A}${
             globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : ''
+          }`,
+        }),
+        undefined,
+        true
+      ),
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.UP,
+          name: `${StockCategory.UP}${
+            globalState.aLmitUpStockCount > 0 ? `(${globalState.aLmitUpStockCount})` : ''
+          }`,
+        }),
+        undefined,
+        true
+      ),
+      new LeekTreeItem(
+        Object.assign({ contextValue: 'category' }, defaultFundInfo, {
+          id: StockCategory.DOWN,
+          name: `${StockCategory.DOWN}${
+            globalState.aLmitDownStockCount > 0 ? `(${globalState.aLmitDownStockCount})` : ''
           }`,
         }),
         undefined,

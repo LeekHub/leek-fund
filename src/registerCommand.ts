@@ -139,11 +139,19 @@ export function registerViewEvent(
     }, 1000);
   });
   commands.registerCommand('leek-fund.deleteStock', (target) => {
+    if (!target) return;
     LeekFundConfig.removeStockCfg(target.id, () => {
       stockProvider.refresh();
     });
   });
+  commands.registerCommand('leek-fund.addMyStock', (target) => {
+    if (!target) return;
+    LeekFundConfig.updateStockCfg(target.id, () => {
+      stockProvider.refresh();
+    });
+  });
   commands.registerCommand('leek-fund.addStockToBar', (target) => {
+    if (!target) return;
     LeekFundConfig.addStockToBarCfg(target.id, () => {
       stockProvider.refresh();
     });

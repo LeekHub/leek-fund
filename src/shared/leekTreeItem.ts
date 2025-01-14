@@ -47,6 +47,12 @@ export class LeekTreeItem extends TreeItem {
       publishDateTime = '',
       heldAmount = 0,
       heldPrice = 0,
+      hybk = '',
+      lbc = 1,
+      fbt = '',
+      lbt = '',
+      zttj = '',
+      fbzz = '',
     } = info;
 
     if (_itemType) {
@@ -200,6 +206,9 @@ export class LeekTreeItem extends TreeItem {
     } else {
       this.label = text;
     }
+    if (hybk) {
+      this.label = `${text} ${lbc} ${zttj}  [${hybk}]`;
+    }
     this.id = info.id || code;
     if (isStockItem || isFundItem || isBinanceItem) {
       let typeAndSymbol = `${type}${symbol}`;
@@ -231,6 +240,8 @@ export class LeekTreeItem extends TreeItem {
 
       const isFuture = /nf_/.test(code) || /hf_/.test(code);
 
+      const isZt = !!hybk;
+
       // type字段：国内期货前缀 `nf_` 。股票的 type 是交易所 (sz,sh,bj)
       const typeText = type;
       const symbolText = isFuture ? name : symbol;
@@ -239,6 +250,8 @@ export class LeekTreeItem extends TreeItem {
         this.tooltip = '接口不支持，右键删除关注';
       } else if (isFuture) {
         this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨结：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
+      } else if (isZt) {
+        this.tooltip = `首封时间：${fbt}   最后封板时间：${lbt}\n   涨停统计：${zttj}   连板次数：${lbc}\n   封板资金：${fbzz}`;
       } else {
         this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${volume}   持仓价：${heldPrice}` : ''
           }`;
