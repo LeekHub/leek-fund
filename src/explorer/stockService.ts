@@ -205,6 +205,13 @@ export default class StockService extends LeekService {
               let high = params[6];
               let low = params[7];
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+              const profitData = stockPrice[code] || {};
+              const heldData: HeldData = {};
+              if (profitData.amount) {
+                // 表示是持仓股
+                heldData.heldAmount = profitData.amount;
+                heldData.heldPrice = profitData.unitPrice;
+              }
               stockItem = {
                 code,
                 name: params[0],
@@ -216,6 +223,7 @@ export default class StockService extends LeekService {
                 volume: formatNumber(params[10], 2),
                 amount: '接口无数据',
                 percent: '',
+                ...heldData
               };
               type = code.substr(0, 4);
               usStockCount += 1;
@@ -412,9 +420,25 @@ export default class StockService extends LeekService {
         return [];
       } else {
         const stocks = stockData;
+        const stockPrice: {
+          [key: string]: {
+            amount: number;
+            earnings: number;
+            name: string;
+            price: string;
+            unitPrice: number;
+          };
+        } = globalState.stockPrice;
         stocks.forEach((item: any) => {
-          const { open, yestclose, price, high, low, volume, amount, time } = item;
+          const { open, yestclose, price, high, low, volume, amount, time, code } = item;
           const fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
+          const profitData = stockPrice[code] || {};
+          const heldData: HeldData = {};
+          if (profitData.amount) {
+            // 表示是持仓股
+            heldData.heldAmount = profitData.amount;
+            heldData.heldPrice = profitData.unitPrice;
+          }
           const stockItem: any = {
             ...item,
             open: formatNumber(open, fixedNumber, false),
@@ -426,6 +450,7 @@ export default class StockService extends LeekService {
             amount: formatNumber(amount || 0, 2),
             percent: '',
             time: `${moment(time).format('YYYY-MM-DD HH:mm:ss')}`,
+            ...heldData,
           };
           hkStockCount += 1;
           if (stockItem) {

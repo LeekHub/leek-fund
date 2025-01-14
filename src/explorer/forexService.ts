@@ -2,8 +2,9 @@ import Axios from 'axios';
 import { load } from 'cheerio';
 import { ExtensionContext } from 'vscode';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { FundInfo, TreeItemType } from '../shared/typed';
+import { ForexData, FundInfo, TreeItemType } from '../shared/typed';
 import { LeekService } from './leekService';
+import globalState from '../globalState';
 
 export class ForexService extends LeekService {
   private context: ExtensionContext;
@@ -18,6 +19,12 @@ export class ForexService extends LeekService {
     '日元',
     '韩国元',
   ];
+
+  private forexMap: Record<string, RegExp | ((code: string) => boolean)> = {
+    '美元': /^usr_/,
+    '港币': /^hk/
+  };
+
 
   constructor(context: ExtensionContext) {
     super();
@@ -35,6 +42,8 @@ export class ForexService extends LeekService {
 
       const $ = load(html);
       const bocForexDataList: LeekTreeItem[] = [];
+
+      const forexList: Array<ForexData> = [];
       $('table').eq(1).find('tr').each((i, trElement) => {
         const rowData: FundInfo = {
           percent: '',
@@ -86,8 +95,20 @@ export class ForexService extends LeekService {
         if (rowData.name.length) {
           const treeItem = new LeekTreeItem(rowData, this.context);
           bocForexDataList.push(treeItem);
+
+          const filter = this.forexMap[rowData.name];
+          if (filter) {
+            forexList.push({
+              filter,
+              ...rowData,
+            });
+          }
         }
       });
+
+      if (forexList.length > 0) {
+        globalState.forexList = forexList;
+      }
 
       bocForexDataList.sort((a, b) => {
         return this.priorityList.indexOf(b.info.name) - this.priorityList.indexOf(a.info.name);
