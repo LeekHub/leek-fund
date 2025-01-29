@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.14.1](https://github.com/LeekHub/leek-fund/compare/v3.14.0...v3.14.1) (2025-01-29)
+
+## [3.14.0](https://github.com/LeekHub/leek-fund/compare/v3.13.0...v3.14.0) (2025-01-29)
+
+
+### Features
+
+* 涨跌停盯盘 ([f06bc32](https://github.com/LeekHub/leek-fund/commit/f06bc321b47cafa1b653c136b3405e51c9749ff1))
+
+
+### Bug Fixes
+
+* 修复港股美股的股票收益统计显示 ([e231cf2](https://github.com/LeekHub/leek-fund/commit/e231cf2303e9737d92ca9b3b9c54172c7878186d))
+* 格式化 ([caef0d4](https://github.com/LeekHub/leek-fund/commit/caef0d406e44efba0c40bcbcec510f13d21b68cf))
+* 美股港股收益的汇率转换 ([a7eb289](https://github.com/LeekHub/leek-fund/commit/a7eb289fad6733f4bc32581ad3a679ceb64ca2ad))
+
 ## [3.13.0](https://github.com/LeekHub/leek-fund/compare/v3.12.1...v3.13.0) (2024-10-22)
 
 
