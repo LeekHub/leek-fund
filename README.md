@@ -101,7 +101,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 <img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
 
 
-# All Thanks To Our Contributors
+## All Thanks To Our Contributors
 
 <a href="https://github.com/LeekHub/leek-fund/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=LeekHub/leek-fund" />
