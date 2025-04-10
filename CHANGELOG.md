@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.14.2](https://github.com/LeekHub/leek-fund/compare/v3.14.1...v3.14.2) (2025-04-10)
+
+
+### Bug Fixes
+
+* close [#512](https://github.com/LeekHub/leek-fund/issues/512) close[#519](https://github.com/LeekHub/leek-fund/issues/519) ([893634f](https://github.com/LeekHub/leek-fund/commit/893634fa05c3b8bfcc23dfd4921f0f07e859cdd9))
+* https://github.com/LeekHub/leek-fund/pull/432#issuecomment-2771199364 ([983b5ab](https://github.com/LeekHub/leek-fund/commit/983b5abc5146d0eb19a6eca24edc393ebaa7b7cb)), closes [/github.com/LeekHub/leek-fund/pull/432#issuecomment-2771199364](https://github.com/LeekHub//github.com/LeekHub/leek-fund/pull/432/issues/issuecomment-2771199364)
+* update onProxyReq function signature in proxyService.ts ([427cf1d](https://github.com/LeekHub/leek-fund/commit/427cf1d72bd1539f58f7243b238c7f89df54d2a9))
+
 ### [3.14.1](https://github.com/LeekHub/leek-fund/compare/v3.14.0...v3.14.1) (2025-01-29)
 
 ## [3.14.0](https://github.com/LeekHub/leek-fund/compare/v3.13.0...v3.14.0) (2025-01-29)
