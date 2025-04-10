@@ -3,7 +3,7 @@ import { ExtensionContext, TreeItem, TreeItemCollapsibleState } from 'vscode';
 import globalState from '../globalState';
 import { DEFAULT_LABEL_FORMAT } from './constant';
 import { FundInfo, IconType, TreeItemType } from './typed';
-import { formatLabelString, formatTreeText } from './utils';
+import { formatLabelString, formatTreeText, toFixed } from './utils';
 
 export class LeekTreeItem extends TreeItem {
   info: FundInfo;
@@ -240,7 +240,7 @@ export class LeekTreeItem extends TreeItem {
       } else if (isFuture) {
         this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨结：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       } else {
-        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${volume}   持仓价：${heldPrice}` : ''
+        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${toFixed(heldAmount/heldPrice)}   持仓价：${heldPrice}` : ''
           }`;
       }
     } else if (isBinanceItem) {
@@ -252,3 +252,5 @@ export class LeekTreeItem extends TreeItem {
     }
   }
 }
+
+
