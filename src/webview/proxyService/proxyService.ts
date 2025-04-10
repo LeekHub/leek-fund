@@ -11,7 +11,7 @@ export async function startProxyServer() {
         const proxy = createProxyMiddleware({
         target: 'https://quote.eastmoney.com',
         changeOrigin: true,
-        onProxyReq: (proxyReq: { setHeader: (arg0: string, arg1: string) => void; }, req: any) => {
+        onProxyReq: (proxyReq: { setHeader: (arg0: string, arg1: string) => void; }) => {
             // 设置 User-Agent 和 Cookie
             proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3');
             // 设置 fullscreengg cookie解决页面频繁弹出广告
