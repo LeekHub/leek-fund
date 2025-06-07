@@ -1,6 +1,6 @@
 import { ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
-import { getEastmoneyHost } from './proxyService/proxyConfig';
+import { getEastMoneyHost } from './proxyService/proxyConfig';
 function stockTrendPic(code: string, name: string, stockCode: string) {
   const panel = ReusedWebviewPanel.create(
     'stockTrendPicWebview',
@@ -59,7 +59,7 @@ function stockTrendPic(code: string, name: string, stockCode: string) {
   panel.webview.html = panel.webview.html = `<html><body style="background:#eee;color:#333">
   <br/>
   <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」趋势图、K线图</p>
-  <a style="position: absolute;right: 22px;top: 22px;font-size: 12px;" href="${getEastmoneyHost()}/${imageName}.html#fullScreenChart">网页全屏查看>></a>
+  <a style="position: absolute;right: 22px;top: 22px;font-size: 12px;" href="${getEastMoneyHost()}/${imageName}.html#fullScreenChart">网页全屏查看>></a>
   <hr />
   <h3 style="display:inline-block">实时走势图</h3><span style="margin-left:10px;color:#888;font-size:12px;" id="refreshtime">&nbsp;</span>
   <br/><br/>

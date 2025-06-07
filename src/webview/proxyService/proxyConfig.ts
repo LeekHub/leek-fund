@@ -11,7 +11,7 @@ export function setPort(port: number) {
 /**
  * 获取代理Host
  */
-export function getEastmoneyHost() {
+export function getEastMoneyHost() {
     if(PORT === undefined) {
         return `https://quote.eastmoney.com`;
     } else {
