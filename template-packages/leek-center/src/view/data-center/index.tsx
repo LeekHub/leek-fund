@@ -12,7 +12,9 @@ import zengfaPage from './zengfa';
 import peiguPage from './peigu';
 import reportPage from './report';
 import economyPage from './economy';
+import bkzjPage from './dashboard/bk';
 import OtherPage from './other';
+
 const { Content, Sider } = Layout;
 
 export default function DataCenter({ children }: { children: ReactElement }) {
@@ -34,6 +36,9 @@ export default function DataCenter({ children }: { children: ReactElement }) {
         >
           <Menu.Item key="nxfxb1">
             <Link to="/data-center/nxfxb">牛熊风向标</Link>
+          </Menu.Item>
+          <Menu.Item key="bkzj">
+            <Link to="/data-center/bkzj">资金流向大屏</Link>
           </Menu.Item>
           <Menu.Item key="longhubang">
             <Link to="/data-center/longhubang">龙虎榜数据全览</Link>
@@ -88,6 +93,11 @@ export default function DataCenter({ children }: { children: ReactElement }) {
             exact
             path="/data-center/nxfxb"
             component={NxfxbPage}
+          />
+          <Route
+            exact
+            path="/data-center/bkzj"
+            component={bkzjPage}
           />
           <Route
             exact

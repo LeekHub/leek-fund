@@ -30,6 +30,7 @@ import { cacheStocksRemindData } from './webview/leekCenterView';
 import { cacheFundAmountData, updateAmount } from './webview/setAmount';
 import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
 import { startProxyServer } from './webview/proxyService/proxyService';
+import createEastMoneyDataServer from './service/eastmoney';
 
 let loopTimer: NodeJS.Timer | null = null;
 let binanceLoopTimer: NodeJS.Timer | null = null;
@@ -219,6 +220,8 @@ export function activate(context: ExtensionContext) {
 
   // start local proxy server
   startProxyServer();
+  // start eastmoney data server
+  createEastMoneyDataServer();
 
   // Telemetry Event
   telemetry.sendEvent('activate');

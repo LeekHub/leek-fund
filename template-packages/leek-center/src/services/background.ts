@@ -10,7 +10,7 @@ const CommandHandler: Record<string, (data: any) => any> = {
     store.fund.setFunds(data);
   },
   updateStockRemind(data) {
-    console.log('updateStockRemind: ', data);
+    // console.log('updateStockRemind: ', data);
     store.stock.setStockRemind(data);
   },
   fetchResponse(data) {
