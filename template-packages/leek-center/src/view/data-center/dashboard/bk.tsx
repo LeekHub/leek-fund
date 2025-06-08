@@ -18,14 +18,14 @@ const IframeWithLoading = () => {
   }, []);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '600px' }}>
+    <div style={{ position: 'relative', width: '100%', height: '95vh' }}>
       {loading && (
         <div style={{ 
           position: 'absolute', 
           top: 0, 
           left: 0, 
           width: '100%', 
-           minHeight: '900px',
+           minHeight: '95vh',
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
@@ -37,9 +37,9 @@ const IframeWithLoading = () => {
       )}
       <iframe
         src={srcUrl}
-        style={{  minHeight: '900px',width: '100%', height: '100%', border: 'none' }}
+        style={{  minHeight: '95vh',width: '100%', height: '100%', border: 'none' }}
         onLoad={handleLoad}
-        title="地域板块资金"
+        title="地域板块资金流向大屏"
       />
     </div>
   );
