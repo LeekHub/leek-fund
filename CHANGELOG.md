@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.15.0](https://github.com/LeekHub/leek-fund/compare/v3.14.2...v3.15.0) (2025-06-08)
+
+
+### Features
+
+* 资金流向大屏 ([3d0b046](https://github.com/LeekHub/leek-fund/commit/3d0b046eb1dd21db56881db428c5cbb7209a019d))
+
+
+### Bug Fixes
+
+* 地域板块资金流向大屏iframe style ([d7bb749](https://github.com/LeekHub/leek-fund/commit/d7bb74968126daadf414dc886ddb3abd0622c1f3))
+
 ### [3.14.2](https://github.com/LeekHub/leek-fund/compare/v3.14.1...v3.14.2) (2025-04-10)
 
 
