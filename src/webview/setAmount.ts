@@ -64,16 +64,30 @@ function fundDataHandler(fundService: FundService) {
   const fundList: LeekTreeItem[] = cloneDeep(fundService.fundList);
   const amountObj: any = globalState.fundAmount || {};
   const list = fundList.map((item: LeekTreeItem) => {
+    const fundConfig = amountObj[item.info?.code] || {};
+    
+    // 兼容旧数据：如果没有份额但有金额和基金净值，计算份额
+    let shares = fundConfig.shares;
+    if (!shares && fundConfig.amount && item.info?.yestclose) {
+      shares = fundConfig.amount / parseFloat(String(item.info.yestclose));
+    }
+    
+    // 计算持仓金额：优先使用份额 * 基金净值（昨日净值），否则使用保存的金额
+    const calculatedAmount = shares && item.info?.yestclose
+      ? shares * parseFloat(String(item.info.yestclose))
+      : fundConfig.amount || 0;
+    
     return {
       name: item.info?.name,
       code: item.info?.code,
       percent: item.info?.percent,
-      amount: amountObj[item.info?.code]?.amount || 0,
+      amount: calculatedAmount,
+      shares: shares || null, // 添加份额字段
       earningPercent: item.info?.earningPercent,
       unitPrice: item.info?.unitPrice,
       // priceDate: formatDate(item.info?.time),
       earnings: item.info?.earnings || 0,
-      yestEarnings: amountObj[item.info.code]?.earnings || 0,
+      yestEarnings: fundConfig.earnings || 0,
       price: item.info?.yestclose,
       priceDate: item.info?.yestPriceDate,
     };
@@ -93,9 +107,15 @@ function getWebviewContent(panel: WebviewPanel) {
 function setAmountCfgCb(data: IAmount[]) {
   const cfg: any = {};
   data.forEach((item: any) => {
+    // 计算持仓金额：如果有份额，则使用 单价 * 份额，否则使用原来的金额
+    const calculatedAmount = item.shares && item.unitPrice 
+      ? item.shares * item.unitPrice 
+      : item.amount || 0;
+    
     cfg[item.code] = {
       name: item.name,
-      amount: item.amount || 0,
+      amount: calculatedAmount,
+      shares: item.shares || null, // 保存份额
       price: item.price,
       unitPrice: item.unitPrice,
       earnings: item.earnings,
@@ -145,11 +165,22 @@ export async function updateAmount() {
       const time = GZTIME?.substr(0, 10);
       const pdate = PDATE?.substr(0, 10);
       const isUpdated = pdate === time; // 判断闭市的时候
-      const money = amountObj[FCODE]?.amount || 0;
-      const price = amountObj[FCODE]?.price || 0;
-      const priceDate = amountObj[FCODE]?.priceDate || '';
+      const fundConfig = amountObj[FCODE];
+      const money = fundConfig?.amount || 0;
+      const price = fundConfig?.price || 0;
+      const priceDate = fundConfig?.priceDate || '';
+      
       if (priceDate !== pdate) {
-        const currentMoney = (money / price) * NAV;
+        // 兼容处理：如果没有份额但有历史金额，从金额和基金净值计算份额
+        if (!fundConfig.shares && money && price) {
+          fundConfig.shares = parseFloat((money / price).toFixed(2));
+        }
+        
+        // 使用份额计算新的持仓金额，如果没有份额则用原逻辑
+        const currentMoney = fundConfig.shares 
+          ? fundConfig.shares * NAV 
+          : (money / price) * NAV;
+          
         amountObj[FCODE].amount = toFixed(currentMoney);
         if (isUpdated) {
           // 闭市的时候保留上一次盈亏值
