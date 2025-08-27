@@ -1,4 +1,22 @@
-import { commands, ExtensionContext, window } from 'vscode';
+import { commands, ExtensionContext, window, workspace, Uri } from 'vscode';
+import * as os from 'os';
+import * as path from 'path';
+
+/**
+ * 获取设置文件的默认路径
+ * 优先选择当前工作区目录，如果没有工作区则选择下载目录
+ */
+function getDefaultSettingsPath(filename: string = 'leek-fund.settings.json'): string {
+  const workspaceFolders = workspace.workspaceFolders;
+  
+  if (workspaceFolders && workspaceFolders.length > 0) {
+    // 使用当前工作区目录
+    return path.join(workspaceFolders[0].uri.fsPath, filename);
+  } else {
+    // 使用下载目录作为备选
+    return path.join(os.homedir(), 'Downloads', filename);
+  }
+}
 import fundSuggestList from './data/fundSuggestData';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
@@ -367,9 +385,7 @@ export function registerViewEvent(
 
   /* 点击交易对 */
   context.subscriptions.push(
-    commands.registerCommand('leek-fund.binanceItemClick', (code, name) =>
-      binanceTrend(name)
-    )
+    commands.registerCommand('leek-fund.binanceItemClick', (code, name) => binanceTrend(name))
   );
 
   /**
@@ -449,6 +465,14 @@ export function registerViewEvent(
             {
               label: globalState.stockHeldTipShow ? '关闭持仓高亮' : '开启持仓高亮',
               description: 'stockHeldTipShow',
+            },
+            {
+              label: '📤 导出设置',
+              description: 'exportSettings',
+            },
+            {
+              label: '📥 导入设置',
+              description: 'importSettings',
             },
           ],
           {
@@ -541,6 +565,10 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.toggleKLineChartSwitch');
           } else if (type === 'stockHeldTipShow') {
             commands.executeCommand('leek-fund.toggleStockHeldTipShow');
+          } else if (type === 'exportSettings') {
+            commands.executeCommand('leek-fund.exportSettings');
+          } else if (type === 'importSettings') {
+            commands.executeCommand('leek-fund.importSettings');
           }
         });
     })
@@ -633,6 +661,165 @@ export function registerViewEvent(
       globalState.immersiveBackground = isChecked;
     })
   );
+
+  // Settings Import/Export Commands
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.exportSettings', async () => {
+      try {
+        const workspaceConfig = workspace.getConfiguration();
+        const allSettings: any = {};
+
+        // Get all leek-fund settings dynamically from extension context
+        const extensionManifest = globalState.context.extension.packageJSON;
+        const configurationProperties = extensionManifest.contributes?.configuration?.properties || {};
+        
+        // Filter to only leek-fund configuration keys
+        const leekFundConfigKeys = Object.keys(configurationProperties).filter(key => 
+          key.startsWith('leek-fund.')
+        );
+
+        // Get all leek-fund settings that have actual values
+        leekFundConfigKeys.forEach(key => {
+          const value = workspaceConfig.get(key);
+          if (value !== undefined) {
+            allSettings[key] = value;
+          }
+        });
+
+        // Additional inspection method as fallback to catch any dynamically created settings
+        const leekFundInspection = workspaceConfig.inspect('leek-fund');
+        const inspectionSources = [
+          leekFundInspection?.globalValue,
+          leekFundInspection?.workspaceValue, 
+          leekFundInspection?.workspaceFolderValue
+        ];
+
+        inspectionSources.forEach(source => {
+          if (source && typeof source === 'object') {
+            Object.keys(source).forEach(key => {
+              const fullKey = `leek-fund.${key}`;
+              if (!allSettings[fullKey]) {
+                const value = workspaceConfig.get(fullKey);
+                if (value !== undefined) {
+                  allSettings[fullKey] = value;
+                }
+              }
+            });
+          }
+        });
+
+        if (Object.keys(allSettings).length === 0) {
+          window.showInformationMessage('没有找到任何以 "leek-fund." 开头的设置');
+          return;
+        }
+
+        // Show save dialog
+        const uri = await window.showSaveDialog({
+          defaultUri: Uri.file(getDefaultSettingsPath()),
+          filters: {
+            'JSON files': ['json'],
+            'All files': ['*'],
+          },
+        });
+
+        if (uri) {
+          const settingsJson = JSON.stringify(allSettings, null, 2);
+          await workspace.fs.writeFile(uri, Buffer.from(settingsJson));
+          window.showInformationMessage(`设置已导出到: ${uri.fsPath}`);
+        }
+      } catch (error) {
+        window.showErrorMessage(`导出设置失败: ${error}`);
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.importSettings', async () => {
+      try {
+        // Show open dialog
+        const uris = await window.showOpenDialog({
+          defaultUri: Uri.file(getDefaultSettingsPath()),
+          canSelectFiles: true,
+          canSelectFolders: false,
+          canSelectMany: false,
+          filters: {
+            'JSON files': ['json'],
+            'All files': ['*'],
+          },
+        });
+
+        if (!uris || uris.length === 0) {
+          return;
+        }
+
+        const uri = uris[0];
+        const content = await workspace.fs.readFile(uri);
+        const settingsText = Buffer.from(content).toString('utf8');
+
+        let importedSettings: any;
+        try {
+          importedSettings = JSON.parse(settingsText);
+        } catch (parseError) {
+          window.showErrorMessage('无法解析 JSON 文件，请检查文件格式');
+          return;
+        }
+
+        // Filter settings that start with 'leek-fund.'
+        const leekFundSettings: any = {};
+        Object.keys(importedSettings).forEach((key) => {
+          if (key.startsWith('leek-fund.')) {
+            leekFundSettings[key] = importedSettings[key];
+          }
+        });
+
+        if (Object.keys(leekFundSettings).length === 0) {
+          window.showInformationMessage('文件中没有找到任何以 "leek-fund." 开头的设置');
+          return;
+        }
+
+        // Confirm import
+        const result = await window.showInformationMessage(
+          `将导入 ${Object.keys(leekFundSettings).length} 个设置项，这将覆盖现有的设置。是否继续？`,
+          '确认导入',
+          '取消'
+        );
+
+        if (result !== '确认导入') {
+          return;
+        }
+
+        // Import settings
+        const workspaceConfig = workspace.getConfiguration();
+        let successCount = 0;
+        let failCount = 0;
+
+        for (const [key, value] of Object.entries(leekFundSettings)) {
+          try {
+            await workspaceConfig.update(key, value, true);
+            successCount++;
+          } catch (error) {
+            console.error(`Failed to import setting ${key}:`, error);
+            failCount++;
+          }
+        }
+
+        if (successCount > 0) {
+          window.showInformationMessage(
+            `设置导入完成：成功 ${successCount} 项${failCount > 0 ? `，失败 ${failCount} 项` : ''}`
+          );
+
+          // Refresh the extension state
+          commands.executeCommand('leek-fund.refreshFund');
+          commands.executeCommand('leek-fund.refreshStock');
+        } else {
+          window.showErrorMessage('导入设置失败');
+        }
+      } catch (error) {
+        window.showErrorMessage(`导入设置失败: ${error}`);
+      }
+    })
+  );
+
   // checkForUpdate();
 }
 
