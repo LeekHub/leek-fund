@@ -34,6 +34,7 @@ export interface IAmount {
   name: string;
   price: number | string;
   amount: number;
+  shares?: number; // 持仓份额，新增字段
   priceDate: string;
   earnings: number;
   unitPrice: number;
