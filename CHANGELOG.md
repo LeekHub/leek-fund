@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.16.0](https://github.com/LeekHub/leek-fund/compare/v3.15.0...v3.16.0) (2025-08-30)
+
+
+### Features
+
+* 持仓金额改成持仓份额 ([ac96443](https://github.com/LeekHub/leek-fund/commit/ac964434fa82797a589235b6544411e684af7b8e))
+* 支持导入导出设置 ([918299f](https://github.com/LeekHub/leek-fund/commit/918299fec4c4e6d590401d59d2f7cf81f7d81654))
+* 支持快捷键切换状态栏 ([b114a48](https://github.com/LeekHub/leek-fund/commit/b114a48de437bdc61fc28296dc5ae9b0739e53dc))
+
+
+### Bug Fixes
+
+* 修复导航栏浅色主题颜色固定的问题 ([8fcda4f](https://github.com/LeekHub/leek-fund/commit/8fcda4ff5a9a913252aeb18f7cd95d949fdcd5dc))
+
 ## [3.15.0](https://github.com/LeekHub/leek-fund/compare/v3.14.2...v3.15.0) (2025-06-08)
 
 
