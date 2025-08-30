@@ -293,6 +293,13 @@
         }
       }
     ],
+    "keybindings": [
+      {
+        "command": "leek-fund.toggleStatusBarVisibility",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t"
+      }
+    ],
     "menus": {
       "view/title": [
         {
