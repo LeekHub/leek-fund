@@ -29,7 +29,7 @@ export default function LHeader() {
       <div className={Styles.logo}>韭菜中心</div>
       <Menu
         onClick={handleClick}
-        theme="dark"
+        // theme="dark"
         mode="horizontal"
         selectedKeys={[defaultSelectedKeys]}
       >

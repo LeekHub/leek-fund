@@ -29,7 +29,7 @@ export default function DataCenter({ children }: { children: ReactElement }) {
         }}
       >
         <Menu
-          theme="dark"
+          // theme="dark"
           style={{
             height: 'calc(100vh - 86px)',
           }}
