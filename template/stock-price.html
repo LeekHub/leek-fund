@@ -242,6 +242,7 @@
           const amount = item.amount || 0;
           const unitPrice = item.unitPrice || 0;
           const earningPercent = item.earningPercent || 0;
+          const todayUnitPrice = item.todayUnitPrice || 0;
           if (index === 0) {
             priceDate = item.priceDate;
           }
@@ -269,6 +270,13 @@
             '_unit" value="' +
             unitPrice +
             '" /> <span class="unit">元、</span> </div>' +
+            '<div class="unitDiv el-input">' +
+            '今日成本价：<input type="number" class="unitPriceInput el-input__inner" id="' +
+            item.code +
+            '_today_unit" value="' +
+            todayUnitPrice +
+            '" /> <span class="unit">元、</span> </div>' +
+            '</div>' +
             '</div>';
 
           listStr += str;
@@ -467,10 +475,13 @@
           fundList.forEach((item) => {
             let amount = $('#' + item.code).val();
             let unitPrice = $('#' + item.code + '_unit').val();
+            let todayUnitPrice = $('#' + item.code + '_today_unit').val();
             amount = isNaN(Number(amount)) ? 0 : Number(amount);
             unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
+            todayUnitPrice = isNaN(Number(todayUnitPrice)) ? 0 : Number(todayUnitPrice);
             item.amount = amount; // 持仓金额
             item.unitPrice = unitPrice; // 成本价
+            item.todayUnitPrice = todayUnitPrice; // 今日成本价
             totalMoney += amount; // 持仓金额
             // 收益率
             if (unitPrice !== 0) {
@@ -506,11 +517,13 @@
             Datas.forEach((item) => {
               const amount = ammountObj[item.FCODE].amount;
               const unitPrice = ammountObj[item.FCODE].unitPrice;
+              const todayUnitPrice = ammountObj[item.FCODE].todayUnitPrice;
               const obj = {
                 code: item.FCODE,
                 name: item.SHORTNAME,
                 unitPrice: unitPrice, // 成本价
                 amount: amount, // 持仓金额
+                todayUnitPrice: todayUnitPrice, // 今日成本价
                 earnings: ammountObj[item.FCODE].earnings,
                 price: item.NAV, // 净值
                 priceDate: item.PDATE, // 净值时间

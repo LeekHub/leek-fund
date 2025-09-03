@@ -134,6 +134,7 @@ export default class StockService extends LeekService {
             name: string;
             price: string;
             unitPrice: number;
+            todayUnitPrice: number;
           };
         } = globalState.stockPrice;
 
@@ -159,6 +160,7 @@ export default class StockService extends LeekService {
                 // 表示是持仓股
                 heldData.heldAmount = profitData.amount;
                 heldData.heldPrice = profitData.unitPrice;
+                heldData.todayHeldPrice = profitData.todayUnitPrice;
               }
               stockItem = {
                 code,

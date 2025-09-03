@@ -83,6 +83,7 @@ export interface FundInfo {
   publishTime?: string; // 发布时间：时分秒
   heldAmount?: number; // 持仓数
   heldPrice?: number; // 持仓价
+  todayHeldPrice?: number; // 当日持仓价
 }
 
 export const defaultFundInfo: FundInfo = {
@@ -112,6 +113,7 @@ export interface ProfitStatusBarInfo {
 export type HeldData = {
   heldAmount?: number;
   heldPrice?: number;
+  todayHeldPrice?: number;
 };
 
 export type ForexData = {
