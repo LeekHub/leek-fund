@@ -47,7 +47,6 @@ export class LeekTreeItem extends TreeItem {
       publishDateTime = '',
       heldAmount = 0,
       heldPrice = 0,
-      todayHeldPrice = 0,
     } = info;
 
     if (_itemType) {
@@ -241,7 +240,7 @@ export class LeekTreeItem extends TreeItem {
       } else if (isFuture) {
         this.tooltip = `【今日行情】${name} ${code}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨结：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
       } else {
-        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${toFixed(heldAmount/heldPrice)}   持仓价：${heldPrice}   今日成本价：${todayHeldPrice}` : ''
+        this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}\n ${heldAmount ? `持仓数：${toFixed(heldAmount/heldPrice)}   持仓价：${heldPrice}` : ''
           }`;
       }
     } else if (isBinanceItem) {

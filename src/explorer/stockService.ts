@@ -135,6 +135,7 @@ export default class StockService extends LeekService {
             price: string;
             unitPrice: number;
             todayUnitPrice: number;
+            isSellOut: boolean;
           };
         } = globalState.stockPrice;
 
@@ -161,6 +162,7 @@ export default class StockService extends LeekService {
                 heldData.heldAmount = profitData.amount;
                 heldData.heldPrice = profitData.unitPrice;
                 heldData.todayHeldPrice = profitData.todayUnitPrice;
+                heldData.isSellOut = profitData.isSellOut;
               }
               stockItem = {
                 code,

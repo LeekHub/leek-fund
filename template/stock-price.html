@@ -21,7 +21,7 @@
       }
 
       div {
-        margin-left: 20px;
+        margin-left: 10px;
         line-height: 28px;
       }
       .list .name,
@@ -45,6 +45,11 @@
         width: 160px;
         height: 28px;
       }
+      .el-checkbox {
+        width: 24px;
+        height: 24px;
+        margin-right: 0 !important;
+      }
       .el-input__inner {
         height: 28px;
         width: 120px;
@@ -67,6 +72,12 @@
       }
       .operate {
         font-size: 12px;
+      }
+      .sellOut {
+        width: 80px;
+        height: 28px;
+        margin-left: 0;
+        float: right;
       }
       .unitDiv {
         width: 224px;
@@ -243,6 +254,7 @@
           const unitPrice = item.unitPrice || 0;
           const earningPercent = item.earningPercent || 0;
           const todayUnitPrice = item.todayUnitPrice || 0;
+          const isSellOut = item.isSellOut || false;
           if (index === 0) {
             priceDate = item.priceDate;
           }
@@ -276,6 +288,12 @@
             '_today_unit" value="' +
             todayUnitPrice +
             '" /> <span class="unit">元、</span> </div>' +
+            '<div class="sellOut">' +
+            '<input type="checkbox" id="' +
+            item.code +
+            '_sell_out" class="el-checkbox" ' +
+             (isSellOut ? "checked" : "") +
+            ' /><span class="unit">已清仓</span>' +
             '</div>' +
             '</div>';
 
@@ -476,12 +494,14 @@
             let amount = $('#' + item.code).val();
             let unitPrice = $('#' + item.code + '_unit').val();
             let todayUnitPrice = $('#' + item.code + '_today_unit').val();
+            let isSellOut = $('#' + item.code + '_sell_out').prop('checked');
             amount = isNaN(Number(amount)) ? 0 : Number(amount);
             unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
             todayUnitPrice = isNaN(Number(todayUnitPrice)) ? 0 : Number(todayUnitPrice);
             item.amount = amount; // 持仓金额
             item.unitPrice = unitPrice; // 成本价
             item.todayUnitPrice = todayUnitPrice; // 今日成本价
+            item.isSellOut = isSellOut; // 是否清仓
             totalMoney += amount; // 持仓金额
             // 收益率
             if (unitPrice !== 0) {
@@ -518,12 +538,14 @@
               const amount = ammountObj[item.FCODE].amount;
               const unitPrice = ammountObj[item.FCODE].unitPrice;
               const todayUnitPrice = ammountObj[item.FCODE].todayUnitPrice;
+              const isSellOut = ammountObj[item.FCODE].isSellOut;
               const obj = {
                 code: item.FCODE,
                 name: item.SHORTNAME,
                 unitPrice: unitPrice, // 成本价
                 amount: amount, // 持仓金额
                 todayUnitPrice: todayUnitPrice, // 今日成本价
+                isSellOut: isSellOut, // 是否清仓
                 earnings: ammountObj[item.FCODE].earnings,
                 price: item.NAV, // 净值
                 priceDate: item.PDATE, // 净值时间

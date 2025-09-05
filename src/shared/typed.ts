@@ -84,6 +84,7 @@ export interface FundInfo {
   heldAmount?: number; // 持仓数
   heldPrice?: number; // 持仓价
   todayHeldPrice?: number; // 当日持仓价
+  isSellOut?: boolean; // 是否清仓
 }
 
 export const defaultFundInfo: FundInfo = {
@@ -114,6 +115,7 @@ export type HeldData = {
   heldAmount?: number;
   heldPrice?: number;
   todayHeldPrice?: number;
+  isSellOut?: boolean;
 };
 
 export type ForexData = {
