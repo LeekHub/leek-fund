@@ -49,6 +49,7 @@ export class LeekTreeItem extends TreeItem {
       publishDateTime = '',
       heldAmount = 0,
       heldPrice = 0,
+      isSellOut = false,
     } = info;
 
     if (_itemType) {
@@ -192,7 +193,7 @@ export class LeekTreeItem extends TreeItem {
         ? `${formatTreeText(`${_percent}%`, 11)}${formatTreeText(price, 15)} 「${code}」`
         : `${formatTreeText(`${_percent}%`)}「${code}」`;
     }
-    if (heldAmount && globalState.stockHeldTipShow) {
+    if (!isSellOut && heldAmount && globalState.stockHeldTipShow) {
       this.label = {
         label: text,
         highlights: [[0, text.length]],
