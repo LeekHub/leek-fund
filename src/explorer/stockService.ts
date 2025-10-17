@@ -322,7 +322,12 @@ export default class StockService extends LeekService {
               let low = params[5];
               let yestclose = params[7]; // 昨收盘
               let yestCallPrice = params[7]; // 昨结算
-              let volume = params[14].slice(0, -1); // 成交量。slice 去掉最后一位 "
+              let volume = 0;
+              if (params.lenth >= 15) {
+                // hf_XAU 伦敦金（现货黄金）取回的数据少一个字段
+                // var hq_str_hf_XAU = "4344.36,4325.850,4344.36,4344.71,4379.38,4278.78,17:09:00,4325.85,4328.90,0,0,0,2025-10-17,伦敦金（现货黄金）";
+                volume = params[14].slice(0, -1); // 成交量。slice 去掉最后一位 "
+              }
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
 
               stockItem = {
