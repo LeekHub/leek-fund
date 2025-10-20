@@ -123,7 +123,7 @@ export class ProfitStatusBar {
       stockList.forEach((s) => {
         let tmp = {} as StockInfoType;
         const { id, info } = s;
-        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice, code } = info;
+        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice, todayHeldPrice, isSellOut, code } = info;
         if (id && open && price) {
           if (!heldAmount || !heldPrice) {
             return false;
@@ -133,7 +133,11 @@ export class ProfitStatusBar {
           const heldBase = (heldPrice * heldAmount).toFixed(2);
           const incomeTotal = (heldAmount * (Number(price) - heldPrice)).toFixed(2);
           // fix #399，在昨日收盘价没有的时候使用今日开盘价
-          const incomeToday = (heldAmount * (Number(price) - Number(yestclose || open))).toFixed(2);
+          let incomeToday = (heldAmount * (Number(price) - Number(todayHeldPrice || yestclose || open))).toFixed(2);
+          // 如果是清仓状态，今日收益为 持仓数 * (今日持仓价 - 昨日收盘价或今日开盘价)
+          if (isSellOut) {
+            incomeToday = (heldAmount * (Number(todayHeldPrice) - Number(yestclose || open))).toFixed(2);
+          }
           const percentTotal = ((Number(incomeTotal) / (heldPrice * heldAmount)) * 100).toFixed(2);
 
           let incomeTodayCNY = '';

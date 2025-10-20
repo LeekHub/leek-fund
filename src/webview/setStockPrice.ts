@@ -74,6 +74,8 @@ function stockDataHandler(stockService: StockService) {
       earningPercent: item.info?.earningPercent,
       // unitPrice: item.info?.unitPrice,
       unitPrice: amountObj[item.info?.code]?.unitPrice || 0,
+      todayUnitPrice: amountObj[item.info?.code]?.todayUnitPrice || 0,
+      isSellOut: amountObj[item.info?.code]?.isSellOut || false,
       // costUnitPrice: amountObj[item.info?.code]?.unitPrice || 0,
       // priceDate: formatDate(item.info?.time),
       earnings: item.info?.earnings || 0,
@@ -102,6 +104,8 @@ function setStockPriceCfgCb(data: IAmount[]) {
       amount: item.amount || 0,
       price: item.price,
       unitPrice: item.unitPrice,
+      todayUnitPrice: item.todayUnitPrice || 0,
+      isSellOut: item.isSellOut || false,
       earnings: item.earnings,
       priceDate: item.priceDate,
     };
