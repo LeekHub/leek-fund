@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.17.0](https://github.com/LeekHub/leek-fund/compare/v3.16.0...v3.17.0) (2025-10-20)
+
+
+### Features
+
+* 添加今日成本价，用于辅助计算当日盈亏 ([1dc9063](https://github.com/LeekHub/leek-fund/commit/1dc9063473915a8b3abdf330c569c15c2089d089))
+* 添加已清仓复选框，用于辅助计算当日清仓股票的当日盈亏计算 ([7366006](https://github.com/LeekHub/leek-fund/commit/7366006df40745897673ab616f8ded5c14c99412))
+
+
+### Bug Fixes
+
+* 修复现货黄金数据少字段引起后续股票数据不解析的bug ([1f680eb](https://github.com/LeekHub/leek-fund/commit/1f680ebc42d987111d0f8b67b246f78861ff34f5))
+* 无持仓资金(新增)导致无法设置持仓 ([e96e8c3](https://github.com/LeekHub/leek-fund/commit/e96e8c311b07841c0a95421d398568663e1acb37))
+* 默认份额从null变成0 ([602d945](https://github.com/LeekHub/leek-fund/commit/602d945fa96f86e0cc7e3b60c0080f6752128652))
+
 ## [3.16.0](https://github.com/LeekHub/leek-fund/compare/v3.15.0...v3.16.0) (2025-08-30)
 
 
