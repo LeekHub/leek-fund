@@ -196,7 +196,7 @@ export class ProfitStatusBar {
       this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal)} | ${toFixed(allIncomeToday)}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
-        `「股票收益统计」 ${date} 总收益:${allIncomeTotal} (${heldPercentTotal}%)\r\n \r\n` +
+        `「股票收益统计」 ${date} 总收益:${toFixed(allIncomeTotal)} (${heldPercentTotal}%)\r\n \r\n` +
         stockInfo
           .map((v) => {
             return `${v.name} 总收益:${v.incomeTotal} ${v.incomeTotalCNY ? `(CNY: ${v.incomeTotalCNY})` : ''} (${v.percentTotal}%) 今天${
