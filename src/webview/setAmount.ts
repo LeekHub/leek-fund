@@ -82,7 +82,7 @@ function fundDataHandler(fundService: FundService) {
       code: item.info?.code,
       percent: item.info?.percent,
       amount: calculatedAmount,
-      shares: shares || null, // 添加份额字段
+      shares: shares || 0, // 添加份额字段
       earningPercent: item.info?.earningPercent,
       unitPrice: item.info?.unitPrice,
       // priceDate: formatDate(item.info?.time),
@@ -115,7 +115,7 @@ function setAmountCfgCb(data: IAmount[]) {
     cfg[item.code] = {
       name: item.name,
       amount: calculatedAmount,
-      shares: item.shares || null, // 保存份额
+      shares: item.shares || 0, // 保存份额
       price: item.price,
       unitPrice: item.unitPrice,
       earnings: item.earnings,

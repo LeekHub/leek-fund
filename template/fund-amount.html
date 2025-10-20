@@ -276,7 +276,7 @@
                   持仓成本价：<input type="number" class="unitPriceInput el-input__inner" id="${item.code}_unit" value="${unitPrice}" /> <span class="unit">元</span>
                 </div>
                 <div class="input-group">
-                  持仓份额：<input type="number" step="0.01" class="sharesInput el-input__inner" id="${item.code}_shares" value="${parseFloat(item.shares.toFixed(2)) || ''}" /> <span class="unit">份</span>
+                  持仓份额：<input type="number" step="0.01" class="sharesInput el-input__inner" id="${item.code}_shares" value="${parseFloat((item.shares ?? 0).toFixed(2)) || ''}" /> <span class="unit">份</span>
                 </div>
               </div>
             </div>
