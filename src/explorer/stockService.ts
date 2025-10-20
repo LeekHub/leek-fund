@@ -321,6 +321,10 @@ export default class StockService extends LeekService {
               let price = params[0];
               // 名称
               let name = params[13];
+              if (name.endsWith('"')) {
+                // 适用于取回的数据缺少成交量的情况，去除名称末尾的 "
+                name = name.slice(0, -1);
+              }
               let open = params[8];
               let high = params[4];
               let low = params[5];
