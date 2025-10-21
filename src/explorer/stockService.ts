@@ -152,6 +152,14 @@ export default class StockService extends LeekService {
               let open = params[1];
               let yestclose = params[2];
               let price = params[3];
+              if (Number(price) === 0) {
+                const buy1 = params[6];
+                if (Number(buy1) !== 0) { 
+                  price = buy1;
+                } else {
+                  price = yestclose;
+                }
+              }
               let high = params[4];
               let low = params[5];
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
