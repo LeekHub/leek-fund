@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.17.3](https://github.com/LeekHub/leek-fund/compare/v3.17.2...v3.17.3) (2025-10-23)
+
+
+### Bug Fixes
+
+* 修复集合竞价阶段涨跌百分比为0的bug ([43fac8e](https://github.com/LeekHub/leek-fund/commit/43fac8e7b23c339ba229307b307bfa87c289c00c))
+
 ### [3.17.2](https://github.com/LeekHub/leek-fund/compare/v3.17.1...v3.17.2) (2025-10-21)
 
 
