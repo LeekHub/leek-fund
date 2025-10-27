@@ -481,7 +481,7 @@ export default class StockService extends LeekService {
             const { yestclose, open } = stockItem;
             let { price } = stockItem;
             // 竞价阶段部分开盘和价格为0.00导致显示 -100%
-            if (Number(open) <= 0) {
+            if (Number(open) <= 0 && Number(price) <= 0) {
               price = yestclose;
             }
             stockItem.showLabel = this.showLabel;
