@@ -125,7 +125,20 @@ export class ProfitStatusBar {
       stockList.forEach((s) => {
         let tmp = {} as StockInfoType;
         const { id, info } = s;
-        const { high, low, open, yestclose, percent, price, name, heldAmount, heldPrice, todayHeldPrice, isSellOut, code } = info;
+        const {
+          high,
+          low,
+          open,
+          yestclose,
+          percent,
+          price,
+          name,
+          heldAmount,
+          heldPrice,
+          todayHeldPrice,
+          isSellOut,
+          code,
+        } = info;
         if (id && open && price) {
           if (!heldAmount || !heldPrice) {
             return false;
@@ -136,7 +149,8 @@ export class ProfitStatusBar {
           const yestBase = Number(yestclose || open) * heldAmount; // 昨日持仓市值
           const incomeTotal = heldAmount * (Number(price) - heldPrice);
           // fix #399，在昨日收盘价没有的时候使用今日开盘价
-          let incomeToday = heldAmount * (Number(price) - Number(todayHeldPrice || yestclose || open));
+          let incomeToday =
+            heldAmount * (Number(price) - Number(todayHeldPrice || yestclose || open));
           // 如果是清仓状态，今日收益为 持仓数 * (今日持仓价 - 昨日收盘价或今日开盘价)
           if (isSellOut) {
             incomeToday = heldAmount * (Number(todayHeldPrice) - Number(yestclose || open));
@@ -159,10 +173,10 @@ export class ProfitStatusBar {
           if (forex) {
             if (forex.spotSellPrice) {
               // 按现汇卖出价计算
-              incomeTodayCNY = forex.spotSellPrice * Number(incomeToday) / 100;
-              incomeTotalCNY = forex.spotSellPrice * Number(incomeTotal) / 100;
-              heldBaseCNY = forex.spotSellPrice * Number(heldBase) / 100;
-              yestBaseCNY = forex.spotSellPrice * Number(yestBase) / 100;
+              incomeTodayCNY = (forex.spotSellPrice * Number(incomeToday)) / 100;
+              incomeTotalCNY = (forex.spotSellPrice * Number(incomeTotal)) / 100;
+              heldBaseCNY = (forex.spotSellPrice * Number(heldBase)) / 100;
+              yestBaseCNY = (forex.spotSellPrice * Number(yestBase)) / 100;
             }
           }
 
@@ -208,15 +222,19 @@ export class ProfitStatusBar {
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
         `「股票收益统计 ${date}」\r\n` +
-        `总市值: ${toFixed(allIncomeToday+yestBaseTotal)} 总收益: ${toFixed(allIncomeTotal)} (${heldPercentTotal}%) 今天${
-              allIncomeToday >= 0 ? '盈利' : '亏损'
-            }: ${toFixed(allIncomeToday)} (${todayPercentTotal}%)\r\n` +
-        '-----------------------------\r\n'+
+        `总市值: ${toFixed(allIncomeToday + yestBaseTotal)} 总收益: ${toFixed(
+          allIncomeTotal
+        )} (${heldPercentTotal}%) 今天${allIncomeToday >= 0 ? '盈利' : '亏损'}: ${toFixed(
+          allIncomeToday
+        )} (${todayPercentTotal}%)\r\n` +
+        '-----------------------------\r\n' +
         stockInfo
           .map((v) => {
-            return `${v.name} 总收益: ${toFixed(v.incomeTotal)} ${v.incomeTotalCNY ? `(CNY: ${toFixed(v.incomeTotalCNY)})` : ''} (${v.percentTotal}%) 今天${
-              Number(v.incomeToday) >= 0 ? '盈利' : '亏损'
-            }: ${toFixed(v.incomeToday)} ${v.incomeTodayCNY ? `(CNY: ${toFixed(v.incomeTodayCNY)})` : ''} (${v.percent}%) `;
+            return `${v.name} 总收益: ${toFixed(v.incomeTotal)} ${
+              v.incomeTotalCNY ? `(CNY: ${toFixed(v.incomeTotalCNY)})` : ''
+            } (${v.percentTotal}%) 今天${Number(v.incomeToday) >= 0 ? '盈利' : '亏损'}: ${toFixed(
+              v.incomeToday
+            )} ${v.incomeTodayCNY ? `(CNY: ${toFixed(v.incomeTodayCNY)})` : ''} (${v.percent}%) `;
           })
           .join('\r\n-----------------------------\r\n');
       this.stockBarItem.show();

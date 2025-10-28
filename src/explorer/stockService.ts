@@ -154,7 +154,7 @@ export default class StockService extends LeekService {
               let price = params[3];
               if (Number(price) === 0) {
                 const buy1 = params[6];
-                if (Number(buy1) !== 0) { 
+                if (Number(buy1) !== 0) {
                   price = buy1;
                 } else {
                   price = yestclose;
@@ -235,7 +235,7 @@ export default class StockService extends LeekService {
                 volume: formatNumber(params[10], 2),
                 amount: '接口无数据',
                 percent: '',
-                ...heldData
+                ...heldData,
               };
               type = code.substr(0, 4);
               usStockCount += 1;
