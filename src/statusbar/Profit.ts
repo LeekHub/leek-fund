@@ -109,12 +109,14 @@ export class ProfitStatusBar {
         percent: string;
         price: number | string;
         amount: number;
-        incomeTotal: number | string;
-        incomeToday: number | string;
-        heldBase: number | string;
-        incomeTotalCNY: number | string;
-        incomeTodayCNY: number | string;
-        heldBaseCNY: number | string;
+        incomeTotal: number;
+        incomeToday: number;
+        heldBase: number;
+        yestBase: number;
+        incomeTotalCNY: number;
+        incomeTodayCNY: number;
+        heldBaseCNY: number;
+        yestBaseCNY: number;
         percentTotal: string;
       };
       const stockInfo: StockInfoType[] = [];
@@ -130,19 +132,21 @@ export class ProfitStatusBar {
           }
           // const incomeTotal = amount * (Number(price).toFixed(2) - unitPrice.toFixed(2));
           // const incomeToday = amount * (Number(price).toFixed(2) - Number(open).toFixed(2));
-          const heldBase = (heldPrice * heldAmount).toFixed(2);
-          const incomeTotal = (heldAmount * (Number(price) - heldPrice)).toFixed(2);
+          const heldBase = heldPrice * heldAmount; // 持仓成本
+          const yestBase = Number(yestclose || open) * heldAmount; // 昨日持仓市值
+          const incomeTotal = heldAmount * (Number(price) - heldPrice);
           // fix #399，在昨日收盘价没有的时候使用今日开盘价
-          let incomeToday = (heldAmount * (Number(price) - Number(todayHeldPrice || yestclose || open))).toFixed(2);
+          let incomeToday = heldAmount * (Number(price) - Number(todayHeldPrice || yestclose || open));
           // 如果是清仓状态，今日收益为 持仓数 * (今日持仓价 - 昨日收盘价或今日开盘价)
           if (isSellOut) {
-            incomeToday = (heldAmount * (Number(todayHeldPrice) - Number(yestclose || open))).toFixed(2);
+            incomeToday = heldAmount * (Number(todayHeldPrice) - Number(yestclose || open));
           }
           const percentTotal = ((Number(incomeTotal) / (heldPrice * heldAmount)) * 100).toFixed(2);
 
-          let incomeTodayCNY = '';
-          let incomeTotalCNY = '';
-          let heldBaseCNY = '';
+          let incomeTodayCNY = 0;
+          let incomeTotalCNY = 0;
+          let heldBaseCNY = 0;
+          let yestBaseCNY = 0;
 
           const forex = forexList.find(({ filter }) => {
             if (typeof filter === 'function') {
@@ -155,9 +159,10 @@ export class ProfitStatusBar {
           if (forex) {
             if (forex.spotSellPrice) {
               // 按现汇卖出价计算
-              incomeTodayCNY = (forex.spotSellPrice * Number(incomeToday) / 100).toFixed(2);
-              incomeTotalCNY = (forex.spotSellPrice * Number(incomeTotal) / 100).toFixed(2);
-              heldBaseCNY = (forex.spotSellPrice * Number(heldBase) / 100).toFixed(2);
+              incomeTodayCNY = forex.spotSellPrice * Number(incomeToday) / 100;
+              incomeTotalCNY = forex.spotSellPrice * Number(incomeTotal) / 100;
+              heldBaseCNY = forex.spotSellPrice * Number(heldBase) / 100;
+              yestBaseCNY = forex.spotSellPrice * Number(yestBase) / 100;
             }
           }
 
@@ -173,9 +178,11 @@ export class ProfitStatusBar {
             incomeTotal,
             incomeToday,
             heldBase,
+            yestBase,
             incomeTodayCNY,
             incomeTotalCNY,
             heldBaseCNY,
+            yestBaseCNY,
             percentTotal,
           };
           stockInfo.push(tmp);
@@ -191,17 +198,25 @@ export class ProfitStatusBar {
       const heldBaseTotal = stockInfo.reduce((prev, cur) => {
         return prev + Number(cur.heldBaseCNY ? cur.heldBaseCNY : cur.heldBase);
       }, 0);
+      const yestBaseTotal = stockInfo.reduce((prev, cur) => {
+        return prev + Number(cur.yestBaseCNY ? cur.yestBaseCNY : cur.yestBase);
+      }, 0);
       const heldPercentTotal = ((allIncomeTotal / heldBaseTotal) * 100).toFixed(2);
+      const todayPercentTotal = ((allIncomeToday / yestBaseTotal) * 100).toFixed(2);
       // Use the year, month, and day variables as needed
       this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal)} | ${toFixed(allIncomeToday)}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
-        `「股票收益统计」 ${date} 总收益:${toFixed(allIncomeTotal)} (${heldPercentTotal}%)\r\n \r\n` +
+        `「股票收益统计 ${date}」\r\n` +
+        `总市值: ${toFixed(allIncomeToday+yestBaseTotal)} 总收益: ${toFixed(allIncomeTotal)} (${heldPercentTotal}%) 今天${
+              allIncomeToday >= 0 ? '盈利' : '亏损'
+            }: ${toFixed(allIncomeToday)} (${todayPercentTotal}%)\r\n` +
+        '-----------------------------\r\n'+
         stockInfo
           .map((v) => {
-            return `${v.name} 总收益:${v.incomeTotal} ${v.incomeTotalCNY ? `(CNY: ${v.incomeTotalCNY})` : ''} (${v.percentTotal}%) 今天${
-              Number(v.incomeToday) > 0 ? '盈利' : '亏损'
-            }:${v.incomeToday} ${v.incomeTodayCNY ? `(CNY: ${v.incomeTodayCNY})` : ''} (${v.percent}%) `;
+            return `${v.name} 总收益: ${toFixed(v.incomeTotal)} ${v.incomeTotalCNY ? `(CNY: ${toFixed(v.incomeTotalCNY)})` : ''} (${v.percentTotal}%) 今天${
+              Number(v.incomeToday) >= 0 ? '盈利' : '亏损'
+            }: ${toFixed(v.incomeToday)} ${v.incomeTodayCNY ? `(CNY: ${toFixed(v.incomeTodayCNY)})` : ''} (${v.percent}%) `;
           })
           .join('\r\n-----------------------------\r\n');
       this.stockBarItem.show();
