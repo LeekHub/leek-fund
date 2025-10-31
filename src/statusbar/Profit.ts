@@ -228,7 +228,7 @@ export class ProfitStatusBar {
           allIncomeToday
         )} (${todayPercentTotal}%)\r\n` +
         '-----------------------------\r\n' +
-        stockInfo
+        stockInfo.sort((a, b) => b.incomeToday - a.incomeToday)
           .map((v) => {
             return `${v.name} 总收益: ${toFixed(v.incomeTotal)} ${
               v.incomeTotalCNY ? `(CNY: ${toFixed(v.incomeTotalCNY)})` : ''
