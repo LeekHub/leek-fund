@@ -77,7 +77,7 @@ export class ProfitStatusBar {
 
   updateFundBarItem({ fundProfit = 0, fundProfitPercent = 0, fundAmount = 0, priceDate = '' }) {
     if (this.fundBarItem) {
-      this.fundBarItem.text = `${PREFIX} ${fundProfit}`;
+      this.fundBarItem.text = `${PREFIX} ${toFixed(fundProfit).toFixed(2)}`;
       this.fundBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.fundBarItem.tooltip =
         `「基金收益统计${priceDate}」` +
@@ -218,7 +218,9 @@ export class ProfitStatusBar {
       const heldPercentTotal = ((allIncomeTotal / heldBaseTotal) * 100).toFixed(2);
       const todayPercentTotal = ((allIncomeToday / yestBaseTotal) * 100).toFixed(2);
       // Use the year, month, and day variables as needed
-      this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal)} | ${toFixed(allIncomeToday)}`;
+      this.stockBarItem.text = `${PREFIX} ${toFixed(allIncomeTotal).toFixed(2)} | ${toFixed(
+        allIncomeToday
+      ).toFixed(2)}`;
       // this.stockBarItem.color = fundProfit >= 0 ? this.riseColor : this.fallColor;
       this.stockBarItem.tooltip =
         `「股票收益统计 ${date}」\r\n` +
@@ -229,6 +231,7 @@ export class ProfitStatusBar {
         )} (${todayPercentTotal}%)\r\n` +
         '-----------------------------\r\n' +
         stockInfo
+          .sort((a, b) => b.incomeToday - a.incomeToday)
           .map((v) => {
             return `${v.name} 总收益: ${toFixed(v.incomeTotal)} ${
               v.incomeTotalCNY ? `(CNY: ${toFixed(v.incomeTotalCNY)})` : ''
