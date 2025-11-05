@@ -270,6 +270,7 @@ export default class StockService extends LeekService {
                 high: formatNumber(high, fixedNumber, false),
                 volume: formatNumber(params[10], 2),
                 amount: '接口无数据',
+                time: params[31],
                 percent: '',
                 ...heldData,
               };
