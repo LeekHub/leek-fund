@@ -9,6 +9,7 @@ import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from
 import { getXueQiuToken } from '../shared/xueqiu-helper';
 import { LeekService } from './leekService';
 import moment = require('moment');
+import momentTz = require('moment-timezone');
 import Log from '../shared/log';
 import { getTencentHKStockData, searchStockList } from '../shared/tencentStock';
 
@@ -139,6 +140,13 @@ export default class StockService extends LeekService {
           };
         } = globalState.stockPrice;
 
+        const estTime = momentTz().tz('America/New_York');
+        // 判断美东时间的时间是否在4:00AM到9:30AM之间
+        const isUsrPreMarket = estTime.isBetween(
+          estTime.clone().set({ hour: 4, minute: 0, second: 0, millisecond: 0 }),
+          estTime.clone().set({ hour: 9, minute: 30, second: 0, millisecond: 0 })
+        );
+
         for (let i = 0; i < splitData.length - 1; i++) {
           const code = splitData[i].split('="')[0].split('var hq_str_')[1];
           const params = splitData[i].split('="')[1].split(',');
@@ -210,10 +218,31 @@ export default class StockService extends LeekService {
               type = code.substr(0, 3);
               noDataStockCount += 1;
             } else if (/^usr_/.test(code)) {
+              // 0 名称，1 最新价 2 涨跌百分比
+              // var hq_str_gb_nvda="英伟达,198.6900,-3.96,
+              // 3 更新时间 4 涨跌数字 5 今开 6 最高 7 最低
+              // 2025-11-05 17:27:07,-8.1900,203.0000,203.9699,197.9300,
+              // 8 9 10 成交量 11
+              // 212.1900,86.6000,188919320,189303100,4837505430000,
+              // 13 14 15 16 17 18 19 20
+              // 3.54,56.130000,0.00,0.00,0.01,0.00,24347000000,69,
+              // 21 盘前最新价 22 盘前涨跌幅 23 盘前涨跌 24 美东时间 25 昨日美东收盘时间 26 昨日收盘价
+              // 197.6300,-0.53,-1.06,Nov 05 04:27AM EST,Nov 04 04:00PM EST,206.8800,
+              // 27 28 29 30 31 32 33 34 35 新一天盘前时昨日收盘价
+              // 388870,1,2025,37901854538.6275,198.4000,196.5900,76916423.7300,197.1100,198.6900";
+
               symbol = code.substr(4);
               let open = params[5];
               let yestclose = params[26];
               let price = params[1];
+              if (isUsrPreMarket) {
+                price = params[21]; // 盘前价格
+                yestclose = params[35]; // 新一天盘前时昨日收盘价
+                if (yestclose.endsWith('"')) {
+                  // 去除末尾的 "
+                  yestclose = yestclose.slice(0, -1);
+                }
+              }
               let high = params[6];
               let low = params[7];
               fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
