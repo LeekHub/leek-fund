@@ -219,7 +219,7 @@ export default class StockService extends LeekService {
               noDataStockCount += 1;
             } else if (/^usr_/.test(code)) {
               // 0 名称，1 最新价 2 涨跌百分比
-              // var hq_str_gb_nvda="英伟达,198.6900,-3.96,
+              // var hq_str_usr_nvda="英伟达,198.6900,-3.96,
               // 3 更新时间 4 涨跌数字 5 今开 6 最高 7 最低
               // 2025-11-05 17:27:07,-8.1900,203.0000,203.9699,197.9300,
               // 8 9 10 成交量 11
@@ -236,11 +236,18 @@ export default class StockService extends LeekService {
               let yestclose = params[26];
               let price = params[1];
               if (isUsrPreMarket) {
-                price = params[21]; // 盘前价格
-                yestclose = params[35]; // 新一天盘前时昨日收盘价
-                if (yestclose.endsWith('"')) {
+                if (Number(params[21]) !== 0) {
+                  price = params[21]; // 盘前价格
+                }
+                let yestCloseNew = '';
+                if (params[35].endsWith('"')) {
                   // 去除末尾的 "
-                  yestclose = yestclose.slice(0, -1);
+                  yestCloseNew = params[35].slice(0, -1);
+                } else {
+                  yestCloseNew = params[35];
+                }
+                if (Number(yestCloseNew) !== 0) {
+                  yestclose = yestCloseNew; // 新一天盘前时昨日收盘价
                 }
               }
               let high = params[6];
