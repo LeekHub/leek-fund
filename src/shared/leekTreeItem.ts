@@ -243,9 +243,9 @@ export class LeekTreeItem extends TreeItem {
       } else {
         this.tooltip = `【今日行情】${labelText}${typeText}${symbolText}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}${
           afterPrice ? `\n 盘后：${afterPrice}   涨跌幅：${afterPercent}%` : ''
-        }\n 成交量：${volume}   成交额：${amount}${
-          heldAmount ? `\n 持仓数：${toFixed(heldAmount / heldPrice)}   持仓价：${heldPrice}` : ''
-        }`;
+        }${
+          heldAmount ? `\n 成本：${heldPrice}   持仓：${heldAmount}` : ''
+        }\n 成交量：${volume}   成交额：${amount}`;
       }
     } else if (isBinanceItem) {
       this.tooltip = `【今日行情】${name}\n 涨跌：${updown}   百分比：${_percent}%\n 最高：${high}   最低：${low}\n 今开：${open}   昨收：${yestclose}\n 成交量：${volume}   成交额：${amount}`;
