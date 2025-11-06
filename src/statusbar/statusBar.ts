@@ -118,8 +118,20 @@ export class StatusBar {
 
   updateBarInfo(stockBarItem: StatusBarItem, item: LeekTreeItem | null) {
     if (!item) return;
-    const { code, percent, open, yestclose, high, low, updown, amount, heldAmount, heldPrice } =
-      item.info;
+    const {
+      code,
+      percent,
+      open,
+      yestclose,
+      high,
+      low,
+      updown,
+      amount,
+      afterPrice,
+      afterPercent,
+      heldAmount,
+      heldPrice,
+    } = item.info;
     const deLow = percent.indexOf('-') === -1;
     /* stockBarItem.text = `「${this.stockService.showLabel ? item.info.name : item.id}」${price}  ${
       deLow ? '📈' : '📉'
@@ -133,9 +145,13 @@ export class StatusBar {
     if (heldAmount && heldPrice) {
       heldText = `成本：${heldPrice}   持仓：${heldAmount}\n`;
     }
+    let afterText = '';
+    if (afterPrice) {
+      afterText = `盘后：${afterPrice}   涨跌幅：${afterPercent}%\n`;
+    }
     stockBarItem.tooltip = `「今日行情」 ${
       item.info?.name ?? '今日行情'
-    }（${code}）\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}\n${heldText}成交额：${amount}\n更新时间：${
+    }（${code}）\n涨跌：${updown}   百分：${percent}%\n最高：${high}   最低：${low}\n今开：${open}   昨收：${yestclose}\n${afterText}${heldText}成交额：${amount}\n更新时间：${
       item.info?.time
     }`;
     stockBarItem.color = deLow ? this.riseColor : this.fallColor;

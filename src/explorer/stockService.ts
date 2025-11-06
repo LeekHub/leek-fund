@@ -146,6 +146,12 @@ export default class StockService extends LeekService {
           estTime.clone().set({ hour: 4, minute: 0, second: 0, millisecond: 0 }),
           estTime.clone().set({ hour: 9, minute: 30, second: 0, millisecond: 0 })
         );
+        // 判断美东时间的时间是否在9:30AM到4:00PM之间
+        const isUsrMainMarket = estTime.isBetween(
+          estTime.clone().set({ hour: 9, minute: 30, second: 0, millisecond: 0 }),
+          estTime.clone().set({ hour: 16, minute: 0, second: 0, millisecond: 0 })
+        );
+        // 判断美东时间的时间是否在4:00PM到8:00PM之间
         const isUsrAfterMarket = estTime.isBetween(
           estTime.clone().set({ hour: 16, minute: 0, second: 0, millisecond: 0 }),
           estTime.clone().set({ hour: 20, minute: 0, second: 0, millisecond: 0 })
@@ -239,19 +245,34 @@ export default class StockService extends LeekService {
               let open = params[5];
               let yestclose = params[26];
               let price = params[1];
-              if (isUsrPreMarket) {
+              let afterPrice: any = '';
+              let afterPercent = '';
+              if (isUsrMainMarket) {
+                price = params[1]; // 盘中价格
+                yestclose = params[26]; // 昨收盘
+              } else if (isUsrPreMarket) {
+                // 兼容纳指等无盘前价格的情况
                 if (Number(params[21]) !== 0) {
                   price = params[21]; // 盘前价格
                 }
+                // 兼容纳指等无盘前价格的情况
                 if (Number(params[35]) !== 0) {
                   yestclose = params[35]; // 新一天盘前时昨日收盘价
                 }
               } else if (isUsrAfterMarket) {
+                // 兼容纳指等无盘后价格的情况
                 if (Number(params[21]) !== 0) {
                   price = params[21]; // 盘后价格
                 }
+                // 兼容纳指等无盘后价格的情况
                 if (Number(params[1]) !== 0) {
                   yestclose = params[1]; // 盘后的收盘价为盘中价
+                }
+              } else {
+                // 夜盘时间取盘后价格
+                if (Number(params[21]) !== 0) {
+                  afterPrice = params[21]; // 盘后价格
+                  afterPercent = params[22]; // 盘后涨跌幅
                 }
               }
               let high = params[6];
@@ -276,6 +297,8 @@ export default class StockService extends LeekService {
                 amount: '接口无数据',
                 time: params[3],
                 percent: '',
+                afterPrice: afterPrice ? formatNumber(afterPrice, fixedNumber, false) : '',
+                afterPercent: afterPercent,
                 ...heldData,
               };
               type = code.substr(0, 4);
