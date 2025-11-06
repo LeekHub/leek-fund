@@ -2,7 +2,11 @@ import { commands, ViewColumn } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 import globalState from '../globalState';
 
-function fundTrend(code: string, name: string, immersiveBackground: boolean = globalState.immersiveBackground) {
+function fundTrend(
+  code: string,
+  name: string,
+  immersiveBackground: boolean = globalState.immersiveBackground
+) {
   const panel = ReusedWebviewPanel.create(
     'fundTrendWebview',
     `基金实时走势(${code})`,
@@ -13,14 +17,12 @@ function fundTrend(code: string, name: string, immersiveBackground: boolean = gl
     }
   );
   // Handle messages from the webview
-  panel.webview.onDidReceiveMessage(
-    message => {
-      switch (message.name) {
-        case 'immersiveBackground':
-          commands.executeCommand('leek-fund.immersiveBackground', message.value);
-      }
+  panel.webview.onDidReceiveMessage((message) => {
+    switch (message.name) {
+      case 'immersiveBackground':
+        commands.executeCommand('leek-fund.immersiveBackground', message.value);
     }
-  );
+  });
   panel.webview.html = `<html>
   <style>
   .lsjz{
@@ -88,12 +90,12 @@ function fundTrend(code: string, name: string, immersiveBackground: boolean = gl
     <div style="text-align: right;">
       <label for="immersive">沉浸式背景（仅适配暗色主题）<input id="immersive" type="checkbox"/></label>
     </div>
-    <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
+    <!-- <p style="text-align: center; font-size:18px; width: 400px;margin: 0 auto;">「${name}」实时走势图</p>
     <div class="trend"><img
       class="fund-sstrend"
       src="http://j4.dfcfw.com/charts/pic6/${code}.png?v=${new Date().getTime()}"
       alt=""
-    />
+    /> -->
    <!-- <p class="title" style="text-align: center; font-size:18px; width: 400px;margin: 20px auto;">历史趋势图</p>
     <img
     class="fund-sstrend"
@@ -112,21 +114,21 @@ function fundTrend(code: string, name: string, immersiveBackground: boolean = gl
       style=" height: 420px;"
     ></div>
     <script>
-    var sstrendImgEl = document.querySelector('.fund-sstrend');
-    var timer=null;
-    var code="${code}";
-    if (timer) {
-      clearInterval(timer);
-      timer = null;
-    }
-    timer = setInterval(function () {
-      sstrendImgEl.src =
-        'http://j4.dfcfw.com/charts/pic6/' +
-       code+
-        '.png?v=' +
-        new Date().getTime();
-      console.log('刷新数据' + code);
-    }, 20000);
+    // var sstrendImgEl = document.querySelector('.fund-sstrend');
+    // var timer=null;
+    // var code="${code}";
+    // if (timer) {
+    //   clearInterval(timer);
+    //   timer = null;
+    // }
+    // timer = setInterval(function () {
+    //   sstrendImgEl.src =
+    //     'http://j4.dfcfw.com/charts/pic6/' +
+    //    code+
+    //     '.png?v=' +
+    //     new Date().getTime();
+    //   console.log('刷新数据' + code);
+    // }, 20000);
   </script>
   <script>
       var highcharsConfig = {
