@@ -127,7 +127,7 @@ export default class StockService extends LeekService {
           stockList = stockList.concat(await this.getStockData(new Array(code)));
         }
       } else {
-        const splitData = resp.data.split(';\n');
+        const splitData = resp.data.split('";\n');
         const stockPrice: {
           [key: string]: {
             amount: number;
@@ -145,6 +145,10 @@ export default class StockService extends LeekService {
         const isUsrPreMarket = estTime.isBetween(
           estTime.clone().set({ hour: 4, minute: 0, second: 0, millisecond: 0 }),
           estTime.clone().set({ hour: 9, minute: 30, second: 0, millisecond: 0 })
+        );
+        const isUsrAfterMarket = estTime.isBetween(
+          estTime.clone().set({ hour: 16, minute: 0, second: 0, millisecond: 0 }),
+          estTime.clone().set({ hour: 20, minute: 0, second: 0, millisecond: 0 })
         );
 
         for (let i = 0; i < splitData.length - 1; i++) {
@@ -239,15 +243,15 @@ export default class StockService extends LeekService {
                 if (Number(params[21]) !== 0) {
                   price = params[21]; // 盘前价格
                 }
-                let yestCloseNew = '';
-                if (params[35].endsWith('"')) {
-                  // 去除末尾的 "
-                  yestCloseNew = params[35].slice(0, -1);
-                } else {
-                  yestCloseNew = params[35];
+                if (Number(params[35]) !== 0) {
+                  yestclose = params[35]; // 新一天盘前时昨日收盘价
                 }
-                if (Number(yestCloseNew) !== 0) {
-                  yestclose = yestCloseNew; // 新一天盘前时昨日收盘价
+              } else if (isUsrAfterMarket) {
+                if (Number(params[21]) !== 0) {
+                  price = params[21]; // 盘后价格
+                }
+                if (Number(params[1]) !== 0) {
+                  yestclose = params[1]; // 盘后的收盘价为盘中价
                 }
               }
               let high = params[6];
