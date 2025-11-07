@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.18.0](https://github.com/LeekHub/leek-fund/compare/v3.17.3...v3.18.0) (2025-11-07)
+
+
+### Features
+
+* 增加盘后时间结束后显示盘后价格信息 ([64bb82c](https://github.com/LeekHub/leek-fund/commit/64bb82ccc608745dfc664f270477704b6d89f36d))
+* 增加美股盘后价格刷新 ([b5b59c2](https://github.com/LeekHub/leek-fund/commit/b5b59c2d439f75eb3248917da4b5671e4b01b898))
+* 美股增加盘前价格刷新。close [#526](https://github.com/LeekHub/leek-fund/issues/526) ([813fe69](https://github.com/LeekHub/leek-fund/commit/813fe69ff8cb95737baa40795bd24d37cda4a8b7))
+
+
+### Bug Fixes
+
+* 修复港股竞价阶段涨跌百分比为0的bug ([8cf6a20](https://github.com/LeekHub/leek-fund/commit/8cf6a20997297def42e5cf0d0a136fe5b63bc63a))
+* 修复美股盘前时间指数价格为0的bug ([321e3c1](https://github.com/LeekHub/leek-fund/commit/321e3c154bd393e50d140bbd024f43bcdc442fe7))
+* 修改时间赋值 ([e035579](https://github.com/LeekHub/leek-fund/commit/e035579b95f3ba6986d10830c7e6d3ca28b372dd))
+
 ### [3.17.3](https://github.com/LeekHub/leek-fund/compare/v3.17.2...v3.17.3) (2025-10-23)
 
 
