@@ -43,16 +43,22 @@ export const getTencentHKStockData = async (codes: string[]) => {
   });
 
   const stockDataList = codes.map((code: string) => {
+    let codeConfiged = code;
+    if (codeConfiged.startsWith('hk')) {
+      codeConfiged = 'hk' + codeConfiged.substring(2).toLocaleLowerCase(); // 处理大小写，否则会造成删除不了
+    } else {
+      codeConfiged = codeConfiged.toLowerCase();
+    }
     const rCode = `r_${code}`;
     const stockItemArr = stockDataResponse.data[rCode];
     if (!stockItemArr) {
       return {
-        code,
+        code: codeConfiged,
         name: 'NODATA',
       };
     }
     return {
-      code,
+      code: codeConfiged,
       name: stockItemArr[1],
       price: stockItemArr[3],
       yestclose: stockItemArr[4],
