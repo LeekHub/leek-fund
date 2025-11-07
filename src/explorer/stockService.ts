@@ -57,11 +57,11 @@ export default class StockService extends LeekService {
     };
 
     let stockCodes = codes.map(transFuture);
-    const hkCodes: Array<string> = []; // 港股单独请求雪球数据源
+    const hkCodes: Array<string> = []; // 港股单独请求腾讯港股数据源
     stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
-        const _code = code.startsWith('hk0') ? code.replace('hk', '') : code.toUpperCase(); // 个股去掉'hk', 指数保留'hk'并转为大写
-        hkCodes.push(_code);
+        const _code = code.replace('hk', '').toUpperCase(); // 个股去掉'hk', 指数去掉'hk'并转为大写
+        hkCodes.push('hk' + _code); // 加回hk前缀
         return false;
       } else {
         return true;
@@ -526,7 +526,7 @@ export default class StockService extends LeekService {
     let stockList: Array<LeekTreeItem> = [];
 
     try {
-      const stockData = await getTencentHKStockData(codes.map((code) => `hk${code}`));
+      const stockData = await getTencentHKStockData(codes);
       if (!stockData) {
         return [];
       } else {
