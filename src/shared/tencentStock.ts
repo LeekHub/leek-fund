@@ -42,26 +42,30 @@ export const getTencentHKStockData = async (codes: string[]) => {
     ],
   });
 
-  const stockDataList = codes
-    .filter((code) => stockDataResponse.data[`r_${code}`])
-    .map((code: string) => {
-      const rCode = `r_${code}`;
-      const stockItemArr = stockDataResponse.data[rCode];
+  const stockDataList = codes.map((code: string) => {
+    const rCode = `r_${code}`;
+    const stockItemArr = stockDataResponse.data[rCode];
+    if (!stockItemArr) {
       return {
         code,
-        name: stockItemArr[1],
-        price: stockItemArr[3],
-        yestclose: stockItemArr[4],
-        open: stockItemArr[5],
-        high: stockItemArr[33],
-        low: stockItemArr[34],
-        volume: stockItemArr[36],
-        amount: stockItemArr[37],
-        buy1: stockItemArr[9],
-        sell1: stockItemArr[19],
-        time: stockItemArr[30],
+        name: 'NODATA',
       };
-    });
+    }
+    return {
+      code,
+      name: stockItemArr[1],
+      price: stockItemArr[3],
+      yestclose: stockItemArr[4],
+      open: stockItemArr[5],
+      high: stockItemArr[33],
+      low: stockItemArr[34],
+      volume: stockItemArr[36],
+      amount: stockItemArr[37],
+      buy1: stockItemArr[9],
+      sell1: stockItemArr[19],
+      time: stockItemArr[30],
+    };
+  });
   // Log.info('stockDataList: ', stockDataList, codes);
   return stockDataList;
 };
