@@ -84,6 +84,18 @@ export default class FundService extends LeekService {
           if (fundString) {
             const fundInfo = JSON.parse(fundString);
             fundInfos.push(fundInfo);
+          } else {
+            // 不支持的基金，构造一个空数据用于展示，防止用户疑惑添加基金后不展示
+            const fundCode = resultFundInfo.value.split('#')[0];
+            fundInfos.push({
+              fundcode: fundCode,
+              name: `${fundCode}暂无数据`,
+              gszzl: '--',
+              dwjz: '--',
+              jzrq: '',
+              gsz: '--',
+              gztime: '',
+            });
           }
         }
       }
@@ -108,7 +120,7 @@ export default class FundService extends LeekService {
         let profitPercent = 0;
         let priceDate = '';
         // 不填写的时候不计算
-        if (keyLength) {
+        if (keyLength && GSZ !== '--') {
           amount = fundAmountObj[FCODE]?.amount || 0;
           unitPrice = fundAmountObj[FCODE]?.unitPrice || 0;
           priceDate = fundAmountObj[FCODE]?.priceDate || '';
@@ -184,7 +196,7 @@ export default class FundService extends LeekService {
           headers: randHeader(),
         })
           .then((resp) => {
-            resolve(resp.data);
+            resolve(`${fundCode}#${resp.data}`);
           })
           .catch((err) => {
             console.error(err);

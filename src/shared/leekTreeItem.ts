@@ -161,7 +161,7 @@ export class LeekTreeItem extends TreeItem {
               t2 || !(globalState.showEarnings && Number(amount) > 0)
                 ? ''
                 : `(${grow ? '盈' : '亏'}：${grow ? '+' : ''}${earnings})`,
-            time: t2 ? `(${time})` : '',
+            time: t2 && time ? `(${time})` : '',
           }
         );
         // ${earningPercent !== 0 ? '，率：' + earningPercent + '%' : ''}
