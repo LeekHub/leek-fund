@@ -68,6 +68,8 @@ export interface FundInfo {
   amount?: string | number; // 成交额
   earnings?: number; // 盈亏
   earningPercent?: number; // 盈亏率
+  afterPrice?: string; // 盘后价格
+  afterPercent?: string; // 盘后涨跌幅
   isStop?: boolean; // 停牌
   t2?: boolean;
   isUpdated?: boolean;
