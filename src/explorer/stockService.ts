@@ -68,6 +68,7 @@ export default class StockService extends LeekService {
     });
 
     let stockList: Array<LeekTreeItem> = [];
+    globalState.noDataStockCount = 0; // 重置无数据股票计数
     const result = await Promise.allSettled([
       this.getStockData(stockCodes),
       this.getHKStockData(hkCodes),
@@ -172,21 +173,42 @@ export default class StockService extends LeekService {
                 heldData.todayHeldPrice = profitData.todayUnitPrice;
                 heldData.isSellOut = profitData.isSellOut;
               }
-              stockItem = {
-                code,
-                name: params[0],
-                open: formatNumber(open, fixedNumber, false),
-                yestclose: formatNumber(yestclose, fixedNumber, false),
-                price: formatNumber(price, fixedNumber, false),
-                low: formatNumber(low, fixedNumber, false),
-                high: formatNumber(high, fixedNumber, false),
-                volume: formatNumber(params[8], 2),
-                amount: formatNumber(params[9], 2),
-                time: `${params[30]} ${params[31]}`,
-                percent: '',
-                ...heldData,
-              };
-              aStockCount += 1;
+
+              if (
+                Number(price) === 0 &&
+                Number(high) === 0 &&
+                Number(low) === 0 &&
+                Number(yestclose) === 0
+              ) {
+                noDataStockCount += 1;
+                const stockItemTemp = {
+                  code: code,
+                  name: `接口不支持该股票 ${params[0] ? params[0] : code}`,
+                  showLabel: this.showLabel,
+                  isStock: true,
+                  percent: '',
+                  type: 'nodata',
+                  contextValue: 'nodata',
+                };
+                const treeItem = new LeekTreeItem(stockItemTemp, this.context);
+                stockList.push(treeItem);
+              } else {
+                stockItem = {
+                  code,
+                  name: params[0],
+                  open: formatNumber(open, fixedNumber, false),
+                  yestclose: formatNumber(yestclose, fixedNumber, false),
+                  price: formatNumber(price, fixedNumber, false),
+                  low: formatNumber(low, fixedNumber, false),
+                  high: formatNumber(high, fixedNumber, false),
+                  volume: formatNumber(params[8], 2),
+                  amount: formatNumber(params[9], 2),
+                  time: `${params[30]} ${params[31]}`,
+                  percent: '',
+                  ...heldData,
+                };
+                aStockCount += 1;
+              }
             } else if (/^gb_/.test(code)) {
               symbol = code.substr(3);
               let open = params[5];
@@ -396,7 +418,7 @@ export default class StockService extends LeekService {
             // 接口不支持的
             noDataStockCount += 1;
             stockItem = {
-              id: code,
+              code: code,
               name: `接口不支持该股票 ${code}`,
               showLabel: this.showLabel,
               isStock: true,
@@ -426,7 +448,7 @@ export default class StockService extends LeekService {
     globalState.usStockCount = usStockCount;
     globalState.cnfStockCount = cnfStockCount;
     globalState.hfStockCount = hfStockCount;
-    globalState.noDataStockCount = noDataStockCount;
+    globalState.noDataStockCount += noDataStockCount;
     return stockList;
   }
 
@@ -436,6 +458,7 @@ export default class StockService extends LeekService {
     }
 
     let hkStockCount = 0;
+    let noDataStockCount = 0;
     let stockList: Array<LeekTreeItem> = [];
 
     try {
@@ -454,6 +477,21 @@ export default class StockService extends LeekService {
           };
         } = globalState.stockPrice;
         stocks.forEach((item: any) => {
+          if (item.name === 'NODATA') {
+            noDataStockCount += 1;
+            const stockItem = {
+              code: item.code,
+              name: `接口不支持该股票 ${item.code}`,
+              showLabel: this.showLabel,
+              isStock: true,
+              percent: '',
+              type: 'nodata',
+              contextValue: 'nodata',
+            };
+            const treeItem = new LeekTreeItem(stockItem, this.context);
+            stockList.push(treeItem);
+            return;
+          }
           const { open, yestclose, price, high, low, volume, amount, time, code } = item;
           const fixedNumber = calcFixedPriceNumber(open, yestclose, price, high, low);
           const profitData = stockPrice[code] || {};
@@ -512,6 +550,7 @@ export default class StockService extends LeekService {
     }
 
     globalState.hkStockCount = hkStockCount;
+    globalState.noDataStockCount += noDataStockCount;
     return stockList;
   }
 
