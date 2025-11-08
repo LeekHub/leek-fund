@@ -57,11 +57,10 @@ export default class StockService extends LeekService {
     };
 
     let stockCodes = codes.map(transFuture);
-    const hkCodes: Array<string> = []; // 港股单独请求雪球数据源
+    const hkCodes: Array<string> = []; // 港股单独请求腾讯港股数据源
     stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
-        const _code = code.startsWith('hk0') ? code.replace('hk', '') : code.toUpperCase(); // 个股去掉'hk', 指数保留'hk'并转为大写
-        hkCodes.push(_code);
+        hkCodes.push('hk' + code.substring(2).toUpperCase()); // 指数去掉'hk'并转为大写，适配腾讯港股接口
         return false;
       } else {
         return true;
@@ -101,7 +100,9 @@ export default class StockService extends LeekService {
     let noDataStockCount = 0;
     let stockList: Array<LeekTreeItem> = [];
 
-    const url = `https://hq.sinajs.cn/list=${codes.join(',')}`;
+    const url = `https://hq.sinajs.cn/list=${codes
+      .map((code) => code.replace('.', '$')) // 新浪接口中点号替换为$
+      .join(',')}`;
     try {
       const resp = await Axios.get(url, {
         // axios 乱码解决
@@ -159,7 +160,10 @@ export default class StockService extends LeekService {
         );
 
         for (let i = 0; i < splitData.length - 1; i++) {
-          const code = splitData[i].split('="')[0].split('var hq_str_')[1];
+          let code = splitData[i].split('="')[0].split('var hq_str_')[1];
+          if (code.includes('$')) {
+            code = code.replace('$', '.'); // 新浪接口中$替换回点号,否则会造成无法匹配删除的结果
+          }
           const params = splitData[i].split('="')[1].split(',');
           let type = code.substr(0, 2) || 'sh';
           let symbol = code.substr(2);
@@ -526,7 +530,7 @@ export default class StockService extends LeekService {
     let stockList: Array<LeekTreeItem> = [];
 
     try {
-      const stockData = await getTencentHKStockData(codes.map((code) => `hk${code}`));
+      const stockData = await getTencentHKStockData(codes);
       if (!stockData) {
         return [];
       } else {
@@ -715,7 +719,12 @@ export default class StockService extends LeekService {
               description: `港股`,
             });
           } else if (['us'].includes(market)) {
-            const usCode = _code.split('.')[0]; // 去除美股指数.后的内容
+            const codeSplit = _code.split('.');
+            let usCode = codeSplit[0];
+            if (codeSplit.length > 2) {
+              // 有些美股代码会有多个点，如 BRK.B
+              usCode = codeSplit.slice(0, codeSplit.length - 1).join('.');
+            }
             result.push({
               label: `${usCode} | ${name}`,
               description: `美股`,
