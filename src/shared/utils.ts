@@ -7,6 +7,7 @@ import globalState from '../globalState';
 import { LeekFundConfig } from './leekConfig';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './typed';
+import momentTz = require('moment-timezone');
 
 const stockTimes = allStockTimes();
 
@@ -289,9 +290,9 @@ export const randHeader = () => {
  * 判断是否周未的方法
  * @param {*} date 参与判断的日期，默认今天
  */
-export const isWeekend = (date: Date = new Date()) => {
+export const isWeekend = (date: momentTz.Moment = momentTz()) => {
   let tof = false;
-  let dayOfWeek = date.getDay();
+  let dayOfWeek = date.day();
 
   tof = dayOfWeek === 6 || dayOfWeek === 0;
 
@@ -300,28 +301,30 @@ export const isWeekend = (date: Date = new Date()) => {
 
 export const isStockTime = () => {
   const markets = allMarkets();
-  const date = new Date();
-  const hours = date.getHours();
-  const minus = date.getMinutes();
   const delay = 5;
+
   for (let i = 0; i < markets.length; i++) {
     let stockTime = stockTimes.get(markets[i]);
-    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
+    if (!stockTime || stockTime.span.length < 2 || isHoliday(markets[i], stockTime.tz)) {
       continue;
     }
-    // 针对美股交易时间跨越北京时间0点
-    if (stockTime[0] > stockTime[1]) {
+
+    const date = momentTz().tz(stockTime.tz);
+    const hours = date.hours();
+    const minus = date.minutes();
+    // 针对期货交易时间跨越时间0点
+    if (stockTime.span[0] > stockTime.span[1]) {
       if (
-        hours >= stockTime[0] ||
-        hours < stockTime[1] ||
-        (hours === stockTime[1] && minus <= delay)
+        hours >= stockTime.span[0] ||
+        hours < stockTime.span[1] ||
+        (hours === stockTime.span[1] && minus <= delay)
       ) {
         return true;
       }
     } else {
       if (
-        (hours >= stockTime[0] && hours < stockTime[1]) ||
-        (hours === stockTime[1] && minus <= delay)
+        (hours >= stockTime.span[0] && hours < stockTime.span[1]) ||
+        (hours === stockTime.span[1] && minus <= delay)
       ) {
         return true;
       }
@@ -361,14 +364,13 @@ export function allMarkets(): Array<string> {
   return result;
 }
 
-export function allStockTimes(): Map<string, Array<number>> {
-  let stocks = new Map<string, Array<number>>();
-  stocks.set(StockCategory.A, [9, 15]);
-  stocks.set(StockCategory.HK, [9, 16]);
-  // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
-  stocks.set(StockCategory.US, [21, 5]);
-  stocks.set(StockCategory.Future, [21, 15]);
-  stocks.set(StockCategory.OverseaFuture, [9, 7]);
+export function allStockTimes(): Map<string, { tz: string; span: Array<number> }> {
+  let stocks = new Map<string, { tz: string; span: Array<number> }>();
+  stocks.set(StockCategory.A, { tz: 'Asia/Shanghai', span: [9, 15] });
+  stocks.set(StockCategory.HK, { tz: 'Asia/Hong_Kong', span: [9, 16] });
+  stocks.set(StockCategory.US, { tz: 'America/New_York', span: [4, 20] });
+  stocks.set(StockCategory.Future, { tz: 'Asia/Shanghai', span: [21, 15] });
+  stocks.set(StockCategory.OverseaFuture, { tz: 'Asia/Shanghai', span: [9, 7] });
   return stocks;
 }
 
@@ -432,14 +434,11 @@ export function timezoneDate(timezone: number): Date {
   return nydate;
 }
 
-export function isHoliday(market: string): boolean {
-  let date = new Date();
-  if (market === StockCategory.US) {
-    date = timezoneDate(-5);
-  }
+export function isHoliday(market: string, tz: string): boolean {
+  const date = momentTz().tz(tz);
 
   const holidays = allHolidays();
-  if (isWeekend(date) || holidays.get(market)?.includes(formatDate(date, ''))) {
+  if (isWeekend(date) || holidays.get(market)?.includes(date.format('YYYYMMDD'))) {
     return true;
   }
   return false;
