@@ -36,7 +36,9 @@ export class BaseConfig {
     const sourceCfg = config.get(cfgKey, []);
     const newCfg = sourceCfg.filter((item) => item !== code);
     if (sourceCfg.length === newCfg.length) {
-      window.showInformationMessage(`删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`);
+      window.showInformationMessage(
+        `删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`
+      );
     }
     return config.update(cfgKey, newCfg, true);
   }
@@ -83,11 +85,13 @@ export class LeekFundConfig extends BaseConfig {
     };
 
     if (removedFundList.length) {
-      window.showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消').then((res) => {
-        if (res === '好的') {
-          removeFundGroup();
-        }
-      });
+      window
+        .showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消')
+        .then((res) => {
+          if (res === '好的') {
+            removeFundGroup();
+          }
+        });
     } else {
       removeFundGroup();
     }
@@ -153,7 +157,13 @@ export class LeekFundConfig extends BaseConfig {
     const config = workspace.getConfiguration();
     const origin: string[] = config.get(cfgKey, []);
     let codes = typeof list === 'string' ? list.split(',') : list;
-    let newCodes = uniq(compact(flattenDeep(origin).concat(codes)));
+    let newCodes = uniq(compact(flattenDeep(origin).concat(codes))) as string[];
+    newCodes = newCodes.map((code: string) => {
+      if (code.startsWith('hk')) {
+        return code.toLowerCase();
+      }
+      return code;
+    });
     config.update(cfgKey, newCodes, true).then(() => {
       window.showInformationMessage(`Stock Successfully add.`);
       if (cb && typeof cb === 'function') {
