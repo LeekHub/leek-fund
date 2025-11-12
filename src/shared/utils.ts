@@ -7,6 +7,7 @@ import globalState from '../globalState';
 import { LeekFundConfig } from './leekConfig';
 import { LeekTreeItem } from './leekTreeItem';
 import { SortType, StockCategory } from './typed';
+import momentTz = require('moment-timezone');
 
 const stockTimes = allStockTimes();
 
@@ -289,9 +290,9 @@ export const randHeader = () => {
  * 判断是否周未的方法
  * @param {*} date 参与判断的日期，默认今天
  */
-export const isWeekend = (date: Date = new Date()) => {
+export const isWeekend = (date: momentTz.Moment = momentTz()) => {
   let tof = false;
-  let dayOfWeek = date.getDay();
+  let dayOfWeek = date.day();
 
   tof = dayOfWeek === 6 || dayOfWeek === 0;
 
@@ -300,28 +301,30 @@ export const isWeekend = (date: Date = new Date()) => {
 
 export const isStockTime = () => {
   const markets = allMarkets();
-  const date = new Date();
-  const hours = date.getHours();
-  const minus = date.getMinutes();
   const delay = 5;
+
   for (let i = 0; i < markets.length; i++) {
     let stockTime = stockTimes.get(markets[i]);
-    if (!stockTime || stockTime.length < 2 || isHoliday(markets[i])) {
+    if (!stockTime || stockTime.span.length < 2 || isHoliday(markets[i], stockTime.tz)) {
       continue;
     }
-    // 针对美股交易时间跨越北京时间0点
-    if (stockTime[0] > stockTime[1]) {
+
+    const date = momentTz().tz(stockTime.tz);
+    const hours = date.hours();
+    const minus = date.minutes();
+    // 针对期货交易时间跨越时间0点
+    if (stockTime.span[0] > stockTime.span[1]) {
       if (
-        hours >= stockTime[0] ||
-        hours < stockTime[1] ||
-        (hours === stockTime[1] && minus <= delay)
+        hours >= stockTime.span[0] ||
+        hours < stockTime.span[1] ||
+        (hours === stockTime.span[1] && minus <= delay)
       ) {
         return true;
       }
     } else {
       if (
-        (hours >= stockTime[0] && hours < stockTime[1]) ||
-        (hours === stockTime[1] && minus <= delay)
+        (hours >= stockTime.span[0] && hours < stockTime.span[1]) ||
+        (hours === stockTime.span[1] && minus <= delay)
       ) {
         return true;
       }
@@ -361,14 +364,13 @@ export function allMarkets(): Array<string> {
   return result;
 }
 
-export function allStockTimes(): Map<string, Array<number>> {
-  let stocks = new Map<string, Array<number>>();
-  stocks.set(StockCategory.A, [9, 15]);
-  stocks.set(StockCategory.HK, [9, 16]);
-  // TODO: 判断夏令时,夏令时交易时间为[21, 4]，非夏令时交易时间为[22, 5]
-  stocks.set(StockCategory.US, [21, 5]);
-  stocks.set(StockCategory.Future, [21, 15]);
-  stocks.set(StockCategory.OverseaFuture, [9, 7]);
+export function allStockTimes(): Map<string, { tz: string; span: Array<number> }> {
+  let stocks = new Map<string, { tz: string; span: Array<number> }>();
+  stocks.set(StockCategory.A, { tz: 'Asia/Shanghai', span: [9, 15] });
+  stocks.set(StockCategory.HK, { tz: 'Asia/Hong_Kong', span: [9, 16] });
+  stocks.set(StockCategory.US, { tz: 'America/New_York', span: [4, 20] });
+  stocks.set(StockCategory.Future, { tz: 'Asia/Shanghai', span: [21, 15] });
+  stocks.set(StockCategory.OverseaFuture, { tz: 'Asia/Shanghai', span: [9, 7] });
   return stocks;
 }
 
@@ -380,43 +382,50 @@ export function allHolidays(): Map<string, Array<string>> {
   if (globalState.isHolidayChina) {
     A.push(formatDate(new Date(), ''));
   }
-  // https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2020/ce_SEHK_CT_038_2020.pdf
+  // https://www.hkex.com.hk/News/HKEX-Calendar?sc_lang=zh-HK
   const HK = [
-    '20201225',
-    '20210101',
-    '20210212',
-    '20210215',
-    '20210402',
-    '20210405',
-    '20210406',
-    '20210519',
-    '20210614',
-    '20210701',
-    '20210922',
-    '20211001',
-    '20211014',
-    '20211227',
+    '20251225',
+    '20251226',
+    '20260101',
+    '20260217',
+    '20260218',
+    '20260219',
+    '20260403',
+    '20260406',
+    '20260407',
+    '20260501',
+    '20260525',
+    '20260701',
+    '20260926',
+    '20261001',
+    '20261019',
+    '20261225',
+    '20261226',
   ];
   // https://www.nyse.com/markets/hours-calendars
   const US = [
-    '20201225',
-    '20210101',
-    '20210118',
-    '20210215',
-    '20210402',
-    '20210531',
-    '20210705',
-    '20210906',
-    '20211125',
-    '20211224',
-    '20220117',
-    '20220221',
-    '20220415',
-    '20220530',
-    '20220704',
-    '20220905',
-    '20221124',
-    '20221226',
+    '20251127',
+    '20251225',
+    '20260101',
+    '20260119',
+    '20260216',
+    '20260403',
+    '20260525',
+    '20260619',
+    '20260703',
+    '20260907',
+    '20261126',
+    '20261225',
+    '20270101',
+    '20270118',
+    '20270215',
+    '20270326',
+    '20270531',
+    '20270618',
+    '20270705',
+    '20270906',
+    '20271125',
+    '20271224',
   ];
   days.set(StockCategory.A, A);
   days.set(StockCategory.HK, HK);
@@ -432,14 +441,11 @@ export function timezoneDate(timezone: number): Date {
   return nydate;
 }
 
-export function isHoliday(market: string): boolean {
-  let date = new Date();
-  if (market === StockCategory.US) {
-    date = timezoneDate(-5);
-  }
+export function isHoliday(market: string, tz: string): boolean {
+  const date = momentTz().tz(tz);
 
   const holidays = allHolidays();
-  if (isWeekend(date) || holidays.get(market)?.includes(formatDate(date, ''))) {
+  if (isWeekend(date) || holidays.get(market)?.includes(date.format('YYYYMMDD'))) {
     return true;
   }
   return false;
