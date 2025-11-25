@@ -37,11 +37,17 @@ async function setAmount(fundService: FundService) {
         // console.log(list);
         // panel.webview.html = `<h3>loading</h3>`;
         // getWebviewContent(panel);
+        // 如果消息中有sortType，使用它；否则使用保存的配置
+        const sortType = message.sortType || LeekFundConfig.getConfig('leek-fund.fundAmountSort', 'default');
         panel.webview.postMessage({
           command: 'init',
           data: list,
-          sortType: message.sortType,
+          sortType: sortType,
         });
+        return;
+      case 'saveSort':
+        // 保存排序方式
+        LeekFundConfig.setConfig('leek-fund.fundAmountSort', message.sortType);
         return;
       case 'telemetry':
         globalState.telemetry.sendEvent('shareByPicture', { type: message.type });
@@ -50,6 +56,15 @@ async function setAmount(fundService: FundService) {
   }, undefined);
 
   getWebviewContent(panel);
+  
+  // 初始化时发送保存的排序方式
+  const savedSortType = LeekFundConfig.getConfig('leek-fund.fundAmountSort', 'default');
+  const list = fundDataHandler(fundService);
+  panel.webview.postMessage({
+    command: 'init',
+    data: list,
+    sortType: savedSortType,
+  });
 
   /* panel.onDidChangeViewState((event) => {
     // console.log(event);
