@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, window, workspace, Uri } from 'vscode';
+import { commands, ExtensionContext, window, Uri, env, workspace, ViewColumn } from 'vscode';
 import * as os from 'os';
 import * as path from 'path';
 
@@ -47,9 +47,11 @@ import setStockPrice from './webview/setStockPrice';
 
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
+import stockWindVane from './webview/stockWindVane';
 import tucaoForum from './webview/tucaoForum';
 import { StatusBar } from './statusbar/statusBar';
 import binanceTrend from './webview/binanceTrend';
+import { AiConfigView } from './webview/ai-config';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -64,6 +66,7 @@ export function registerViewEvent(
 ) {
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
+  let aiStockAnalysisInProgress = false;
 
   commands.registerCommand('leek-fund.toggleFlashNews', () => {
     const isEnable = LeekFundConfig.getConfig('leek-fund.flash-news');
@@ -264,6 +267,51 @@ export function registerViewEvent(
       fundProvider.refresh();
     });
   });
+  // AI分析股票
+  commands.registerCommand('leek-fund.aiStockAnalysis', async (target) => {
+    const { XuanGuBaoNewsView } = require('./webview/xuangubao-news');
+    const xuanGuBaoNewsView = XuanGuBaoNewsView.getInstance();
+    const result = await xuanGuBaoNewsView.send_ai_stock_analysis(target);
+    if (result != '') {
+      // 控制台输出
+      console.log('AI 分析结果 -', target?.info?.name, ' 股票代码：', target?.info?.code, '\n', result);
+
+      // 输出到 OUTPUT 面板
+      const channel = window.createOutputChannel('LeekFund AI 分析');
+      channel.appendLine(`==== AI 分析（${target.info.name} | ${target.info.code}）====`);
+      channel.appendLine(result);
+      channel.appendLine('');
+      channel.show(true);
+
+      // 使用 Webview 面板展示，限制可视高度并可滚动
+      showAiAnalysisPanel(context, target.info.name, result);
+    }
+  });
+
+  function summarizeAiResponse(response: string): string {
+    if (!response) return '无内容';
+    const text = response.replace(/\r/g, '').trim();
+
+    // 优先提取编号要点
+    const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
+    const bulletRegex = /^(?:[\-•·]|\d+[\.|、])/;
+    const bullets: string[] = [];
+    for (const line of lines) {
+      if (bulletRegex.test(line)) {
+        bullets.push(line.replace(bulletRegex, '').trim());
+        if (bullets.length >= 3) break;
+      }
+    }
+    if (bullets.length) {
+      const brief = bullets.join('；');
+      return brief.length > 180 ? brief.slice(0, 177) + '…' : brief;
+    }
+
+    // 否则取前2-3个句子
+    const sentences = text.split(/(?<=[。！？!?.])\s*/).filter(Boolean).slice(0, 3);
+    const brief = sentences.join('');
+    return brief.length > 180 ? brief.slice(0, 177) + '…' : brief;
+  }
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
     if (fundService.fundList.length === 0) {
@@ -583,6 +631,11 @@ export function registerViewEvent(
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
   context.subscriptions.push(commands.registerCommand('leek-fund.tucaoForum', () => tucaoForum()));
 
+  // 选股风向标
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.stockWindVane', () => stockWindVane())
+  );
+
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleRemindSwitch', (on?: number) => {
       const newValue = on !== undefined ? (on ? 1 : 0) : globalState.remindSwitch === 1 ? 0 : 1;
@@ -820,7 +873,130 @@ export function registerViewEvent(
     })
   );
 
+  
+  // 选股宝快讯命令
+  commands.registerCommand('leek-fund.xuangubaoNews', () => {
+    const { XuanGuBaoNewsView } = require('./webview/xuangubao-news');
+    XuanGuBaoNewsView.getInstance().show();
+  });
+  // 设置 A股 AI 分析历史长度
+  commands.registerCommand('leek-fund.setAiStockHistoryRange', async () => {
+    const QuickPickItems = [
+      { label: '1年', description: '1y', picked: false },
+      { label: '6个月', description: '6m', picked: false },
+      { label: '3个月', description: '3m', picked: false },
+      { label: '1个月', description: '1m', picked: false },
+      { label: '1周', description: '1w', picked: false },
+    ];
+    const current = LeekFundConfig.getConfig('leek-fund.aiStockHistoryRange', '3m');
+    QuickPickItems.forEach(it => it.picked = it.description === current);
+    const sel = await window.showQuickPick(QuickPickItems, { placeHolder: '选择A股AI分析历史长度' });
+    if (sel && sel.description) {
+      await LeekFundConfig.setConfig('leek-fund.aiStockHistoryRange', sel.description);
+      window.showInformationMessage(`已设置A股AI分析近${sel.label}复权日线数据`);
+    }
+  });
+  // AI 配置管理
+  commands.registerCommand('leek-fund.openAiConfig', () => {
+    AiConfigView.getInstance().show();
+  });
   // checkForUpdate();
+}
+
+function showAiAnalysisPanel(context: ExtensionContext, stockName: string, content: string) {
+  const panel = window.createWebviewPanel(
+    'aiAnalysisResult',
+    `AI 分析结果 - ${stockName}`,
+    ViewColumn.Active,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+      localResourceRoots: [Uri.joinPath(context.extensionUri, 'template')],
+    }
+  );
+  panel.webview.html = `<!DOCTYPE html>
+  <html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 分析结果</title>
+    <style>
+      html, body { height: 100%; width: 100%; }
+      body { margin: 0; padding: 0; background: var(--vscode-editor-background); color: var(--vscode-foreground); overflow: hidden; }
+      .wrap { height: 100%; width: 100%; margin: 0; padding: 8px 10px; box-sizing: border-box; display: flex; flex-direction: column; }
+      .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+      .title { font-weight: 600; }
+      .btn { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+      .btn:hover { background: var(--vscode-button-hoverBackground); }
+      .content { flex: 1; min-height: 0; word-break: break-word; line-height: 1.7; border: 1px solid var(--vscode-editorWidget-border); border-radius: 6px; padding: 16px; overflow: auto; background: var(--vscode-editorWidget-background); }
+      .content h1,.content h2,.content h3{ margin: 12px 0 8px; }
+      .content p{ margin: 8px 0; }
+      .content code{ background: rgba(127,127,127,.15); padding: 2px 6px; border-radius: 4px; }
+      .content pre{ background: rgba(127,127,127,.15); padding: 12px; border-radius: 6px; overflow: auto; }
+      .content table{ border-collapse: collapse; }
+      .content th,.content td{ border: 1px solid var(--vscode-editorWidget-border); padding: 6px 8px; }
+    </style>
+    <!-- 使用本地引入marked和DOMPurify -->
+    <script src="${panel.webview.asWebviewUri(Uri.joinPath(context.extensionUri, 'template', 'vendors', 'marked.min.js'))}"></script>
+    <script src="${panel.webview.asWebviewUri(Uri.joinPath(context.extensionUri, 'template', 'vendors', 'purify.min.js'))}"></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="toolbar">
+        <div class="title">AI 分析结果 - ${stockName}</div>
+        <div>
+          <button class="btn" id="copyBtn">复制Markdown</button>
+        </div>
+      </div>
+      <div class="content" id="content"></div>
+    </div>
+    <script>
+      const raw = ${JSON.stringify('' + (content ?? ''))};
+      const render = () => {
+        try {
+          // 改进的marked检查逻辑，支持更多版本的API
+          let html;
+          if (window.marked) {
+            if (typeof window.marked === 'function') {
+              // 旧版marked API
+              html = window.marked(raw);
+            } else if (window.marked.parse) {
+              // 新版marked API
+              html = window.marked.parse(raw);
+            } else if (window.marked.marked) {
+              // 可能的变体
+              html = window.marked.marked(raw);
+            } else {
+              // 回退到原始文本
+              html = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+            }
+          } else {
+            // 没有marked库时的回退处理
+            html = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+          }
+          
+          // DOMPurify净化
+          const safe = (window.DOMPurify && window.DOMPurify.sanitize) ? window.DOMPurify.sanitize(html) : html;
+          document.getElementById('content').innerHTML = safe;
+        } catch (e) {
+          console.error('渲染Markdown失败:', e);
+          document.getElementById('content').textContent = raw;
+        }
+      };
+      
+      // 确保脚本加载完成后再渲染
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', render);
+      } else {
+        render();
+      }
+      
+      document.getElementById('copyBtn').addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(raw); } catch (e) {}
+      });
+    </script>
+  </body>
+  </html>`;
 }
 
 export function registerCommandPaletteEvent(context: ExtensionContext, statusbar: StatusBar) {

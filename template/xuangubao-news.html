@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选股宝快讯</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+    <style>
+        :root {
+            --bg: #f5f5f5;
+            --text: #333;
+            --muted: #666;
+            --border: var(--vscode-editorWidget-border, #e8eaed);
+            --card: var(--vscode-editorWidget-background, #fafafa);
+            --accent: var(--vscode-textLink-foreground, #1890ff);
+            --accent-2: var(--vscode-button-hoverBackground, #40a9ff);
+            --success: var(--vscode-testing-iconPassed, #52c41a);
+            --danger: var(--vscode-testing-iconFailed, #ff4d4f);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1115;
+                --text: #e5e7eb;
+                --muted: #a0a6b0;
+                --border: var(--vscode-editorWidget-border, #1f232a);
+                --card: var(--vscode-editorWidget-background, #141820);
+                --accent: var(--vscode-textLink-foreground, #177ddc);
+                --accent-2: var(--vscode-button-hoverBackground, #3c9ae8);
+                --success: var(--vscode-testing-iconPassed, #52c41a);
+                --danger: var(--vscode-testing-iconFailed, #ff4d4f);
+            }
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--vscode-editor-background, var(--bg));
+            color: var(--vscode-foreground, var(--text));
+            line-height: 1.65;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--vscode-editorWidget-background, white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .container {
+                background: var(--card);
+                box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+            }
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: inherit;
+            z-index: 10;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--vscode-panel-border, var(--border));
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--muted);
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .tab:hover {
+            color: var(--accent);
+        }
+        .tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--vscode-foreground, var(--text));
+            letter-spacing: 0.2px;
+        }
+        .refresh-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .refresh-btn:hover {
+            background: var(--accent-2);
+        }
+        .refresh-btn:disabled {
+            background: #9fbfe6;
+            cursor: not-allowed;
+        }
+        
+        .ai-analysis-btn {
+            background: var(--accent-2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .ai-analysis-btn:hover { background: #73d13d; }
+        .ai-analysis-btn:disabled { background: #a0a0a0; cursor: not-allowed; }
+        .news-list {
+            display: grid;
+            gap: 16px;
+        }
+        .news-item {
+            background: var(--vscode-editorWidget-background, var(--card));
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+        .news-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .news-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--vscode-foreground, var(--text));
+            margin-bottom: 8px;
+            line-height: 1.5;
+            letter-spacing: 0.2px;
+        }
+        .news-summary {
+            font-size: 15px;
+            color: var(--vscode-editorForeground, var(--muted));
+            line-height: 1.75;
+            margin-bottom: 8px;
+            letter-spacing: 0.1px;
+        }
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--vscode-descriptionForeground, #999);
+            letter-spacing: 0.1px;
+        }
+        .impact-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .impact-positive {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        .impact-negative {
+            background: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+        .sectors {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .sector-tag {
+            display: inline-block;
+            background: #e6f7ff;
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-right: 4px;
+            font-size: 11px;
+            letter-spacing: 0.2px;
+            font-weight: 500;
+        }
+        .loading { text-align: center; padding: 20px; color: var(--vscode-descriptionForeground, #999); }
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--vscode-descriptionForeground, #999);
+        }
+        /* 骨架屏 */
+        .skeleton {
+            height: 12px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+            margin: 8px 0;
+        }
+        .skeleton.title { height: 16px; width: 60%; }
+        .skeleton.text { height: 12px; width: 100%; }
+        .skeleton.text.short { width: 80%; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        /* AI对话弹窗样式 */
+        .ai-chat-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 400px;
+            height: 500px;
+            background: var(--vscode-editor-background, white);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            border: 1px solid #e8eaed;
+            overflow: hidden;
+            transform: translateX(420px);
+            transition: transform 0.3s ease;
+            resize: both;
+            min-width: 300px;
+            min-height: 400px;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        
+        .ai-chat-container.open {
+            transform: translateX(0);
+        }
+        
+        .ai-chat-header {
+            background: var(--vscode-editor-background, var(--accent));
+            color: var(--vscode-foreground, #fff);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+        }
+        
+        .ai-chat-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .ai-chat-control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .ai-chat-control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .ai-chat-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .ai-chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: var(--card);
+            color: var(--vscode-foreground, var(--text));
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 15px;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .message.assistant {
+            background: var(--vscode-editorWidget-background, #f0f0f0);
+            color: var(--vscode-foreground, var(--text));
+            margin-right: auto;
+            border: 1px solid var(--vscode-editorWidget-border, #e9ecef);
+        }
+        
+        .message.assistant.markdown {
+            background: var(--vscode-editorWidget-background, #f8f9fa);
+            border: 1px solid var(--vscode-editorWidget-border, #e9ecef);
+        }
+        
+        .message.assistant.markdown h1,
+        .message.assistant.markdown h2,
+        .message.assistant.markdown h3,
+        .message.assistant.markdown h4 {
+            margin: 16px 0 8px 0;
+            color: var(--vscode-foreground, var(--text));
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+        
+        .message.assistant.markdown p { margin: 8px 0; line-height: 1.75; }
+        
+        .message.assistant.markdown ul,
+        .message.assistant.markdown ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+        
+        .message.assistant.markdown li {
+            margin: 4px 0;
+        }
+        
+        .message.assistant.markdown code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 12px;
+        }
+        
+        .message.assistant.markdown pre {
+            background: #f1f3f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+        
+        .message.assistant.markdown pre code {
+            background: none;
+            padding: 0;
+        }
+        
+        .message.assistant.markdown blockquote {
+            border-left: 4px solid var(--accent);
+            padding-left: 16px;
+            margin: 12px 0;
+            color: var(--vscode-editorForeground, var(--muted));
+            background: #fafafa;
+            padding: 12px 12px 12px 16px;
+        }
+        
+        .message.assistant.markdown table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 12px 0;
+        }
+        
+        .message.assistant.markdown th,
+        .message.assistant.markdown td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .message.assistant.markdown th {
+            background: var(--card);
+            font-weight: 600;
+        }
+        
+        .message.user {
+            background: var(--vscode-button-background, var(--accent));
+            color: var(--vscode-button-foreground, #fff);
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        /* 去重：上方已定义 .message.assistant */
+        
+        .ai-chat-input {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            background: var(--vscode-editorWidget-background, white);
+        }
+        
+        .chat-input-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 12px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            resize: none;
+            min-height: 40px;
+            max-height: 120px;
+        }
+        
+        .chat-send-btn {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            align-self: flex-end;
+        }
+        
+        .chat-send-btn:hover {
+            background: #40a9ff;
+        }
+        
+        .chat-send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .input-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+        }
+        
+        .input-row .chat-input {
+            flex: 1;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .input-row .chat-send-btn {
+            flex-shrink: 0;
+            align-self: flex-end;
+        }
+        
+        .analysis-buttons-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        
+        .ai-chat-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.4);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-chat-toggle:hover {
+            background: #40a9ff;
+            transform: scale(1.05);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--vscode-editorForeground, var(--muted));
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-4px);
+                opacity: 1;
+            }
+        }
+        
+        /* AI配置相关样式 */
+        .ai-config-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0 8px;
+            margin-left: 8px;
+        }
+        
+        .ai-config-btn:hover {
+            color: #1890ff;
+        }
+        
+        .ai-config-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-config-modal.show {
+            display: flex;
+        }
+        
+        .ai-config-content {
+            background: var(--vscode-editorWidget-background, white);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ai-config-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--vscode-panel-border, #e8eaed);
+            background: var(--vscode-editorWidget-background, #f8f9fa);
+        }
+        
+        .ai-config-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--vscode-foreground, var(--text));
+        }
+        
+        .ai-config-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--vscode-editorForeground, var(--muted));
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ai-config-close:hover {
+            color: var(--vscode-foreground, var(--text));
+        }
+        
+        .ai-config-body {
+            padding: 20px;
+        }
+        
+        .config-item {
+            margin-bottom: 16px;
+        }
+        
+        .config-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .config-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--vscode-foreground, var(--text));
+        }
+        
+        .config-item input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .config-item input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .ai-config-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 1px solid var(--vscode-panel-border, #e8eaed);
+            background: var(--vscode-editorWidget-background, #f8f9fa);
+        }
+        
+        .ai-config-cancel,
+        .ai-config-save {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .ai-config-cancel { background: var(--vscode-button-secondaryBackground, #f0f0f0); color: var(--vscode-foreground, #666); }
+        
+        .ai-config-cancel:hover { background: var(--vscode-button-secondaryHoverBackground, #e0e0e0); }
+        
+        .ai-config-save { background: var(--vscode-button-background, #1890ff); color: var(--vscode-button-foreground, #fff); }
+        
+        .ai-config-save:hover { background: var(--vscode-button-hoverBackground, #40a9ff); }
+        
+        /* 成功提示toast样式 */
+        .success-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: var(--vscode-button-foreground, #fff);
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+        
+        .success-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">选股宝快讯</h1>
+            <button class="refresh-btn" onclick="refreshNews()">刷新数据</button>
+        <!---->
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('latest')">最新快讯</div>
+            <div class="tab" onclick="switchTab('allDay')">当日全部</div>
+        </div>
+        
+        <div id="latest-news" class="tab-content active">
+            <br/>
+            <div id="latest-news-container" class="news-list">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+        
+        <div id="allDay-news" class="tab-content">
+            <br/>
+            <div id="allDay-news-container" class="news-list">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI对话弹窗 -->
+    <button class="ai-chat-toggle" onclick="toggleAIChat()">🤖</button>
+    
+    <div class="ai-chat-container" id="aiChatContainer">
+        <div class="ai-chat-header">
+            <div class="ai-chat-title">AI投资助手</div>
+            <button class="ai-config-btn" onclick="openAIConfig()" title="AI配置">⚙️AI配置</button>
+            <div class="ai-chat-controls">
+                <button class="ai-chat-control-btn" onclick="minimizeChat()" title="最小化">−</button>
+                <button class="ai-chat-control-btn" onclick="maximizeChat()" title="最大化">+</button>
+                <button class="ai-chat-close" onclick="toggleAIChat()">×</button>
+            </div>
+        </div>
+        
+        <div class="ai-chat-messages" id="chatMessages">
+            <div class="message assistant">
+                您好！我是AI投资助手，可以帮您分析市场行情、解读新闻快讯。有什么可以帮您的吗？
+            </div>
+        </div>
+        
+        <div class="ai-chat-input">
+            <div class="chat-input-container">
+                <div class="input-row">
+                    <textarea 
+                        class="chat-input" 
+                        id="chatInput" 
+                        placeholder="输入您的问题..."
+                        rows="1"
+                        onkeydown="handleChatInputKeydown(event)"
+                    ></textarea>
+                    <button class="chat-send-btn" id="sendButton" onclick="sendMessage()">发送</button>
+                </div>
+                <div class="analysis-buttons-row">
+                    <button class="ai-analysis-btn" onclick="analyzeNews('latest')">分析最新快讯</button>
+                    <button class="ai-analysis-btn" onclick="analyzeNews('allDay')">分析当日全部</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI配置弹窗 -->
+    <div class="ai-config-modal" id="aiConfigModal">
+        <div class="ai-config-content">
+            <div class="ai-config-header">
+                <h3>AI配置</h3>
+                <button class="ai-config-close" onclick="closeAIConfig()">×</button>
+            </div>
+            <div class="ai-config-body">
+                <div class="config-item">
+                    <label for="aiApiKey">API Key:</label>
+                    <input type="password" id="aiApiKey" placeholder="输入API Key">
+                </div>
+                <div class="config-item">
+                    <label for="aiBaseUrl">Base URL:</label>
+                    <input type="text" id="aiBaseUrl" placeholder="输入API地址">
+                </div>
+                <div class="config-item">
+                    <label for="aiModel">模型:</label>
+                    <input type="text" id="aiModel" placeholder="输入模型名称">
+                </div>
+            </div>
+            <div class="ai-config-footer">
+                <button class="ai-config-cancel" onclick="closeAIConfig()">取消</button>
+                <button class="ai-config-save" onclick="saveAIConfig()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局状态与工具
+        let autoRefreshIntervalId = null;
+        let isFetchingNews = false;
+        let isAnalyzing = false;
+
+        if (window.marked && typeof window.marked.setOptions === 'function') {
+            window.marked.setOptions({ gfm: true, breaks: true });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 页面加载完成后显示加载状态
+            showLoading();
+            
+            // 监听来自VSCode扩展的消息
+            window.addEventListener('message', function(event) {
+                const message = event.data;
+                if (message.command === 'newsData') {
+                    displayNews(message.data);
+                    // 拉取完成后复位状态
+                    isFetchingNews = false;
+                    setRefreshDisabled(false);
+                }
+                if (message.command === 'aiResponse') {
+                    receiveAIResponse(message.data);
+                }
+            });
+
+            // 请求新闻数据
+            requestNewsData();
+
+            // 设置自动刷新，每30秒
+            startAutoRefresh();
+
+            // 页面可见性控制自动刷新
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    stopAutoRefresh();
+                } else {
+                    startAutoRefresh();
+                }
+            });
+        });
+
+        function startAutoRefresh() {
+            stopAutoRefresh();
+            autoRefreshIntervalId = setInterval(() => {
+                requestNewsData();
+            }, 30000);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshIntervalId) {
+                clearInterval(autoRefreshIntervalId);
+                autoRefreshIntervalId = null;
+            }
+        }
+
+        function requestNewsData() {
+            if (isFetchingNews) return;
+            isFetchingNews = true;
+            setRefreshDisabled(true);
+            // 发送消息给VSCode扩展请求数据
+            if (window.vscode) {
+                window.vscode.postMessage({ command: 'getNewsData' });
+            }
+        }
+
+        function showLoading() {
+            const skeleton = `
+                <div class="news-item">
+                    <div class="skeleton title"></div>
+                    <div class="skeleton text"></div>
+                    <div class="skeleton text"></div>
+                    <div class="skeleton text short"></div>
+                </div>
+            `;
+            document.getElementById('latest-news-container').innerHTML = `<div class="news-list">${skeleton.repeat(4)}</div>`;
+            document.getElementById('allDay-news-container').innerHTML = `<div class="news-list">${skeleton.repeat(8)}</div>`;
+        }
+
+        function showEmpty() {
+            document.getElementById('latest-news-container').innerHTML = `
+                <div class="empty">
+                    <p>暂无快讯数据</p>
+                    <button onclick="refreshNews()" class="refresh-btn">刷新</button>
+                </div>
+            `;
+            document.getElementById('allDay-news-container').innerHTML = `
+                <div class="empty">
+                    <p>暂无快讯数据</p>
+                    <button onclick="refreshNews()" class="refresh-btn">刷新</button>
+                </div>
+            `;
+        }
+
+        function refreshNews() {
+            if (isFetchingNews) return;
+            showLoading();
+            if (window.vscode) {
+                window.vscode.postMessage({ command: 'refreshNews' });
+            }
+            // 1.5秒后重新请求数据，提升响应速度
+            setTimeout(requestNewsData, 1500);
+        }
+
+        function setRefreshDisabled(disabled) {
+            const btn = document.querySelector('.refresh-btn');
+            if (btn) btn.disabled = !!disabled;
+        }
+
+        function displayNews(newsData) {
+            // 显示最新快讯
+            displayLatestNews(newsData);
+            // 显示当日全部新闻
+            displayAllDayNews(newsData);
+        }
+
+        function displayLatestNews(newsData) {
+            const container = document.getElementById('latest-news-container');
+            
+            if (!newsData || !newsData.messages || newsData.messages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <p>暂无快讯数据</p>
+                        <button onclick="refreshNews()" class="refresh-btn">刷新</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const newsHtml = newsData.messages.map(news => `
+                <div class="news-item">
+                    <div class="news-title">
+                        ${escapeHtml(news.title || '无标题')}
+                    </div>
+                    <div class="news-summary">${escapeHtml(news.summary || '无内容')}</div>
+                    <div class="news-meta">
+                        <span>${formatTime(news.created_at * 1000)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="news-list">
+                    ${newsHtml}
+                </div>
+            `;
+        }
+
+        function displayAllDayNews(newsData) {
+            const container = document.getElementById('allDay-news-container');
+            
+            if (!newsData || !newsData.allDayMessages || newsData.allDayMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="empty">
+                        <p>暂无当日快讯数据</p>
+                        <button onclick="refreshNews()" class="refresh-btn">刷新</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const newsHtml = newsData.allDayMessages.map(news => `
+                <div class="news-item">
+                    <div class="news-title">
+                        ${escapeHtml(news.title || '无标题')}
+                    </div>
+                    <div class="news-summary">${escapeHtml(news.summary || '无内容')}</div>
+                    <div class="news-meta">
+                        <span>${formatTime(news.created_at * 1000)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="news-list">
+                    ${newsHtml}
+                </div>
+            `;
+        }
+
+        function switchTab(tabName) {
+            // 移除所有标签页的active类
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 激活选中的标签页
+            if (tabName === 'latest') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('latest-news').classList.add('active');
+            } else if (tabName === 'allDay') {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('allDay-news').classList.add('active');
+            }
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '未知时间';
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 初始化VS Code API
+        if (typeof acquireVsCodeApi !== 'undefined') {
+            window.vscode = acquireVsCodeApi();
+        }
+        
+        // AI对话功能
+        let chatMessages = [];
+        let chatState = {
+            isVisible: false,
+            isMinimized: false,
+            isMaximized: false,
+            previousWidth: '',
+            previousHeight: '',
+            previousTop: '',
+            previousRight: '',
+            previousTransform: ''
+        };
+        
+        function toggleAIChat() {
+            const container = document.getElementById('aiChatContainer');
+            
+            if (chatState.isVisible) {
+                // 如果当前可见，则隐藏
+                chatState.isVisible = false;
+                container.style.display = 'none';
+            } else {
+                // 如果当前隐藏，则显示
+                chatState.isVisible = true;
+                container.style.display = 'flex';
+                
+                // 确保窗口在可视区域
+                container.classList.add('open');
+                container.style.transform = 'translateX(0)';
+                
+                // 如果之前是最小化状态，恢复消息区域
+                if (chatState.isMinimized) {
+                    restoreFromMinimized();
+                }
+                
+                // 恢复之前的尺寸和位置（如果有）
+                if (chatState.previousWidth) container.style.width = chatState.previousWidth;
+                if (chatState.previousHeight) container.style.height = chatState.previousHeight;
+                if (chatState.previousTop) container.style.top = chatState.previousTop;
+                if (chatState.previousRight) container.style.right = chatState.previousRight;
+                if (chatState.previousTransform) container.style.transform = chatState.previousTransform;
+            }
+        }
+        
+        function handleChatInputKeydown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // 添加用户消息
+            addMessage('user', message);
+            input.value = '';
+            
+            // 禁用输入和发送按钮
+            const sendButton = document.getElementById('sendButton');
+            input.disabled = true;
+            sendButton.disabled = true;
+            
+            // 显示正在输入状态
+            showTypingIndicator();
+            
+            // 发送消息到后端
+            if (window.vscode) {
+                window.vscode.postMessage({
+                    command: 'sendAIMessage',
+                    data: message
+                });
+            }
+        }
+        
+        function addMessage(role, content) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            if (role === 'assistant') {
+                // 解析Markdown内容
+                try {
+                    const htmlContent = marked.parse(content);
+                    const sanitized = (window.DOMPurify && window.DOMPurify.sanitize)
+                        ? window.DOMPurify.sanitize(htmlContent)
+                        : htmlContent;
+                    messageDiv.innerHTML = sanitized;
+                    messageDiv.classList.add('markdown');
+                } catch (error) {
+                    messageDiv.textContent = content;
+                    console.error('Markdown解析失败:', error);
+                }
+            } else {
+                messageDiv.textContent = content;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // 保存消息到历史记录
+            chatMessages.push({ role, content });
+        }
+        
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            typingDiv.innerHTML = `
+                <span>AI正在思考</span>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function receiveAIResponse(response) {
+            // 隐藏正在输入状态
+            hideTypingIndicator();
+            
+            // 添加AI回复
+            addMessage('assistant', response);
+            
+            // 重新启用输入和发送按钮
+            const input = document.getElementById('chatInput');
+            const sendButton = document.getElementById('sendButton');
+            input.disabled = false;
+            sendButton.disabled = false;
+            input.focus();
+            isAnalyzing = false;
+            setAnalyzeButtonsDisabled(false);
+        }
+        
+        function minimizeChat() {
+            const container = document.getElementById('aiChatContainer');
+            
+            if (chatState.isMinimized) {
+                // 如果已经是最小化状态，则恢复到正常状态
+                restoreFromMinimized();
+            } else {
+                // 保存当前状态
+                saveCurrentState();
+                
+                // 最小化窗口：缩小到标题栏大小
+                container.style.width = '200px';
+                container.style.height = '40px';
+                container.style.minWidth = '200px';
+                container.style.minHeight = '40px';
+                
+                // 隐藏消息区域和输入区域
+                document.getElementById('chatMessages').style.display = 'none';
+                document.querySelector('.ai-chat-input').style.display = 'none';
+                
+                // 更新状态
+                chatState.isMinimized = true;
+                chatState.isMaximized = false;
+                container.classList.add('minimized');
+            }
+        }
+        
+        function maximizeChat() {
+            const container = document.getElementById('aiChatContainer');
+            
+            // 确保对话框可见
+            container.style.display = 'flex';
+            container.classList.add('open');
+            chatState.isVisible = true;
+            
+            // 移除最小化状态
+            container.classList.remove('minimized');
+            chatState.isMinimized = false;
+            
+            // 恢复消息区域和输入区域
+            document.getElementById('chatMessages').style.display = 'block';
+            document.querySelector('.ai-chat-input').style.display = 'flex';
+            
+            // 设置为最大化状态
+            container.style.width = '80vw';
+            container.style.height = '80vh';
+            container.style.top = '10vh';
+            container.style.right = '10vw';
+            container.style.transform = 'translateX(0)';
+            
+            // 重置最小尺寸限制
+            container.style.minWidth = '300px';
+            container.style.minHeight = '400px';
+            
+            // 更新状态
+            chatState.isMaximized = true;
+        }
+        
+        function resetChatSize() {
+            const container = document.getElementById('aiChatContainer');
+            
+            // 确保对话框可见
+            container.style.display = 'flex';
+            container.classList.add('open');
+            chatState.isVisible = true;
+            
+            // 移除所有特殊状态
+            container.classList.remove('minimized');
+            chatState.isMinimized = false;
+            chatState.isMaximized = false;
+            
+            // 恢复消息区域和输入区域
+            document.getElementById('chatMessages').style.display = 'block';
+            document.querySelector('.ai-chat-input').style.display = 'flex';
+            
+            // 重置到默认大小和位置
+            container.style.width = '400px';
+            container.style.height = '500px';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.transform = 'translateX(0)';
+            
+            // 重置最小尺寸限制
+            container.style.minWidth = '300px';
+            container.style.minHeight = '400px';
+        }
+        
+        // 辅助函数：保存当前状态
+        function saveCurrentState() {
+            const container = document.getElementById('aiChatContainer');
+            chatState.previousWidth = container.style.width || '';
+            chatState.previousHeight = container.style.height || '';
+            chatState.previousTop = container.style.top || '';
+            chatState.previousRight = container.style.right || '';
+            chatState.previousTransform = container.style.transform || '';
+        }
+        
+        // 辅助函数：从最小化状态恢复
+        function restoreFromMinimized() {
+            const container = document.getElementById('aiChatContainer');
+            
+            // 恢复消息区域和输入区域
+            document.getElementById('chatMessages').style.display = 'block';
+            document.querySelector('.ai-chat-input').style.display = 'flex';
+            
+            // 移除最小化状态类
+            container.classList.remove('minimized');
+            
+            // 恢复到初始状态大小和位置
+            container.style.width = '400px';
+            container.style.height = '500px';
+            container.style.minWidth = '300px';
+            container.style.minHeight = '400px';
+            container.style.top = '20px';
+            container.style.right = '20px';
+            container.style.transform = 'translateX(0)';
+            
+            // 更新状态
+            chatState.isMinimized = false;
+        }
+        
+        // 双击标题栏重置大小
+        document.addEventListener('DOMContentLoaded', function() {
+            const header = document.querySelector('.ai-chat-header');
+            if (header) {
+                header.addEventListener('dblclick', resetChatSize);
+            }
+            
+            // 初始化对话框状态
+            const container = document.getElementById('aiChatContainer');
+            if (container) {
+                container.style.display = 'none'; // 默认隐藏
+                chatState.isVisible = false;
+            }
+        });
+        
+        function analyzeNews(tabType) {
+            if (isAnalyzing) return;
+            let newsItems = [];
+            
+            if (tabType === 'latest') {
+                const container = document.getElementById('latest-news-container');
+                newsItems = Array.from(container.querySelectorAll('.news-item'));
+            } else if (tabType === 'allDay') {
+                const container = document.getElementById('allDay-news-container');
+                newsItems = Array.from(container.querySelectorAll('.news-item'));
+            }
+            
+            if (newsItems.length === 0) {
+                alert('当前没有新闻数据可供分析');
+                return;
+            }
+            
+            // 整理新闻信息
+            const LIMIT = tabType === 'latest' ? 10 : 30;
+            const newsData = newsItems.slice(0, LIMIT).map(item => {
+                const title = item.querySelector('.news-title').textContent.trim();
+                const summary = item.querySelector('.news-summary').textContent.trim();
+                const time = item.querySelector('.news-meta span').textContent.trim();
+                return { title, summary, time };
+            });
+            
+            // 构建分析提示
+            const analysisPrompt = `请分析以下投资快讯信息，提供专业的投资建议和市场分析：\n\n${newsData.map((news, index) => 
+                `快讯 ${index + 1}:\n标题: ${news.title}\n内容: ${news.summary}\n时间: ${news.time}\n`
+            ).join('\n')}\n\n请从以下角度进行分析：\n1. 市场整体趋势判断\n2. 重要行业/板块影响\n3. 潜在投资机会\n4. 风险提示\n5. 具体操作建议`;
+            
+            // 打开AI对话窗口（如果未打开）
+            const chatContainer = document.getElementById('aiChatContainer');
+            if (!chatContainer.classList.contains('open')) {
+                toggleAIChat();
+            }
+            
+            // 添加用户消息
+            addMessage('user', `请分析${newsData.length}条${tabType === 'latest' ? '最新' : '当日'}快讯信息`);
+            
+            // 显示正在输入状态
+            showTypingIndicator();
+            isAnalyzing = true;
+            setAnalyzeButtonsDisabled(true);
+            
+            // 发送分析请求到后端
+            if (window.vscode) {
+                window.vscode.postMessage({
+                    command: 'sendAIMessage',
+                    data: analysisPrompt
+                });
+            }
+        }
+
+        function setAnalyzeButtonsDisabled(disabled) {
+            document.querySelectorAll('.ai-analysis-btn').forEach(btn => {
+                btn.disabled = !!disabled;
+            });
+        }
+        
+        // 监听来自VSCode扩展的AI回复
+        window.addEventListener('message', function(event) {
+            const message = event.data;
+            if (message.command === 'aiResponse') {
+                receiveAIResponse(message.data);
+            }
+        });
+        
+        // AI配置相关函数
+        function openAIConfig() {
+            if (window.vscode) {
+                window.vscode.postMessage({ command: 'openAiConfig' });
+            }
+        }
+        
+        // 点击弹窗外部关闭配置窗口
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('aiConfigModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeAIConfig();
+                    }
+                });
+            }
+        });
+        
+        // 显示成功提示toast
+        function showSuccessToast(message) {
+            // 创建toast元素
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.textContent = message;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 显示动画
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

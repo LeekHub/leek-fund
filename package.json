@@ -25,12 +25,21 @@
   "engines": {
     "vscode": "^1.59.0"
   },
-  "enableProposedAPI": true,
+  
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:leek-fund.refreshStock",
+    "onCommand:leek-fund.stockWindVane",
+    "onCommand:leek-fund.refreshFund",
+    "onView:leekFundView.fund",
+    "onView:leekFundView.stock",
+    "onView:leekFundView.news",
+    "onView:leekFundView.binance",
+    "onView:leekFundView.forex",
+    "onView:leekFundView.settings"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -75,6 +84,11 @@
       ]
     },
     "commands": [
+      {
+        "command": "leek-fund.openAiConfig",
+        "title": "Leek: 打开 AI 配置管理",
+        "icon": "$(gear)"
+      },
       {
         "command": "leek-fund.viewFundRank",
         "title": "基金排行榜",
@@ -212,6 +226,11 @@
         "title": "删除股票"
       },
       {
+        "command": "leek-fund.aiStockAnalysis",
+        "title": "AI分析股票(供AI分析的内容有该股票的复权日线数据+雪球资讯+韭研公社)",
+        "icon": "$(lightbulb)"
+      },
+      {
         "command": "leek-fund.addStockToBar",
         "title": "添加至状态栏"
       },
@@ -291,6 +310,19 @@
           "light": "resources/light/sort.svg",
           "dark": "resources/dark/sort.svg"
         }
+      },
+      {
+        "command": "leek-fund.xuangubaoNews",
+        "title": "选股宝快讯",
+        "icon": {
+          "light": "resources/light/news.svg",
+          "dark": "resources/dark/news.svg"
+        }
+      },
+      {
+        "command": "leek-fund.stockWindVane",
+        "title": "选股风向标",
+        "icon": "$(graph)"
       }
     ],
     "keybindings": [
@@ -480,6 +512,11 @@
           "group": "inline"
         },
         {
+          "command": "leek-fund.aiStockAnalysis",
+          "when": "view == leekFundView.stock  && viewItem == aStock",
+          "group": "inline"
+        },
+        {
           "command": "leek-fund.deleteStock",
           "when": "view == leekFundView.stock  && viewItem != category",
           "group": "group5"
@@ -513,6 +550,11 @@
           "command": "leek-fund.deleteUser",
           "when": "view == leekFundView.news",
           "group": "group1"
+        },
+        {
+          "command": "leek-fund.xuangubaoNews",
+          "when": "view == leekFundView.news",
+          "group": "navigation"
         }
       ]
     },
@@ -714,10 +756,37 @@
           "type": "boolean",
           "default": false,
           "description": "默认展开海外期货"
+        },
+        "leek-fund.aiConfig": {
+          "type": "object",
+          "default": {
+            "apiKey": "",
+            "baseUrl": "",
+            "model": ""
+          },
+          "description": "AI助手配置（OpenAI API密钥、基础URL和模型名称）"
+        },
+        "leek-fund.aiStockHistoryRange": {
+          "type": "string",
+          "default": "3m",
+          "enum": ["1y", "6m", "3m", "1m", "1w"],
+          "enumDescriptions": [
+            "1年",
+            "6个月",
+            "3个月",
+            "1个月",
+            "1周"
+          ],
+          "description": "A股 AI 分析历史长度"
         }
       }
     },
     "viewsWelcome": [
+
+      {
+        "view": "选股宝快讯、AI助手",
+        "contents": "\n [📰 选股宝快讯、AI助手](command:leek-fund.xuangubaoNews)"
+      },
       {
         "view": "leekFundView.fund",
         "contents": "无数据，请检查网络或添加基金"
@@ -740,7 +809,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/LeekHub/leek-fund)"
+        "contents": "\n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [📰 选股宝快讯](command:leek-fund.xuangubaoNews)\n [🌬️ 选股风向标](command:leek-fund.stockWindVane) \n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/cwdhf/leek-fund)"
       }
     ]
   },
@@ -810,6 +879,7 @@
     "lodash": "4.17.21",
     "moment": "^2.29.4",
     "moment-timezone": "^0.6.0",
+    "openai": "^5.16.0",
     "public-ip": "^4.0.3",
     "ws": "^7.4.1"
   },

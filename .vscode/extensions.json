@@ -3,5 +3,8 @@
 	// for the documentation about the extensions.json format
 	"recommendations": [
 		"dbaeumer.vscode-eslint"
+	],
+	"unwantedRecommendations": [
+		"augment.vscode-augment"
 	]
 }
