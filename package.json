@@ -656,6 +656,11 @@
           "default": 0,
           "description": "基金排序方式(0正常、1涨跌升序、-1涨跌倒序、2持仓金额升序、-2持仓金额降序)"
         },
+        "leek-fund.fundAmountSort": {
+          "type": "string",
+          "default": "default",
+          "description": "基金持仓金额设置界面排序方式(default默认、earningsDesc收益率降序、earningsAsc收益率升序)"
+        },
         "leek-fund.stockSort": {
           "type": "number",
           "default": 0,
