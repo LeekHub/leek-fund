@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.19.0](https://github.com/LeekHub/leek-fund/compare/v3.18.2...v3.19.0) (2025-12-02)
+
+
+### Features
+
+* 记录基金详情页排序，方便下次回显 ([dd4e793](https://github.com/LeekHub/leek-fund/commit/dd4e7936864e5374333f52f886f5b9aed07c8f03))
+
 ### [3.18.2](https://github.com/LeekHub/leek-fund/compare/v3.18.1...v3.18.2) (2025-11-12)
 
 ### [3.18.1](https://github.com/LeekHub/leek-fund/compare/v3.18.0...v3.18.1) (2025-11-12)
