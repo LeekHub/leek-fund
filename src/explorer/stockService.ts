@@ -227,7 +227,8 @@ export default class StockService extends LeekService {
                   amount: formatNumber(params[9], 2),
                   time: `${params[30]} ${params[31]}`,
                   percent: '',
-                  ...heldData,
+                  contextValue: 'aStock',
+                ...heldData,
                 };
                 aStockCount += 1;
               }

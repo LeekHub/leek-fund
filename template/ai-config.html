@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 配置管理</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 20px;
+      color: var(--vscode-foreground);
+      background: var(--vscode-editor-background);
+    }
+    .card {
+      max-width: 720px;
+      margin: 0 auto;
+      background: var(--vscode-editorWidget-background, #fff);
+      border: 1px solid var(--vscode-editorWidget-border, #e8eaed);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: 20px;
+    }
+    .desc {
+      color: var(--vscode-descriptionForeground, #777);
+      margin-bottom: 16px;
+    }
+    .form-item {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #d9d9d9;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .primary {
+      background: var(--vscode-button-background, #1890ff);
+      color: var(--vscode-button-foreground, #fff);
+    }
+    .primary:hover {
+      background: var(--vscode-button-hoverBackground, #40a9ff);
+    }
+    .ghost {
+      background: var(--vscode-button-secondaryBackground, #f5f5f5);
+      color: var(--vscode-foreground);
+    }
+    .ghost:hover {
+      background: var(--vscode-button-secondaryHoverBackground, #eaeaea);
+    }
+    .tip {
+      font-size: 12px;
+      color: var(--vscode-descriptionForeground, #999);
+      margin-top: 6px;
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #52c41a;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all .3s;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>AI 配置管理</h1>
+    <div class="desc">配置你的大模型访问参数（保存在 VS Code 用户设置中）。</div>
+    <div class="form-item">
+      <label for="apiKey">API Key</label>
+      <input id="apiKey" type="password" placeholder="请输入 API Key" />
+      <div class="tip">示例：sk-xxx 或其他厂商密钥</div>
+    </div>
+    <div class="form-item">
+      <label for="baseUrl">Base URL</label>
+      <input id="baseUrl" type="text" placeholder="例如：https://api.openai.com/v1 或自建网关地址" />
+    </div>
+    <div class="form-item">
+      <label for="model">模型</label>
+      <input id="model" type="text" placeholder="例如：gpt-4o-mini 或 deepseek-chat 等" />
+    </div>
+    <div class="actions">
+      <button class="ghost" id="resetBtn">重置</button>
+      <button class="primary" id="saveBtn">保存</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">保存成功</div>
+
+  <script>
+    const vscode = typeof acquireVsCodeApi !== 'undefined' ? acquireVsCodeApi() : null;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg || '操作成功';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function loadConfig() {
+      if (vscode) {
+        vscode.postMessage({ command: 'getAiConfig' });
+      }
+    }
+
+    function saveConfig() {
+      const apiKey = document.getElementById('apiKey').value.trim();
+      const baseUrl = document.getElementById('baseUrl').value.trim();
+      const model = document.getElementById('model').value.trim();
+      if (!apiKey || !baseUrl || !model) {
+        alert('请完整填写 API Key / Base URL / 模型');
+        return;
+      }
+      vscode && vscode.postMessage({ command: 'updateAiConfig', data: { apiKey, baseUrl, model } });
+    }
+
+    function resetForm() {
+      document.getElementById('apiKey').value = '';
+      document.getElementById('baseUrl').value = '';
+      document.getElementById('model').value = '';
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', saveConfig);
+    document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+    window.addEventListener('message', (event) => {
+      const message = event.data;
+      if (message.command === 'aiConfig' && message.data) {
+        document.getElementById('apiKey').value = message.data.apiKey || '';
+        document.getElementById('baseUrl').value = message.data.baseUrl || '';
+        document.getElementById('model').value = message.data.model || '';
+      }
+      if (message.command === 'saveSuccess') {
+        showToast('保存成功');
+      }
+    });
+
+    loadConfig();
+  </script>
+</body>
+</html>
+
+

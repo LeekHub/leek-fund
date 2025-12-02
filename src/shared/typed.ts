@@ -131,3 +131,27 @@ export type ForexData = {
   publishDateTime?: string; // 发布日期：年月日 时分秒
   publishTime?: string; // 发布时间：时分秒
 };
+
+// A股 AI 分析历史长度 - 枚举与工具
+export type AiStockHistoryRange = '1y' | '6m' | '3m' | '1m' | '1w';
+
+export const AI_HISTORY_RANGE_LABEL: Record<AiStockHistoryRange, string> = {
+  '1y': '1年',
+  '6m': '6个月',
+  '3m': '3个月',
+  '1m': '1个月',
+  '1w': '1周',
+};
+
+export function getAiHistoryRangeLabel(range: string): string {
+  const key = range as AiStockHistoryRange;
+  return AI_HISTORY_RANGE_LABEL[key] || AI_HISTORY_RANGE_LABEL['3m'];
+}
+
+export const AI_HISTORY_RANGE_OPTIONS: Array<{ value: AiStockHistoryRange; label: string }> = [
+  { value: '1y', label: AI_HISTORY_RANGE_LABEL['1y'] },
+  { value: '6m', label: AI_HISTORY_RANGE_LABEL['6m'] },
+  { value: '3m', label: AI_HISTORY_RANGE_LABEL['3m'] },
+  { value: '1m', label: AI_HISTORY_RANGE_LABEL['1m'] },
+  { value: '1w', label: AI_HISTORY_RANGE_LABEL['1w'] },
+];
