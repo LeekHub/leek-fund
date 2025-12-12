@@ -1,136 +1,158 @@
-import { ViewColumn, window } from 'vscode';
+import { ViewColumn, env, Uri } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
+import globalState from '../globalState';
+import { getTemplateFileContent } from '../shared/utils';
 import { getEastMoneyHost } from './proxyService/proxyConfig';
 
-export default function stockWindVane() {
-  const panel = ReusedWebviewPanel.create(
-    'stockWindVaneWebview',
-    '选股风向标',
-    ViewColumn.One,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
+export class StockWindVaneView {
+  private static instance: StockWindVaneView;
+  private panel: any = null;
+
+  private constructor() {}
+
+  public static getInstance(): StockWindVaneView {
+    if (!StockWindVaneView.instance) {
+      StockWindVaneView.instance = new StockWindVaneView();
     }
-  );
+    return StockWindVaneView.instance;
+  }
 
-  const url = `${getEastMoneyHost()}/zhuti/#ggfxb`;
+  public show() {
+    if (this.panel) {
+      this.panel.reveal();
+      return;
+    }
 
-  panel.webview.html = `<!DOCTYPE html>
-  <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>选股风向标</title>
-    <style>
-      html, body { height: 100%; width: 100%; }
-      body { margin: 0; padding: 0; background: var(--vscode-editor-background); color: var(--vscode-foreground); overflow: hidden; }
-      .wrap { height: 100%; width: 100%; display: flex; flex-direction: column; background: var(--vscode-editor-background); }
-      .toolbar { padding: 8px 10px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--vscode-editorWidget-border); background: var(--vscode-editor-background); }
-      .btn { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-      .btn:hover { background: var(--vscode-button-hoverBackground); }
-      .url { margin-left: auto; font-size: 12px; color: var(--vscode-descriptionForeground); }
-      .content { flex: 1; min-height: 0; background: var(--vscode-editor-background); }
-      iframe { width: 100%; height: 100%; border: 0; background: transparent; }
-      .hint { padding: 12px; color: var(--vscode-descriptionForeground); font-size: 12px; }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="toolbar">
-        <button class="btn" id="back">后退</button>
-        <button class="btn" id="forward">前进</button>
-        <button class="btn" id="reload">刷新</button>
-        <button class="btn" id="openExt">外部打开</button>
-        <div class="url" id="curUrl"></div>
-      </div>
-      <div class="content">
-        <iframe id="frame" src="${url}" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
-      </div>
-      <div class="hint">若页面为空白，请确认本地代理已启动并可访问：${url}</div>
-    </div>
-    <script>
-      const frame = document.getElementById('frame');
-      const backBtn = document.getElementById('back');
-      const fwdBtn = document.getElementById('forward');
-      const urlBox = document.getElementById('curUrl');
-
-      const historyStack = ['${url}'];
-      let historyIndex = 0;
-      function updateButtons(){
-        backBtn.disabled = historyIndex <= 0;
-        fwdBtn.disabled = historyIndex >= historyStack.length - 1;
-        // urlBox.textContent = historyStack[historyIndex] || '';
+    this.panel = ReusedWebviewPanel.create(
+      'stockWindVaneWebview',
+      '选股风向标',
+      ViewColumn.One,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true,
       }
-      function navigateTo(u){
-        if (typeof u !== 'string' || !u) return;
-        if (historyStack[historyIndex] !== u) {
-          historyStack.splice(historyIndex + 1);
-          historyStack.push(u);
-          historyIndex = historyStack.length - 1;
-        }
-        try { frame.src = u; } catch (e) { frame.setAttribute('src', u); }
-        updateButtons();
+    );
+
+    const initialRoute = '/data-center/stock-wind-vane';
+    try {
+      console.log('StockWindVaneView: 开始加载模板文件');
+      console.log('StockWindVaneView: globalState.context', globalState.context);
+      
+      const html = getTemplateFileContent(['leek-center', 'build', 'index.html'], this.panel.webview);
+      
+      if (!html) {
+        throw new Error('获取模板文件内容失败');
       }
-      updateButtons();
-
-      backBtn.addEventListener('click', () => {
-        if (historyIndex > 0) {
-          historyIndex -= 1;
-          const u = historyStack[historyIndex];
-          try { frame.src = u; } catch (e) { frame.setAttribute('src', u); }
-          updateButtons();
-        }
-      });
-      fwdBtn.addEventListener('click', () => {
-        if (historyIndex < historyStack.length - 1) {
-          historyIndex += 1;
-          const u = historyStack[historyIndex];
-          try { frame.src = u; } catch (e) { frame.setAttribute('src', u); }
-          updateButtons();
-        }
-      });
-      document.getElementById('reload').addEventListener('click', () => {
-        try { frame.contentWindow && frame.contentWindow.location.reload(); } catch (e) { 
-          const u = historyStack[historyIndex] || frame.src;
-          try { frame.src = u; } catch(err) { frame.setAttribute('src', u); }
-        }
-      });
-      document.getElementById('openExt').addEventListener('click', () => {
-        if (typeof acquireVsCodeApi !== 'undefined') {
-          const vscode = acquireVsCodeApi();
-          vscode.postMessage({ command: 'openExternal', data: '${url}' });
-        } else {
-          window.open('${url}', '_blank');
-        }
-      });
-
-      // 接收 iframe 发送的当前位置，维护历史
-      window.addEventListener('message', (event) => {
-        try {
-          const data = event && event.data;
-          if (data && data.__leekWindVane === 'location' && typeof data.href === 'string') {
-            if (historyStack[historyIndex] !== data.href) {
-              historyStack.splice(historyIndex + 1);
-              historyStack.push(data.href);
-              historyIndex = historyStack.length - 1;
-              updateButtons();
+      
+      console.log('StockWindVaneView: 模板文件加载成功，长度:', html.length);
+      
+      // 只注入初始路由，URL通过消息传递获取
+      const injectedScript = `
+        <script>
+          window.initialRoute = '${initialRoute}';
+        </script>
+      `;
+      
+      // 确保html是字符串并且包含<head>
+      if (typeof html === 'string' && html.includes('<head>')) {
+        this.panel.webview.html = html.replace('<head>', `<head>${injectedScript}`);
+      } else {
+        console.error('StockWindVaneView: html不是有效字符串或不包含<head>标签', typeof html, html?.length);
+        // 使用原始html（如果存在）或回退到错误页面
+        this.panel.webview.html = html || `
+          <!DOCTYPE html>
+          <html>
+          <head><meta charset="UTF-8"><title>选股风向标</title></head>
+          <body>
+            <h1>模板文件格式错误</h1>
+            <p>无法加载页面模板</p>
+          </body>
+          </html>
+        `;
+      }
+    } catch (error) {
+      console.error('StockWindVaneView: 加载模板文件失败', error);
+      this.panel.webview.html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>选股风向标</title>
+          <style>
+            body { 
+              background: var(--vscode-editor-background); 
+              color: var(--vscode-foreground); 
+              padding: 20px; 
+              font-family: var(--vscode-font-family);
             }
-          }
-        } catch (e) {}
-      });
-    </script>
-  </body>
-  </html>`;
-
-  panel.webview.onDidReceiveMessage(async (msg) => {
-    if (msg?.command === 'openExternal' && msg?.data) {
-      try {
-        await (await import('vscode')).env.openExternal((await import('vscode')).Uri.parse(String(msg.data)));
-      } catch (e) {
-        window.showErrorMessage('无法在外部打开链接');
-      }
+            .error { color: var(--vscode-errorForeground); margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>选股风向标</h1>
+          <div class="error">加载页面失败: ${error instanceof Error ? error.message : String(error)}</div>
+          <div>请检查模板文件是否存在: template/leek-center/build/index.html</div>
+        </body>
+        </html>
+      `;
     }
-  });
+
+    // 设置消息处理器
+    this.panel.webview.onDidReceiveMessage(async (msg: any) => {
+      console.log('StockWindVaneView: 收到消息', msg);
+      
+      if (msg?.command === 'getStockWindVaneUrl') {
+        // 动态计算URL，使用代理地址
+        const host = getEastMoneyHost();
+        const url = `${host}/zhuti/#ggfxb`;
+        console.log('StockWindVaneView: 响应getStockWindVaneUrl请求', { host, url });
+        
+        this.panel.webview.postMessage({
+          command: 'stockWindVaneUrl',
+          data: { url }
+        });
+      } else if (msg?.command === 'openExternal' && msg?.data?.url) {
+        try {
+          await env.openExternal(Uri.parse(String(msg.data.url)));
+          this.panel.webview.postMessage({
+            command: 'openExternalSuccess'
+          });
+        } catch (e) {
+          console.error('StockWindVaneView: 外部打开失败', e);
+          this.panel.webview.postMessage({
+            command: 'openExternalError'
+          });
+        }
+      } else if (msg?.command === 'iframeLocation' && msg?.data?.href) {
+        // 转发iframe的位置信息到React组件
+        this.panel.webview.postMessage({
+          command: 'iframeLocation',
+          data: { href: msg.data.href }
+        });
+      }
+    });
+
+    // 页面加载完成后主动发送URL
+    const sendInitialUrl = () => {
+      const host = getEastMoneyHost();
+      const url = `${host}/zhuti/#ggfxb`;
+      console.log('StockWindVaneView: 主动发送URL', { host, url });
+      
+      this.panel.webview.postMessage({
+        command: 'stockWindVaneUrl',
+        data: { url }
+      });
+    };
+    
+    // 延迟发送，确保React组件已准备好
+    setTimeout(sendInitialUrl, 300);
+
+    this.panel.onDidDispose(() => {
+      this.panel = null;
+    });
+  }
 }
 
-
+export default function stockWindVane() {
+  StockWindVaneView.getInstance().show();
+}

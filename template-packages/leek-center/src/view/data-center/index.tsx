@@ -14,6 +14,9 @@ import reportPage from './report';
 import economyPage from './economy';
 import bkzjPage from './dashboard/bk';
 import OtherPage from './other';
+import AIConfigPage from './ai-config';
+import XuangubaoNewsPage from './xuangubao-news';
+import StockWindVanePage from './stock-wind-vane';
 
 const { Content, Sider } = Layout;
 
@@ -26,6 +29,7 @@ export default function DataCenter({ children }: { children: ReactElement }) {
           height: 'calc(100vh - 86px)',
           position: 'fixed',
           left: 0,
+          top: 50,
         }}
       >
         <Menu
@@ -34,6 +38,12 @@ export default function DataCenter({ children }: { children: ReactElement }) {
             height: 'calc(100vh - 86px)',
           }}
         >
+          <Menu.Item key="xuangubao-news">
+            <Link to="/data-center/xuangubao-news">选股宝快讯</Link>
+          </Menu.Item>
+          <Menu.Item key="stock-wind-vane">
+            <Link to="/data-center/stock-wind-vane">选股风向标</Link>
+          </Menu.Item>
           <Menu.Item key="nxfxb1">
             <Link to="/data-center/nxfxb">牛熊风向标</Link>
           </Menu.Item>
@@ -73,6 +83,9 @@ export default function DataCenter({ children }: { children: ReactElement }) {
           <Menu.Item key="economy">
             <Link to="/data-center/economy">宏观数据</Link>
           </Menu.Item>
+          <Menu.Item key="ai-config">
+            <Link to="/data-center/ai-config">AI配置</Link>
+          </Menu.Item>
           <Menu.Item key="other">
             <Link to="/data-center/other">欢迎PR</Link>
           </Menu.Item>
@@ -84,6 +97,7 @@ export default function DataCenter({ children }: { children: ReactElement }) {
           height: 'calc(100vh - 86px)',
           position: 'fixed',
           left: 220,
+          top: 50,
           width: 'calc(100vw - 220px)',
           overflowY: 'auto',
         }}
@@ -117,6 +131,9 @@ export default function DataCenter({ children }: { children: ReactElement }) {
           <Route exact path="/data-center/peigu" component={peiguPage} />
           <Route exact path="/data-center/report" component={reportPage} />
           <Route exact path="/data-center/economy" component={economyPage} />
+          <Route exact path="/data-center/xuangubao-news" component={XuangubaoNewsPage} />
+          <Route exact path="/data-center/stock-wind-vane" component={StockWindVanePage} />
+          <Route exact path="/data-center/ai-config" component={AIConfigPage} />
           <Route exact path="/data-center/other" component={OtherPage} />
           <Redirect from="/data-center" to="/data-center/nxfxb"></Redirect>
         </Switch>

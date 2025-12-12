@@ -809,7 +809,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [📰 选股宝快讯](command:leek-fund.xuangubaoNews)\n [🌬️ 选股风向标](command:leek-fund.stockWindVane) \n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/cwdhf/leek-fund)"
+        "contents": "\n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/cwdhf/leek-fund)"
       }
     ]
   },

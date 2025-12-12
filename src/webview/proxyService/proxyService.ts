@@ -132,9 +132,10 @@ async function handleZhutiRewrite(req: any, res: any, targetBase: string) {
 
   // HTML 改写
   const $ = cheerio.load(body);
-  // 放宽 CSP，避免注入脚本被拦截；移除会影响链接行为的 <base>
+  // 放宽 CSP，避免注入脚本被拦截；移除会影响链接行为的 <base>；移除自动刷新
   $('meta[http-equiv="Content-Security-Policy"]').remove();
   $('meta[http-equiv="content-security-policy"]').remove();
+  $('meta[http-equiv="refresh"]').remove();
   $('base').remove();
   // 统一设置默认 target 行为
   $('head').prepend('<base target="_self">');
@@ -211,31 +212,43 @@ async function handleZhutiRewrite(req: any, res: any, targetBase: string) {
       }
     }
     retargetLinks(document);
-    document.addEventListener('click',function(e){
-      var el=e.target;
-      while(el && el!==document.body){
-        if(el.tagName && el.tagName.toLowerCase()==='a'){
-          var a=el;
-          if(a.href){
-            e.preventDefault();
-            e.stopPropagation();
-            try{window.location.href=a.href; if(window.parent){ try{ window.parent.postMessage({ __leekWindVane:'location', href: a.href }, '*'); }catch(_){} } }catch(err){}
-            return false;
-          }
-        }
-        el=el.parentElement;
-      }
-    },true);
-    // 覆盖 window.open，改为当前窗口跳转
+    // 移除点击事件拦截，因为链接已经设置 target="_self"，让浏览器正常处理导航
+    
+    // 覆盖 window.open，改为当前窗口跳转，但不触发 window.location.href 避免循环
     try{ var _open = window.open; }catch(_){ }
-    window.open = function(url){ try{ if(url){ window.location.href = url; if(window.parent){ try{ window.parent.postMessage({ __leekWindVane:'location', href: String(url) }, '*'); }catch(_){} } } }catch(err){} return null; };
+    window.open = function(url){ 
+      try{ 
+        if(url && window.parent){ 
+          try{ 
+            window.parent.postMessage({ __leekWindVane:'location', href: String(url) }, '*'); 
+          }catch(_){} 
+        } 
+      }catch(err){} 
+      return null; 
+    };
     // 监听单页路由变化
     try{
       var _ps = history.pushState; var _rs = history.replaceState;
-      history.pushState = function(){ try{ _ps.apply(history, arguments); window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} };
-      history.replaceState = function(){ try{ _rs.apply(history, arguments); window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} };
-      window.addEventListener('popstate', function(){ try{ window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} });
-      window.addEventListener('hashchange', function(){ try{ window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} });
+      history.pushState = function(){ 
+        try{ 
+          var result = _ps.apply(history, arguments); 
+          window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); 
+          return result;
+        }catch(_){} 
+      };
+      history.replaceState = function(){ 
+        try{ 
+          var result = _rs.apply(history, arguments); 
+          window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); 
+          return result;
+        }catch(_){} 
+      };
+      window.addEventListener('popstate', function(){ 
+        try{ window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} 
+      });
+      window.addEventListener('hashchange', function(){ 
+        try{ window.parent && window.parent.postMessage({ __leekWindVane:'location', href: location.href }, '*'); }catch(_){} 
+      });
     }catch(_e){}
     // 监听 DOM 变化，持续移除 _blank 等
     var mo=new MutationObserver(function(muts){
@@ -254,7 +267,76 @@ async function handleZhutiRewrite(req: any, res: any, targetBase: string) {
   }catch(err){}})();`;
   $('body').append(`<script>${preventNewWindowJS}</script>`);
   
+  // 注入脚本：设置深色背景主题
+  const darkThemeJS = `;(function(){try{
+    // 设置页面背景色为深色
+    var applyDarkTheme = function(){
+      document.body.style.backgroundColor = '#1e1e1e';
+      document.body.style.color = '#d4d4d4';
+      document.documentElement.style.backgroundColor = '#1e1e1e';
+      
+      // 查找并修改主要内容区域的背景色
+      var mainContainers = document.querySelectorAll('.main, #app, .container, body > div');
+      for(var i=0; i<mainContainers.length; i++){
+        mainContainers[i].style.backgroundColor = '#1e1e1e';
+      }
+      
+      // 修改表格和卡片背景
+      var cards = document.querySelectorAll('.quote2l, .layout_smm, table, .astockzjltab');
+      for(var j=0; j<cards.length; j++){
+        cards[j].style.backgroundColor = '#252526';
+        cards[j].style.color = '#d4d4d4';
+      }
+    };
+    
+    // 立即应用
+    applyDarkTheme();
+    
+    // 监听 DOM 变化,持续应用深色主题
+    var observer = new MutationObserver(function(){
+      applyDarkTheme();
+    });
+    observer.observe(document.body||document.documentElement, {childList:true, subtree:true});
+  }catch(e){}})();`;
+  $('body').append(`<script>${darkThemeJS}</script>`);
+  
+  // 注入 CSS 样式强制深色背景
+  const darkThemeCSS = `
+    <style>
+      body, html {
+        background-color: #1e1e1e !important;
+        color: #d4d4d4 !important;
+      }
+      .main, #app, .container {
+        background-color: #1e1e1e !important;
+      }
+      .quote2l, .layout_smm, table, .astockzjltab {
+        background-color: #252526 !important;
+        color: #d4d4d4 !important;
+      }
+      table th, table td {
+        background-color: #252526 !important;
+        color: #d4d4d4 !important;
+        border-color: #3e3e42 !important;
+      }
+      a {
+        color: #4fc3f7 !important;
+      }
+    </style>
+  `;
+  $('head').append(darkThemeCSS);
+  
   const out = $.html();
+  // 添加 CORS 头，允许 iframe 嵌入
+  const origin = (req.headers && req.headers.origin) || '*';
+  res.setHeader('access-control-allow-origin', origin === 'null' ? '*' : String(origin));
+  res.setHeader('access-control-allow-credentials', 'true');
+  res.setHeader('access-control-allow-methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('access-control-allow-headers', (req.headers && (req.headers['access-control-request-headers'] as any)) || '*');
+  // 删除可能阻止 iframe 嵌入的头
+  res.removeHeader('x-frame-options');
+  res.removeHeader('content-security-policy');
+  res.removeHeader('content-security-policy-report-only');
   res.setHeader('content-type', 'text/html; charset=utf-8');
   res.end(out);
 }

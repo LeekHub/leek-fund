@@ -459,14 +459,19 @@ export function formatHTMLWebviewResourcesUrl(
   html: string,
   conversionUrlFn: (link: string) => string
 ) {
+  if (!html || typeof html !== 'string') {
+    console.error('formatHTMLWebviewResourcesUrl: html is not a valid string', typeof html);
+    return html || '';
+  }
+  
   const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
   let matcher = LinkRegexp.exec(html);
 
   while (matcher) {
     const origin = matcher[0];
-    const originLen = origin.length;
+    const originLen = origin?.length || 0;
     const link = matcher[2];
-    if (!isRemoteLink(link)) {
+    if (origin && link && !isRemoteLink(link)) {
       let resourceLink = link;
       try {
         resourceLink = conversionUrlFn(link);
@@ -475,7 +480,7 @@ export function formatHTMLWebviewResourcesUrl(
           origin.replace(link, resourceLink) +
           html.substring(matcher.index + originLen);
       } catch (err) {
-        console.error(err);
+        console.error('formatHTMLWebviewResourcesUrl: replace error', err);
       }
     }
     matcher = LinkRegexp.exec(html);
@@ -487,15 +492,26 @@ export function getTemplateFileContent(tplPaths: string | string[], webview: vsc
   if (!Array.isArray(tplPaths)) {
     tplPaths = [tplPaths];
   }
-  const tplPath = path.join(globalState.context.extensionPath, 'template', ...tplPaths);
-  const html = fs.readFileSync(tplPath, 'utf-8');
-  const extensionUri = globalState.context.extensionUri;
-  const dirUri = tplPaths.slice(0, -1).join('/');
-  return formatHTMLWebviewResourcesUrl(html, (link) => {
-    return webview
-      .asWebviewUri(vscode.Uri.parse([extensionUri, 'template', dirUri, link].join('/')))
-      .toString();
-  });
+  
+  if (!globalState || !globalState.context) {
+    console.error('getTemplateFileContent: globalState.context is not initialized');
+    return '<html><body><h1>Error: Extension context not initialized</h1></body></html>';
+  }
+  
+  try {
+    const tplPath = path.join(globalState.context.extensionPath, 'template', ...tplPaths);
+    const html = fs.readFileSync(tplPath, 'utf-8');
+    const extensionUri = globalState.context.extensionUri;
+    const dirUri = tplPaths.slice(0, -1).join('/');
+    return formatHTMLWebviewResourcesUrl(html, (link) => {
+      return webview
+        .asWebviewUri(vscode.Uri.parse([extensionUri, 'template', dirUri, link].join('/')))
+        .toString();
+    });
+  } catch (error) {
+    console.error('getTemplateFileContent: failed to read template file', error);
+    return `<html><body><h1>Error loading template</h1><p>${error instanceof Error ? error.message : String(error)}</p><p>Template path: ${tplPaths.join('/')}</p></body></html>`;
+  }
 }
 
 export function multi1000(n: number) {

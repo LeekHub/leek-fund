@@ -68,7 +68,7 @@ export class XuanGuBaoNewsView {
         messages: [
           { 
             role: "system", 
-            content: "你是一个拥有20年投资经验的投资专家，擅长分析股票市场、解读财经新闻、提供投资建议。请用中文回答，保持专业且友好的态度。" 
+            content: "你是一个拥有多年投资经验的投资专家，擅长分析股票市场、解读财经新闻、提供投资建议。请用中文回答，保持专业且友好的态度。" 
           },
           { role: "user", content: userMessage }
         ],
@@ -346,8 +346,12 @@ export class XuanGuBaoNewsView {
   private refreshNews() {
     if (!this.panel) return;
 
-    // 在开发和生产环境下都直接使用HTML文件内容
-    this.panel.webview.html = getTemplateFileContent('xuangubao-news.html', this.panel.webview);
+    const initialRoute = '/data-center/xuangubao-news';
+    const html = getTemplateFileContent(['leek-center', 'build', 'index.html'], this.panel.webview);
+    this.panel.webview.html = html.replace(
+      '<head>',
+      `<head><script>window.initialRoute = '${initialRoute}';</script>`
+    );
     
     // 延迟发送数据，确保HTML加载完成
     setTimeout(() => {
