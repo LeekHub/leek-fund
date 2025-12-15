@@ -8,7 +8,7 @@ import * as path from 'path';
  */
 function getDefaultSettingsPath(filename: string = 'leek-fund.settings.json'): string {
   const workspaceFolders = workspace.workspaceFolders;
-  
+
   if (workspaceFolders && workspaceFolders.length > 0) {
     // 使用当前工作区目录
     return path.join(workspaceFolders[0].uri.fsPath, filename);
@@ -672,9 +672,9 @@ export function registerViewEvent(
         // Get all leek-fund settings dynamically from extension context
         const extensionManifest = globalState.context.extension.packageJSON;
         const configurationProperties = extensionManifest.contributes?.configuration?.properties || {};
-        
+
         // Filter to only leek-fund configuration keys
-        const leekFundConfigKeys = Object.keys(configurationProperties).filter(key => 
+        const leekFundConfigKeys = Object.keys(configurationProperties).filter(key =>
           key.startsWith('leek-fund.')
         );
 
@@ -690,7 +690,7 @@ export function registerViewEvent(
         const leekFundInspection = workspaceConfig.inspect('leek-fund');
         const inspectionSources = [
           leekFundInspection?.globalValue,
-          leekFundInspection?.workspaceValue, 
+          leekFundInspection?.workspaceValue,
           leekFundInspection?.workspaceFolderValue
         ];
 
@@ -827,6 +827,16 @@ export function registerCommandPaletteEvent(context: ExtensionContext, statusbar
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleStatusBarVisibility', () => {
       statusbar.toggleVisibility();
+    })
+  );
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleFundBarVisibility', () => {
+      statusbar.toggleFundBarVisibility();
+    })
+  );
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleStockBarVisibility', () => {
+      statusbar.toggleStockBarVisibility();
     })
   );
 }

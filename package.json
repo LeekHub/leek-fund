@@ -285,6 +285,14 @@
         "title": "LeekFund: Toggle Status Bar Visibility"
       },
       {
+        "command": "leek-fund.toggleFundBarVisibility",
+        "title": "LeekFund: Toggle Fund Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStockBarVisibility",
+        "title": "LeekFund: Toggle Stock Bar Visibility"
+      },
+      {
         "command": "leek-fund.binanceSort",
         "title": "升序/降序/不排序",
         "icon": {

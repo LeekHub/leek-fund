@@ -60,9 +60,22 @@ export class StatusBar {
     this.refreshStockStatusBar();
   }
 
+  /** 切换状态栏显示 */
   toggleVisibility() {
     LeekFundConfig.setConfig('leek-fund.hideStatusBar', !this.hideStatusBar);
     this.refresh();
+  }
+
+  /** 切换基金状态栏显示 */
+  toggleFundBarVisibility() {
+    LeekFundConfig.setConfig('leek-fund.hideFundBarItem', !this.hideFundBarItem);
+    this.refreshFundStatusBar();
+  }
+
+  /** 切换股票状态栏显示 */
+  toggleStockBarVisibility() {
+    LeekFundConfig.setConfig('leek-fund.hideStatusBarStock', !this.hideStatusBarStock);
+    this.refreshStockStatusBar();
   }
 
   refreshStockStatusBar() {
