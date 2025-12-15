@@ -1,6 +1,9 @@
-import { Layout, Menu } from 'antd';
-import { ReactElement } from 'react';
+import React, { ReactElement, useRef, useState, useEffect } from 'react';
+import { Layout, Menu, Modal, Form, Input, message } from 'antd';
 import { Link, Route, Switch, Redirect } from 'react-router-dom';
+import { postMessage } from '@/utils/common';
+import AIChat, { AIChatRef } from './components/AIChat';
+import { AIContext } from './context';
 import NxfxbPage from './nxfxb';
 import LonghubangPage from './longhubang';
 import DazhongPage from './dazhong';
@@ -21,123 +24,191 @@ import StockWindVanePage from './stock-wind-vane';
 const { Content, Sider } = Layout;
 
 export default function DataCenter({ children }: { children: ReactElement }) {
+  const aiChatRef = useRef<AIChatRef>(null);
+  const [configVisible, setConfigVisible] = useState(false);
+  const [configForm] = Form.useForm();
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const msg = event.data;
+      if (msg.command === 'aiConfig' && msg.data) {
+        configForm.setFieldsValue(msg.data);
+      }
+      if (msg.command === 'saveSuccess') {
+        message.success('保存成功');
+        setConfigVisible(false);
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [configForm]);
+
+  const openConfig = () => {
+    setConfigVisible(true);
+    postMessage('getAiConfig');
+  };
+
+  const handleConfigSave = (values: any) => {
+    postMessage('updateAiConfig', values);
+  };
+
+  const analyze = (prompt: string) => {
+    aiChatRef.current?.analyze(prompt);
+  };
+
   return (
-    <Layout>
-      <Sider
-        style={{
-          overflow: 'auto',
-          height: 'calc(100vh - 86px)',
-          position: 'fixed',
-          left: 0,
-          top: 50,
-        }}
-      >
-        <Menu
-          // theme="dark"
+    <AIContext.Provider value={{ analyze, openConfig }}>
+      <Layout>
+        <Sider
           style={{
+            overflow: 'auto',
             height: 'calc(100vh - 86px)',
+            position: 'fixed',
+            left: 0,
+            top: 50,
           }}
         >
-          <Menu.Item key="xuangubao-news">
-            <Link to="/data-center/xuangubao-news">选股宝快讯</Link>
-          </Menu.Item>
-          <Menu.Item key="stock-wind-vane">
-            <Link to="/data-center/stock-wind-vane">选股风向标</Link>
-          </Menu.Item>
-          <Menu.Item key="nxfxb1">
-            <Link to="/data-center/nxfxb">牛熊风向标</Link>
-          </Menu.Item>
-          <Menu.Item key="bkzj">
-            <Link to="/data-center/bkzj">资金流向大屏</Link>
-          </Menu.Item>
-          <Menu.Item key="longhubang">
-            <Link to="/data-center/longhubang">龙虎榜数据全览</Link>
-          </Menu.Item>
-          <Menu.Item key="dazhong">
-            <Link to="/data-center/dazhong">大宗交易</Link>
-          </Menu.Item>
-          <Menu.Item key="rongzi">
-            <Link to="/data-center/rongzi">融资融券</Link>
-          </Menu.Item>
-          <Menu.Item key="gaoguan">
-            <Link to="/data-center/gaoguan">高管持股</Link>
-          </Menu.Item>
+          <Menu
+            // theme="dark"
+            style={{
+              height: 'calc(100vh - 86px)',
+            }}
+          >
+            <Menu.Item key="xuangubao-news">
+              <Link to="/data-center/xuangubao-news">选股宝快讯</Link>
+            </Menu.Item>
+            <Menu.Item key="stock-wind-vane">
+              <Link to="/data-center/stock-wind-vane">选股风向标</Link>
+            </Menu.Item>
+            <Menu.Item key="nxfxb1">
+              <Link to="/data-center/nxfxb">牛熊风向标</Link>
+            </Menu.Item>
+            <Menu.Item key="bkzj">
+              <Link to="/data-center/bkzj">资金流向大屏</Link>
+            </Menu.Item>
+            <Menu.Item key="longhubang">
+              <Link to="/data-center/longhubang">龙虎榜数据全览</Link>
+            </Menu.Item>
+            <Menu.Item key="dazhong">
+              <Link to="/data-center/dazhong">大宗交易</Link>
+            </Menu.Item>
+            <Menu.Item key="rongzi">
+              <Link to="/data-center/rongzi">融资融券</Link>
+            </Menu.Item>
+            <Menu.Item key="gaoguan">
+              <Link to="/data-center/gaoguan">高管持股</Link>
+            </Menu.Item>
 
-          <Menu.SubMenu title="新股数据">
-            <Menu.Item key="xingu">
-              <Link to="/data-center/xingu">新股申购</Link>
+            <Menu.SubMenu title="新股数据">
+              <Menu.Item key="xingu">
+                <Link to="/data-center/xingu">新股申购</Link>
+              </Menu.Item>
+              <Menu.Item key="xingurili">
+                <Link to="/data-center/xingurili">新股日历</Link>
+              </Menu.Item>
+              <Menu.Item key="zengfa">
+                <Link to="/data-center/zengfa">增发</Link>
+              </Menu.Item>
+              <Menu.Item key="peigu">
+                <Link to="/data-center/peigu">配股</Link>
+              </Menu.Item>
+            </Menu.SubMenu>
+            <Menu.Item key="report">
+              <Link to="/data-center/report">研报中心</Link>
             </Menu.Item>
-            <Menu.Item key="xingurili">
-              <Link to="/data-center/xingurili">新股日历</Link>
+            <Menu.Item key="economy">
+              <Link to="/data-center/economy">宏观数据</Link>
             </Menu.Item>
-            <Menu.Item key="zengfa">
-              <Link to="/data-center/zengfa">增发</Link>
+            <Menu.Item key="ai-config">
+              <Link to="/data-center/ai-config">AI配置</Link>
             </Menu.Item>
-            <Menu.Item key="peigu">
-              <Link to="/data-center/peigu">配股</Link>
+            <Menu.Item key="other">
+              <Link to="/data-center/other">欢迎PR</Link>
             </Menu.Item>
-          </Menu.SubMenu>
-          <Menu.Item key="report">
-            <Link to="/data-center/report">研报中心</Link>
-          </Menu.Item>
-          <Menu.Item key="economy">
-            <Link to="/data-center/economy">宏观数据</Link>
-          </Menu.Item>
-          <Menu.Item key="ai-config">
-            <Link to="/data-center/ai-config">AI配置</Link>
-          </Menu.Item>
-          <Menu.Item key="other">
-            <Link to="/data-center/other">欢迎PR</Link>
-          </Menu.Item>
-        </Menu>
-      </Sider>
-      <Content
-        id="flashNewsContent"
-        style={{
-          height: 'calc(100vh - 86px)',
-          position: 'fixed',
-          left: 220,
-          top: 50,
-          width: 'calc(100vw - 220px)',
-          overflowY: 'auto',
-        }}
+          </Menu>
+        </Sider>
+        <Content
+          id="flashNewsContent"
+          style={{
+            height: 'calc(100vh - 86px)',
+            position: 'fixed',
+            left: 220,
+            top: 50,
+            width: 'calc(100vw - 220px)',
+            overflowY: 'auto',
+          }}
+        >
+          <Switch>
+            <Route
+              exact
+              path="/data-center/nxfxb"
+              component={NxfxbPage}
+            />
+            <Route
+              exact
+              path="/data-center/bkzj"
+              component={bkzjPage}
+            />
+            <Route
+              exact
+              path="/data-center/longhubang"
+              component={LonghubangPage}
+            />
+            <Route exact path="/data-center/dazhong" component={DazhongPage} />
+            <Route exact path="/data-center/rongzi" component={rongziPage} />
+            <Route exact path="/data-center/gaoguan" component={gaoguanPage} />
+            <Route exact path="/data-center/xingu" component={xinguPage} />
+            <Route
+              exact
+              path="/data-center/xingurili"
+              component={xinguriliPage}
+            />
+            <Route exact path="/data-center/zengfa" component={zengfaPage} />
+            <Route exact path="/data-center/peigu" component={peiguPage} />
+            <Route exact path="/data-center/report" component={reportPage} />
+            <Route exact path="/data-center/economy" component={economyPage} />
+            <Route exact path="/data-center/xuangubao-news" component={XuangubaoNewsPage} />
+            <Route exact path="/data-center/stock-wind-vane" component={StockWindVanePage} />
+            <Route exact path="/data-center/ai-config" component={AIConfigPage} />
+            <Route exact path="/data-center/other" component={OtherPage} />
+            <Redirect from="/data-center" to="/data-center/nxfxb"></Redirect>
+          </Switch>
+        </Content>
+      </Layout>
+
+      <AIChat ref={aiChatRef} onConfigClick={openConfig} />
+
+      <Modal
+        title="AI 配置"
+        visible={configVisible}
+        onCancel={() => setConfigVisible(false)}
+        onOk={() => configForm.submit()}
+        destroyOnClose
       >
-        <Switch>
-          <Route
-            exact
-            path="/data-center/nxfxb"
-            component={NxfxbPage}
-          />
-          <Route
-            exact
-            path="/data-center/bkzj"
-            component={bkzjPage}
-          />
-          <Route
-            exact
-            path="/data-center/longhubang"
-            component={LonghubangPage}
-          />
-          <Route exact path="/data-center/dazhong" component={DazhongPage} />
-          <Route exact path="/data-center/rongzi" component={rongziPage} />
-          <Route exact path="/data-center/gaoguan" component={gaoguanPage} />
-          <Route exact path="/data-center/xingu" component={xinguPage} />
-          <Route
-            exact
-            path="/data-center/xingurili"
-            component={xinguriliPage}
-          />
-          <Route exact path="/data-center/zengfa" component={zengfaPage} />
-          <Route exact path="/data-center/peigu" component={peiguPage} />
-          <Route exact path="/data-center/report" component={reportPage} />
-          <Route exact path="/data-center/economy" component={economyPage} />
-          <Route exact path="/data-center/xuangubao-news" component={XuangubaoNewsPage} />
-          <Route exact path="/data-center/stock-wind-vane" component={StockWindVanePage} />
-          <Route exact path="/data-center/ai-config" component={AIConfigPage} />
-          <Route exact path="/data-center/other" component={OtherPage} />
-          <Redirect from="/data-center" to="/data-center/nxfxb"></Redirect>
-        </Switch>
-      </Content>
-    </Layout>
+        <Form form={configForm} layout="vertical" onFinish={handleConfigSave}>
+          <Form.Item
+            label="API Key"
+            name="apiKey"
+            rules={[{ required: true, message: '请输入 API Key' }]}
+          >
+            <Input.Password placeholder="请输入 API Key" />
+          </Form.Item>
+          <Form.Item
+            label="Base URL"
+            name="baseUrl"
+            rules={[{ required: true, message: '请输入 Base URL' }]}
+          >
+            <Input placeholder="例如：https://api.openai.com/v1" />
+          </Form.Item>
+          <Form.Item
+            label="模型"
+            name="model"
+            rules={[{ required: true, message: '请输入模型名称' }]}
+          >
+            <Input placeholder="例如：gpt-4o-mini" />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </AIContext.Provider>
   );
 }

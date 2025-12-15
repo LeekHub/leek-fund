@@ -2,7 +2,7 @@ import { ViewColumn, env, Uri } from 'vscode';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
 import globalState from '../globalState';
 import { getTemplateFileContent } from '../shared/utils';
-import { getEastMoneyHost } from './proxyService/proxyConfig';
+import { getEastMoneyHost, getEastmoneyPort } from './proxyService/proxyConfig';
 
 export class StockWindVaneView {
   private static instance: StockWindVaneView;
@@ -35,21 +35,20 @@ export class StockWindVaneView {
 
     const initialRoute = '/data-center/stock-wind-vane';
     try {
-      console.log('StockWindVaneView: 开始加载模板文件');
-      console.log('StockWindVaneView: globalState.context', globalState.context);
-      
       const html = getTemplateFileContent(['leek-center', 'build', 'index.html'], this.panel.webview);
       
       if (!html) {
         throw new Error('获取模板文件内容失败');
       }
       
-      console.log('StockWindVaneView: 模板文件加载成功，长度:', html.length);
-      
-      // 只注入初始路由，URL通过消息传递获取
+      const host = getEastMoneyHost();
+      const url = `${host}/zhuti/#ggfxb`;
+
+      // 注入初始路由和 URL，避免通信延迟
       const injectedScript = `
         <script>
           window.initialRoute = '${initialRoute}';
+          window.stockWindVaneUrl = '${url}';
         </script>
       `;
       
@@ -99,13 +98,12 @@ export class StockWindVaneView {
 
     // 设置消息处理器
     this.panel.webview.onDidReceiveMessage(async (msg: any) => {
-      console.log('StockWindVaneView: 收到消息', msg);
       
       if (msg?.command === 'getStockWindVaneUrl') {
         // 动态计算URL，使用代理地址
+        const port = getEastmoneyPort();
         const host = getEastMoneyHost();
         const url = `${host}/zhuti/#ggfxb`;
-        console.log('StockWindVaneView: 响应getStockWindVaneUrl请求', { host, url });
         
         this.panel.webview.postMessage({
           command: 'stockWindVaneUrl',
@@ -136,7 +134,6 @@ export class StockWindVaneView {
     const sendInitialUrl = () => {
       const host = getEastMoneyHost();
       const url = `${host}/zhuti/#ggfxb`;
-      console.log('StockWindVaneView: 主动发送URL', { host, url });
       
       this.panel.webview.postMessage({
         command: 'stockWindVaneUrl',

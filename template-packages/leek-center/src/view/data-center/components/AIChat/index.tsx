@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } f
 import { Button, Input, Tooltip } from 'antd';
 import { SendOutlined, MinusOutlined, PlusOutlined, CloseOutlined, SettingOutlined, RobotOutlined } from '@ant-design/icons';
 import { postMessage } from '@/utils/common';
+import './style.less';
 
 const { TextArea } = Input;
 
@@ -36,7 +37,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>(({ onConfigClick }, ref) => {
   // Dragging state
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ x: -1, y: 80 }); // -1 means use CSS default (right: 20px)
+  const [position, setPosition] = useState({ x: -1, y: 80 }); // -1 means use CSS default
   const toggleRef = useRef<HTMLElement>(null);
   const dragStartPos = useRef({ x: 0, y: 0 });
 
@@ -182,6 +183,7 @@ const AIChat = forwardRef<AIChatRef, AIChatProps>(({ onConfigClick }, ref) => {
       top: position.y,
       left: position.x !== -1 ? position.x : undefined,
       right: position.x === -1 ? 20 : undefined,
+      cursor: 'move'
     })
   };
 

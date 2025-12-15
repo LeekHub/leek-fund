@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Tabs, Button, List, Modal, Form, Input, message } from 'antd';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import { Tabs, Button, List, message } from 'antd';
 import { ReloadOutlined, RobotOutlined } from '@ant-design/icons';
 import { postMessage } from '@/utils/common';
-import AIChat, { AIChatRef } from './components/AIChat';
+import { AIContext } from '../context';
 import './style.less';
 
 const { TabPane } = Tabs;
@@ -23,10 +23,8 @@ const XuangubaoNews: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [newsData, setNewsData] = useState<NewsData>({ messages: [], allDayMessages: [] });
   const [activeTab, setActiveTab] = useState('latest');
-  const [configVisible, setConfigVisible] = useState(false);
-  const [configForm] = Form.useForm();
   
-  const chatRef = useRef<AIChatRef>(null);
+  const aiContext = useContext(AIContext);
 
 
   const fetchNews = useCallback(() => {
@@ -45,13 +43,6 @@ const XuangubaoNews: React.FC = () => {
         setNewsData(msg.data);
         setLoading(false);
       }
-      if (msg.command === 'aiConfig' && msg.data) {
-        configForm.setFieldsValue(msg.data);
-      }
-      if (msg.command === 'saveSuccess') {
-        message.success('保存成功');
-        setConfigVisible(false);
-      }
     };
 
     window.addEventListener('message', handleMessage);
@@ -59,7 +50,7 @@ const XuangubaoNews: React.FC = () => {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, [fetchNews, configForm]);
+  }, [fetchNews]);
 
   const handleRefresh = () => {
     fetchNews();
@@ -84,16 +75,7 @@ const XuangubaoNews: React.FC = () => {
       `快讯 ${index + 1}:\n标题: ${news.title}\n内容: ${news.summary}\n时间: ${news.time}\n`
     ).join('\n')}\n\n请从以下角度进行分析：\n1. 市场整体趋势判断\n2. 重要行业/板块影响\n3. 潜在投资机会\n4. 风险提示\n5. 具体操作建议`;
 
-    chatRef.current?.analyze(prompt);
-  };
-
-  const handleConfigSave = (values: any) => {
-    postMessage('updateAiConfig', values);
-  };
-
-  const openConfig = () => {
-    setConfigVisible(true);
-    postMessage('getAiConfig');
+    aiContext?.analyze(prompt);
   };
 
   const renderNewsList = (list: NewsItem[]) => (
@@ -145,40 +127,6 @@ const XuangubaoNews: React.FC = () => {
           {renderNewsList(newsData.allDayMessages)}
         </TabPane>
       </Tabs>
-
-      <AIChat ref={chatRef} onConfigClick={openConfig} />
-
-      <Modal
-        title="AI 配置"
-        visible={configVisible}
-        onCancel={() => setConfigVisible(false)}
-        onOk={() => configForm.submit()}
-        destroyOnClose
-      >
-        <Form form={configForm} layout="vertical" onFinish={handleConfigSave}>
-          <Form.Item
-            label="API Key"
-            name="apiKey"
-            rules={[{ required: true, message: '请输入 API Key' }]}
-          >
-            <Input.Password placeholder="请输入 API Key" />
-          </Form.Item>
-          <Form.Item
-            label="Base URL"
-            name="baseUrl"
-            rules={[{ required: true, message: '请输入 Base URL' }]}
-          >
-            <Input placeholder="例如：https://api.openai.com/v1" />
-          </Form.Item>
-          <Form.Item
-            label="模型"
-            name="model"
-            rules={[{ required: true, message: '请输入模型名称' }]}
-          >
-            <Input placeholder="例如：gpt-4o-mini" />
-          </Form.Item>
-        </Form>
-      </Modal>
     </div>
   );
 };

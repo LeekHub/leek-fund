@@ -15,7 +15,7 @@
 - 使用入口
   - 命令面板: 按下 Cmd+Shift+P（Windows/Linux 使用 Ctrl+Shift+P），输入并执行“选股宝快讯”。
 选股快讯宝功能：
-<img alt="选股快讯宝功能" src="screenshot/xuangubao-news.png">
+<img alt="选股快讯宝功能" src="screenshot/xuangubao-news.jpg">
 
 AI投资助手：
 <img alt="AI投资助手" src="screenshot/ai-assistant.png">
@@ -29,7 +29,7 @@ AI投资助手对当日资讯进行汇总分析：
 
 选股风向标功能（查看热门股票及板块）：
 <img alt="选股风向标-热门股票" src="screenshot/trending-stocks.png">
-<img alt="选股风向标-热门板块" src="screenshot/trending-sectors.png">
+<img alt="选股风向标-热门板块" src="screenshot/trending-sectors.jpg">
 使用前AI配置：
 settings中：AI助手配置功能
 <img  alt="AI助手配置功能" src="screenshot/ai-config.png">

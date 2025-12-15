@@ -10,80 +10,95 @@ const cheerio = require('cheerio'); // 或 const { load } = require('cheerio');
 export async function startProxyServer(
   target?: string,
   middleware?: (req: any, res: any) => void
-) {
-  const availablePort = await findAvailablePort(16100); // 从16100端口开始寻找
-
-  const targetBase = target || 'https://quote.eastmoney.com';
-  const proxy = createProxyMiddleware({
-    target: targetBase,
-    changeOrigin: true,
-    onProxyReq(proxyReq: any, req: any) {
-      try {
-        proxyReq.setHeader('referer', targetBase);
-        if (req?.headers?.origin) {
-          proxyReq.setHeader('origin', targetBase);
-        }
-      } catch {}
-    },
-    onProxyRes(proxyRes: any, req: any) {
-      try {
-        const reqOrigin = (req && req.headers && req.headers.origin) || '*';
-        proxyRes.headers['access-control-allow-origin'] = reqOrigin === 'null' ? '*' : String(reqOrigin);
-        proxyRes.headers['access-control-allow-credentials'] = 'true';
-        proxyRes.headers['access-control-allow-methods'] = 'GET,POST,PUT,DELETE,OPTIONS';
-        proxyRes.headers['access-control-allow-headers'] =
-          (req && req.headers && (req.headers['access-control-request-headers'] as any)) || '*, Authorization, Content-Type, X-Requested-With';
-
-        delete proxyRes.headers['content-security-policy'];
-        delete proxyRes.headers['content-security-policy-report-only'];
-        delete proxyRes.headers['x-frame-options'];
-        delete proxyRes.headers['frame-ancestors'];
-      } catch {}
-    },
-  });
-
-  const server = http.createServer(async (req: any, res: any) => {
+): Promise<void> {
+  return new Promise(async (resolve, reject) => {
     try {
-      if (req.method === 'OPTIONS') {
-        const origin = (req.headers && req.headers.origin) || '*';
-        res.writeHead(204, {
-          'access-control-allow-origin': origin === 'null' ? '*' : String(origin),
-          'access-control-allow-credentials': 'true',
-          'access-control-allow-methods': 'GET,POST,PUT,DELETE,OPTIONS',
-          'access-control-allow-headers': (req.headers && (req.headers['access-control-request-headers'] as any)) || '*',
-          'access-control-max-age': '86400',
-        });
-        return res.end();
-      }
-      if (req.url && req.url.endsWith('/zhuti/') 
-        || req.url && req.url.endsWith('.html') 
-        || req.url && req.url.includes('/zhuti/subject/') 
-        || req.url && req.url.includes('/a/')) {
-        await handleZhutiRewrite(req, res, targetBase);
-        return;
-      }
-      if (req.url && req.url.endsWith('main.js')) {
-        await handleJsRewrite(req, res, targetBase);
-        return;
-      }
-      proxy(req, res);
-    } catch (e) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Proxy rewrite error');
+      const availablePort = await findAvailablePort(16100); // 从16100端口开始寻找
+
+      const targetBase = target || 'https://quote.eastmoney.com';
+      const proxy = createProxyMiddleware({
+        target: targetBase,
+        changeOrigin: true,
+        onProxyReq(proxyReq: any, req: any) {
+          try {
+            proxyReq.setHeader('referer', targetBase);
+            if (req?.headers?.origin) {
+              proxyReq.setHeader('origin', targetBase);
+            }
+          } catch {}
+        },
+        onProxyRes(proxyRes: any, req: any) {
+          try {
+            const reqOrigin = (req && req.headers && req.headers.origin) || '*';
+            proxyRes.headers['access-control-allow-origin'] = reqOrigin === 'null' ? '*' : String(reqOrigin);
+            proxyRes.headers['access-control-allow-credentials'] = 'true';
+            proxyRes.headers['access-control-allow-methods'] = 'GET,POST,PUT,DELETE,OPTIONS';
+            proxyRes.headers['access-control-allow-headers'] =
+              (req && req.headers && (req.headers['access-control-request-headers'] as any)) || '*, Authorization, Content-Type, X-Requested-With';
+
+            delete proxyRes.headers['content-security-policy'];
+            delete proxyRes.headers['content-security-policy-report-only'];
+            delete proxyRes.headers['x-frame-options'];
+            delete proxyRes.headers['frame-ancestors'];
+          } catch {}
+        },
+      });
+
+      const server = http.createServer(async (req: any, res: any) => {
+        try {
+          if (req.method === 'OPTIONS') {
+            const origin = (req.headers && req.headers.origin) || '*';
+            res.writeHead(204, {
+              'access-control-allow-origin': origin === 'null' ? '*' : String(origin),
+              'access-control-allow-credentials': 'true',
+              'access-control-allow-methods': 'GET,POST,PUT,DELETE,OPTIONS',
+              'access-control-allow-headers': (req.headers && (req.headers['access-control-request-headers'] as any)) || '*',
+              'access-control-max-age': '86400',
+            });
+            return res.end();
+          }
+          if (req.url && req.url.endsWith('/zhuti/') 
+            || req.url && req.url.endsWith('.html') 
+            || req.url && req.url.includes('/zhuti/subject/') 
+            || req.url && req.url.includes('/a/')) {
+            await handleZhutiRewrite(req, res, targetBase);
+            return;
+          }
+          if (req.url && req.url.endsWith('main.js')) {
+            await handleJsRewrite(req, res, targetBase);
+            return;
+          }
+          proxy(req, res);
+        } catch (e) {
+          console.error('Proxy request error:', e);
+          res.writeHead(500, { 'Content-Type': 'text/plain' });
+          res.end('Proxy rewrite error');
+        }
+      });
+      
+      // 处理服务器启动错误
+      server.on('error', (err: any) => {
+        console.error('Proxy server startup error:', err);
+        // window.showErrorMessage(`代理服务启动失败: ${err.message}`); // `window` is not defined in Node.js context
+        reject(err);
+      });
+
+      server.listen(availablePort, () => {
+        const address = server.address();
+        const port = typeof address === 'string' ? 0 : address?.port;
+
+        if (port) {
+          setEastmoneyPort(port); // 设置端口号
+          console.log(`🚀 ~ Proxy server running at http://localhost:${port}`);
+        } else {
+          console.log(`🚀 ~ Proxy server running at http://localhost:${availablePort}`);
+        }
+        resolve();
+      });
+    } catch (error) {
+      console.error('Failed to start proxy server:', error);
+      reject(error);
     }
-  });
-
-  server.listen(availablePort, () => {
-    const address = server.address();
-    const port = typeof address === 'string' ? 0 : address?.port;
-
-    if (port) {
-      setEastmoneyPort(port); // 设置端口号
-      console.log(`🚀 ~ Proxy server running at http://localhost:${port}`);
-    } else {
-      console.log(`🚀 ~ Proxy server running at http://localhost:${availablePort}`);
-    }
-
   });
 }
 

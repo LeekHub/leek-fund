@@ -18,13 +18,22 @@ const StockWindVane: React.FC = () => {
   useEffect(() => {
     let mounted = true;
     
+    // 优先检查预注入的 URL
+    const preInjectedUrl = (window as any).stockWindVaneUrl;
+    if (preInjectedUrl) {
+      setUrl(preInjectedUrl);
+      setLoadingUrl(false);
+      setHasReceivedUrl(true);
+      setLoadingIframe(true); // 必须设置，否则iframe不渲染
+      setIframeLoaded(false);
+      return;
+    }
+
     const handleMessage = (event: MessageEvent) => {
       const msg = event.data;
-      console.log('StockWindVane: 收到消息', msg);
       
       if (msg.command === 'stockWindVaneUrl' && msg.data) {
         const initialUrl = msg.data.url;
-        console.log('StockWindVane: 获取到URL', initialUrl);
         if (mounted) {
           setUrl(initialUrl);
           setHistoryStack([initialUrl]);
@@ -70,29 +79,33 @@ const StockWindVane: React.FC = () => {
     // 发送获取URL的请求
     const sendGetUrlRequest = () => {
       if (mounted && !hasReceivedUrl) {
-        console.log('StockWindVane: 发送getStockWindVaneUrl消息，重试次数:', retryCount);
         setLoadingUrl(true);
         setError(null);
         postMessage('getStockWindVaneUrl');
       }
     };
     
-    // 等待页面完全加载后再发送消息
-    const timeoutId = setTimeout(sendGetUrlRequest, 100);
-    
+    // 轮询发送请求，直到收到URL或超时
+    const intervalId = setInterval(() => {
+      if (!hasReceivedUrl && mounted) {
+        sendGetUrlRequest();
+      }
+    }, 1500); // 每1.5秒尝试一次
+
     // 设置超时，防止一直等待
     const errorTimeoutId = setTimeout(() => {
       if (mounted && !hasReceivedUrl) {
+        clearInterval(intervalId);
         console.log('StockWindVane: 获取URL超时，未收到URL消息');
-        setError('获取URL超时，代理服务可能未启动。请检查：\n1. 插件是否完全重启\n2. 浏览器访问 http://localhost:16104/zhuti/#ggfxb 是否正常\n3. 查看VS Code输出面板中的LeekFund日志');
+        setError('获取URL超时，代理服务可能未启动或通信失败。\n请检查：\n1. 尝试完全重启 VS Code\n2. 查看调试控制台或输出面板中的 "LeekFund" 日志，寻找 "Proxy server running" 消息以确认端口\n3. 检查是否有防火墙阻止本地连接');
         setLoadingUrl(false);
       }
-    }, 5000);
+    }, 15000); // 15秒后超时
 
     return () => {
       mounted = false;
       window.removeEventListener('message', handleMessage);
-      clearTimeout(timeoutId);
+      clearInterval(intervalId);
       clearTimeout(errorTimeoutId);
     };
   }, [historyIndex, hasReceivedUrl, retryCount]); // 添加retryCount依赖

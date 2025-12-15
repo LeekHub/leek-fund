@@ -64,6 +64,8 @@ export function showAiAnalysisPanel(
     </div>
     <script>
       const raw = ${JSON.stringify('' + (content ?? ''))};
+      // 如果内容过长，添加提示
+      const isLongContent = raw.length > 10000;
       const render = () => {
         try {
           // 改进的marked检查逻辑，支持更多版本的API
@@ -100,7 +102,13 @@ export function showAiAnalysisPanel(
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', render);
       } else {
-        render();
+        // 如果是长内容，先显示加载提示
+        if (isLongContent) {
+          document.getElementById('content').innerHTML = '<div style="text-align: center; padding: 20px; color: var(--vscode-descriptionForeground);">内容较长，正在渲染...（共 ' + raw.length + ' 字符）</div>';
+          setTimeout(render, 100);
+        } else {
+          render();
+        }
       }
       
       document.getElementById('copyBtn').addEventListener('click', async () => {

@@ -273,8 +273,9 @@ export function registerViewEvent(
     const xuanGuBaoNewsView = XuanGuBaoNewsView.getInstance();
     const result = await xuanGuBaoNewsView.send_ai_stock_analysis(target);
     if (result !== '') {
-      // 控制台输出
-      console.log('AI 分析结果 -', target?.info?.name, ' 股票代码：', target?.info?.code, '\n', result);
+      // 控制台输出 - 限制长度避免控制台截断
+      const consoleResult = result.length > 2000 ? result.substring(0, 2000) + '...（内容过长，完整结果请查看OUTPUT面板或Webview）' : result;
+      console.log('AI 分析结果 -', target?.info?.name, ' 股票代码：', target?.info?.code, '\n', consoleResult);
 
       // 输出到 OUTPUT 面板
       const channel = window.createOutputChannel('LeekFund AI 分析');
