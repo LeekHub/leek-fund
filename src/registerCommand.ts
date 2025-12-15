@@ -446,6 +446,9 @@ export function registerViewEvent(
         .showQuickPick(
           [
             { label: '📌 状态栏股票设置', description: 'statusbar-stock' },
+            { label: '🟦 切换状态栏显示', description: 'toggle-status-bar' },
+            { label: '🟩 切换基金状态栏显示', description: 'toggle-fund-bar' },
+            { label: '🟥 切换股票状态栏显示', description: 'toggle-stock-bar' },
             { label: '📈 状态栏股票涨时文字颜色', description: 'statusbar-rise' },
             { label: '📉 状态栏股票跌时文字颜色', description: 'statusbar-fall' },
             { label: '🍖 涨跌图标更换', description: 'icontype' },
@@ -506,7 +509,15 @@ export function registerViewEvent(
           } else if (type === 'statusbar-stock') {
             // 状态栏股票设置
             commands.executeCommand('leek-fund.setStockStatusBar');
-          } else if (type === 'icontype') {
+          } else if (type === 'toggle-status-bar') {
+            commands.executeCommand('leek-fund.toggleStatusBarVisibility');
+          } else if (type === 'toggle-fund-bar') {
+            commands.executeCommand('leek-fund.toggleFundBarVisibility');
+          } else if (type === 'toggle-stock-bar') {
+            commands.executeCommand('leek-fund.toggleStockBarVisibility');
+          }
+
+          else if (type === 'icontype') {
             // 基金&股票涨跌图标
             window
               .showQuickPick(
