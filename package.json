@@ -30,7 +30,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:leek-fund.toggleStatusBarIconVisibility"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -283,6 +284,10 @@
       {
         "command": "leek-fund.toggleStatusBarVisibility",
         "title": "LeekFund: Toggle Status Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStatusBarIconVisibility",
+        "title": "LeekFund: Toggle Status Bar Icon Visibility"
       },
       {
         "command": "leek-fund.toggleFundBarVisibility",
@@ -629,6 +634,11 @@
           "type": "boolean",
           "default": false,
           "description": "是否隐藏状态栏"
+        },
+        "leek-fund.hideStatusBarIcon": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏状态栏图标"
         },
         "leek-fund.newsUserIds": {
           "type": "array",

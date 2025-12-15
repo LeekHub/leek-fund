@@ -442,13 +442,23 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.customSetting', () => {
       const colorList = colorOptionList();
+
       window
         .showQuickPick(
           [
             { label: '📌 状态栏股票设置', description: 'statusbar-stock' },
-            { label: '🟦 切换状态栏显示', description: 'toggle-status-bar' },
-            { label: '🟩 切换基金状态栏显示', description: 'toggle-fund-bar' },
-            { label: '🟥 切换股票状态栏显示', description: 'toggle-stock-bar' },
+            {
+              label: `🟦 状态栏显示或隐藏 ${
+                process.platform === 'darwin' ? '(Cmd+Opt+T)' : '(Ctrl+Alt+T)'
+              }`,
+              description: 'toggle-status-bar',
+            },
+            { label: '🟩 基金状态栏显示或隐藏', description: 'toggle-fund-bar' },
+            { label: '🟥 股票状态栏显示或隐藏', description: 'toggle-stock-bar' },
+            {
+              label: '🧩 状态栏图标显示或隐藏',
+              description: 'toggle-status-bar-icon',
+            },
             { label: '📈 状态栏股票涨时文字颜色', description: 'statusbar-rise' },
             { label: '📉 状态栏股票跌时文字颜色', description: 'statusbar-fall' },
             { label: '🍖 涨跌图标更换', description: 'icontype' },
@@ -515,9 +525,9 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.toggleFundBarVisibility');
           } else if (type === 'toggle-stock-bar') {
             commands.executeCommand('leek-fund.toggleStockBarVisibility');
-          }
-
-          else if (type === 'icontype') {
+          } else if (type === 'toggle-status-bar-icon') {
+            commands.executeCommand('leek-fund.toggleStatusBarIconVisibility');
+          } else if (type === 'icontype') {
             // 基金&股票涨跌图标
             window
               .showQuickPick(
@@ -682,15 +692,16 @@ export function registerViewEvent(
 
         // Get all leek-fund settings dynamically from extension context
         const extensionManifest = globalState.context.extension.packageJSON;
-        const configurationProperties = extensionManifest.contributes?.configuration?.properties || {};
+        const configurationProperties =
+          extensionManifest.contributes?.configuration?.properties || {};
 
         // Filter to only leek-fund configuration keys
-        const leekFundConfigKeys = Object.keys(configurationProperties).filter(key =>
+        const leekFundConfigKeys = Object.keys(configurationProperties).filter((key) =>
           key.startsWith('leek-fund.')
         );
 
         // Get all leek-fund settings that have actual values
-        leekFundConfigKeys.forEach(key => {
+        leekFundConfigKeys.forEach((key) => {
           const value = workspaceConfig.get(key);
           if (value !== undefined) {
             allSettings[key] = value;
@@ -702,12 +713,12 @@ export function registerViewEvent(
         const inspectionSources = [
           leekFundInspection?.globalValue,
           leekFundInspection?.workspaceValue,
-          leekFundInspection?.workspaceFolderValue
+          leekFundInspection?.workspaceFolderValue,
         ];
 
-        inspectionSources.forEach(source => {
+        inspectionSources.forEach((source) => {
           if (source && typeof source === 'object') {
-            Object.keys(source).forEach(key => {
+            Object.keys(source).forEach((key) => {
               const fullKey = `leek-fund.${key}`;
               if (!allSettings[fullKey]) {
                 const value = workspaceConfig.get(fullKey);
@@ -835,6 +846,11 @@ export function registerViewEvent(
 }
 
 export function registerCommandPaletteEvent(context: ExtensionContext, statusbar: StatusBar) {
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleStatusBarIconVisibility', () => {
+      statusbar.toggleStatusBarIconVisibility();
+    })
+  );
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleStatusBarVisibility', () => {
       statusbar.toggleVisibility();

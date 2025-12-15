@@ -37,13 +37,20 @@ export class StatusBar {
   get hideStatusBarStock(): boolean {
     return LeekFundConfig.getConfig('leek-fund.hideStatusBarStock');
   }
+
   /** 隐藏状态栏 */
   get hideStatusBar(): boolean {
     return LeekFundConfig.getConfig('leek-fund.hideStatusBar');
   }
+
   /** 隐藏基金状态栏 */
   get hideFundBarItem(): boolean {
     return LeekFundConfig.getConfig('leek-fund.hideFundBarItem');
+  }
+
+  /** 隐藏图标 */
+  get hideStatusBarIcon(): boolean {
+    return LeekFundConfig.getConfig('leek-fund.hideStatusBarIcon');
   }
 
   bindEvents() {
@@ -76,6 +83,12 @@ export class StatusBar {
   toggleStockBarVisibility() {
     LeekFundConfig.setConfig('leek-fund.hideStatusBarStock', !this.hideStatusBarStock);
     this.refreshStockStatusBar();
+  }
+
+  /** 切换图标显示 */
+  toggleStatusBarIconVisibility() {
+    LeekFundConfig.setConfig('leek-fund.hideStatusBarIcon', !this.hideStatusBarIcon);
+    this.refresh();
   }
 
   refreshStockStatusBar() {
@@ -146,13 +159,12 @@ export class StatusBar {
       heldPrice,
     } = item.info;
     const deLow = percent.indexOf('-') === -1;
-    /* stockBarItem.text = `「${this.stockService.showLabel ? item.info.name : item.id}」${price}  ${
-      deLow ? '📈' : '📉'
-    }（${percent}%）`; */
+    // Respect hideStatusBarIcon config
+    const icon = this.hideStatusBarIcon ? '' : (deLow ? '📈' : '📉');
     stockBarItem.text = formatLabelString(this.statusBarItemLabelFormat, {
       ...item.info,
       percent: `${percent}%`,
-      icon: deLow ? '📈' : '📉',
+      icon,
     });
     let heldText = '';
     if (heldAmount && heldPrice) {
@@ -185,7 +197,9 @@ export class StatusBar {
       return;
     }
 
-    this.fundBarItem.text = `🐥$(pulse)`;
+    // Respect hideStatusBarIcon config for fund bar
+    const icon = this.hideStatusBarIcon ? '' : '🐥';
+    this.fundBarItem.text = `${icon}\$(pulse)`;
     this.fundBarItem.color = this.riseColor;
     this.fundBarItem.tooltip = this.getFundTooltipText();
     this.fundBarItem.show();
