@@ -1,0 +1,63 @@
+.xuangubao-news-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100%;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--vscode-editorWidget-border, #e8eaed);
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--vscode-foreground);
+    }
+  }
+
+  .news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .news-item {
+    background: var(--vscode-editorWidget-background);
+    border: 1px solid var(--vscode-editorWidget-border, #e8eaed);
+    border-radius: 6px;
+    padding: 16px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+
+    .news-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--vscode-foreground);
+      margin-bottom: 8px;
+    }
+
+    .news-summary {
+      font-size: 15px;
+      color: var(--vscode-descriptionForeground, #666);
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    .news-meta {
+      font-size: 12px;
+      color: var(--vscode-descriptionForeground, #999);
+    }
+  }
+
+
+
+}

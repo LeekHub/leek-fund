@@ -1,6 +1,7 @@
-import { commands, ExtensionContext, window, workspace, Uri } from 'vscode';
+import { commands, ExtensionContext, window, Uri, workspace } from 'vscode';
 import * as os from 'os';
 import * as path from 'path';
+import { showAiAnalysisPanel } from './utils/aiAnalysisPanel';
 
 /**
  * 获取设置文件的默认路径
@@ -47,9 +48,11 @@ import setStockPrice from './webview/setStockPrice';
 
 import stockTrend from './webview/stockTrend';
 import stockTrendPic from './webview/stockTrendPic';
+import stockWindVane from './webview/stockWindVane';
 import tucaoForum from './webview/tucaoForum';
 import { StatusBar } from './statusbar/statusBar';
 import binanceTrend from './webview/binanceTrend';
+import { AiConfigView } from './webview/ai-config';
 
 export function registerViewEvent(
   context: ExtensionContext,
@@ -264,6 +267,28 @@ export function registerViewEvent(
       fundProvider.refresh();
     });
   });
+  // AI分析股票
+  commands.registerCommand('leek-fund.aiStockAnalysis', async (target) => {
+    const { XuanGuBaoNewsView } = require('./webview/xuangubao-news');
+    const xuanGuBaoNewsView = XuanGuBaoNewsView.getInstance();
+    const result = await xuanGuBaoNewsView.send_ai_stock_analysis(target);
+    if (result !== '') {
+      // 控制台输出 - 限制长度避免控制台截断
+      const consoleResult = result.length > 2000 ? result.substring(0, 2000) + '...（内容过长，完整结果请查看OUTPUT面板或Webview）' : result;
+      console.log('AI 分析结果 -', target?.info?.name, ' 股票代码：', target?.info?.code, '\n', consoleResult);
+
+      // 输出到 OUTPUT 面板
+      const channel = window.createOutputChannel('LeekFund AI 分析');
+      channel.appendLine(`==== AI 分析（${target.info.name} | ${target.info.code}）====`);
+      channel.appendLine(result);
+      channel.appendLine('');
+      channel.show(true);
+
+      // 使用 Webview 面板展示，限制可视高度并可滚动
+      showAiAnalysisPanel(context, target.info.name, result);
+    }
+  });
+
   // 设置基金持仓金额
   commands.registerCommand('leek-fund.setFundAmount', () => {
     if (fundService.fundList.length === 0) {
@@ -604,6 +629,11 @@ export function registerViewEvent(
   context.subscriptions.push(commands.registerCommand('leek-fund.donate', () => donate(context)));
   context.subscriptions.push(commands.registerCommand('leek-fund.tucaoForum', () => tucaoForum()));
 
+  // 选股风向标
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.stockWindVane', () => stockWindVane())
+  );
+
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleRemindSwitch', (on?: number) => {
       const newValue = on !== undefined ? (on ? 1 : 0) : globalState.remindSwitch === 1 ? 0 : 1;
@@ -842,6 +872,33 @@ export function registerViewEvent(
     })
   );
 
+  
+  // 选股宝快讯命令
+  commands.registerCommand('leek-fund.xuangubaoNews', () => {
+    const { XuanGuBaoNewsView } = require('./webview/xuangubao-news');
+    XuanGuBaoNewsView.getInstance().show();
+  });
+  // 设置 A股 AI 分析历史长度
+  commands.registerCommand('leek-fund.setAiStockHistoryRange', async () => {
+    const QuickPickItems = [
+      { label: '1年', description: '1y', picked: false },
+      { label: '6个月', description: '6m', picked: false },
+      { label: '3个月', description: '3m', picked: false },
+      { label: '1个月', description: '1m', picked: false },
+      { label: '1周', description: '1w', picked: false },
+    ];
+    const current = LeekFundConfig.getConfig('leek-fund.aiStockHistoryRange', '3m');
+    QuickPickItems.forEach(it => it.picked = it.description === current);
+    const sel = await window.showQuickPick(QuickPickItems, { placeHolder: '选择A股AI分析历史长度' });
+    if (sel && sel.description) {
+      await LeekFundConfig.setConfig('leek-fund.aiStockHistoryRange', sel.description);
+      window.showInformationMessage(`已设置A股AI分析近${sel.label}复权日线数据`);
+    }
+  });
+  // AI 配置管理
+  commands.registerCommand('leek-fund.openAiConfig', () => {
+    AiConfigView.getInstance().show();
+  });
   // checkForUpdate();
 }
 

@@ -7,8 +7,10 @@ import App from './App';
 import { postMessage } from './utils/common';
 import { setupBackgroundManagement } from './services/background';
 
+const initialRoute = (window as any).initialRoute || '/';
+
 ReactDOM.render(
-  <MemoryRouter>
+  <MemoryRouter initialEntries={[initialRoute]}>
     <App />
   </MemoryRouter>,
   document.getElementById('root'),

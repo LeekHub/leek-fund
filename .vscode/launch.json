@@ -29,5 +29,52 @@
       "outFiles": ["${workspaceFolder}/out/test/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}"
     }
+    ,
+    {
+      "name": "Debug JYG News (Node)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "-e",
+        "(async()=>{const m=require('./out/webview/jiuyangongshe-news.js');const f=m.testJYGNews||(m.default&&m.default.testJYGNews);if(!f){console.error('testJYGNews not found');process.exit(1);}await f(process.env.JYG_CODE||'sh601633', Number(process.env.JYG_LIMIT)||3, 0);})().catch(e=>{console.error(e);process.exit(1);});"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NODE_ENV": "development",
+        "JYG_TOKEN": "",
+        "JYG_CODE": "sh601633",
+        "JYG_LIMIT": "3"
+      }
+    },
+    {
+      "name": "Build (yarn compile)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "compile"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    {
+      "name": "Package Extension (yarn package)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "yarn",
+      "runtimeArgs": [
+        "package"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
   ]
 }

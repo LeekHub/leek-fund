@@ -8,8 +8,11 @@ import { FlashNewsServerInterface } from '../output/flash-news/NewsFlushServiceA
 import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { events, formatHTMLWebviewResourcesUrl, getTemplateFileContent } from '../shared/utils';
+import { AiService } from './leek-center/ai-service';
+import { FlashNewsService } from './leek-center/flash-news-service';
 import LeekCenterFlashNewsView from './leek-center/flash-news-view';
 import ReusedWebviewPanel from './ReusedWebviewPanel';
+import { getEastMoneyHost, getEastmoneyPort } from './proxyService/proxyConfig';
 
 let _INITED = false;
 
@@ -32,7 +35,10 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
   setStocksRemind(panel.webview, panelEvents);
   // setDiscussions(panel.webview, panelEvents);
 
-  panel.webview.onDidReceiveMessage((message) => {
+  const flashNewsService = new FlashNewsService(panel.webview);
+  const aiService = new AiService(panel.webview, flashNewsService);
+
+  panel.webview.onDidReceiveMessage(async (message) => {
     panelEvents.emit('onDidReceiveMessage', message);
     switch (message.command) {
       case 'alert':
@@ -55,6 +61,27 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
           postFetchResponseFactory(panel.webview, false, message.data.sessionId)
         );
         return;
+      case 'getStockWindVaneUrl': {
+        const port = getEastmoneyPort();
+        const host = getEastMoneyHost();
+        const url = `${host}/zhuti/#ggfxb`;
+        panel.webview.postMessage({
+          command: 'stockWindVaneUrl',
+          data: { url }
+        });
+        return;
+      }
+
+      case 'getNewsData':
+      case 'refreshNews':
+        flashNewsService.getNewsData();
+        return;
+
+      case 'getAiConfig':
+      case 'updateAiConfig':
+      case 'sendAIMessage':
+        aiService.handleMessage(message);
+        return;
     }
   }, undefined);
 
@@ -63,6 +90,16 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
     flashNewsServer?.destroy();
     _INITED = false;
   });
+
+  const loadProductionContent = () => {
+    const html = getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview);
+    const host = getEastMoneyHost();
+    const url = `${host}/zhuti/#ggfxb`;
+    panel.webview.html = html.replace(
+      '</body>',
+      `<script>window.stockWindVaneUrl = "${url}";</script></body>`
+    );
+  };
 
   if (globalState.isDevelopment) {
     const DEV_URL = 'http://localhost:3030/';
@@ -75,20 +112,17 @@ function leekCenterView(stockService: StockService, fundServices: FundService) {
         });
       })
       .catch(() => {
-        window.showErrorMessage('[开发] 获取 http://localhost:3030/ 失败，请先启动服务');
+        // 开发服务未启动时，自动降级到加载本地构建文件
+        console.log('[开发模式] 连接调试服务失败，降级加载本地 Build 文件');
+        loadProductionContent();
       });
   } else {
-    console.log(getTemplateFileContent(['leek-center', 'build', 'index.html'], panel.webview));
-    panel.webview.html = getTemplateFileContent(
-      ['leek-center', 'build', 'index.html'],
-      panel.webview
-    );
+    loadProductionContent();
   }
 }
 
 function postFetchResponseFactory(webview: Webview, success: boolean, sessionId: string) {
   return (response: any) => {
-    if (!success) console.log('请求失败');
     console.log('response: ', response);
     const { ...rawResponse } = response;
     delete rawResponse.request;

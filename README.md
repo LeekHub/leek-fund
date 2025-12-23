@@ -1,7 +1,7 @@
 <div align="center">
 <img src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
-# leek-fund（韭菜盒子）
+# leek-fund（韭菜盒子-AI版）
 
 **韭菜盒子**——VSCode 里也可以看股票 & 基金 & 期货实时数据，做最好用的投资插件。
 

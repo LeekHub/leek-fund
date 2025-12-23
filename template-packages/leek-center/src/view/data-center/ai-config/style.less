@@ -1,0 +1,53 @@
+.ai-config-page {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+
+  .config-card {
+    width: 100%;
+    max-width: 720px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+
+    .ant-card-head {
+      border-bottom: 1px solid var(--vscode-editorWidget-border, #f0f0f0);
+      color: var(--vscode-foreground);
+    }
+
+    .ant-card-body {
+      background: var(--vscode-editorWidget-background);
+    }
+  }
+
+  .desc {
+    color: var(--vscode-descriptionForeground, #777);
+    margin-bottom: 24px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0;
+  }
+
+  // VS Code Theme Adaptation
+  :global {
+    .ant-form-item-label > label {
+      color: var(--vscode-foreground);
+    }
+    
+    .ant-input {
+      background-color: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border-color: var(--vscode-input-border, #d9d9d9);
+      
+      &::placeholder {
+        color: var(--vscode-input-placeholderForeground);
+      }
+    }
+    
+    .ant-input-password-icon {
+      color: var(--vscode-foreground);
+    }
+  }
+}
