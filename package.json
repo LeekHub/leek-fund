@@ -39,7 +39,7 @@
     "onView:leekFundView.news",
     "onView:leekFundView.binance",
     "onView:leekFundView.forex",
-    "onView:leekFundView.settings"
+    "onView:leekFundView.settings",
     "onCommand:leek-fund.toggleStatusBarIconVisibility"
   ],
   "main": "./out/extension.js",
