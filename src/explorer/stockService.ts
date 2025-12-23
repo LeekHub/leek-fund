@@ -417,6 +417,11 @@ export default class StockService extends LeekService {
               // '5', '2', '2022-05-04', 'WTI纽约原油2206', '28346"']
               // 当前价格
               let price = params[0];
+              if (Number(price) > Number(params[3]) || Number(price) < Number(params[2])) {
+                // 价格异常时，取买一价
+                // var hq_str_hf_SI="66.149,,66.100,66.115,66.650,63.725,18:26:14,63.323,63.795,0,6,3,2025-12-17,纽约白银,0";
+                price = params[2];
+              }
               // 名称
               let name = params[13];
               if (name.endsWith('"')) {
