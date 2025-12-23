@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "3.18.2",
+  "version": "3.19.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "onView:leekFundView.binance",
     "onView:leekFundView.forex",
     "onView:leekFundView.settings"
+    "onCommand:leek-fund.toggleStatusBarIconVisibility"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -302,6 +303,18 @@
       {
         "command": "leek-fund.toggleStatusBarVisibility",
         "title": "LeekFund: Toggle Status Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStatusBarIconVisibility",
+        "title": "LeekFund: Toggle Status Bar Icon Visibility"
+      },
+      {
+        "command": "leek-fund.toggleFundBarVisibility",
+        "title": "LeekFund: Toggle Fund Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStockBarVisibility",
+        "title": "LeekFund: Toggle Stock Bar Visibility"
       },
       {
         "command": "leek-fund.binanceSort",
@@ -664,6 +677,11 @@
           "default": false,
           "description": "是否隐藏状态栏"
         },
+        "leek-fund.hideStatusBarIcon": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏状态栏图标"
+        },
         "leek-fund.newsUserIds": {
           "type": "array",
           "default": [
@@ -697,6 +715,11 @@
           "type": "number",
           "default": 0,
           "description": "基金排序方式(0正常、1涨跌升序、-1涨跌倒序、2持仓金额升序、-2持仓金额降序)"
+        },
+        "leek-fund.fundAmountSort": {
+          "type": "string",
+          "default": "default",
+          "description": "基金持仓金额设置界面排序方式(default默认、earningsDesc收益率降序、earningsAsc收益率升序)"
         },
         "leek-fund.stockSort": {
           "type": "number",
