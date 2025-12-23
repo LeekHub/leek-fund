@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "3.19.0",
+  "version": "3.20.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -792,7 +792,13 @@
         "leek-fund.aiStockHistoryRange": {
           "type": "string",
           "default": "3m",
-          "enum": ["1y", "6m", "3m", "1m", "1w"],
+          "enum": [
+            "1y",
+            "6m",
+            "3m",
+            "1m",
+            "1w"
+          ],
           "enumDescriptions": [
             "1年",
             "6个月",
@@ -805,7 +811,6 @@
       }
     },
     "viewsWelcome": [
-
       {
         "view": "选股宝快讯、AI助手",
         "contents": "\n [📰 选股宝快讯、AI助手](command:leek-fund.xuangubaoNews)"
