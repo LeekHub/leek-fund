@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.20.3](https://github.com/LeekHub/leek-fund/compare/v3.20.2...v3.20.3) (2025-12-24)
+
+### [3.20.2](https://github.com/LeekHub/leek-fund/compare/v3.20.1...v3.20.2) (2025-12-24)
+
+### [3.20.1](https://github.com/LeekHub/leek-fund/compare/v3.20.0...v3.20.1) (2025-12-24)
+
 ## [3.20.0](https://github.com/LeekHub/leek-fund/compare/v3.19.0...v3.20.0) (2025-12-23)
 
 
