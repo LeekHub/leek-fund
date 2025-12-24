@@ -59,9 +59,9 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - 股票涨跌提醒设置
 - 状态栏、侧栏支持自定义模板格式
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
-- 数据中心>牛熊风向标数据统计
-- 新增支持期货
+- 数据中心>牛熊风向标数据、选股宝
 - 外汇牌价
+- 支持AI分析 v3.20.4+
 - 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)
 
 ## Installation
@@ -100,6 +100,9 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 <img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
 
+## Buy me a coffee
+
+☕ [请我喝杯咖啡](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
 
 ## All Thanks To Our Contributors
 
@@ -111,9 +114,11 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 Please follow our [contributing guidelines](./.github/CONTRIBUTING.md).
 
-## 赞助支持一下 ↓↓
+**避免插件发布出现异常，贡献者请遵循**：
 
-[Buy me a coffee](https://github.com/giscafer/buy-me-a-coffee/blob/master/README.md)
+- 本地开发调试完成后，建议执行 `yarn package` 进行打包出 `leek-fund-xx.vsix` 文件
+- VSCode编辑器插件选择从VSIX安装，测试验证功能正常后再push代码提交PR
+
 
 ## License
 
