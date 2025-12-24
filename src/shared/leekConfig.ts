@@ -1,6 +1,5 @@
 /*--------------------------------------------------------------
  *  Copyright (c) Nicky<giscafer@outlook.com>. All rights reserved.
- *  Licensed under the MIT License.
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
@@ -10,21 +9,37 @@ import { clean, uniq, events } from './utils';
 import { compact, flattenDeep } from 'lodash';
 
 export class BaseConfig {
+  /**
+   * 获取全局（用户）配置对象
+   */
+  protected static getGlobalConfig() {
+    return workspace.getConfiguration(undefined, null);
+  }
+
+  /**
+   * 获取全局配置值（字符串数组类型）
+   */
+  protected static getGlobalConfigArray(key: string, defaultValue: string[] = []): string[] {
+    const config = this.getGlobalConfig();
+    const configInspect = config.inspect(key);
+    return (configInspect?.globalValue as string[]) ?? config.get(key, defaultValue);
+  }
+
   static getConfig(key: string, defaultValue?: any): any {
-    const config = workspace.getConfiguration();
-    const value = config.get(key);
+    const value = this.getGlobalConfigArray(key);
     return value === undefined ? defaultValue : value;
   }
 
   static setConfig(cfgKey: string, cfgValue: Array<any> | string | number | Object) {
     events.emit('updateConfig:' + cfgKey, cfgValue);
-    const config = workspace.getConfiguration();
+    const config = this.getGlobalConfig();
     return config.update(cfgKey, cfgValue, true);
   }
 
   static async updateConfig(cfgKey: string, codes: Array<string>) {
-    const config = workspace.getConfiguration();
-    const origin: string[] = config.get(cfgKey, []);
+    const config = this.getGlobalConfig();
+    // 优先使用全局配置值
+    const origin = this.getGlobalConfigArray(cfgKey);
     let newCodes = uniq(compact(origin.concat(codes)));
     console.log(`🚀 ~ BaseConfig ~ updateConfig ~ ${cfgKey}:`, newCodes);
     await config.update(cfgKey, newCodes, true);
@@ -32,9 +47,10 @@ export class BaseConfig {
   }
 
   static removeConfig(cfgKey: string, code: string) {
-    const config = workspace.getConfiguration();
-    const sourceCfg = config.get(cfgKey, []);
-    const newCfg = sourceCfg.filter((item) => item !== code);
+    const config = this.getGlobalConfig();
+    // 优先使用全局配置值
+    const sourceCfg = this.getGlobalConfigArray(cfgKey);
+    const newCfg = sourceCfg.filter((item: string) => item !== code);
     if (sourceCfg.length === newCfg.length) {
       window.showInformationMessage(
         `删除期货不成功。请 [点击此处](https://github.com/LeekHub/leek-fund/issues/281) 查看期货相关问题`
@@ -154,8 +170,9 @@ export class LeekFundConfig extends BaseConfig {
   // Stock Begin
   static updateStockCfg(list: string, cb?: Function) {
     const cfgKey = 'leek-fund.stocks';
-    const config = workspace.getConfiguration();
-    const origin: string[] = config.get(cfgKey, []);
+    const config = this.getGlobalConfig();
+    // 优先使用全局配置值
+    const origin = this.getGlobalConfigArray(cfgKey);
     let codes = typeof list === 'string' ? list.split(',') : list;
     let newCodes = uniq(compact(flattenDeep(origin).concat(codes))) as string[];
     newCodes = newCodes.map((code: string) => {

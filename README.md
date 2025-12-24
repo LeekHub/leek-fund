@@ -1,7 +1,9 @@
 <div align="center">
-<img src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
+<img src="./screenshot/leek-logo.png" alt="韭菜盒子" width="256"/>
 
-# leek-fund（韭菜盒子-AI版）
+# leek-fund（韭菜盒子）
+
+> v3.20.5+ 版本已集成 AI Agent
 
 **韭菜盒子**——VSCode 里也可以看股票 & 基金 & 期货实时数据，做最好用的投资插件。
 
@@ -61,7 +63,7 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 - OUTPUT 面板支持选股宝异动快讯，金十资讯
 - 数据中心>牛熊风向标数据、选股宝
 - 外汇牌价
-- 支持AI分析 v3.20.4+
+- **支持AI Agent** v3.20.5+
 - 欢迎 PR [Github 源码](https://github.com/LeekHub/leek-fund)
 
 ## Installation
@@ -75,9 +77,9 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 <!-- https://raw.staticdn.net/ 为GitHub raw 加速地址 -->
 
-![概览](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/overview.png)
+![概览](./screenshot/overview.png)
 
-![韭菜中心](https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/600036.png)
+![韭菜中心](./screenshot/600036.png)
 
 
 **添加/删除股票或基金时，建议使用新增按钮模糊搜索添加（支持名称和编码搜索）**，详细可查看 [韭菜盒子使用文档](https://github.com/LeekHub/leek-fund/issues/371)
@@ -92,13 +94,13 @@ Leek box - Monitor the real-time data of stock & fund & future in VSCode, Be the
 
 公众号：
 
-<img width="200" alt="微信公众号" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/wechat-qr1.jpg">
+<img width="200" alt="微信公众号" src="./screenshot/wechat-qr1.jpg">
 
 知识星球（赞助插件）：
 
 > PR 贡献开发者可以联系我邀请直接加入
 
-<img width="400" alt="知识星球（赞助插件）" src="https://raw.githubusercontents.com/LeekHub/leek-fund/master/screenshot/zhishixingqiu.jpeg">
+<img width="400" alt="知识星球（赞助插件）" src="./screenshot/zhishixingqiu.jpeg">
 
 ## Buy me a coffee
 

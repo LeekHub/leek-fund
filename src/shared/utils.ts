@@ -111,18 +111,18 @@ export const toFixed = (value = 0, precision = 2, percent = 1) => {
 };
 
 export const calcFixedPriceNumber = (
-  open: string,
-  yestclose: string,
-  price: string,
-  high: string,
-  low: string
+  open='0',
+  yestclose='0',
+  price='0',
+  high='0',
+  low='0'
 ): number => {
   let reg = /0+$/g;
-  open = open.replace(reg, '');
-  yestclose = yestclose.replace(reg, '');
-  price = price.replace(reg, '');
-  high = high.replace(reg, '');
-  low = low.replace(reg, '');
+  open = open?.replace?.(reg, '') || '0';
+  yestclose = yestclose?.replace?.(reg, '') || '0';
+  price = price?.replace?.(reg, '') || '0';
+  high = high?.replace?.(reg, '') || '0';
+  low = low?.replace?.(reg, '') || '0';
   let o = open.indexOf('.') === -1 ? 0 : open.length - open.indexOf('.') - 1;
   let yc = yestclose.indexOf('.') === -1 ? 0 : yestclose.length - yestclose.indexOf('.') - 1;
   let p = price.indexOf('.') === -1 ? 0 : price.length - price.indexOf('.') - 1;
@@ -463,7 +463,7 @@ export function formatHTMLWebviewResourcesUrl(
     console.error('formatHTMLWebviewResourcesUrl: html is not a valid string', typeof html);
     return html || '';
   }
-  
+
   const LinkRegexp = /\s?(?:src|href)=('|")(.*?)\1/gi;
   let matcher = LinkRegexp.exec(html);
 
@@ -492,12 +492,12 @@ export function getTemplateFileContent(tplPaths: string | string[], webview: vsc
   if (!Array.isArray(tplPaths)) {
     tplPaths = [tplPaths];
   }
-  
+
   if (!globalState || !globalState.context) {
     console.error('getTemplateFileContent: globalState.context is not initialized');
     return '<html><body><h1>Error: Extension context not initialized</h1></body></html>';
   }
-  
+
   try {
     const tplPath = path.join(globalState.context.extensionPath, 'template', ...tplPaths);
     const html = fs.readFileSync(tplPath, 'utf-8');
