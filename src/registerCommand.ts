@@ -182,7 +182,7 @@ export function registerViewEvent(
     const qp = window.createQuickPick();
     qp.items = [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
     let code: string | undefined;
-    let timer: NodeJS.Timer | null = null;
+    let timer: NodeJS.Timeout | null = null;
     qp.onDidChangeValue((value) => {
       qp.busy = true;
       if (timer) {
@@ -872,7 +872,7 @@ export function registerViewEvent(
     })
   );
 
-  
+
   // 选股宝快讯命令
   commands.registerCommand('leek-fund.xuangubaoNews', () => {
     const { XuanGuBaoNewsView } = require('./webview/xuangubao-news');

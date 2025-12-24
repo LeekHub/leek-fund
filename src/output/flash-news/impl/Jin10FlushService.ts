@@ -30,9 +30,19 @@ export default class Jin10FlushService extends NewsFlushServiceAbstractClass {
     const ws = new WebSocket('wss://wss-flash-2.jin10.com/');
     this.ws = ws;
     ws.binaryType = 'arraybuffer';
-    ws.addEventListener('message', (msg: { data: Iterable<number> }) => {
+    ws.addEventListener('message', (msg: WebSocket.MessageEvent) => {
       try {
-        this.processData(Buffer.from(new Uint8Array(msg.data)));
+        let buf: Buffer;
+        if (typeof msg.data === 'string' || Buffer.isBuffer(msg.data)) {
+          buf = Buffer.from(msg.data);
+        } else if (msg.data instanceof ArrayBuffer) {
+          buf = Buffer.from(new Uint8Array(msg.data));
+        } else if (Array.isArray(msg.data)) {
+          buf = Buffer.concat(msg.data.map(d => Buffer.isBuffer(d) ? d : Buffer.from(d)));
+        } else {
+          buf = Buffer.from([]);
+        }
+        this.processData(buf);
       } catch (err) {
         console.error(err);
       }
