@@ -4,7 +4,7 @@ const http = require('http');
 const https = require('https');
 // import { findAvailablePort } from '../shared/findAvailablePort';
 
-let availablePort = 17100;
+let availablePort = 18100;
 
 const excludeGn = [
   '深成',
@@ -308,11 +308,11 @@ function fetchHyEastMoneyData() {
  * 获取东财数据服务器Host
  */
 // export function getEastMoneyDataServerHost() {
-//   return `http://localhost:${availablePort || 17100}`;
+//   return `http://localhost:${availablePort || 18100}`;
 // }
 
 export default async function createEastMoneyDataServer() {
-  // availablePort = await findAvailablePort(17100); // 从17100端口开始寻找
+  // availablePort = await findAvailablePort(18100); // 从17100端口开始寻找
   // 创建HTTP服务器
   const server = http.createServer(async (req, res) => {
     // 设置CORS头
