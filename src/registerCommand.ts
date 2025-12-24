@@ -1,6 +1,7 @@
-import { commands, ExtensionContext, window, Uri, env, workspace, ViewColumn } from 'vscode';
+import { commands, ExtensionContext, window, Uri, workspace } from 'vscode';
 import * as os from 'os';
 import * as path from 'path';
+import { showAiAnalysisPanel } from './utils/aiAnalysisPanel';
 
 /**
  * 获取设置文件的默认路径
@@ -8,7 +9,7 @@ import * as path from 'path';
  */
 function getDefaultSettingsPath(filename: string = 'leek-fund.settings.json'): string {
   const workspaceFolders = workspace.workspaceFolders;
-  
+
   if (workspaceFolders && workspaceFolders.length > 0) {
     // 使用当前工作区目录
     return path.join(workspaceFolders[0].uri.fsPath, filename);
@@ -66,7 +67,6 @@ export function registerViewEvent(
 ) {
   const newsService = new NewsService();
   const binanceService = new BinanceService(context);
-  let aiStockAnalysisInProgress = false;
 
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleFlashNews', () => {
@@ -344,30 +344,6 @@ export function registerViewEvent(
     })
   );
 
-  function summarizeAiResponse(response: string): string {
-    if (!response) return '无内容';
-    const text = response.replace(/\r/g, '').trim();
-
-    // 优先提取编号要点
-    const lines = text.split(/\n+/).map((l) => l.trim()).filter(Boolean);
-    const bulletRegex = /^(?:[\-•·]|\d+[\.|、])/;
-    const bullets: string[] = [];
-    for (const line of lines) {
-      if (bulletRegex.test(line)) {
-        bullets.push(line.replace(bulletRegex, '').trim());
-        if (bullets.length >= 3) break;
-      }
-    }
-    if (bullets.length) {
-      const brief = bullets.join('；');
-      return brief.length > 180 ? brief.slice(0, 177) + '…' : brief;
-    }
-
-    // 否则取前2-3个句子
-    const sentences = text.split(/(?<=[。！？!?.])\s*/).filter(Boolean).slice(0, 3);
-    const brief = sentences.join('');
-    return brief.length > 180 ? brief.slice(0, 177) + '…' : brief;
-  }
   // 设置基金持仓金额
   context.subscriptions.push(
     commands.registerCommand('leek-fund.setFundAmount', () => {
@@ -574,10 +550,23 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.customSetting', () => {
       const colorList = colorOptionList();
+
       window
         .showQuickPick(
           [
             { label: '📌 状态栏股票设置', description: 'statusbar-stock' },
+            {
+              label: `🟦 状态栏显示或隐藏 ${
+                process.platform === 'darwin' ? '(Cmd+Opt+T)' : '(Ctrl+Alt+T)'
+              }`,
+              description: 'toggle-status-bar',
+            },
+            { label: '🟩 基金状态栏显示或隐藏', description: 'toggle-fund-bar' },
+            { label: '🟥 股票状态栏显示或隐藏', description: 'toggle-stock-bar' },
+            {
+              label: '🧩 状态栏图标显示或隐藏',
+              description: 'toggle-status-bar-icon',
+            },
             { label: '📈 状态栏股票涨时文字颜色', description: 'statusbar-rise' },
             { label: '📉 状态栏股票跌时文字颜色', description: 'statusbar-fall' },
             { label: '🍖 涨跌图标更换', description: 'icontype' },
@@ -638,6 +627,14 @@ export function registerViewEvent(
           } else if (type === 'statusbar-stock') {
             // 状态栏股票设置
             commands.executeCommand('leek-fund.setStockStatusBar');
+          } else if (type === 'toggle-status-bar') {
+            commands.executeCommand('leek-fund.toggleStatusBarVisibility');
+          } else if (type === 'toggle-fund-bar') {
+            commands.executeCommand('leek-fund.toggleFundBarVisibility');
+          } else if (type === 'toggle-stock-bar') {
+            commands.executeCommand('leek-fund.toggleStockBarVisibility');
+          } else if (type === 'toggle-status-bar-icon') {
+            commands.executeCommand('leek-fund.toggleStatusBarIconVisibility');
           } else if (type === 'icontype') {
             // 基金&股票涨跌图标
             window
@@ -808,15 +805,16 @@ export function registerViewEvent(
 
         // Get all leek-fund settings dynamically from extension context
         const extensionManifest = globalState.context.extension.packageJSON;
-        const configurationProperties = extensionManifest.contributes?.configuration?.properties || {};
-        
+        const configurationProperties =
+          extensionManifest.contributes?.configuration?.properties || {};
+
         // Filter to only leek-fund configuration keys
-        const leekFundConfigKeys = Object.keys(configurationProperties).filter(key => 
+        const leekFundConfigKeys = Object.keys(configurationProperties).filter((key) =>
           key.startsWith('leek-fund.')
         );
 
         // Get all leek-fund settings that have actual values
-        leekFundConfigKeys.forEach(key => {
+        leekFundConfigKeys.forEach((key) => {
           const value = workspaceConfig.get(key);
           if (value !== undefined) {
             allSettings[key] = value;
@@ -827,13 +825,13 @@ export function registerViewEvent(
         const leekFundInspection = workspaceConfig.inspect('leek-fund');
         const inspectionSources = [
           leekFundInspection?.globalValue,
-          leekFundInspection?.workspaceValue, 
-          leekFundInspection?.workspaceFolderValue
+          leekFundInspection?.workspaceValue,
+          leekFundInspection?.workspaceFolderValue,
         ];
 
-        inspectionSources.forEach(source => {
+        inspectionSources.forEach((source) => {
           if (source && typeof source === 'object') {
-            Object.keys(source).forEach(key => {
+            Object.keys(source).forEach((key) => {
               const fullKey = `leek-fund.${key}`;
               if (!allSettings[fullKey]) {
                 const value = workspaceConfig.get(fullKey);
@@ -993,106 +991,25 @@ export function registerViewEvent(
   // checkForUpdate();
 }
 
-function showAiAnalysisPanel(context: ExtensionContext, stockName: string, content: string) {
-  const panel = window.createWebviewPanel(
-    'aiAnalysisResult',
-    `AI 分析结果 - ${stockName}`,
-    ViewColumn.Active,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-      localResourceRoots: [Uri.joinPath(context.extensionUri, 'template')],
-    }
-  );
-  panel.webview.html = `<!DOCTYPE html>
-  <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 分析结果</title>
-    <style>
-      html, body { height: 100%; width: 100%; }
-      body { margin: 0; padding: 0; background: var(--vscode-editor-background); color: var(--vscode-foreground); overflow: hidden; }
-      .wrap { height: 100%; width: 100%; margin: 0; padding: 8px 10px; box-sizing: border-box; display: flex; flex-direction: column; }
-      .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-      .title { font-weight: 600; }
-      .btn { background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
-      .btn:hover { background: var(--vscode-button-hoverBackground); }
-      .content { flex: 1; min-height: 0; word-break: break-word; line-height: 1.7; border: 1px solid var(--vscode-editorWidget-border); border-radius: 6px; padding: 16px; overflow: auto; background: var(--vscode-editorWidget-background); }
-      .content h1,.content h2,.content h3{ margin: 12px 0 8px; }
-      .content p{ margin: 8px 0; }
-      .content code{ background: rgba(127,127,127,.15); padding: 2px 6px; border-radius: 4px; }
-      .content pre{ background: rgba(127,127,127,.15); padding: 12px; border-radius: 6px; overflow: auto; }
-      .content table{ border-collapse: collapse; }
-      .content th,.content td{ border: 1px solid var(--vscode-editorWidget-border); padding: 6px 8px; }
-    </style>
-    <!-- 使用本地引入marked和DOMPurify -->
-    <script src="${panel.webview.asWebviewUri(Uri.joinPath(context.extensionUri, 'template', 'vendors', 'marked.min.js'))}"></script>
-    <script src="${panel.webview.asWebviewUri(Uri.joinPath(context.extensionUri, 'template', 'vendors', 'purify.min.js'))}"></script>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="toolbar">
-        <div class="title">AI 分析结果 - ${stockName}</div>
-        <div>
-          <button class="btn" id="copyBtn">复制Markdown</button>
-        </div>
-      </div>
-      <div class="content" id="content"></div>
-    </div>
-    <script>
-      const raw = ${JSON.stringify('' + (content ?? ''))};
-      const render = () => {
-        try {
-          // 改进的marked检查逻辑，支持更多版本的API
-          let html;
-          if (window.marked) {
-            if (typeof window.marked === 'function') {
-              // 旧版marked API
-              html = window.marked(raw);
-            } else if (window.marked.parse) {
-              // 新版marked API
-              html = window.marked.parse(raw);
-            } else if (window.marked.marked) {
-              // 可能的变体
-              html = window.marked.marked(raw);
-            } else {
-              // 回退到原始文本
-              html = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-            }
-          } else {
-            // 没有marked库时的回退处理
-            html = raw.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-          }
-          
-          // DOMPurify净化
-          const safe = (window.DOMPurify && window.DOMPurify.sanitize) ? window.DOMPurify.sanitize(html) : html;
-          document.getElementById('content').innerHTML = safe;
-        } catch (e) {
-          console.error('渲染Markdown失败:', e);
-          document.getElementById('content').textContent = raw;
-        }
-      };
-      
-      // 确保脚本加载完成后再渲染
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', render);
-      } else {
-        render();
-      }
-      
-      document.getElementById('copyBtn').addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(raw); } catch (e) {}
-      });
-    </script>
-  </body>
-  </html>`;
-}
-
 export function registerCommandPaletteEvent(context: ExtensionContext, statusbar: StatusBar) {
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleStatusBarIconVisibility', () => {
+      statusbar.toggleStatusBarIconVisibility();
+    })
+  );
   context.subscriptions.push(
     commands.registerCommand('leek-fund.toggleStatusBarVisibility', () => {
       statusbar.toggleVisibility();
+    })
+  );
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleFundBarVisibility', () => {
+      statusbar.toggleFundBarVisibility();
+    })
+  );
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.toggleStockBarVisibility', () => {
+      statusbar.toggleStockBarVisibility();
     })
   );
 }

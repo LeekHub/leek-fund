@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.20.0](https://github.com/LeekHub/leek-fund/compare/v3.19.0...v3.20.0) (2025-12-23)
+
+
+### Features
+
+* add commands to toggle fund and stock bar visibility ([f46ee6d](https://github.com/LeekHub/leek-fund/commit/f46ee6d3f32ebb480cc5ab6a39b813a77ec8c445))
+* add commands to toggle visibility of status bar, fund bar, and stock bar ([038adb2](https://github.com/LeekHub/leek-fund/commit/038adb24c77d561ecfdea4d157fba1723d343af5))
+* **ai:** 新增AI选股快讯宝、投资助手和个股分析功能 ([9df2a91](https://github.com/LeekHub/leek-fund/commit/9df2a91b95f704391a85661a615950ca68834590))
+* **ai:** 集成AI功能优化、选股风向标增强和截图更新 ([f9ffc32](https://github.com/LeekHub/leek-fund/commit/f9ffc329aa67c53f0fcda2fdba8e4467d719089d))
+* **leek-center:** 优化AI功能模块和选股风向标 ([1e36e40](https://github.com/LeekHub/leek-fund/commit/1e36e40d50f479aac7df10a7ddc990924e4d6318))
+* 启用proposed API支持 ([304b1ee](https://github.com/LeekHub/leek-fund/commit/304b1ee181a7628a3b11369ea290a6b42c6f216a))
+* 将状态条控制命令加到个性化面板中对新手更友好 ([92fded9](https://github.com/LeekHub/leek-fund/commit/92fded91666f725ac77abb0a205d8ff9947e42f7))
+
+
+### Bug Fixes
+
+* 优化当前价格判断 ([5ff5fdf](https://github.com/LeekHub/leek-fund/commit/5ff5fdfa64322aef91eb75236057c3858db7ab9f))
+* 修复某些期货价格不是最新的bug ([c813c09](https://github.com/LeekHub/leek-fund/commit/c813c0935f3035780eeb67dbb7592431ddfe956e))
+
+## [3.19.0](https://github.com/LeekHub/leek-fund/compare/v3.18.2...v3.19.0) (2025-12-02)
+
+
+### Features
+
+* 记录基金详情页排序，方便下次回显 ([dd4e793](https://github.com/LeekHub/leek-fund/commit/dd4e7936864e5374333f52f886f5b9aed07c8f03))
+
 ### [3.18.2](https://github.com/LeekHub/leek-fund/compare/v3.18.1...v3.18.2) (2025-11-12)
 
 ### [3.18.1](https://github.com/LeekHub/leek-fund/compare/v3.18.0...v3.18.1) (2025-11-12)

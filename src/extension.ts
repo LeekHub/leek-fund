@@ -43,7 +43,7 @@ let binanceTreeView: TreeView<any> | null = null;
 let flashNewsOutputServer: FlashNewsOutputServer | null = null;
 let profitBar: ProfitStatusBar | null = null;
 
-export function activate(context: ExtensionContext) {
+export async function activate(context: ExtensionContext) {
   globalState.isDevelopment = process.env.NODE_ENV === 'development';
   globalState.context = context;
 
@@ -225,7 +225,12 @@ export function activate(context: ExtensionContext) {
   registerCommandPaletteEvent(context, statusBar);
 
   // start local proxy server
-  startProxyServer();
+  try {
+    await startProxyServer();
+  } catch (e) {
+    window.showErrorMessage('代理服务启动失败，选股风向标功能可能无法使用。');
+    Log.error(`Start Proxy Server Error: ${e}`);
+  }
   // start eastmoney data server
   createEastMoneyDataServer();
 

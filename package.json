@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "3.18.2",
+  "version": "3.20.0",
   "author": "giscafer <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   "engines": {
     "vscode": "^1.59.0"
   },
-  
+  "enableProposedAPI": true,
   "categories": [
     "Other"
   ],
@@ -39,7 +39,8 @@
     "onView:leekFundView.news",
     "onView:leekFundView.binance",
     "onView:leekFundView.forex",
-    "onView:leekFundView.settings"
+    "onView:leekFundView.settings",
+    "onCommand:leek-fund.toggleStatusBarIconVisibility"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -302,6 +303,18 @@
       {
         "command": "leek-fund.toggleStatusBarVisibility",
         "title": "LeekFund: Toggle Status Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStatusBarIconVisibility",
+        "title": "LeekFund: Toggle Status Bar Icon Visibility"
+      },
+      {
+        "command": "leek-fund.toggleFundBarVisibility",
+        "title": "LeekFund: Toggle Fund Bar Visibility"
+      },
+      {
+        "command": "leek-fund.toggleStockBarVisibility",
+        "title": "LeekFund: Toggle Stock Bar Visibility"
       },
       {
         "command": "leek-fund.binanceSort",
@@ -664,6 +677,11 @@
           "default": false,
           "description": "是否隐藏状态栏"
         },
+        "leek-fund.hideStatusBarIcon": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否隐藏状态栏图标"
+        },
         "leek-fund.newsUserIds": {
           "type": "array",
           "default": [
@@ -697,6 +715,11 @@
           "type": "number",
           "default": 0,
           "description": "基金排序方式(0正常、1涨跌升序、-1涨跌倒序、2持仓金额升序、-2持仓金额降序)"
+        },
+        "leek-fund.fundAmountSort": {
+          "type": "string",
+          "default": "default",
+          "description": "基金持仓金额设置界面排序方式(default默认、earningsDesc收益率降序、earningsAsc收益率升序)"
         },
         "leek-fund.stockSort": {
           "type": "number",
@@ -769,7 +792,13 @@
         "leek-fund.aiStockHistoryRange": {
           "type": "string",
           "default": "3m",
-          "enum": ["1y", "6m", "3m", "1m", "1w"],
+          "enum": [
+            "1y",
+            "6m",
+            "3m",
+            "1m",
+            "1w"
+          ],
           "enumDescriptions": [
             "1年",
             "6个月",
@@ -782,7 +811,6 @@
       }
     },
     "viewsWelcome": [
-
       {
         "view": "选股宝快讯、AI助手",
         "contents": "\n [📰 选股宝快讯、AI助手](command:leek-fund.xuangubaoNews)"
@@ -809,7 +837,7 @@
       },
       {
         "view": "leekFundView.settings",
-        "contents": "\n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [📰 选股宝快讯](command:leek-fund.xuangubaoNews)\n [🌬️ 选股风向标](command:leek-fund.stockWindVane) \n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/cwdhf/leek-fund)"
+        "contents": "\n [🏠️ 韭菜中心](command:leek-fund.leekCenterView) \n [🤖️ AI助手配置](command:leek-fund.openAiConfig) \n [🎨个性定制](command:leek-fund.customSetting)\n[💰赞助插件](command:leek-fund.donate)\n[📄使用文档](https://github.com/LeekHub/leek-fund/issues/371)\n[📚投资交流](https://github.com/LeekHub/leek-fund/issues/19)\n源码[Github](https://github.com/cwdhf/leek-fund)"
       }
     ]
   },

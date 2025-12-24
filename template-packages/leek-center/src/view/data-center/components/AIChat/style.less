@@ -1,0 +1,155 @@
+
+.ai-chat-toggle {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 20px;
+  background: var(--vscode-button-background, #1890ff);
+  color: var(--vscode-button-foreground, #fff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s;
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.ai-chat-container {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 400px;
+  height: 500px;
+  background: var(--vscode-editorWidget-background, white);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  border: 1px solid var(--vscode-editorWidget-border, #e8eaed);
+  overflow: hidden;
+  resize: both;
+  min-width: 300px;
+  min-height: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+
+  &.minimized {
+    height: 40px !important;
+    min-height: 40px !important;
+    overflow: hidden;
+    resize: none;
+    
+    .ai-chat-messages, .ai-chat-input {
+      display: none;
+    }
+  }
+
+  .ai-chat-header {
+    background: var(--vscode-textLink-foreground, #1890ff);
+    color: #fff;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    user-select: none;
+
+    .ai-chat-title {
+      font-weight: 600;
+    }
+
+    .ai-chat-controls {
+      display: flex;
+      gap: 8px;
+
+      button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.3);
+        }
+      }
+    }
+  }
+
+  .ai-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    background: var(--vscode-editor-background);
+
+    .message {
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      max-width: 85%;
+      word-wrap: break-word;
+      
+      &.user {
+        background: var(--vscode-button-background, #1890ff);
+        color: var(--vscode-button-foreground, #fff);
+        margin-left: auto;
+      }
+
+      &.assistant {
+        background: var(--vscode-editorWidget-background);
+        border: 1px solid var(--vscode-editorWidget-border, #e8eaed);
+        color: var(--vscode-foreground);
+        margin-right: auto;
+
+        &.markdown {
+          p { margin: 0.5em 0; }
+          ul, ol { padding-left: 20px; }
+          code {
+            background: rgba(0,0,0,0.05);
+            padding: 2px 4px;
+            border-radius: 3px;
+          }
+          pre {
+            background: rgba(0,0,0,0.05);
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+          }
+        }
+      }
+    }
+  }
+
+  .ai-chat-input {
+    padding: 12px;
+    border-top: 1px solid var(--vscode-editorWidget-border, #e8eaed);
+    background: var(--vscode-editorWidget-background);
+    
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    textarea {
+      resize: none;
+    }
+  }
+}

@@ -213,7 +213,7 @@
         Math.random().toString(16).substr(2) +
         Math.random().toString(32).substr(2);
 
-      let sortType = 'default';
+      let sortType = '';
       const list = $('.list');
       let fundList = [];
       let priceDate = new Date().toDateString();
@@ -246,7 +246,22 @@
         }
         // console.log(fundList);
         
+        // 更新排序按钮文本
+        updateSortButtonText();
+        
         init2()
+      }
+      
+      function updateSortButtonText() {
+        const sortButton = $('#sort');
+        if (sortType === 'earningsDesc') {
+          sortButton.text('收益率↓');
+        } else if (sortType === 'earningsAsc') {
+          sortButton.text('收益率↑');
+        } else {
+          // 如果是default，显示默认文本
+          sortButton.text('收益率↓');
+        }
       }
 
       function init2() {
@@ -606,6 +621,11 @@
         $('#sort').click(() => {
           sortType =
             sortType === 'earningsDesc' ? 'earningsAsc' : 'earningsDesc';
+          // 保存排序方式到配置
+          vscode.postMessage({
+            command: 'saveSort',
+            sortType,
+          });
           vscode.postMessage({
             command: 'refresh',
             sortType,
@@ -665,8 +685,11 @@
         return new Blob([ab], { type: type });
       }
 
+      // 初始化时使用保存的排序方式
+      const savedSortType = sortType;
       vscode.postMessage({
         command: 'refresh',
+        sortType: savedSortType,
       });
     </script>
 

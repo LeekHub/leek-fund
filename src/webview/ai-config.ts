@@ -87,7 +87,14 @@ export class AiConfigView {
 
   private refresh() {
     if (!this.panel) return;
-    this.panel.webview.html = getTemplateFileContent('ai-config.html', this.panel.webview);
+    
+    const initialRoute = '/data-center/ai-config';
+    const html = getTemplateFileContent(['leek-center', 'build', 'index.html'], this.panel.webview);
+    this.panel.webview.html = html.replace(
+      '<head>',
+      `<head><script>window.initialRoute = '${initialRoute}';</script>`
+    );
+
     setTimeout(() => {
       if (!this.panel) return;
       this.panel.webview.postMessage({ command: 'aiConfig', data: this.getAiConfig() });
