@@ -211,7 +211,7 @@ export function registerViewEvent(
       // vscode QuickPick 不支持动态查询，只能用此方式解决
       // https://github.com/microsoft/vscode/issues/23633
       const qp = window.createQuickPick();
-      qp.items = [{ label: '请输入关键词查询，如：0000001 或 上证指数' }];
+      qp.items = [{ label: '请输入关键词查询，如：0000001 或 上证指数; 期货输入大写字母开头' }];
       let code: string | undefined;
       let timer: NodeJS.Timeout | null = null;
       qp.onDidChangeValue((value) => {
