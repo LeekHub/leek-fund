@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.20.4](https://github.com/LeekHub/leek-fund/compare/v3.20.3...v3.20.4) (2025-12-24)
+
+
+### Bug Fixes
+
+* ant-form-item-extra style ([0480304](https://github.com/LeekHub/leek-fund/commit/0480304ed375cd6c000d74391f0a041a62716de3))
+* 插件启动失败无法使用 ([35fdb7e](https://github.com/LeekHub/leek-fund/commit/35fdb7e215a1af37bdf29f8995f39b56b8da4b68))
+
 ### [3.20.3](https://github.com/LeekHub/leek-fund/compare/v3.20.2...v3.20.3) (2025-12-24)
 
 ### [3.20.2](https://github.com/LeekHub/leek-fund/compare/v3.20.1...v3.20.2) (2025-12-24)
