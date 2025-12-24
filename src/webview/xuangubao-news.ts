@@ -46,19 +46,19 @@ export class XuanGuBaoNewsView {
     }
     return XuanGuBaoNewsView.instance;
   }
-  
+
 
   async send_ai(userMessage: string): Promise<string> {
     try {
       const config = workspace.getConfiguration();
 
       const aiConfig = this.getAiConfig();
-      
+
       const openai = new OpenAI({
-        apiKey: aiConfig.apiKey, 
+        apiKey: aiConfig.apiKey,
         baseURL: aiConfig.baseUrl,
       });
-      
+
       if(!aiConfig.apiKey || !aiConfig.baseUrl || !aiConfig.model) {
         return "AI配置不完整,请检查配置";
       }
@@ -66,16 +66,16 @@ export class XuanGuBaoNewsView {
       const completion = await openai.chat.completions.create({
         model: aiConfig.model,
         messages: [
-          { 
-            role: "system", 
-            content: "你是一个拥有多年投资经验的投资专家，擅长分析股票市场、解读财经新闻、提供投资建议。请用中文回答，保持专业且友好的态度。" 
+          {
+            role: "system",
+            content: "你是一个拥有多年投资经验的投资专家，擅长分析股票市场、解读财经新闻、提供投资建议。请用中文回答，保持专业且友好的态度。"
           },
           { role: "user", content: userMessage }
         ],
         max_tokens: 4000,
         temperature: 0.7,
       });
-      
+
       return completion.choices[0]?.message?.content || "抱歉，我没有收到回复";
     } catch (error) {
       console.error('AI请求失败:', error);
@@ -85,12 +85,12 @@ export class XuanGuBaoNewsView {
 
   async send_ai_stock_analysis(target: any): Promise<string> {
 
-    console.log('aiStockAnalysis target:', target?.info);
+    // console.log('aiStockAnalysis target:', target?.info);
     if (!target?.info) {
       window.showErrorMessage('未获取到股票信息');
       return '';
     }
-    
+
     if (this.aiStockAnalysisInProgress) {
       window.showWarningMessage('AI 分析正在进行中，请稍候完成后再试');
       return '';
@@ -145,14 +145,14 @@ export class XuanGuBaoNewsView {
       console.error('获取近三个月交易数据失败:', e);
     }
     const message = baseMessage + tradeDataAppendix + newsAppendix;
-    
-    console.log('request ai model message', message);
+
+    // console.log('request ai model message', message);
     const xuanGuBaoNewsView = XuanGuBaoNewsView.getInstance();
 
     this.aiStockAnalysisInProgress = true;
     try {
       const result = await xuanGuBaoNewsView.send_ai(message);
-      console.log('aiStockAnalysis result:', result);
+      // console.log('aiStockAnalysis result:', result);
 
       // 结果判定
       const isConfigIssue = /AI配置不完整|配置不完整/i.test(result);
@@ -232,7 +232,7 @@ export class XuanGuBaoNewsView {
     }
     return null;
   }
-  
+
 
   getAiConfig(): AiConfig {
     const cfgKey = 'leek-fund.aiConfig';
@@ -262,11 +262,11 @@ export class XuanGuBaoNewsView {
 
   private async handleAIMessage(userMessage: string) {
     if (!this.panel) return;
-    
+
     try {
       // 调用AI服务
       const aiResponse = await this.send_ai(userMessage);
-      
+
       // 发送AI回复到前端
       this.panel.webview.postMessage({
         command: 'aiResponse',
@@ -274,7 +274,7 @@ export class XuanGuBaoNewsView {
       });
     } catch (error) {
       console.error('处理AI消息失败:', error);
-      
+
       // 发送错误信息到前端
       this.panel.webview.postMessage({
         command: 'aiResponse',
@@ -330,7 +330,7 @@ export class XuanGuBaoNewsView {
           }
           return;
         case 'updateAiConfig':
-          console.log('收到前端更新AI配置请求:', message.data);
+          // console.log('收到前端更新AI配置请求:', message.data);
           this.updateAiConfig(message.data);
           return;
       }
@@ -352,7 +352,7 @@ export class XuanGuBaoNewsView {
       '<head>',
       `<head><script>window.initialRoute = '${initialRoute}';</script>`
     );
-    
+
     // 延迟发送数据，确保HTML加载完成
     setTimeout(() => {
       this.sendNewsData();
@@ -384,7 +384,7 @@ export class XuanGuBaoNewsView {
 
   private async fetchNewsData(): Promise<XuanGuBaoNewsData> {
     const subjectIds = [9, 10, 723, 35, 469];
-    
+
     // 获取最新20条消息用于实时更新
     const latestRes = await axios.get(NEWS_FLASH_URL, {
       params: {
@@ -393,12 +393,12 @@ export class XuanGuBaoNewsView {
         platform: 'pcweb',
       },
     });
-    
+
     // 获取当天所有消息用于全量显示
     const today = new Date();
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const todayStartTimestamp = Math.floor(todayStart.getTime() / 1000);
-    
+
     const allDayRes = await axios.get(NEWS_FLASH_URL, {
       params: {
         limit: 100,
@@ -407,22 +407,22 @@ export class XuanGuBaoNewsView {
         platform: 'pcweb',
       },
     });
-    
+
     if (latestRes.data.code === 20000 && allDayRes.data.code === 20000) {
       const { messages, next_cursor } = latestRes.data.data;
       const allDayMessages = allDayRes.data.data.messages || [];
-      
+
       // 对当天全量新闻进行去重
       const uniqueAllDayMessages: XuanGuBaoMessage[] = [];
       const seenIds = new Set<number>();
-      
+
       allDayMessages.forEach((msg: XuanGuBaoMessage) => {
         if (!seenIds.has(msg.id)) {
           seenIds.add(msg.id);
           uniqueAllDayMessages.push(msg);
         }
       });
-      
+
       return {
         messages: messages,
         next_cursor: next_cursor,
@@ -430,7 +430,7 @@ export class XuanGuBaoNewsView {
         allDayMessages: uniqueAllDayMessages
       };
     }
-    
+
     return {
       messages: [],
       next_cursor: '',

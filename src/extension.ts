@@ -32,9 +32,9 @@ import { cacheStockPriceData, updateStockPrice } from './webview/setStockPrice';
 import { startProxyServer } from './webview/proxyService/proxyService';
 import createEastMoneyDataServer from './service/eastmoney';
 
-let loopTimer: NodeJS.Timer | null = null;
-let binanceLoopTimer: NodeJS.Timer | null = null;
-let forexLoopTimer: NodeJS.Timer | null = null;
+let loopTimer: NodeJS.Timeout | null = null;
+let binanceLoopTimer: NodeJS.Timeout | null = null;
+let forexLoopTimer: NodeJS.Timeout | null = null;
 let fundTreeView: TreeView<any> | null = null;
 let stockTreeView: TreeView<any> | null = null;
 let forexTreeView: TreeView<any> | null = null;
@@ -65,7 +65,7 @@ export async function activate(context: ExtensionContext) {
   flashNewsOutputServer = new FlashNewsOutputServer();
 
   // 初始化选股宝快讯服务
-  FlashNewsDaemon.registerServer({ 
+  FlashNewsDaemon.registerServer({
     print: () => {},
     destroy: () => {}
   } as any);
