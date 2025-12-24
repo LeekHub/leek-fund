@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.20.6](https://github.com/LeekHub/leek-fund/compare/v3.20.4...v3.20.6) (2025-12-24)
+
+
+### Bug Fixes
+
+* [#550](https://github.com/LeekHub/leek-fund/issues/550) ([10973e8](https://github.com/LeekHub/leek-fund/commit/10973e8230f0cbcb1c6e439aa2f3c26d1551c76c))
+* 无法添加股票和股票列表对不上配置代码 ([22d9e33](https://github.com/LeekHub/leek-fund/commit/22d9e33b7242696596aba529acdcdc8dd2e5faee)), closes [#597](https://github.com/LeekHub/leek-fund/issues/597) [#572](https://github.com/LeekHub/leek-fund/issues/572) [#532](https://github.com/LeekHub/leek-fund/issues/532)
+
 ### [3.20.4](https://github.com/LeekHub/leek-fund/compare/v3.20.3...v3.20.4) (2025-12-24)
 
 
