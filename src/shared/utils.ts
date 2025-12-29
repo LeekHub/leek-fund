@@ -207,7 +207,7 @@ export const colorOptionList = (): QuickPickItem[] => {
     },
     {
       label: '🌕Yellow Color',
-      description: 'black',
+      description: 'yellow',
     },
     {
       label: '🔵Blue Color',
