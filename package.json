@@ -213,6 +213,14 @@
         }
       },
       {
+        "command": "leek-fund.setStockIndustryTop",
+        "title": "板块置顶",
+        "icon": {
+          "light": "resources/light/top.svg",
+          "dark": "resources/dark/top.svg"
+        }
+      },
+      {
         "command": "leek-fund.setStockUp",
         "title": "股票上移",
         "icon": "$(arrow-up)"
@@ -491,37 +499,47 @@
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != industry",
+          "group": "group1"
+        },
+        {
+          "command": "leek-fund.setStockIndustryTop",
+          "when": "view == leekFundView.stock && viewItem == industry",
           "group": "group1"
         },
         {
           "command": "leek-fund.setStockUp",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != industry",
           "group": "group1"
         },
         {
           "command": "leek-fund.setStockDown",
-          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata && viewItem != industry",
           "group": "group1"
         },
         {
           "command": "leek-fund.stockTrendPic",
-          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata && viewItem != industry",
           "group": "group2"
         },
         {
           "command": "leek-fund.setStockTop",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata && viewItem != industry",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.setStockIndustryTop",
+          "when": "view == leekFundView.stock && viewItem == industry",
           "group": "inline"
         },
         {
           "command": "leek-fund.setStockUp",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata && viewItem != industry",
           "group": "inline"
         },
         {
           "command": "leek-fund.setStockDown",
-          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock && viewItem != category && viewItem!=nodata && viewItem != industry",
           "group": "inline"
         },
         {
@@ -531,12 +549,12 @@
         },
         {
           "command": "leek-fund.deleteStock",
-          "when": "view == leekFundView.stock  && viewItem != category",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem != industry",
           "group": "group5"
         },
         {
           "command": "leek-fund.addStockToBar",
-          "when": "view == leekFundView.stock  && viewItem != category",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem != industry",
           "group": "group6"
         },
         {

@@ -176,11 +176,13 @@ export function registerViewEvent(
   // Stock operation
   context.subscriptions.push(
     commands.registerCommand('leek-fund.refreshStock', () => {
-      stockProvider.refresh();
-      const handler = window.setStatusBarMessage(`股票数据已刷新`);
-      setTimeout(() => {
-        handler.dispose();
-      }, 1000);
+      LeekFundConfig.cleanStocksCfg(() => {
+        stockProvider.refresh();
+        const handler = window.setStatusBarMessage(`股票数据已刷新`);
+        setTimeout(() => {
+          handler.dispose();
+        }, 1000);
+      });
     })
   );
   context.subscriptions.push(
@@ -301,7 +303,19 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.setStockTop', (target) => {
       LeekFundConfig.setStockTopCfg(target.id, () => {
-        fundProvider.refresh();
+        stockProvider.refresh();
+      });
+    })
+  );
+  // 板块置顶
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.setStockIndustryTop', (target) => {
+      const stockList = stockService.stockList;
+      const codes = stockList
+        .filter((item: LeekTreeItem) => item.info.industry === target.id)
+        .map((item: LeekTreeItem) => item.info.code);
+      LeekFundConfig.setStockListTopCfg(codes, () => {
+        stockProvider.refresh();
       });
     })
   );

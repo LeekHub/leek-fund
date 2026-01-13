@@ -48,6 +48,13 @@ export default class StockService extends LeekService {
       return [];
     }
 
+    // 过滤非法字符（如中文），修复置顶行业分组导致的 Bug
+    const validCodes = codes.filter((code) => !/[^\x00-\x7F]/.test(code));
+    if (validCodes.length !== codes.length) {
+      LeekFundConfig.setConfig('leek-fund.stocks', validCodes);
+      codes = validCodes;
+    }
+
     // 兼容2.1-2.5版本中以大写开头及cnf_开头的期货代码
     const transFuture = (code: string) => {
       if (/^[A-Z]+/.test(code)) {
