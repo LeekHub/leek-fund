@@ -647,6 +647,16 @@
           ],
           "description": "状态栏展示的股票（建议通过界面选择设置，必须是在股票代码已设置存在）"
         },
+        "leek-fund.showStockIndustry": {
+          "type": "boolean",
+          "default": false,
+          "description": "自选股列表是否显示股票行业"
+        },
+        "leek-fund.groupStockByIndustry": {
+          "type": "boolean",
+          "default": false,
+          "description": "A股自选股是否按行业分组"
+        },
         "leek-fund.interval": {
           "type": "number",
           "default": 5000,
@@ -914,5 +924,6 @@
   "extensionKind": [
     "ui",
     "workspace"
-  ]
+  ],
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

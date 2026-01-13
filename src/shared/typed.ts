@@ -87,6 +87,7 @@ export interface FundInfo {
   heldPrice?: number; // 持仓价
   todayHeldPrice?: number; // 当日持仓价
   isSellOut?: boolean; // 是否清仓
+  industry?: string; // 行业
 }
 
 export const defaultFundInfo: FundInfo = {

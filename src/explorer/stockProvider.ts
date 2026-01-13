@@ -1,5 +1,6 @@
 import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleState } from 'vscode';
 // import { compact, flattenDeep, uniq } from 'lodash';
+import { groupBy } from 'lodash';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { defaultFundInfo, SortType, StockCategory, getAiHistoryRangeLabel } from '../shared/typed';
@@ -43,10 +44,18 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       });
     } else {
       const resultPromise = Promise.resolve(this.service.stockList || []);
+
+      if (element.contextValue === 'industry') {
+        return this.getIndustryStockNodes(resultPromise, element.id || '');
+      }
+
       switch (
-        element.id // First-level
+      element.id // First-level
       ) {
         case StockCategory.A:
+          if (LeekFundConfig.getConfig('leek-fund.groupStockByIndustry')) {
+            return this.getAStockNodesGrouped(resultPromise);
+          }
           return this.getAStockNodes(resultPromise);
         case StockCategory.HK:
           return this.getHkStockNodes(resultPromise);
@@ -94,10 +103,10 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
         // tooltip: this.getSubCategoryTooltip(element),
         collapsibleState:
           (element.id === StockCategory.A && this.expandAStock) ||
-          (element.id === StockCategory.HK && this.expandHKStock) ||
-          (element.id === StockCategory.US && this.expandUSStock) ||
-          (element.id === StockCategory.Future && this.expandCNFuture) ||
-          (element.id === StockCategory.OverseaFuture && this.expandCNFuture)
+            (element.id === StockCategory.HK && this.expandHKStock) ||
+            (element.id === StockCategory.US && this.expandUSStock) ||
+            (element.id === StockCategory.Future && this.expandCNFuture) ||
+            (element.id === StockCategory.OverseaFuture && this.expandCNFuture)
             ? TreeItemCollapsibleState.Expanded
             : TreeItemCollapsibleState.Collapsed,
         // iconPath: this.parseIconPathFromProblemState(element),
@@ -121,9 +130,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.A,
-          name: `${StockCategory.A}${
-            globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : ''
-          }`,
+          name: `${StockCategory.A}${globalState.aStockCount > 0 ? `(${globalState.aStockCount})` : ''
+            }`,
         }),
         undefined,
         true
@@ -131,9 +139,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.HK,
-          name: `${StockCategory.HK}${
-            globalState.hkStockCount > 0 ? `(${globalState.hkStockCount})` : ''
-          }`,
+          name: `${StockCategory.HK}${globalState.hkStockCount > 0 ? `(${globalState.hkStockCount})` : ''
+            }`,
         }),
         undefined,
         true
@@ -141,9 +148,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.US,
-          name: `${StockCategory.US}${
-            globalState.usStockCount > 0 ? `(${globalState.usStockCount})` : ''
-          }`,
+          name: `${StockCategory.US}${globalState.usStockCount > 0 ? `(${globalState.usStockCount})` : ''
+            }`,
         }),
         undefined,
         true
@@ -151,9 +157,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.Future,
-          name: `${StockCategory.Future}${
-            globalState.cnfStockCount > 0 ? `(${globalState.cnfStockCount})` : ''
-          }`,
+          name: `${StockCategory.Future}${globalState.cnfStockCount > 0 ? `(${globalState.cnfStockCount})` : ''
+            }`,
         }),
         undefined,
         true
@@ -161,9 +166,8 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.OverseaFuture,
-          name: `${StockCategory.OverseaFuture}${
-            globalState.hfStockCount > 0 ? `(${globalState.hfStockCount})` : ''
-          }`,
+          name: `${StockCategory.OverseaFuture}${globalState.hfStockCount > 0 ? `(${globalState.hfStockCount})` : ''
+            }`,
         }),
         undefined,
         true
@@ -191,6 +195,33 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     });
 
     return aStocks;
+  }
+  async getAStockNodesGrouped(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
+    const stockList = await stocks;
+    const aStocks = stockList.filter((item: LeekTreeItem) => /^(sh|sz|bj)/.test(item.type || ''));
+    const grouped = groupBy(aStocks, (item) => item.info.industry || '其他');
+    const nodes = Object.keys(grouped).map((key) => {
+      return new LeekTreeItem(
+        Object.assign({ contextValue: 'industry' }, defaultFundInfo, {
+          id: key,
+          name: `${key}(${grouped[key].length})`,
+        }),
+        undefined,
+        true
+      );
+    });
+    return nodes;
+  }
+
+  async getIndustryStockNodes(
+    stocks: Promise<LeekTreeItem[]>,
+    industry: string
+  ): Promise<LeekTreeItem[]> {
+    const stockList = await stocks;
+    const nodes = stockList.filter(
+      (item: LeekTreeItem) => (item.info.industry || '其他') === industry
+    );
+    return nodes;
   }
   getHkStockNodes(stocks: Promise<LeekTreeItem[]>): Promise<LeekTreeItem[]> {
     return stocks.then((res: LeekTreeItem[]) =>

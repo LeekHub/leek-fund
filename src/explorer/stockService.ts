@@ -2,6 +2,7 @@ import Axios from 'axios';
 import { decode } from 'iconv-lite';
 import { ExtensionContext, QuickPickItem, window } from 'vscode';
 import globalState from '../globalState';
+import { LeekFundConfig } from '../shared/leekConfig';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
 import { HeldData } from '../shared/typed';
@@ -17,6 +18,7 @@ export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   private token: string = '';
+  private industryMap: { [key: string]: string } = {};
 
   constructor(context: ExtensionContext) {
     super();
@@ -57,6 +59,9 @@ export default class StockService extends LeekService {
     };
 
     let stockCodes = codes.map(transFuture);
+
+    this.updateIndustry(stockCodes);
+
     const hkCodes: Array<string> = []; // 港股单独请求腾讯港股数据源
     stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
@@ -92,6 +97,9 @@ export default class StockService extends LeekService {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
+
+    await this.updateIndustry(codes);
+    const showStockIndustry = LeekFundConfig.getConfig('leek-fund.showStockIndustry');
 
     let aStockCount = 0;
     let usStockCount = 0;
@@ -215,9 +223,16 @@ export default class StockService extends LeekService {
                 const treeItem = new LeekTreeItem(stockItemTemp, this.context);
                 stockList.push(treeItem);
               } else {
+                let name = params[0];
+                if (this.industryMap[code]) {
+                  if (showStockIndustry) {
+                    name += `-${this.industryMap[code]}`;
+                  }
+                }
                 stockItem = {
                   code,
-                  name: params[0],
+                  name,
+                  industry: this.industryMap[code],
                   open: formatNumber(open, fixedNumber, false),
                   yestclose: formatNumber(yestclose, fixedNumber, false),
                   price: formatNumber(price, fixedNumber, false),
@@ -228,7 +243,7 @@ export default class StockService extends LeekService {
                   time: `${params[30]} ${params[31]}`,
                   percent: '',
                   contextValue: 'aStock',
-                ...heldData,
+                  ...heldData,
                 };
                 aStockCount += 1;
               }
@@ -524,6 +539,64 @@ export default class StockService extends LeekService {
     globalState.hfStockCount = hfStockCount;
     globalState.noDataStockCount += noDataStockCount;
     return stockList;
+  }
+
+  async updateIndustry(codes: string[]) {
+    // 过滤 A 股
+    const aStockCodes = codes.filter((code) => /^(sh|sz|bj)/.test(code));
+    if (aStockCodes.length === 0) {
+      return;
+    }
+    // 找出未缓存的
+    const missingCodes = aStockCodes.filter((code) => !this.industryMap[code]);
+    if (missingCodes.length === 0) {
+      return;
+    }
+    // 构造 secids
+    const secids = missingCodes
+      .map((code) => {
+        if (code.startsWith('sh')) {
+          return '1.' + code.substring(2);
+        }
+        if (code.startsWith('sz')) {
+          return '0.' + code.substring(2);
+        }
+        if (code.startsWith('bj')) {
+          return '0.' + code.substring(2);
+        }
+        return '';
+      })
+      .filter((s) => s)
+      .join(',');
+
+    // 先占位，避免重复请求
+    missingCodes.forEach((code) => {
+      this.industryMap[code] = '';
+    });
+
+    try {
+      const url = `http://push2.eastmoney.com/api/qt/ulist.np/get?secids=${secids}&fields=f12,f100`;
+      const resp = await Axios.get(url);
+      if (resp.data && resp.data.data && resp.data.data.diff) {
+        resp.data.data.diff.forEach((item: any) => {
+          const code = item.f12;
+          const industry = item.f100;
+          if (industry) {
+            // 找到原始 code
+            const originalCode = missingCodes.find((c) => c.endsWith(code));
+            if (originalCode) {
+              this.industryMap[originalCode] = industry;
+            }
+          }
+        });
+      }
+    } catch (err) {
+      // 失败则清除占位，允许重试
+      missingCodes.forEach((code) => {
+        delete this.industryMap[code];
+      });
+      console.error('fetch industry failed', err);
+    }
   }
 
   async getHKStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
