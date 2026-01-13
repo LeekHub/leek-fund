@@ -109,7 +109,7 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
             (element.id === StockCategory.OverseaFuture && this.expandCNFuture)
             ? TreeItemCollapsibleState.Expanded
             : TreeItemCollapsibleState.Collapsed,
-        // iconPath: this.parseIconPathFromProblemState(element),
+        iconPath: element.iconPath,
         command: undefined,
         contextValue: element.contextValue,
       };
@@ -200,13 +200,37 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     const stockList = await stocks;
     const aStocks = stockList.filter((item: LeekTreeItem) => /^(sh|sz|bj)/.test(item.type || ''));
     const grouped = groupBy(aStocks, (item) => item.info.industry || '其他');
-    const nodes = Object.keys(grouped).map((key) => {
+    const groupKeys = Object.keys(grouped);
+    const groups = groupKeys.map((key) => {
+      const items = grouped[key];
+      let totalPercent = 0;
+      let count = 0;
+      items.forEach((item) => {
+        const percent = parseFloat(item.info.percent);
+        if (!isNaN(percent)) {
+          totalPercent += percent;
+          count++;
+        }
+      });
+      const avgPercent = count > 0 ? totalPercent / count : 0;
+      return { key, items, avgPercent, count: items.length };
+    });
+
+    if (this.order === SortType.ASC) {
+      groups.sort((a, b) => a.avgPercent - b.avgPercent);
+    } else if (this.order === SortType.DESC) {
+      groups.sort((a, b) => b.avgPercent - a.avgPercent);
+    }
+
+    const nodes = groups.map((group) => {
+      const percentStr = group.avgPercent.toFixed(2);
       return new LeekTreeItem(
         Object.assign({ contextValue: 'industry' }, defaultFundInfo, {
-          id: key,
-          name: `${key}(${grouped[key].length})`,
+          id: group.key,
+          name: `${group.key} ${group.avgPercent >= 0 ? '+' : ''}${percentStr}%`,
+          percent: percentStr,
         }),
-        undefined,
+        globalState.context,
         true
       );
     });
