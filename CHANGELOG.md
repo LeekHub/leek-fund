@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.21.0](https://github.com/LeekHub/leek-fund/compare/v3.20.6...v3.21.0) (2026-01-14)
+
+
+### Features
+
+* **ai-config:** 移除股票窗口设置AI分析复权日长度，相关配置迁移至AI配置页面 ([959cce5](https://github.com/LeekHub/leek-fund/commit/959cce56fe4d40789fdc3c3b07ff420decc016dc))
+
+
+### Bug Fixes
+
+*  color description for Yellow Color ([4c286f4](https://github.com/LeekHub/leek-fund/commit/4c286f45957ce9f2856722655b665381ba530cb9))
+
 ### [3.20.6](https://github.com/LeekHub/leek-fund/compare/v3.20.4...v3.20.6) (2025-12-24)
 
 
