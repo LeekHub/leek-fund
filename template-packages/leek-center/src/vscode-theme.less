@@ -149,6 +149,44 @@
 );
 @input-bg: var(--vscode-input-background, #1d1f23);
 
+@select-dropdown-bg: var(--vscode-editorWidget-background, #1d1f23);
+@select-item-hover-bg: var(--vscode-list-hoverBackground, #2a2d32);
+@select-item-active-bg: var(--vscode-list-activeSelectionBackground, #37373d);
+@select-item-active-color: var(--vscode-list-activeSelectionForeground, #ffffff);
+@select-arrow-color: var(--vscode-foreground, #cccccc);
+@select-placeholder-color: var(--vscode-input-placeholderForeground, rgba(204, 204, 204, 0.5));
+
+.ant-select-selector {
+  background-color: @input-bg !important;
+  color: @input-color !important;
+  border-color: var(--vscode-input-border, #3a3d41) !important;
+}
+
+.ant-select-selection-placeholder {
+  color: @select-placeholder-color !important;
+}
+
+.ant-select-arrow {
+  color: @select-arrow-color !important;
+}
+
+.ant-select-dropdown {
+  background-color: @select-dropdown-bg !important;
+
+  .ant-select-item {
+    color: @text-color !important;
+
+    &:hover {
+      background-color: @select-item-hover-bg !important;
+    }
+
+    &.ant-select-item-option-selected {
+      background-color: @select-item-active-bg !important;
+      color: @select-item-active-color !important;
+    }
+  }
+}
+
 @message-notice-content-bg: var(--vscode-titleBar-activeBackground, #282c34);
 
 @descriptions-bg: var(--vscode-list-activeSelectionBackground, #2c313a);
