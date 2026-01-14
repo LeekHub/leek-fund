@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.1](https://github.com/LeekHub/leek-fund/compare/v3.21.0...v3.21.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* 选股宝资讯接口 ([47642d3](https://github.com/LeekHub/leek-fund/commit/47642d3cf394c42c94899feaa04592bf523d97d2))
+
 ## [3.21.0](https://github.com/LeekHub/leek-fund/compare/v3.20.6...v3.21.0) (2026-01-14)
 
 
