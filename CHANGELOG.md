@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.4](https://github.com/LeekHub/leek-fund/compare/v3.21.2...v3.21.4) (2026-01-27)
+
+
+### Bug Fixes
+
+* Repository signing for extension file failed. ([7fff8d2](https://github.com/LeekHub/leek-fund/commit/7fff8d2c80055aace5b4077cd5bc5dfb017f2cd2))
+
 ### [3.21.2](https://github.com/LeekHub/leek-fund/compare/v3.21.1...v3.21.2) (2026-01-27)
 
 
