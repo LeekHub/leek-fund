@@ -18,7 +18,8 @@ function getDefaultSettingsPath(filename: string = 'leek-fund.settings.json'): s
     return path.join(os.homedir(), 'Downloads', filename);
   }
 }
-import fundSuggestList from './data/fundSuggestData';
+// import fundSuggestList from './data/fundSuggestData';
+import fundCodeList from './data/fundcodeSearch';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
 import { ForexProvider } from './explorer/forexProvider';
@@ -118,7 +119,8 @@ export function registerViewEvent(
         return;
       } */
 
-      window.showQuickPick(fundSuggestList, { placeHolder: '请输入基金代码' }).then((code) => {
+      window.showQuickPick(fundCodeList, { placeHolder: '请输入基金代码' }).then((code) => {
+      // window.showQuickPick(fundSuggestList, { placeHolder: '请输入基金代码' }).then((code) => {
         if (!code) {
           return;
         }
