@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.2](https://github.com/LeekHub/leek-fund/compare/v3.21.1...v3.21.2) (2026-01-27)
+
+
+### Bug Fixes
+
+* 新基金数据补仓 close[#528](https://github.com/LeekHub/leek-fund/issues/528) ([349e8ad](https://github.com/LeekHub/leek-fund/commit/349e8ad8a632cdfae18e05e5db094d9f0e2e748b))
+
 ### [3.21.1](https://github.com/LeekHub/leek-fund/compare/v3.21.0...v3.21.1) (2026-01-14)
 
 
