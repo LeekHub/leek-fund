@@ -1,4 +1,4 @@
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import globalState from '../../../globalState';
 import FlashNewsDaemon from '../FlashNewsDaemon';
 import NewsFlushServiceAbstractClass from '../NewsFlushServiceAbstractClass';
