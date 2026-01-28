@@ -178,11 +178,13 @@ export function registerViewEvent(
   // Stock operation
   context.subscriptions.push(
     commands.registerCommand('leek-fund.refreshStock', () => {
-      stockProvider.refresh();
-      const handler = window.setStatusBarMessage(`股票数据已刷新`);
-      setTimeout(() => {
-        handler.dispose();
-      }, 1000);
+      LeekFundConfig.cleanStocksCfg(() => {
+        stockProvider.refresh();
+        const handler = window.setStatusBarMessage(`股票数据已刷新`);
+        setTimeout(() => {
+          handler.dispose();
+        }, 1000);
+      });
     })
   );
   context.subscriptions.push(
@@ -303,7 +305,19 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.setStockTop', (target) => {
       LeekFundConfig.setStockTopCfg(target.id, () => {
-        fundProvider.refresh();
+        stockProvider.refresh();
+      });
+    })
+  );
+  // 板块置顶
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.setStockIndustryTop', (target) => {
+      const stockList = stockService.stockList;
+      const codes = stockList
+        .filter((item: LeekTreeItem) => item.info.industry === target.id)
+        .map((item: LeekTreeItem) => item.info.code);
+      LeekFundConfig.setStockListTopCfg(codes, () => {
+        stockProvider.refresh();
       });
     })
   );
@@ -559,9 +573,8 @@ export function registerViewEvent(
           [
             { label: '📌 状态栏股票设置', description: 'statusbar-stock' },
             {
-              label: `🟦 状态栏显示或隐藏 ${
-                process.platform === 'darwin' ? '(Cmd+Opt+T)' : '(Ctrl+Alt+T)'
-              }`,
+              label: `🟦 状态栏显示或隐藏 ${process.platform === 'darwin' ? '(Cmd+Opt+T)' : '(Ctrl+Alt+T)'
+                }`,
               description: 'toggle-status-bar',
             },
             { label: '🟩 基金状态栏显示或隐藏', description: 'toggle-fund-bar' },
@@ -589,6 +602,14 @@ export function registerViewEvent(
             {
               label: globalState.stockHeldTipShow ? '关闭持仓高亮' : '开启持仓高亮',
               description: 'stockHeldTipShow',
+            },
+            {
+              label: '🏭 自选股显示股票行业',
+              description: 'showStockIndustry',
+            },
+            {
+              label: '🗂️ A股按行业分组',
+              description: 'groupStockByIndustry',
             },
             {
               label: '📤 导出设置',
@@ -697,6 +718,16 @@ export function registerViewEvent(
             commands.executeCommand('leek-fund.toggleKLineChartSwitch');
           } else if (type === 'stockHeldTipShow') {
             commands.executeCommand('leek-fund.toggleStockHeldTipShow');
+          } else if (type === 'showStockIndustry') {
+            const val = LeekFundConfig.getConfig('leek-fund.showStockIndustry');
+            LeekFundConfig.setConfig('leek-fund.showStockIndustry', !val);
+            window.showInformationMessage(`已${!val ? '开启' : '关闭'}自选股显示股票行业`);
+            stockProvider.refresh();
+          } else if (type === 'groupStockByIndustry') {
+            const val = LeekFundConfig.getConfig('leek-fund.groupStockByIndustry');
+            LeekFundConfig.setConfig('leek-fund.groupStockByIndustry', !val);
+            window.showInformationMessage(`已${!val ? '开启' : '关闭'}A股按行业分组`);
+            stockProvider.refresh();
           } else if (type === 'exportSettings') {
             commands.executeCommand('leek-fund.exportSettings');
           } else if (type === 'importSettings') {

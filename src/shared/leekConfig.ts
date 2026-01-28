@@ -245,6 +245,34 @@ export class LeekFundConfig extends BaseConfig {
     });
   }
 
+  static setStockListTopCfg(codes: string[], cb?: Function) {
+    let arr: string[] = this.getConfig('leek-fund.stocks');
+    // 临时解决3.10.1~3.10.3 pr产生的分组bug
+    const stockList = flattenDeep(arr).filter((item) => !codes.includes(item));
+    stockList.unshift(...codes);
+
+    this.setConfig('leek-fund.stocks', stockList).then(() => {
+      window.showInformationMessage(`Stock Group successfully set to top.`);
+      if (cb && typeof cb === 'function') {
+        cb(codes);
+      }
+    });
+  }
+
+  static cleanStocksCfg(cb?: Function) {
+    let arr: string[] = this.getConfig('leek-fund.stocks');
+    const validCodeRegex = /^[a-zA-Z0-9_\.]+$/;
+    const stockList = flattenDeep(arr).filter((item) => validCodeRegex.test(item));
+    if (stockList.length !== flattenDeep(arr).length) {
+      this.setConfig('leek-fund.stocks', stockList).then(() => {
+        window.showInformationMessage(`Stock cache cleaned.`);
+        if (cb) cb();
+      });
+    } else {
+      if (cb) cb();
+    }
+  }
+
   static setStockUpCfg(code: string, cb?: Function) {
     const callback = () => {
       window.showInformationMessage(`Stock successfully move up.`);
