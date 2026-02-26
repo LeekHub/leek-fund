@@ -2,7 +2,7 @@ import { Event, EventEmitter, TreeDataProvider, TreeItem, TreeItemCollapsibleSta
 // import { compact, flattenDeep, uniq } from 'lodash';
 import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
-import { defaultFundInfo, SortType, StockCategory, getAiHistoryRangeLabel } from '../shared/typed';
+import { defaultFundInfo, SortType, StockCategory } from '../shared/typed';
 import { LeekFundConfig } from '../shared/leekConfig';
 import StockService from './stockService';
 
@@ -73,21 +73,6 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
     if (!element.isCategory) {
       return element;
     } else {
-      if (element.id === 'aiHistoryRange') {
-        // 顶部单选项入口：A股AI分析历史长度
-        const range = LeekFundConfig.getConfig('leek-fund.aiStockHistoryRange', '3m');
-        const currentLabel = getAiHistoryRangeLabel(range);
-        return {
-          id: element.id,
-          label: `设置A股AI分析历史复权日线数据，当前：${currentLabel}`,
-          collapsibleState: TreeItemCollapsibleState.None,
-          command: {
-            title: '设置A股AI分析历史复权日线数据',
-            command: 'leek-fund.setAiStockHistoryRange',
-          },
-          contextValue: 'aiHistoryRange',
-        } as TreeItem;
-      }
       return {
         id: element.id,
         label: element.info.name,
@@ -109,15 +94,6 @@ export class StockProvider implements TreeDataProvider<LeekTreeItem> {
 
   getRootNodes(): LeekTreeItem[] {
     const nodes = [
-      // 顶部设置入口：A股AI分析历史长度
-      new LeekTreeItem(
-        Object.assign({ contextValue: 'aiHistoryRange' }, defaultFundInfo, {
-          id: 'aiHistoryRange',
-          name: 'A股AI分析历史长度',
-        }),
-        undefined,
-        true
-      ),
       new LeekTreeItem(
         Object.assign({ contextValue: 'category' }, defaultFundInfo, {
           id: StockCategory.A,

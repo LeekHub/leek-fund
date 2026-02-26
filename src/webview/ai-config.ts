@@ -6,6 +6,7 @@ type AiConfig = {
   apiKey: string;
   baseUrl: string;
   model: string;
+  aiStockHistoryRange: string;
 };
 
 export class AiConfigView {
@@ -22,20 +23,28 @@ export class AiConfigView {
   }
 
   private getAiConfig(): AiConfig {
-    const cfgKey = 'leek-fund.aiConfig';
     const config = workspace.getConfiguration();
-    const result = config.get(cfgKey, {
+    const aiConfig = config.get('leek-fund.aiConfig', {
       apiKey: '',
       baseUrl: '',
       model: '',
     });
-    return result;
+    const aiStockHistoryRange = config.get('leek-fund.aiStockHistoryRange', '3m');
+    
+    return {
+      ...aiConfig,
+      aiStockHistoryRange,
+    };
   }
 
   private updateAiConfig(aiConfig: AiConfig) {
-    const cfgKey = 'leek-fund.aiConfig';
     const config = workspace.getConfiguration();
-    config.update(cfgKey, aiConfig, true).then(
+    const { aiStockHistoryRange, ...restConfig } = aiConfig;
+    
+    Promise.all([
+      config.update('leek-fund.aiConfig', restConfig, true),
+      config.update('leek-fund.aiStockHistoryRange', aiStockHistoryRange, true),
+    ]).then(
       () => {
         window.showInformationMessage('AI 配置已更新');
         if (this.panel) {

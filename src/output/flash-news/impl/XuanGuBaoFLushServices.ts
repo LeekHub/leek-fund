@@ -12,7 +12,7 @@ type XuanGuBaoMessage = {
   id: number;
 };
 
-const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.cn/api/v6/message/newsflash';
+const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.com.cn/api/v6/message/newsflash';
 
 export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass {
   isStop: boolean = false;
@@ -31,7 +31,7 @@ export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass
     try {
       const res = await axios.get(NEWS_FLASH_URL, {
         params: {
-          limit: 20,
+          limit: 40,
           subj_ids: this.subjectIds.join(','),
           // has_explain: true,
           platform: 'pcweb',
@@ -39,7 +39,7 @@ export default class XuanGuBaoFlushService extends NewsFlushServiceAbstractClass
       });
       const { data } = res;
       if (data.code === 20000) {
-        const { messages, next_cursor } = data.data;
+        const { messages = [], next_cursor } = data.data;
 
         if (this.next_cursor === next_cursor) return;
         this.next_cursor = next_cursor;

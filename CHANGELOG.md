@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.21.4](https://github.com/LeekHub/leek-fund/compare/v3.21.2...v3.21.4) (2026-01-27)
+
+
+### Bug Fixes
+
+* Repository signing for extension file failed. ([7fff8d2](https://github.com/LeekHub/leek-fund/commit/7fff8d2c80055aace5b4077cd5bc5dfb017f2cd2))
+
+### [3.21.2](https://github.com/LeekHub/leek-fund/compare/v3.21.1...v3.21.2) (2026-01-27)
+
+
+### Bug Fixes
+
+* 新基金数据补仓 close[#528](https://github.com/LeekHub/leek-fund/issues/528) ([349e8ad](https://github.com/LeekHub/leek-fund/commit/349e8ad8a632cdfae18e05e5db094d9f0e2e748b))
+
+### [3.21.1](https://github.com/LeekHub/leek-fund/compare/v3.21.0...v3.21.1) (2026-01-14)
+
+
+### Bug Fixes
+
+* 选股宝资讯接口 ([47642d3](https://github.com/LeekHub/leek-fund/commit/47642d3cf394c42c94899feaa04592bf523d97d2))
+
+## [3.21.0](https://github.com/LeekHub/leek-fund/compare/v3.20.6...v3.21.0) (2026-01-14)
+
+
+### Features
+
+* **ai-config:** 移除股票窗口设置AI分析复权日长度，相关配置迁移至AI配置页面 ([959cce5](https://github.com/LeekHub/leek-fund/commit/959cce56fe4d40789fdc3c3b07ff420decc016dc))
+
+
+### Bug Fixes
+
+*  color description for Yellow Color ([4c286f4](https://github.com/LeekHub/leek-fund/commit/4c286f45957ce9f2856722655b665381ba530cb9))
+
 ### [3.20.6](https://github.com/LeekHub/leek-fund/compare/v3.20.4...v3.20.6) (2025-12-24)
 
 

@@ -4,7 +4,7 @@
     "target": "es6",
     "outDir": "out",
     "lib": ["ES2020.Promise", "ES2015", "DOM"],
-    "sourceMap": true,
+    "sourceMap": false,
     "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,

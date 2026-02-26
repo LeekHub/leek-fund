@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Form, Input, Button, message } from 'antd';
+import { Card, Form, Input, Button, message, Select } from 'antd';
 import { postMessage } from '@/utils/common';
 import './style.less';
 
@@ -18,6 +18,7 @@ const AIConfig: React.FC = () => {
           apiKey: msg.data.apiKey || '',
           baseUrl: msg.data.baseUrl || '',
           model: msg.data.model || '',
+          aiStockHistoryRange: msg.data.aiStockHistoryRange || '3m',
         });
       }
       if (msg.command === 'saveSuccess') {
@@ -71,6 +72,21 @@ const AIConfig: React.FC = () => {
             rules={[{ required: true, message: '请输入模型名称' }]}
           >
             <Input placeholder="例如：gpt-4o-mini 或 deepseek-chat 等" />
+          </Form.Item>
+
+          <Form.Item
+            label="A股AI分析历史长度"
+            name="aiStockHistoryRange"
+            rules={[{ required: true, message: '请选择历史长度' }]}
+            extra="选择用于AI分析的复权日线数据历史长度"
+          >
+            <Select placeholder="请选择历史长度">
+              <Select.Option value="1y">1年</Select.Option>
+              <Select.Option value="6m">6个月</Select.Option>
+              <Select.Option value="3m">3个月</Select.Option>
+              <Select.Option value="1m">1个月</Select.Option>
+              <Select.Option value="1w">1周</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item className="actions">

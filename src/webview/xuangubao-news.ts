@@ -30,7 +30,7 @@ type AiConfig = {
   model: string;
 };
 
-const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.cn/api/v6/message/newsflash';
+const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.com.cn/api/v6/message/newsflash';
 
 export class XuanGuBaoNewsView {
   private static instance: XuanGuBaoNewsView;

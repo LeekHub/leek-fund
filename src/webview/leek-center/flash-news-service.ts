@@ -5,7 +5,7 @@ export class FlashNewsService {
   constructor(private webview: Webview | null) {}
 
   public async fetchNewsData() {
-    const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.cn/api/v6/message/newsflash';
+    const NEWS_FLASH_URL = 'https://baoer-api.xuangubao.com.cn/api/v6/message/newsflash';
     const subjectIds = [9, 10, 723, 35, 469];
 
     // 获取最新20条消息用于实时更新

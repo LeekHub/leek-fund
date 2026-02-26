@@ -32,25 +32,38 @@
     justify-content: flex-end;
     margin-bottom: 0;
   }
+}
 
-  // VS Code Theme Adaptation
-  :global {
-    .ant-form-item-label > label {
-      color: var(--vscode-foreground);
-    }
-    
-    .ant-input {
-      background-color: var(--vscode-input-background);
-      color: var(--vscode-input-foreground);
-      border-color: var(--vscode-input-border, #d9d9d9);
-      
-      &::placeholder {
-        color: var(--vscode-input-placeholderForeground);
+body {
+  .ant-select-selector {
+    background-color: var(--vscode-input-background) !important;
+    color: var(--vscode-input-foreground) !important;
+    border-color: var(--vscode-input-border, #d9d9d9) !important;
+  }
+
+  .ant-select-selection-placeholder {
+    color: var(--vscode-input-placeholderForeground) !important;
+  }
+
+  .ant-select-arrow {
+    color: var(--vscode-foreground) !important;
+  }
+
+  .ant-select-dropdown {
+    background-color: var(--vscode-editorWidget-background) !important;
+    border-color: var(--vscode-editorWidget-border, #d9d9d9) !important;
+
+    .ant-select-item {
+      color: var(--vscode-foreground) !important;
+
+      &:hover {
+        background-color: var(--vscode-list-hoverBackground) !important;
       }
-    }
-    
-    .ant-input-password-icon {
-      color: var(--vscode-foreground);
+
+      &.ant-select-item-option-selected {
+        background-color: var(--vscode-list-activeSelectionBackground) !important;
+        color: var(--vscode-list-activeSelectionForeground) !important;
+      }
     }
   }
 }
