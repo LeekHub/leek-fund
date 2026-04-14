@@ -5,7 +5,15 @@ import globalState from '../globalState';
 import { LeekTreeItem } from '../shared/leekTreeItem';
 import { executeStocksRemind } from '../shared/remindNotification';
 import { HeldData } from '../shared/typed';
-import { calcFixedPriceNumber, events, formatNumber, randHeader, sortData } from '../shared/utils';
+import {
+  calcFixedPriceNumber,
+  events,
+  formatNumber,
+  getStockMarketType,
+  parseStockSeparatorCode,
+  randHeader,
+  sortData,
+} from '../shared/utils';
 import { getXueQiuToken } from '../shared/xueqiu-helper';
 import { LeekService } from './leekService';
 import moment = require('moment');
@@ -30,7 +38,9 @@ export default class StockService extends LeekService {
     const s =
       'sh000001,sh000300,sh000016,sh000688,usr_ixic,usr_dji,usr_inx,nf_IF0,nf_IH0,nf_IC0,nf_IM0,hf_OIL,hf_CHA50CFD';
     const maps = s.split(',');
-    return this.stockList.filter((item) => !maps.includes(item.info.code));
+    return this.stockList.filter(
+      (item) => !maps.includes(item.info.code) && item.info.contextValue !== 'separator'
+    );
   }
 
   async getToken(): Promise<string> {
@@ -56,7 +66,12 @@ export default class StockService extends LeekService {
       return code;
     };
 
-    let stockCodes = codes.map(transFuture);
+    const separatorItems = codes
+      .map((code) => this.createSeparatorTreeItem(code))
+      .filter((item): item is LeekTreeItem => !!item);
+    let stockCodes = codes
+      .filter((code) => !parseStockSeparatorCode(code))
+      .map(transFuture);
     const hkCodes: Array<string> = []; // 港股单独请求腾讯港股数据源
     stockCodes = stockCodes.filter((code) => {
       if (code.startsWith('hk')) {
@@ -68,6 +83,11 @@ export default class StockService extends LeekService {
     });
 
     let stockList: Array<LeekTreeItem> = [];
+    globalState.aStockCount = 0;
+    globalState.hkStockCount = 0;
+    globalState.usStockCount = 0;
+    globalState.cnfStockCount = 0;
+    globalState.hfStockCount = 0;
     globalState.noDataStockCount = 0; // 重置无数据股票计数
     const result = await Promise.allSettled([
       this.getStockData(stockCodes),
@@ -78,6 +98,22 @@ export default class StockService extends LeekService {
         stockList = stockList.concat(item.value);
       }
     });
+    separatorItems.forEach((item) => {
+      const marketType = getStockMarketType(item.info.code);
+      if (marketType === 'a') {
+        globalState.aStockCount += 1;
+      } else if (marketType === 'hk') {
+        globalState.hkStockCount += 1;
+      } else if (marketType === 'us') {
+        globalState.usStockCount += 1;
+      } else if (marketType === 'future') {
+        globalState.cnfStockCount += 1;
+      } else if (marketType === 'overseaFuture') {
+        globalState.hfStockCount += 1;
+      }
+    });
+    stockList = stockList.concat(separatorItems);
+    stockList = this.reorderByConfigCodes(stockList, codes, transFuture);
 
     const res = sortData(stockList, order);
     executeStocksRemind(res, this.stockList);
@@ -86,6 +122,51 @@ export default class StockService extends LeekService {
     events.emit('updateBar:stock-profit-refresh', this);
     events.emit('stockListUpdate', this.stockList, oldStockList);
     return res;
+  }
+
+  private createSeparatorTreeItem(code: string): LeekTreeItem | null {
+    const separator = parseStockSeparatorCode(code);
+    if (!separator) {
+      return null;
+    }
+    const typeMap = {
+      a: 'sh',
+      hk: 'hk',
+      us: 'usr_',
+      future: 'nf_',
+      overseaFuture: 'hf_',
+    } as const;
+    const stockItem = {
+      code,
+      name: separator.text,
+      showLabel: this.showLabel,
+      isStock: true,
+      percent: '',
+      price: '',
+      updown: '',
+      open: '',
+      yestclose: '',
+      high: '',
+      low: '',
+      volume: '',
+      amount: '',
+      time: '',
+      type: typeMap[separator.market],
+      contextValue: 'separator',
+    };
+    return new LeekTreeItem(stockItem, this.context);
+  }
+
+  private reorderByConfigCodes(
+    stockList: LeekTreeItem[],
+    codes: string[],
+    transFuture: (code: string) => string
+  ): LeekTreeItem[] {
+    const stockMap = new Map(stockList.map((item) => [item.info.code, item]));
+    const orderedCodes = codes.map((code) => {
+      return parseStockSeparatorCode(code) ? code : transFuture(code);
+    });
+    return orderedCodes.map((code) => stockMap.get(code)).filter((item): item is LeekTreeItem => !!item);
   }
 
   async getStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {

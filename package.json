@@ -187,6 +187,14 @@
         "icon": "$(add)"
       },
       {
+        "command": "leek-fund.addStockSeparator",
+        "title": "添加分隔符",
+        "icon": {
+          "light": "resources/light/separator.svg",
+          "dark": "resources/dark/separator.svg"
+        }
+      },
+      {
         "command": "leek-fund.setStockPrice",
         "title": "设置股票成本价",
         "icon": {
@@ -398,6 +406,11 @@
           "group": "navigation"
         },
         {
+          "command": "leek-fund.addStockSeparator",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
           "command": "leek-fund.viewFundFlow",
           "when": "view == leekFundView.stock",
           "group": "navigation"
@@ -506,7 +519,7 @@
         },
         {
           "command": "leek-fund.stockTrendPic",
-          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=nodata && viewItem!=separator",
           "group": "group2"
         },
         {
@@ -536,7 +549,7 @@
         },
         {
           "command": "leek-fund.addStockToBar",
-          "when": "view == leekFundView.stock  && viewItem != category",
+          "when": "view == leekFundView.stock  && viewItem != category && viewItem!=separator",
           "group": "group6"
         },
         {
@@ -592,7 +605,7 @@
             "hf_OIL",
             "hf_CHA50CFD"
           ],
-          "description": "配置需要监控的股票代码（建议通过界面新增）"
+          "description": "配置需要监控的股票代码（建议通过界面新增，也支持通过界面添加自定义分隔符）"
         },
         "leek-fund.stockPrice": {
           "type": "object",

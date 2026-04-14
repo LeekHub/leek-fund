@@ -10,6 +10,8 @@ import { SortType, StockCategory } from './typed';
 import momentTz = require('moment-timezone');
 
 const stockTimes = allStockTimes();
+export const STOCK_SEPARATOR_PREFIX = 'separator:';
+export type StockMarketType = 'a' | 'hk' | 'us' | 'future' | 'overseaFuture' | 'nodata';
 
 const formatNum = (n: number) => {
   const m = n.toString();
@@ -148,30 +150,110 @@ export const formatNumber = (val: number = 0, fixed: number = 2, format = true):
 };
 
 export const sortData = (data: LeekTreeItem[] = [], order = SortType.NORMAL) => {
-  if (order === SortType.ASC || order === SortType.DESC) {
-    return data.sort((a: any, b: any) => {
-      const aValue = +a.info.percent;
-      const bValue = +b.info.percent;
-      if (order === SortType.DESC) {
-        return aValue > bValue ? -1 : 1;
-      } else {
-        return aValue > bValue ? 1 : -1;
+  const hasSeparator = data.some((item) => item.info.contextValue === 'separator');
+  const sortSegment = (segment: LeekTreeItem[]) => {
+    if (order === SortType.ASC || order === SortType.DESC) {
+      return segment.sort((a: any, b: any) => {
+        const aValue = +a.info.percent;
+        const bValue = +b.info.percent;
+        if (order === SortType.DESC) {
+          return aValue > bValue ? -1 : 1;
+        } else {
+          return aValue > bValue ? 1 : -1;
+        }
+      });
+    } else if (order === SortType.AMOUNTASC || order === SortType.AMOUNTDESC) {
+      return segment.sort((a: any, b: any) => {
+        const aValue = a.info.amount - 0;
+        const bValue = b.info.amount - 0;
+        if (order === SortType.AMOUNTDESC) {
+          return aValue > bValue ? -1 : 1;
+        } else {
+          return aValue > bValue ? 1 : -1;
+        }
+      });
+    }
+    return segment;
+  };
+
+  if (hasSeparator) {
+    const result: LeekTreeItem[] = [];
+    let currentSegment: LeekTreeItem[] = [];
+    data.forEach((item) => {
+      if (item.info.contextValue === 'separator') {
+        result.push(...sortSegment(currentSegment));
+        result.push(item);
+        currentSegment = [];
+        return;
       }
+      currentSegment.push(item);
     });
-  } else if (order === SortType.AMOUNTASC || order === SortType.AMOUNTDESC) {
-    return data.sort((a: any, b: any) => {
-      const aValue = a.info.amount - 0;
-      const bValue = b.info.amount - 0;
-      if (order === SortType.AMOUNTDESC) {
-        return aValue > bValue ? -1 : 1;
-      } else {
-        return aValue > bValue ? 1 : -1;
-      }
-    });
+    result.push(...sortSegment(currentSegment));
+    return result;
+  }
+
+  if (order === SortType.ASC || order === SortType.DESC || order === SortType.AMOUNTASC || order === SortType.AMOUNTDESC) {
+    return sortSegment(data);
   } else {
     return data;
   }
 };
+
+export function getStockMarketType(code: string): StockMarketType {
+  const separator = parseStockSeparatorCode(code);
+  if (separator) {
+    return separator.market;
+  }
+  if (/^(sh|sz|bj)/.test(code)) {
+    return 'a';
+  }
+  if (/^(hk)/.test(code)) {
+    return 'hk';
+  }
+  if (/^(usr_)/.test(code)) {
+    return 'us';
+  }
+  if (/^(nf_)/.test(code) || /^[A-Z]+/.test(code)) {
+    return 'future';
+  }
+  if (/^(hf_)/.test(code)) {
+    return 'overseaFuture';
+  }
+  return 'nodata';
+}
+
+export function isStockSeparatorCode(code: string): boolean {
+  return typeof code === 'string' && code.startsWith(STOCK_SEPARATOR_PREFIX);
+}
+
+export function createStockSeparatorCode(market: Exclude<StockMarketType, 'nodata'>, text: string): string {
+  return `${STOCK_SEPARATOR_PREFIX}${market}:${text.trim()}`;
+}
+
+export function parseStockSeparatorCode(code: string):
+  | { market: Exclude<StockMarketType, 'nodata'>; text: string }
+  | null {
+  if (!isStockSeparatorCode(code)) {
+    return null;
+  }
+  const payload = code.slice(STOCK_SEPARATOR_PREFIX.length);
+  const separatorIndex = payload.indexOf(':');
+  if (separatorIndex <= 0) {
+    return null;
+  }
+  const market = payload.slice(0, separatorIndex) as Exclude<StockMarketType, 'nodata'>;
+  const text = payload.slice(separatorIndex + 1).trim();
+  if (!text) {
+    return null;
+  }
+  if (!['a', 'hk', 'us', 'future', 'overseaFuture'].includes(market)) {
+    return null;
+  }
+  return {
+    market,
+    text,
+  };
+}
 
 export const formatTreeText = (text = '', num = 10): string => {
   const str = text + '';
@@ -331,17 +413,16 @@ export function allMarkets(): Array<string> {
   const stocks: Array<string> = LeekFundConfig.getConfig('leek-fund.stocks');
   stocks.forEach((item: string) => {
     let market = StockCategory.NODATA;
-    if (/^(sh|sz|bj)/.test(item)) {
+    const marketType = getStockMarketType(item);
+    if (marketType === 'a') {
       market = StockCategory.A;
-    } else if (/^(hk)/.test(item)) {
+    } else if (marketType === 'hk') {
       market = StockCategory.HK;
-    } else if (/^(usr_)/.test(item)) {
+    } else if (marketType === 'us') {
       market = StockCategory.US;
-    } else if (/^(nf_)/.test(item)) {
+    } else if (marketType === 'future') {
       market = StockCategory.Future;
-    } else if (/^[A-Z]+/.test(item)) {
-      market = StockCategory.Future;
-    } else if (/^(hf_)/.test(item)) {
+    } else if (marketType === 'overseaFuture') {
       market = StockCategory.OverseaFuture;
     }
     if (!result.includes(market)) {

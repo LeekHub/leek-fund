@@ -57,6 +57,16 @@ export class LeekTreeItem extends TreeItem {
       this._itemType = isStock ? TreeItemType.STOCK : TreeItemType.FUND;
     }
 
+    if (contextValue === 'separator') {
+      const separatorText = `──────── ${name} ────────`;
+      this.type = type;
+      this.contextValue = contextValue;
+      this.label = separatorText;
+      this.id = info.id || code;
+      this.tooltip = name;
+      return;
+    }
+
     const isStockItem = this._itemType === TreeItemType.STOCK;
     const isFundItem = this._itemType === TreeItemType.FUND;
     const isBinanceItem = this._itemType === TreeItemType.BINANCE;

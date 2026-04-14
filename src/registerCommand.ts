@@ -34,7 +34,7 @@ import FlashNewsOutputServer from './output/flash-news/FlashNewsOutputServer';
 import { LeekFundConfig } from './shared/leekConfig';
 import { LeekTreeItem } from './shared/leekTreeItem';
 // import checkForUpdate from './shared/update';
-import { colorOptionList, randomColor } from './shared/utils';
+import { colorOptionList, createStockSeparatorCode, randomColor } from './shared/utils';
 import allFundTrend from './webview/allFundTrend';
 import donate from './webview/donate';
 import fundFlow, { mainFundFlow } from './webview/fundFlow';
@@ -245,6 +245,41 @@ export function registerViewEvent(
         });
         qp.hide();
         qp.dispose();
+      });
+    })
+  );
+  context.subscriptions.push(
+    commands.registerCommand('leek-fund.addStockSeparator', async () => {
+      const market = await window.showQuickPick(
+        [
+          { label: 'A股', description: 'a' },
+          { label: '港股', description: 'hk' },
+          { label: '美股', description: 'us' },
+          { label: '国内期货', description: 'future' },
+          { label: '海外期货', description: 'overseaFuture' },
+        ],
+        {
+          placeHolder: '请选择分隔符所属分类',
+        }
+      );
+      if (!market?.description) {
+        return;
+      }
+      const text = await window.showInputBox({
+        placeHolder: '请输入分隔符文本，例如：长线观察、自选二组',
+        validateInput: (value) => {
+          return value.trim() ? null : '分隔符文本不能为空';
+        },
+      });
+      if (!text?.trim()) {
+        return;
+      }
+      const separatorCode = createStockSeparatorCode(
+        market.description as 'a' | 'hk' | 'us' | 'future' | 'overseaFuture',
+        text
+      );
+      LeekFundConfig.addStockSeparatorCfg(separatorCode, () => {
+        stockProvider.refresh();
       });
     })
   );
@@ -521,12 +556,14 @@ export function registerViewEvent(
   context.subscriptions.push(
     commands.registerCommand('leek-fund.setStockStatusBar', () => {
       const stockList = stockService.stockList;
-      const stockNameList = stockList.map((item: LeekTreeItem) => {
+      const stockNameList = stockList
+        .filter((item: LeekTreeItem) => item.info.contextValue !== 'separator')
+        .map((item: LeekTreeItem) => {
         return {
           label: `${item.info.name}`,
           description: `${item.info.code}`,
         };
-      });
+        });
       window
         .showQuickPick(stockNameList, {
           placeHolder: '输入过滤选择，支持多选（限6个）',
@@ -748,6 +785,7 @@ export function registerViewEvent(
     commands.registerCommand('leek-fund.changeStatusBarItem', (stockId) => {
       const stockList = stockService.stockList;
       const stockNameList = stockList
+        .filter((stock) => stock.info.contextValue !== 'separator')
         .filter((stock) => stock.id !== stockId)
         .map((item: LeekTreeItem) => {
           return {

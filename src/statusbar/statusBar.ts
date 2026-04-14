@@ -101,8 +101,10 @@ export class StatusBar {
     }
 
     let sz: LeekTreeItem | null = null;
-    const statusBarStocks = LeekFundConfig.getConfig('leek-fund.statusBarStock');
-    const barStockList: Array<LeekTreeItem> = new Array(statusBarStocks.length);
+    const statusBarStocks = (LeekFundConfig.getConfig('leek-fund.statusBarStock') || []).filter(
+      (code: string) => !code.startsWith('separator:')
+    );
+    const matchedStockMap: Record<string, LeekTreeItem> = {};
 
     this.statusBarItemLabelFormat =
       globalState.labelFormat?.['statusBarLabelFormat'] ??
@@ -114,10 +116,13 @@ export class StatusBar {
         sz = stockItem;
       }
       if (statusBarStocks.includes(code)) {
-        // barStockList.push(stockItem);
-        barStockList[statusBarStocks.indexOf(code)] = stockItem;
+        matchedStockMap[code] = stockItem;
       }
     });
+
+    const barStockList = statusBarStocks
+      .map((code: string): LeekTreeItem | undefined => matchedStockMap[code])
+      .filter((item: LeekTreeItem | undefined): item is LeekTreeItem => !!item);
 
     if (!barStockList.length) {
       barStockList.push(sz || this.stockService.stockList[0]);
@@ -137,7 +142,7 @@ export class StatusBar {
         bar?.dispose();
       }
     }
-    barStockList.forEach((stock, index) => {
+    barStockList.forEach((stock: LeekTreeItem, index: number) => {
       this.updateBarInfo(this.statusBarList[index], stock);
     });
   }

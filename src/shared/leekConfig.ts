@@ -5,7 +5,7 @@
 
 import { window, workspace } from 'vscode';
 import globalState from '../globalState';
-import { clean, uniq, events } from './utils';
+import { clean, uniq, events, getStockMarketType } from './utils';
 import { compact, flattenDeep } from 'lodash';
 
 export class BaseConfig {
@@ -189,6 +189,19 @@ export class LeekFundConfig extends BaseConfig {
     });
   }
 
+  static addStockSeparatorCfg(code: string, cb?: Function) {
+    const cfgKey = 'leek-fund.stocks';
+    const config = this.getGlobalConfig();
+    const origin = this.getGlobalConfigArray(cfgKey);
+    const newCodes = uniq(compact(flattenDeep(origin).concat(code))) as string[];
+    config.update(cfgKey, newCodes, true).then(() => {
+      window.showInformationMessage(`Separator successfully add.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
+  }
+
   static removeStockCfg(code: string, cb?: Function) {
     this.removeConfig('leek-fund.stocks', code).then(() => {
       window.showInformationMessage(`Stock Successfully delete.`);
@@ -255,27 +268,12 @@ export class LeekFundConfig extends BaseConfig {
 
     let configArr: string[] = this.getConfig('leek-fund.stocks');
     const currentIndex = configArr.indexOf(code);
+    const currentMarketType = getStockMarketType(code);
     let previousIndex = currentIndex - 1;
     // 找到前一个同市场的股票
     for (let index = currentIndex - 1; index >= 0; index--) {
       const previousCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
+      if (getStockMarketType(previousCode) === currentMarketType) {
         previousIndex = index;
         break;
       }
@@ -301,27 +299,12 @@ export class LeekFundConfig extends BaseConfig {
 
     let configArr: string[] = this.getConfig('leek-fund.stocks');
     const currentIndex = configArr.indexOf(code);
+    const currentMarketType = getStockMarketType(code);
     let nextIndex = currentIndex + 1;
     //找到后一个同市场的股票
     for (let index = currentIndex + 1; index < configArr.length; index++) {
       const nextCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(nextCode)) {
+      if (getStockMarketType(nextCode) === currentMarketType) {
         nextIndex = index;
         break;
       }
