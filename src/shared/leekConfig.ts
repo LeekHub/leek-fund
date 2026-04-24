@@ -17,17 +17,16 @@ export class BaseConfig {
   }
 
   /**
-   * 获取全局配置值（字符串数组类型）
+   * 获取全局配置值
    */
-  protected static getGlobalConfigArray(key: string, defaultValue: string[] = []): string[] {
+  protected static getGlobalConfigValue<T>(key: string, defaultValue?: T): T {
     const config = this.getGlobalConfig();
     const configInspect = config.inspect(key);
-    return (configInspect?.globalValue as string[]) ?? config.get(key, defaultValue);
+    return ((configInspect?.globalValue as T) ?? config.get(key, defaultValue)) as T;
   }
 
   static getConfig(key: string, defaultValue?: any): any {
-    const value = this.getGlobalConfigArray(key);
-    return value === undefined ? defaultValue : value;
+    return this.getGlobalConfigValue(key, defaultValue);
   }
 
   static setConfig(cfgKey: string, cfgValue: Array<any> | string | number | Object) {
@@ -39,7 +38,7 @@ export class BaseConfig {
   static async updateConfig(cfgKey: string, codes: Array<string>) {
     const config = this.getGlobalConfig();
     // 优先使用全局配置值
-    const origin = this.getGlobalConfigArray(cfgKey);
+    const origin = this.getGlobalConfigValue<string[]>(cfgKey);
     let newCodes = uniq(compact(origin.concat(codes)));
     console.log(`🚀 ~ BaseConfig ~ updateConfig ~ ${cfgKey}:`, newCodes);
     await config.update(cfgKey, newCodes, true);
@@ -49,7 +48,7 @@ export class BaseConfig {
   static removeConfig(cfgKey: string, code: string) {
     const config = this.getGlobalConfig();
     // 优先使用全局配置值
-    const sourceCfg = this.getGlobalConfigArray(cfgKey);
+    const sourceCfg = this.getGlobalConfigValue<string[]>(cfgKey);
     const newCfg = sourceCfg.filter((item: string) => item !== code);
     if (sourceCfg.length === newCfg.length) {
       window.showInformationMessage(
@@ -65,6 +64,7 @@ export class LeekFundConfig extends BaseConfig {
     super();
   }
   // Fund Begin
+
   static addFundGroupCfg(name: string, cb?: Function) {
     globalState.fundGroups.push(name);
     globalState.fundLists.push([]);
@@ -103,7 +103,7 @@ export class LeekFundConfig extends BaseConfig {
     if (removedFundList.length) {
       window
         .showInformationMessage('删除分组会清空基金数据无法恢复，请确认！！', '好的', '取消')
-        .then((res) => {
+        .then((res: string | undefined) => {
           if (res === '好的') {
             removeFundGroup();
           }
@@ -135,17 +135,17 @@ export class LeekFundConfig extends BaseConfig {
     }
     const index: number = parseInt(codeComponents[1]);
     const fundCode: string = codeComponents[2];
-    const funds = globalState.fundLists[index] as Array<string | number>;
+    const funds = globalState.fundLists[index] as Array<string>;
     let updatedFunds = funds;
     updatedFunds.splice(updatedFunds.indexOf(fundCode), 1);
-    updatedFunds = clean(updatedFunds);
-    updatedFunds = uniq(updatedFunds);
-    globalState.fundLists[index] = updatedFunds as never;
-    this.setConfig('leek-fund.funds', globalState.fundLists);
-    window.showInformationMessage(`Fund Successfully delete.`);
-    if (cb && typeof cb === 'function') {
-      cb(code);
-    }
+    updatedFunds = uniq(updatedFunds) as string[];
+    globalState.fundLists[index] = updatedFunds;
+    this.setConfig('leek-fund.funds', globalState.fundLists).then(() => {
+      window.showInformationMessage(`Fund Successfully delete.`);
+      if (cb && typeof cb === 'function') {
+        cb(code);
+      }
+    });
   }
 
   static setFundTopCfg(code: string, cb?: Function) {
@@ -158,7 +158,7 @@ export class LeekFundConfig extends BaseConfig {
     const fundCode: string = codeComponents[2];
     const funds = globalState.fundLists[index] as Array<string>;
     const updatedFunds = [fundCode, ...funds.filter((item) => item !== fundCode)];
-    globalState.fundLists[index] = updatedFunds as never;
+    globalState.fundLists[index] = updatedFunds;
     this.setConfig('leek-fund.funds', globalState.fundLists);
     window.showInformationMessage(`Fund Successfully set to top.`);
     if (cb && typeof cb === 'function') {
@@ -168,11 +168,57 @@ export class LeekFundConfig extends BaseConfig {
   // Fund End
 
   // Stock Begin
-  static updateStockCfg(list: string, cb?: Function) {
-    const cfgKey = 'leek-fund.stocks';
-    const config = this.getGlobalConfig();
-    // 优先使用全局配置值
-    const origin = this.getGlobalConfigArray(cfgKey);
+  static addStockGroupCfg(name: string, cb?: Function) {
+    globalState.stockGroups.push(name);
+    globalState.stockLists.push([]);
+    this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    this.setConfig('leek-fund.stocks', globalState.stockLists);
+    window.showInformationMessage(`Stock Group Successfully add.`);
+    if (cb && typeof cb === 'function') {
+      cb(name);
+    }
+  }
+
+  static renameStockGroupCfg(groupId: string, name: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    globalState.stockGroups[index] = name;
+    this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    window.showInformationMessage(`Stock Group Successfully rename.`);
+    if (cb && typeof cb === 'function') {
+      cb(groupId);
+    }
+  }
+
+  static removeStockGroupCfg(groupId: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    const removedStockList: Array<string> = globalState.stockLists[index];
+    const removeStockGroup = () => {
+      globalState.stockGroups.splice(index, 1);
+      globalState.stockLists.splice(index, 1);
+      this.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+      this.setConfig('leek-fund.stocks', globalState.stockLists);
+      window.showInformationMessage(`Stock Group Successfully delete.`);
+      if (cb && typeof cb === 'function') {
+        cb(groupId);
+      }
+    };
+
+    if (removedStockList.length) {
+      window
+        .showInformationMessage('删除分组会清空股票数据无法恢复，请确认！！', '好的', '取消')
+        .then((res: string | undefined) => {
+          if (res === '好的') {
+            removeStockGroup();
+          }
+        });
+    } else {
+      removeStockGroup();
+    }
+  }
+
+  static updateStockCfg(groupId: string, list: string, cb?: Function) {
+    const index: number = parseInt(groupId.replace('stockGroup_', ''));
+    const origin = globalState.stockLists[index] as string[];
     let codes = typeof list === 'string' ? list.split(',') : list;
     let newCodes = uniq(compact(flattenDeep(origin).concat(codes))) as string[];
     newCodes = newCodes.map((code: string) => {
@@ -181,7 +227,8 @@ export class LeekFundConfig extends BaseConfig {
       }
       return code;
     });
-    config.update(cfgKey, newCodes, true).then(() => {
+    globalState.stockLists[index] = newCodes as string[];
+    this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
       window.showInformationMessage(`Stock Successfully add.`);
       if (cb && typeof cb === 'function') {
         cb(codes, newCodes);
@@ -190,7 +237,20 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static removeStockCfg(code: string, cb?: Function) {
-    this.removeConfig('leek-fund.stocks', code).then(() => {
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string>;
+    let updatedStocks = stocks;
+    updatedStocks.splice(updatedStocks.indexOf(stockCode), 1);
+    updatedStocks = clean(updatedStocks) as string[];
+    updatedStocks = uniq(updatedStocks) as string[];
+    globalState.stockLists[index] = updatedStocks;
+    this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
       window.showInformationMessage(`Stock Successfully delete.`);
       if (cb && typeof cb === 'function') {
         cb(code);
@@ -232,12 +292,18 @@ export class LeekFundConfig extends BaseConfig {
   }
 
   static setStockTopCfg(code: string, cb?: Function) {
-    let arr: string[] = this.getConfig('leek-fund.stocks');
-    // 临时解决3.10.1~3.10.3 pr产生的分组bug
-    const stockList = flattenDeep(arr).filter?.((item) => item !== code);
-    stockList.unshift(code);
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
+    }
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string>;
+    const updatedStocks = [stockCode, ...stocks.filter((item) => item !== stockCode)];
+    globalState.stockLists[index] = updatedStocks;
 
-    this.setConfig('leek-fund.stocks', stockList).then(() => {
+    this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
       window.showInformationMessage(`Stock successfully set to top.`);
       if (cb && typeof cb === 'function') {
         cb(code);

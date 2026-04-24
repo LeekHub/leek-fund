@@ -4,6 +4,7 @@
  *  Github: https://github.com/giscafer
  *-------------------------------------------------------------*/
 
+import { flattenDeep } from 'lodash';
 import { ConfigurationChangeEvent, ExtensionContext, TreeView, window, workspace } from 'vscode';
 import { BinanceProvider } from './explorer/binanceProvider';
 import BinanceService from './explorer/binanceService';
@@ -51,6 +52,8 @@ export async function activate(context: ExtensionContext) {
   globalState.telemetry = telemetry;
 
   let intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval', 5000);
+  let groupForceRefreshInterval =
+    LeekFundConfig.getConfig('leek-fund.groupForceRefreshInterval', 60) * 1000;
   let intervalTime = intervalTimeConfig;
 
   // 节假日，异步会存在延迟判断准确问题，设置成同步影响插件激活速度，暂使用异步
@@ -91,6 +94,7 @@ export async function activate(context: ExtensionContext) {
 
   stockTreeView = window.createTreeView('leekFundView.stock', {
     treeDataProvider: nodeStockProvider,
+    dragAndDropController: nodeStockProvider,
   });
 
   binanceTreeView = window.createTreeView('leekFundView.binance', {
@@ -105,6 +109,17 @@ export async function activate(context: ExtensionContext) {
     treeDataProvider: newsProvider,
   });
 
+  // 维护分组展开状态的集合
+  const expandedGroups = new Set<string>();
+
+  stockTreeView.onDidExpandElement((e) => {
+    if (e.element.isCategory) expandedGroups.add(e.element.id!);
+  });
+  stockTreeView.onDidCollapseElement((e) => {
+    if (e.element.isCategory) expandedGroups.delete(e.element.id!);
+  });
+
+
   // fix when TreeView collapse https://github.com/giscafer/leek-fund/issues/31
   const manualRequest = () => {
     const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
@@ -112,11 +127,15 @@ export async function activate(context: ExtensionContext) {
       fundService.getData(value, SortType.NORMAL, `fundGroup_${index}`);
     });
 
-    stockService.getData(LeekFundConfig.getConfig('leek-fund.stocks'), SortType.NORMAL);
+    const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+    stockLists.forEach((value: Array<string>, index: number) => {
+      stockService.getData(value, SortType.NORMAL, `stockGroup_${index}`);
+    });
   };
 
   manualRequest();
 
+  let forceRefreshCounter = 0;
   // loop
   const loopCallback = () => {
     if (isStockTime()) {
@@ -133,6 +152,7 @@ export async function activate(context: ExtensionContext) {
           updateAmount();
         }
       }
+
       if (stockTreeView?.visible || fundTreeView?.visible) {
         nodeStockProvider.refresh();
         nodeFundProvider.refresh();
@@ -193,10 +213,17 @@ export async function activate(context: ExtensionContext) {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+    if (e.affectsConfiguration('leek-fund.interval')) {
+      intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
+      intervalTime = intervalTimeConfig;
+      setIntervalTime();
+    }
+    if (e.affectsConfiguration('leek-fund.groupForceRefreshInterval')) {
+      groupForceRefreshInterval =
+        LeekFundConfig.getConfig('leek-fund.groupForceRefreshInterval', 60) * 1000;
+      forceRefreshCounter = 0;
+    }
     Log.info('Configuration changed');
-    intervalTimeConfig = LeekFundConfig.getConfig('leek-fund.interval');
-    setIntervalTime();
-    setGlobalVariable();
     statusBar.refresh();
     nodeFundProvider.refresh();
     nodeStockProvider.refresh();
@@ -263,8 +290,8 @@ function setGlobalVariable() {
   globalState.immersiveBackground = LeekFundConfig.getConfig('leek-fund.immersiveBackground', true);
 
   globalState.fundGroups = LeekFundConfig.getConfig('leek-fund.fundGroups') || [];
-
   const fundLists = LeekFundConfig.getConfig('leek-fund.funds') || [];
+
   if (typeof fundLists[0] === 'string' || fundLists[0] instanceof String) {
     // 迁移用户的基金代码到分组模式
     const newFundLists = [fundLists];
@@ -273,19 +300,30 @@ function setGlobalVariable() {
   } else {
     globalState.fundLists = fundLists;
   }
-  // 临时解决3.10.1~3.10.3 pr产生的分组bug
-  // const leekFundExt = extensions.getExtension('giscafer.leek-fund');
-  // const currentVersion = leekFundExt?.packageJSON?.version;
-  // if (compare(currentVersion, '3.9.2', '>=')) {
-  // const arr = LeekFundConfig.getConfig('leek-fund.stocks') || [];
-  // const flag = arr.some((a: any) => Array.isArray(a));
-  // if (flag) {
-  //   const stockList = uniq(compact(flattenDeep(arr)));
-  //   Log.info(" ~ setGlobalVariable ~ stockList:", stockList);
-  //   LeekFundConfig.setConfig('leek-fund.stocks', stockList);
-  // }
 
-  // }
+  globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups') || [];
+  const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
+
+  if (typeof stockLists[0] === 'string' || stockLists[0] instanceof String) {
+    // 迁移用户的股票代码到分组模式
+    const newStockLists = [stockLists];
+    globalState.stockLists = newStockLists;
+    LeekFundConfig.setConfig('leek-fund.stocks', newStockLists);
+    if (globalState.stockGroups.length === 0) {
+      globalState.stockGroups = ['默认分组'];
+      LeekFundConfig.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    }
+  } else {
+    globalState.stockLists = stockLists;
+  }
+
+  // 确保“默认分组”分组存在，且作为默认新增分组
+  if (!globalState.stockGroups.includes('默认分组')) {
+    globalState.stockGroups.unshift('默认分组');
+    globalState.stockLists.unshift([]);
+    LeekFundConfig.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+    LeekFundConfig.setConfig('leek-fund.stocks', globalState.stockLists);
+  }
 }
 
 // this method is called when your extension is deactivated

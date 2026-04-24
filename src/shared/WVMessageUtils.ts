@@ -1,5 +1,5 @@
 import { Event, Webview } from 'vscode';
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import globalState from '../globalState';
 
 /**

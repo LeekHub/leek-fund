@@ -2,7 +2,7 @@
   "name": "leek-fund",
   "displayName": "韭菜盒子",
   "description": "韭菜盒子，VSCode 里也可以看股票 & 基金实时数据，做最好用的投资插件",
-  "version": "3.24.0",
+  "version": "3.24.1",
   "author": "Nicky Lao <giscafer@outlook.com>",
   "repository": {
     "type": "git",
@@ -23,24 +23,14 @@
   "publisher": "giscafer",
   "icon": "resources/logo.png",
   "engines": {
-    "vscode": "^1.59.0"
+    "vscode": "^1.75.0"
   },
   "enableProposedAPI": false,
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished",
-    "onCommand:leek-fund.refreshStock",
-    "onCommand:leek-fund.stockWindVane",
-    "onCommand:leek-fund.refreshFund",
-    "onView:leekFundView.fund",
-    "onView:leekFundView.stock",
-    "onView:leekFundView.news",
-    "onView:leekFundView.binance",
-    "onView:leekFundView.forex",
-    "onView:leekFundView.settings",
-    "onCommand:leek-fund.toggleStatusBarIconVisibility"
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -185,6 +175,19 @@
         "command": "leek-fund.addStock",
         "title": "添加股票",
         "icon": "$(add)"
+      },
+      {
+        "command": "leek-fund.addStockGroup",
+        "title": "添加分组",
+        "icon": "$(diff-added)"
+      },
+      {
+        "command": "leek-fund.removeStockGroup",
+        "title": "删除分组"
+      },
+      {
+        "command": "leek-fund.renameStockGroup",
+        "title": "修改分组名称"
       },
       {
         "command": "leek-fund.setStockPrice",
@@ -398,6 +401,11 @@
           "group": "navigation"
         },
         {
+          "command": "leek-fund.addStockGroup",
+          "when": "view == leekFundView.stock",
+          "group": "navigation"
+        },
+        {
           "command": "leek-fund.viewFundFlow",
           "when": "view == leekFundView.stock",
           "group": "navigation"
@@ -489,6 +497,7 @@
           "when": "view == leekFundView.fund && viewItem == category",
           "group": "group7"
         },
+
         {
           "command": "leek-fund.setStockTop",
           "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
@@ -540,6 +549,21 @@
           "group": "group6"
         },
         {
+          "command": "leek-fund.addStock",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "inline"
+        },
+        {
+          "command": "leek-fund.removeStockGroup",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "group7"
+        },
+        {
+          "command": "leek-fund.renameStockGroup",
+          "when": "view == leekFundView.stock && viewItem == category",
+          "group": "group7"
+        },
+        {
           "command": "leek-fund.deletePair",
           "when": "view == leekFundView.binance  && viewItem != category",
           "group": "group0"
@@ -576,23 +600,32 @@
         "leek-fund.stocks": {
           "type": "array",
           "default": [
-            "sh000001",
-            "sh000300",
-            "sh000016",
-            "sh000688",
-            "hk03690",
-            "hk00700",
-            "usr_ixic",
-            "usr_dji",
-            "usr_inx",
-            "nf_IF0",
-            "nf_IH0",
-            "nf_IC0",
-            "nf_IM0",
-            "hf_OIL",
-            "hf_CHA50CFD"
+            [
+              "sh000001",
+              "sh000300",
+              "sh000016",
+              "sh000688",
+              "hk03690",
+              "hk00700",
+              "usr_ixic",
+              "usr_dji",
+              "usr_inx",
+              "nf_IF0",
+              "nf_IH0",
+              "nf_IC0",
+              "nf_IM0",
+              "hf_OIL",
+              "hf_CHA50CFD"
+            ]
           ],
           "description": "配置需要监控的股票代码（建议通过界面新增）"
+        },
+        "leek-fund.stockGroups": {
+          "type": "array",
+          "default": [
+            "默认分组"
+          ],
+          "description": "配置股票分组名称（建议通过界面新增）"
         },
         "leek-fund.stockPrice": {
           "type": "object",
@@ -627,6 +660,7 @@
           ],
           "description": "配置基金分组名称（建议通过界面新增）"
         },
+
         "leek-fund.binance": {
           "type": "array",
           "default": [
@@ -646,6 +680,11 @@
             "sh000001"
           ],
           "description": "状态栏展示的股票（建议通过界面选择设置，必须是在股票代码已设置存在）"
+        },
+        "leek-fund.groupForceRefreshInterval": {
+          "type": "number",
+          "default": 60,
+          "description": "折叠分组下的强制刷新间隔（单位：秒）。当分组处于折叠状态时，插件会按此频率同步数据以更新分组涨幅。"
         },
         "leek-fund.interval": {
           "type": "number",
@@ -879,7 +918,7 @@
     "@types/lodash": "4.17.5",
     "@types/mocha": "^7.0.2",
     "@types/node": "^18.0.0",
-    "@types/vscode": "1.59.0",
+    "@types/vscode": "1.66.0",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",

@@ -17,6 +17,7 @@ export default class StockService extends LeekService {
   public stockList: Array<LeekTreeItem> = [];
   private context: ExtensionContext;
   private token: string = '';
+  private groupAverageMap: Map<string, number> = new Map();
 
   constructor(context: ExtensionContext) {
     super();
@@ -40,9 +41,10 @@ export default class StockService extends LeekService {
     return this.token;
   }
 
-  async getData(codes: Array<string>, order: number): Promise<Array<LeekTreeItem>> {
+  async getData(codes: Array<string>, order: number, groupId: string): Promise<Array<LeekTreeItem>> {
     // Log.info('fetching stock data…');
     if ((codes && codes.length === 0) || !codes) {
+      this.calculateGroupAverage(groupId, []);
       return [];
     }
 
@@ -70,8 +72,8 @@ export default class StockService extends LeekService {
     let stockList: Array<LeekTreeItem> = [];
     globalState.noDataStockCount = 0; // 重置无数据股票计数
     const result = await Promise.allSettled([
-      this.getStockData(stockCodes),
-      this.getHKStockData(hkCodes),
+      this.getStockData(stockCodes, groupId),
+      this.getHKStockData(hkCodes, groupId),
     ]);
     result.forEach((item) => {
       if (item.status === 'fulfilled') {
@@ -80,6 +82,7 @@ export default class StockService extends LeekService {
     });
 
     const res = sortData(stockList, order);
+    this.calculateGroupAverage(groupId, res);
     executeStocksRemind(res, this.stockList);
     const oldStockList = this.stockList;
     this.stockList = res;
@@ -88,7 +91,7 @@ export default class StockService extends LeekService {
     return res;
   }
 
-  async getStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+  async getStockData(codes: Array<string>, groupId: string): Promise<Array<LeekTreeItem>> {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
@@ -126,7 +129,7 @@ export default class StockService extends LeekService {
           return [];
         }
         for (const code of codes) {
-          stockList = stockList.concat(await this.getStockData(new Array(code)));
+          stockList = stockList.concat(await this.getStockData(new Array(code), groupId));
         }
       } else {
         const splitData = resp.data.split('";\n');
@@ -212,7 +215,8 @@ export default class StockService extends LeekService {
                   type: 'nodata',
                   contextValue: 'nodata',
                 };
-                const treeItem = new LeekTreeItem(stockItemTemp, this.context);
+                 const treeItem = new LeekTreeItem(stockItemTemp, this.context);
+                treeItem.id = `${groupId}_${code}`;
                 stockList.push(treeItem);
               } else {
                 stockItem = {
@@ -486,6 +490,7 @@ export default class StockService extends LeekService {
                 formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
 
               const treeItem = new LeekTreeItem(stockItem, this.context);
+              treeItem.id = `${groupId}_${code}`;
               stockList.push(treeItem);
             }
           } else {
@@ -501,6 +506,7 @@ export default class StockService extends LeekService {
               contextValue: 'nodata',
             };
             const treeItem = new LeekTreeItem(stockItem, this.context);
+            treeItem.id = `${groupId}_${code}`;
             stockList.push(treeItem);
           }
         }
@@ -526,7 +532,7 @@ export default class StockService extends LeekService {
     return stockList;
   }
 
-  async getHKStockData(codes: Array<string>): Promise<Array<LeekTreeItem>> {
+  async getHKStockData(codes: Array<string>, groupId: string): Promise<Array<LeekTreeItem>> {
     if ((codes && codes.length === 0) || !codes) {
       return [];
     }
@@ -563,6 +569,7 @@ export default class StockService extends LeekService {
               contextValue: 'nodata',
             };
             const treeItem = new LeekTreeItem(stockItem, this.context);
+            treeItem.id = `${groupId}_${item.code}`;
             stockList.push(treeItem);
             return;
           }
@@ -607,6 +614,7 @@ export default class StockService extends LeekService {
               formatNumber((Math.abs(stockItem.updown) / +yestclose) * 100, 2, false);
 
             const treeItem = new LeekTreeItem(stockItem, this.context);
+            treeItem.id = `${groupId}_${code}`;
             stockList.push(treeItem);
           }
         });
@@ -745,5 +753,27 @@ export default class StockService extends LeekService {
         return [{ label: '股票查询失败，请重试' }];
       }
     }
+  }
+
+  private calculateGroupAverage(groupId: string, list: Array<LeekTreeItem>) {
+    if (list.length === 0) {
+      this.groupAverageMap.delete(groupId);
+      return;
+    }
+    const validStocks = list.filter(
+      (item) => item.info.percent !== '' && item.info.type !== 'nodata' && !isNaN(parseFloat(item.info.percent))
+    );
+    if (validStocks.length > 0) {
+      const totalPercent = validStocks.reduce((acc, item) => {
+        return acc + parseFloat(item.info.percent);
+      }, 0);
+      this.groupAverageMap.set(groupId, totalPercent / validStocks.length);
+    } else {
+      this.groupAverageMap.delete(groupId);
+    }
+  }
+
+  public getGroupAverage(groupId: string): number | undefined {
+    return this.groupAverageMap.get(groupId);
   }
 }
