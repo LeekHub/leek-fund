@@ -28,6 +28,11 @@
       .amount {
         display: inline-block;
       }
+      .list {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+      }
       .unit {
         float: right;
       }
@@ -39,7 +44,8 @@
         font-size: 14px;
       }
       .item {
-        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-left: 0;
       }
       .el-input {
         width: 160px;
@@ -56,13 +62,12 @@
         background-color: #eee;
       }
       .main {
-        margin: 0 auto;
-        width: 980px;
-        padding: 32px;
+        min-width: 980px;
+        margin-right: 60px;
       }
       .footer {
         width: 560px;
-        margin: 30px auto 10px auto;
+        margin: 10px auto;
         text-align: center;
       }
       .footer .info {
@@ -292,7 +297,7 @@
             '<input type="checkbox" id="' +
             item.code +
             '_sell_out" class="el-checkbox" ' +
-             (isSellOut ? "checked" : "") +
+            (isSellOut ? 'checked' : '') +
             ' /><span class="unit">已清仓</span>' +
             '</div>' +
             '</div>';
@@ -497,7 +502,9 @@
             let isSellOut = $('#' + item.code + '_sell_out').prop('checked');
             amount = isNaN(Number(amount)) ? 0 : Number(amount);
             unitPrice = isNaN(Number(unitPrice)) ? 0 : Number(unitPrice);
-            todayUnitPrice = isNaN(Number(todayUnitPrice)) ? 0 : Number(todayUnitPrice);
+            todayUnitPrice = isNaN(Number(todayUnitPrice))
+              ? 0
+              : Number(todayUnitPrice);
             item.amount = amount; // 持仓金额
             item.unitPrice = unitPrice; // 成本价
             item.todayUnitPrice = todayUnitPrice; // 今日成本价
