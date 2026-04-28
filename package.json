@@ -32,7 +32,7 @@
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -497,7 +497,6 @@
           "when": "view == leekFundView.fund && viewItem == category",
           "group": "group7"
         },
-
         {
           "command": "leek-fund.setStockTop",
           "when": "view == leekFundView.stock && viewItem != category  && viewItem!=nodata",
@@ -660,7 +659,6 @@
           ],
           "description": "配置基金分组名称（建议通过界面新增）"
         },
-
         "leek-fund.binance": {
           "type": "array",
           "default": [
@@ -881,8 +879,10 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "npm run bundle",
     "compile": "tsc -p ./",
+    "bundle": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "postbundle": "yarn --cwd ./template-packages/leek-center run build",
     "postcompile": "yarn --cwd ./template-packages/leek-center run build",
     "lint": "eslint src --fix --ext ts  --ignore-path .gitignore",
     "watch": "tsc -watch -p ./",
@@ -924,6 +924,7 @@
     "@typescript-eslint/parser": "^2.30.0",
     "@vscode/test-electron": "^2.3.9",
     "cross-env": "^7.0.3",
+    "esbuild": "^0.28.0",
     "eslint": "^6.8.0",
     "glob": "^7.1.6",
     "husky": "^4.3.0",
