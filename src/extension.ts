@@ -301,10 +301,11 @@ function setGlobalVariable() {
     globalState.fundLists = fundLists;
   }
 
+  // Stock migration and sync
   globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups') || [];
   const stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
 
-  if (typeof stockLists[0] === 'string' || stockLists[0] instanceof String) {
+  if (stockLists.length > 0 && (typeof stockLists[0] === 'string' || stockLists[0] instanceof String)) {
     // 迁移用户的股票代码到分组模式
     const newStockLists = [stockLists];
     globalState.stockLists = newStockLists;
@@ -317,10 +318,23 @@ function setGlobalVariable() {
     globalState.stockLists = stockLists;
   }
 
-  // 确保“默认分组”分组存在，且作为默认新增分组
-  if (!globalState.stockGroups.includes('默认分组')) {
-    globalState.stockGroups.unshift('默认分组');
-    globalState.stockLists.unshift([]);
+  // Ensure stockGroups and stockLists are in sync
+  if (globalState.stockGroups.length < globalState.stockLists.length) {
+    for (let i = globalState.stockGroups.length; i < globalState.stockLists.length; i++) {
+      globalState.stockGroups.push(`分组${i + 1}`);
+    }
+    LeekFundConfig.setConfig('leek-fund.stockGroups', globalState.stockGroups);
+  } else if (globalState.stockGroups.length > globalState.stockLists.length) {
+    for (let i = globalState.stockLists.length; i < globalState.stockGroups.length; i++) {
+      globalState.stockLists.push([]);
+    }
+    LeekFundConfig.setConfig('leek-fund.stocks', globalState.stockLists);
+  }
+
+  // Ensure at least one group for stocks
+  if (globalState.stockGroups.length === 0) {
+    globalState.stockGroups = ['默认分组'];
+    globalState.stockLists = [[]];
     LeekFundConfig.setConfig('leek-fund.stockGroups', globalState.stockGroups);
     LeekFundConfig.setConfig('leek-fund.stocks', globalState.stockLists);
   }

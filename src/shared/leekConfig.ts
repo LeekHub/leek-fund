@@ -319,39 +319,27 @@ export class LeekFundConfig extends BaseConfig {
       }
     };
 
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
-    const currentIndex = configArr.indexOf(code);
-    let previousIndex = currentIndex - 1;
-    // 找到前一个同市场的股票
-    for (let index = currentIndex - 1; index >= 0; index--) {
-      const previousCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(previousCode)) {
-        previousIndex = index;
-        break;
-      }
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
     }
-    if (previousIndex < 0) {
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string>;
+    const currentIndex = stocks.indexOf(stockCode);
+
+    if (currentIndex <= 0) {
       callback();
     } else {
       // 交换位置
-      configArr[currentIndex] = configArr.splice(previousIndex, 1, configArr[currentIndex])[0];
-      this.setConfig('leek-fund.stocks', configArr).then(() => {
+      const updatedStocks = [...stocks];
+      [updatedStocks[currentIndex - 1], updatedStocks[currentIndex]] = [
+        updatedStocks[currentIndex],
+        updatedStocks[currentIndex - 1],
+      ];
+      globalState.stockLists[index] = updatedStocks;
+      this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
         callback();
       });
     }
@@ -365,39 +353,27 @@ export class LeekFundConfig extends BaseConfig {
       }
     };
 
-    let configArr: string[] = this.getConfig('leek-fund.stocks');
-    const currentIndex = configArr.indexOf(code);
-    let nextIndex = currentIndex + 1;
-    //找到后一个同市场的股票
-    for (let index = currentIndex + 1; index < configArr.length; index++) {
-      const nextCode = configArr[index];
-      if (/^(sh|sz|bj)/.test(code) && /^(sh|sz|bj)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hk)/.test(code) && /^(hk)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(usr_)/.test(code) && /^(usr_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(nf_)/.test(code) && /^(nf_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
-      if (/^(hf_)/.test(code) && /^(hf_)/.test(nextCode)) {
-        nextIndex = index;
-        break;
-      }
+    const codeComponents = code.split('_');
+    if (codeComponents.length < 3) {
+      window.showInformationMessage(`Stock Id error.`);
+      return;
     }
-    if (nextIndex >= configArr.length) {
+    const index: number = parseInt(codeComponents[1]);
+    const stockCode: string = codeComponents[2];
+    const stocks = globalState.stockLists[index] as Array<string>;
+    const currentIndex = stocks.indexOf(stockCode);
+
+    if (currentIndex < 0 || currentIndex >= stocks.length - 1) {
       callback();
     } else {
       // 交换位置
-      configArr[currentIndex] = configArr.splice(nextIndex, 1, configArr[currentIndex])[0];
-      this.setConfig('leek-fund.stocks', configArr).then(() => {
+      const updatedStocks = [...stocks];
+      [updatedStocks[currentIndex + 1], updatedStocks[currentIndex]] = [
+        updatedStocks[currentIndex],
+        updatedStocks[currentIndex + 1],
+      ];
+      globalState.stockLists[index] = updatedStocks;
+      this.setConfig('leek-fund.stocks', globalState.stockLists).then(() => {
         callback();
       });
     }

@@ -170,6 +170,8 @@ export function registerViewEvent(
   // Stock operation
   context.subscriptions.push(
     commands.registerCommand('leek-fund.refreshStock', () => {
+      globalState.stockGroups = LeekFundConfig.getConfig('leek-fund.stockGroups') || [];
+      globalState.stockLists = LeekFundConfig.getConfig('leek-fund.stocks') || [];
       stockProvider.refresh();
       const handler = window.setStatusBarMessage(`股票数据已刷新`);
       setTimeout(() => {
