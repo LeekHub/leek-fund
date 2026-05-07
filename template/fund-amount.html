@@ -364,6 +364,144 @@
       let searchMatches = [];
       let activeMatchIndex = -1;
       let applySearch = function () {};
+      (function installSearchBeforeInit() {
+        function escapeRegExp(str) {
+          return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function resetSearchHighlights() {
+          $('.list .item-left .name').each(function () {
+            const origin = $(this).attr('data-origin-name');
+            if (origin !== undefined) {
+              $(this).text(origin);
+            }
+          });
+          $('.list .item-left .fund-code').each(function () {
+            const origin = $(this).attr('data-origin-code');
+            if (origin !== undefined) {
+              $(this).text(origin);
+            }
+          });
+          $('.search-item-active').removeClass('search-item-active');
+          $('.search-hit-active').removeClass('search-hit-active');
+        }
+
+        function updateSearchCount() {
+          const searchCount = $('#searchCount');
+          const searchPrev = $('#searchPrev');
+          const searchNext = $('#searchNext');
+          const current = searchMatches.length ? activeMatchIndex + 1 : 0;
+          searchCount.text(current + ' / ' + searchMatches.length);
+          const disabledClass = 'is-disabled';
+          if (searchMatches.length === 0) {
+            searchPrev.addClass(disabledClass);
+            searchNext.addClass(disabledClass);
+          } else {
+            searchPrev.removeClass(disabledClass);
+            searchNext.removeClass(disabledClass);
+          }
+        }
+
+        function scrollToActiveMatch() {
+          if (
+            activeMatchIndex < 0 ||
+            activeMatchIndex >= searchMatches.length
+          ) {
+            return;
+          }
+          const $target = searchMatches[activeMatchIndex];
+          if (!$target || !$target.length) {
+            return;
+          }
+          const hitEl = $target[0];
+          const itemEl =
+            hitEl && typeof hitEl.closest === 'function'
+              ? hitEl.closest('.item')
+              : null;
+          if (!itemEl) {
+            return;
+          }
+          const $item = $(itemEl);
+          $item.addClass('search-item-active');
+          $target.addClass('search-hit-active');
+          try {
+            itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } catch (e) {
+            try {
+              itemEl.scrollIntoView();
+            } catch (e2) {}
+          }
+        }
+
+        function collectSearchMatches() {
+          searchMatches = [];
+          $('.list .search-hit').each(function () {
+            searchMatches.push($(this));
+          });
+        }
+
+        function highlightTextByKeyword(text, keyword) {
+          if (!keyword) return text;
+          const regex = new RegExp(escapeRegExp(keyword), 'ig');
+          return text.replace(regex, '<span class="search-hit">$&</span>');
+        }
+
+        applySearch = function () {
+          const searchInput = $('#searchInput');
+          const keyword = (searchInput.val() || '').trim();
+          resetSearchHighlights();
+          activeMatchIndex = -1;
+
+          $('.list .item-left').each(function () {
+            const nameEl = $(this).find('.name');
+            const codeEl = $(this).find('.fund-code');
+            const nameText = nameEl.attr('data-origin-name') || nameEl.text();
+            const codeText = codeEl.attr('data-origin-code') || codeEl.text();
+            nameEl.attr('data-origin-name', nameText);
+            codeEl.attr('data-origin-code', codeText);
+            if (!keyword) {
+              nameEl.text(nameText);
+              codeEl.text(codeText);
+              return;
+            }
+            nameEl.html(highlightTextByKeyword(nameText, keyword));
+            codeEl.html(highlightTextByKeyword(codeText, keyword));
+          });
+
+          collectSearchMatches();
+          if (searchMatches.length > 0) {
+            activeMatchIndex = 0;
+            scrollToActiveMatch();
+          }
+          updateSearchCount();
+        };
+
+        function navigateSearch(step) {
+          if (searchMatches.length === 0) return;
+          $('.search-item-active').removeClass('search-item-active');
+          $('.search-hit-active').removeClass('search-hit-active');
+          activeMatchIndex =
+            (activeMatchIndex + step + searchMatches.length) %
+            searchMatches.length;
+          scrollToActiveMatch();
+          updateSearchCount();
+        }
+
+        $('#searchInput').on('input', function () {
+          applySearch();
+        });
+        $('#searchPrev').on('click', function () {
+          navigateSearch(-1);
+        });
+        $('#searchNext').on('click', function () {
+          navigateSearch(1);
+        });
+        $('#searchClose').on('click', function () {
+          $('#searchInput').val('');
+          applySearch();
+        });
+      })();
+
       window.addEventListener('message', (event) => {
         const msg = event.data;
 
@@ -781,125 +919,6 @@
             command: 'refresh',
             sortType,
           });
-        });
-
-        const searchInput = $('#searchInput');
-        const searchCount = $('#searchCount');
-        const searchPrev = $('#searchPrev');
-        const searchNext = $('#searchNext');
-        const searchClose = $('#searchClose');
-
-        function escapeRegExp(str) {
-          return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        }
-
-        function resetSearchHighlights() {
-          $('.item-left .name').each(function () {
-            const origin = $(this).attr('data-origin-name');
-            if (origin !== undefined) {
-              $(this).text(origin);
-            }
-          });
-          $('.item-left .fund-code').each(function () {
-            const origin = $(this).attr('data-origin-code');
-            if (origin !== undefined) {
-              $(this).text(origin);
-            }
-          });
-          $('.search-item-active').removeClass('search-item-active');
-          $('.search-hit-active').removeClass('search-hit-active');
-        }
-
-        function updateSearchCount() {
-          const current = searchMatches.length ? activeMatchIndex + 1 : 0;
-          searchCount.text(current + ' / ' + searchMatches.length);
-          const disabledClass = 'is-disabled';
-          if (searchMatches.length === 0) {
-            searchPrev.addClass(disabledClass);
-            searchNext.addClass(disabledClass);
-          } else {
-            searchPrev.removeClass(disabledClass);
-            searchNext.removeClass(disabledClass);
-          }
-        }
-
-        function scrollToActiveMatch() {
-          if (activeMatchIndex < 0 || !searchMatches[activeMatchIndex]) return;
-          const $target = searchMatches[activeMatchIndex];
-          const $item = $target.closest('.item');
-          $item.addClass('search-item-active');
-          $target.addClass('search-hit-active');
-          $item[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        function collectSearchMatches() {
-          searchMatches = [];
-          $('.search-hit').each(function () {
-            searchMatches.push($(this));
-          });
-        }
-
-        function highlightTextByKeyword(text, keyword) {
-          if (!keyword) return text;
-          const regex = new RegExp(escapeRegExp(keyword), 'ig');
-          return text.replace(regex, '<span class="search-hit">$&</span>');
-        }
-
-        applySearch = function () {
-          const keyword = (searchInput.val() || '').trim();
-          resetSearchHighlights();
-          activeMatchIndex = -1;
-
-          $('.item-left').each(function () {
-            const nameEl = $(this).find('.name');
-            const codeEl = $(this).find('.fund-code');
-            const nameText = nameEl.attr('data-origin-name') || nameEl.text();
-            const codeText = codeEl.attr('data-origin-code') || codeEl.text();
-            nameEl.attr('data-origin-name', nameText);
-            codeEl.attr('data-origin-code', codeText);
-            if (!keyword) {
-              nameEl.text(nameText);
-              codeEl.text(codeText);
-              return;
-            }
-            nameEl.html(highlightTextByKeyword(nameText, keyword));
-            codeEl.html(highlightTextByKeyword(codeText, keyword));
-          });
-
-          collectSearchMatches();
-          if (searchMatches.length > 0) {
-            activeMatchIndex = 0;
-            scrollToActiveMatch();
-          }
-          updateSearchCount();
-        };
-
-        function navigateSearch(step) {
-          if (searchMatches.length === 0) return;
-          $('.search-item-active').removeClass('search-item-active');
-          $('.search-hit-active').removeClass('search-hit-active');
-          activeMatchIndex =
-            (activeMatchIndex + step + searchMatches.length) %
-            searchMatches.length;
-          scrollToActiveMatch();
-          updateSearchCount();
-        }
-
-        searchInput.on('input', function () {
-          applySearch();
-        });
-
-        searchPrev.on('click', function () {
-          navigateSearch(-1);
-        });
-
-        searchNext.on('click', function () {
-          navigateSearch(1);
-        });
-
-        searchClose.on('click', function () {
-          searchInput.val('');
-          applySearch();
         });
       });
 

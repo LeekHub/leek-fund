@@ -24,6 +24,64 @@
         margin-left: 10px;
         line-height: 28px;
       }
+      .list {
+        margin-left: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .search-bar {
+        margin-left: 0;
+        margin-bottom: 12px;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 8px 12px 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: var(--vscode-editor-background);
+      }
+      .search-box {
+        margin-left: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .search-input {
+        width: 180px;
+      }
+      .search-count {
+        font-size: 12px;
+        min-width: 58px;
+        text-align: center;
+      }
+      .el-button + .el-button {
+        margin-left: 0;
+      }
+      .search-btn {
+        padding: 2px 6px;
+        line-height: 16px;
+      }
+      .search-btn.is-disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .search-hit {
+        background-color: #fdf6ec;
+        color: #e6a23c;
+        border-radius: 2px;
+        padding: 0 1px;
+      }
+      .search-hit-active {
+        background-color: #f56c6c;
+        color: #ffffff;
+      }
+      .item.search-item-active {
+        border-color: #409eff;
+      }
       .list .name,
       .amount {
         display: inline-block;
@@ -33,13 +91,70 @@
       }
       .amount {
         float: right;
-        width: 220px !important;
+        width: 190px !important;
       }
       .name {
         font-size: 14px;
+        margin-left: 0;
       }
       .item {
-        margin-top: 10px;
+        margin-top: 0;
+        margin-left: 0;
+        padding: 10px 8px;
+        width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        border: 1px solid transparent;
+        scroll-margin-top: 72px;
+        border-radius: 8px;
+      }
+      .item-left {
+        margin-left: 0;
+        display: flex;
+        flex-direction: column;
+        flex: 0 1 auto;
+        min-width: 0;
+        max-width: 480px;
+      }
+      .meta {
+        margin-left: 0;
+        font-size: 12px;
+        color: #909399;
+        line-height: 1;
+      }
+      .meta-sep {
+        margin: 0 4px;
+      }
+      .item-right {
+        margin-left: auto;
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        /* flex: 1 1 auto; */
+        min-width: 0;
+      }
+      .item-right .amount {
+        float: none;
+        width: 190px !important;
+      }
+      .item-right .unitDiv {
+        float: none;
+        width: 224px;
+      }
+      .item-right .sellOut {
+        margin-left: 0;
+        float: none;
+        flex-shrink: 0;
+      }
+      .item div,
+      .search-bar div {
+        margin-left: 0;
       }
       .el-input {
         width: 160px;
@@ -54,6 +169,9 @@
         height: 28px;
         width: 120px;
         background-color: #eee;
+      }
+      .el-input__inner.search-input {
+        width: 200px;
       }
       .main {
         margin: 0 auto;
@@ -111,6 +229,27 @@
         margin: 10px auto;
         width: 120px;
       }
+      body.vscode-light .search-count,
+      body.vscode-light .meta {
+        color: #606266;
+      }
+      body.vscode-light .search-hit {
+        background-color: #fdf6ec;
+        color: #e6a23c;
+      }
+      body.vscode-dark .search-count,
+      body.vscode-dark .meta {
+        color: #a6a9ad;
+      }
+      body.vscode-dark .el-input__inner {
+        background-color: #2b2b2b;
+        border-color: #4c4d4f;
+        color: #e5eaf3;
+      }
+      body.vscode-dark .search-hit {
+        background-color: #2b2b2b;
+        color: #e6a23c;
+      }
     </style>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
@@ -165,6 +304,38 @@
       <!-- <p style="font-size: 12px; color: #696666; text-align: center">
         现在填写金额按昨日净值计算，所以今日加仓的建议明日更新持仓金额
       </p> -->
+      <div class="search-bar">
+        <div class="search-box">
+          <input
+            id="searchInput"
+            class="el-input__inner search-input"
+            type="text"
+            placeholder="搜索股票名称/代码"
+          />
+          <span class="search-count" id="searchCount">0 / 0</span>
+          <button
+            class="el-button el-button--info el-button--mini search-btn"
+            id="searchPrev"
+            type="button"
+          >
+            ↑
+          </button>
+          <button
+            class="el-button el-button--info el-button--mini search-btn"
+            id="searchNext"
+            type="button"
+          >
+            ↓
+          </button>
+          <button
+            class="el-button el-button--danger el-button--mini search-btn"
+            id="searchClose"
+            type="button"
+          >
+            清空
+          </button>
+        </div>
+      </div>
       <div class="list"></div>
       <div class="footer">
         <button
@@ -213,6 +384,147 @@
       const list = $('.list');
       let fundList = [];
       let priceDate = new Date().toDateString();
+      let searchMatches = [];
+      let activeMatchIndex = -1;
+      let applySearch = function () {};
+      (function installSearchBeforeInit() {
+        function escapeRegExp(str) {
+          return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function resetSearchHighlights() {
+          $('.list .item-left .name').each(function () {
+            const origin = $(this).attr('data-origin-name');
+            if (origin !== undefined) {
+              $(this).text(origin);
+            }
+          });
+          $('.list .item-left .fund-code').each(function () {
+            const origin = $(this).attr('data-origin-code');
+            if (origin !== undefined) {
+              $(this).text(origin);
+            }
+          });
+          $('.search-item-active').removeClass('search-item-active');
+          $('.search-hit-active').removeClass('search-hit-active');
+        }
+
+        function updateSearchCount() {
+          const searchCount = $('#searchCount');
+          const searchPrev = $('#searchPrev');
+          const searchNext = $('#searchNext');
+          const current = searchMatches.length ? activeMatchIndex + 1 : 0;
+          searchCount.text(current + ' / ' + searchMatches.length);
+          const disabledClass = 'is-disabled';
+          if (searchMatches.length === 0) {
+            searchPrev.addClass(disabledClass);
+            searchNext.addClass(disabledClass);
+          } else {
+            searchPrev.removeClass(disabledClass);
+            searchNext.removeClass(disabledClass);
+          }
+        }
+
+        function scrollToActiveMatch() {
+          if (
+            activeMatchIndex < 0 ||
+            activeMatchIndex >= searchMatches.length
+          ) {
+            return;
+          }
+          const $target = searchMatches[activeMatchIndex];
+          if (!$target || !$target.length) {
+            return;
+          }
+          const hitEl = $target[0];
+          const itemEl =
+            hitEl && typeof hitEl.closest === 'function'
+              ? hitEl.closest('.item')
+              : null;
+          if (!itemEl) {
+            return;
+          }
+          const $item = $(itemEl);
+          $item.addClass('search-item-active');
+          $target.addClass('search-hit-active');
+          try {
+            itemEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } catch (e) {
+            try {
+              itemEl.scrollIntoView();
+            } catch (e2) {}
+          }
+        }
+
+        function collectSearchMatches() {
+          searchMatches = [];
+          $('.list .search-hit').each(function () {
+            searchMatches.push($(this));
+          });
+        }
+
+        function highlightTextByKeyword(text, keyword) {
+          if (!keyword) return text;
+          const regex = new RegExp(escapeRegExp(keyword), 'ig');
+          return text.replace(regex, '<span class="search-hit">$&</span>');
+        }
+
+        applySearch = function () {
+          const searchInput = $('#searchInput');
+          const keyword = (searchInput.val() || '').trim();
+          resetSearchHighlights();
+          activeMatchIndex = -1;
+
+          $('.list .item-left').each(function () {
+            const nameEl = $(this).find('.name');
+            const codeEl = $(this).find('.fund-code');
+            const nameText = nameEl.attr('data-origin-name') || nameEl.text();
+            const codeText = codeEl.attr('data-origin-code') || codeEl.text();
+            nameEl.attr('data-origin-name', nameText);
+            codeEl.attr('data-origin-code', codeText);
+            if (!keyword) {
+              nameEl.text(nameText);
+              codeEl.text(codeText);
+              return;
+            }
+            nameEl.html(highlightTextByKeyword(nameText, keyword));
+            codeEl.html(highlightTextByKeyword(codeText, keyword));
+          });
+
+          collectSearchMatches();
+          if (searchMatches.length > 0) {
+            activeMatchIndex = 0;
+            scrollToActiveMatch();
+          }
+          updateSearchCount();
+        };
+
+        function navigateSearch(step) {
+          if (searchMatches.length === 0) return;
+          $('.search-item-active').removeClass('search-item-active');
+          $('.search-hit-active').removeClass('search-hit-active');
+          activeMatchIndex =
+            (activeMatchIndex + step + searchMatches.length) %
+            searchMatches.length;
+          scrollToActiveMatch();
+          updateSearchCount();
+        }
+
+        $('#searchInput').on('input', function () {
+          applySearch();
+        });
+        $('#searchPrev').on('click', function () {
+          navigateSearch(-1);
+        });
+        $('#searchNext').on('click', function () {
+          navigateSearch(1);
+        });
+        $('#searchClose').on('click', function () {
+          $('#searchInput').val('');
+          applySearch();
+        });
+      })();
+
       window.addEventListener('message', (event) => {
         const msg = event.data;
 
@@ -262,14 +574,26 @@
             priceDate = item.priceDate;
           }
           const str =
-            '<div class="item"><div class="name">' +
+            '<div class="item">' +
+            '<div class="item-left" data-name="' +
             item.name +
-            '（<i class="' +
+            '" data-code="' +
+            item.code +
+            '">' +
+            '<div class="name">' +
+            item.name +
+            '</div>' +
+            '<div class="meta">' +
+            '<span class="fund-code">' +
+            item.code +
+            '</span><span class="meta-sep">|</span><i class="' +
             (earningPercent > 0 ? 'red' : 'green') +
             '">' +
             earningPercent +
-            '%</i>）' +
+            '%</i>' +
             '</div>' +
+            '</div>' +
+            '<div class="item-right">' +
             '<div class="amount el-input">' +
             '持仓股数：<input type="number" class="amountInput el-input__inner" id="' +
             item.code +
@@ -292,8 +616,9 @@
             '<input type="checkbox" id="' +
             item.code +
             '_sell_out" class="el-checkbox" ' +
-             (isSellOut ? "checked" : "") +
+            (isSellOut ? 'checked' : '') +
             ' /><span class="unit">已清仓</span>' +
+            '</div>' +
             '</div>' +
             '</div>';
 
@@ -305,6 +630,7 @@
         });
         list.html(listStr);
         $('#totalMoney').html(totalMoney.toFixed(2));
+        applySearch();
         // $('#priceDate').html(priceDate || '');
         // 收益统计
         if (totalEarnings !== 0) {
