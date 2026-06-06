@@ -27,7 +27,7 @@ Provide a general summary of the issue here
 在这里提供问题的描述，最好能够简洁明了的
 -->
 
-## Current Behavior?
+## 当前问题是什么?
 
 <!---
 Tell us what happens instead of the expected behavior
@@ -41,7 +41,7 @@ If you are seeing an error, please include the full error message and stack trac
 如果你看到了程序错误，请包含完整的错误消息和堆栈跟踪
 -->
 
-## Expected Behavior?
+## 期望的样子?
 
 <!---
 Tell us what should happen
@@ -49,7 +49,7 @@ Tell us what should happen
 告诉我们应该发生什么
 -->
 
-## Steps to reproduce [Optional]
+## 重现步骤或截图
 
 <!---
 If you understand why，I hope you can provide the steps of recurrence
@@ -58,7 +58,7 @@ If you understand why，I hope you can provide the steps of recurrence
 -->
 
 
-##  Your Environment [Optional]
+## 扩展版本号、IDE信息
 
 <!---
 Providing Your Environment helps us come up with a solution that is most useful in the real world
