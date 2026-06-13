@@ -47,9 +47,9 @@
 - **大盘云图**：韭菜中心>大盘云图
 - **个性化定制面板**：高级自定义。状态栏股票自选、显示格式、股票收益格式等可视化配置
 - **股价预警 Webhook 群推送**（企业微信 / 钉钉 / 飞书）
-- **板块行情**：行业 / 概念列表、资金流向、涨幅榜与成分股详情，与大盘云图、自选联动。；详见 [行情中继文档](https://leek.fund/docs/sector-boards)
-- **行情中继**：Pro 用户可在自建服务器部署代理，将股票 / 基金行情请求转至个人中继，应对内网拦截证券 API 或高频监测；详见 [行情中继文档](https://leek.fund/docs/market-data-relay)
-- **LeekAgent**：Chat 输入 `@leek` 或打开右侧 **LeekAgent** 面板，进行快讯摘要、自选 / 持仓概览、标的公开信息解读。详见 [LeekAgent文档](https://leek.fund/docs/leek-agent)
+- **板块行情**：行业 / 概念列表、资金流向、涨幅榜与成分股详情，与大盘云图、自选联动。 [详细文档](https://leek.fund/docs/sector-boards)
+- **行情中继**：Pro 用户可在自建服务器部署代理，将股票 / 基金行情请求转至个人中继，应对内网拦截证券 API 或高频监测； [详细文档](https://leek.fund/docs/market-data-relay)
+- **LeekAgent**：进行快讯摘要、自选 / 持仓概览、标的公开信息解读。 [详细文档](https://leek.fund/docs/leek-agent)
 - **编辑器 Blame 伪装**：在代码文件中以 Git 提交日志样式私密查看持仓股票行情
 
 
