@@ -47,6 +47,7 @@
 - **大盘云图**：韭菜中心>大盘云图
 - **个性化定制面板**：高级自定义。状态栏股票自选、显示格式、股票收益格式等可视化配置
 - **股价预警 Webhook 群推送**（企业微信 / 钉钉 / 飞书）
+- **板块行情**：行业 / 概念列表、资金流向、涨幅榜与成分股详情，与大盘云图、自选联动。；详见 [行情中继文档](https://leek.fund/docs/sector-boards)
 - **行情中继**：Pro 用户可在自建服务器部署代理，将股票 / 基金行情请求转至个人中继，应对内网拦截证券 API 或高频监测；详见 [行情中继文档](https://leek.fund/docs/market-data-relay)
 - **LeekAgent**：Chat 输入 `@leek` 或打开右侧 **LeekAgent** 面板，进行快讯摘要、自选 / 持仓概览、标的公开信息解读。详见 [LeekAgent文档](https://leek.fund/docs/leek-agent)
 - **编辑器 Blame 伪装**：在代码文件中以 Git 提交日志样式私密查看持仓股票行情
@@ -70,17 +71,32 @@
 
 ![概览](./screenshot/overview.png)
 
+### 资产管理
+
 ![资产管理](./screenshot/helding.png)
 
+### 大盘云图
 ![大盘云图](./screenshot/dapanyuntu.png)
+### 板块行情
 
+![板块行情](./screenshot/bkhq.png)
+
+![板块行情](./screenshot/bkhq2.png)
+
+### 数据中心
 ![数据中心](./screenshot/rongzirongjuan.png)
 
+### Blame 伪装
 编辑器 Blame 伪装，相比状态栏与侧边栏查看行情信息更加隐蔽
 
-> 持仓多只股时，鼠标光标依次换行点击即可轮播查看不同持仓股
+> 文件头部
+
+![Blame伪装](./screenshot/blame2.png)
+
+> 文件git message。持仓多只股时，鼠标光标依次换行点击即可轮播查看不同持仓股
 
 ![Blame伪装](./screenshot/blame.png)
+
 
 
 自定义配置在 **Settings** 视图下（Pro 用户可使用可视化个性化定制）：
@@ -88,7 +104,6 @@
 ![](./screenshot/settings.png)
 
 ![](./screenshot/setting-stock.png)
-
 
 
 ## All Thanks To Our Contributors
