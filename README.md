@@ -77,14 +77,16 @@
 
 ### 大盘云图
 ![大盘云图](./screenshot/dapanyuntu.png)
+
 ### 板块行情
 
 ![板块行情](./screenshot/bkhq.png)
 
 ![板块行情](./screenshot/bkhq2.png)
 
-### 数据中心
-![数据中心](./screenshot/rongzirongjuan.png)
+### 个股异动
+
+![个股异动](./screenshot/geguyidong.png)
 
 ### Blame 伪装
 编辑器 Blame 伪装，相比状态栏与侧边栏查看行情信息更加隐蔽
@@ -96,7 +98,6 @@
 > 文件git message。持仓多只股时，鼠标光标依次换行点击即可轮播查看不同持仓股
 
 ![Blame伪装](./screenshot/blame.png)
-
 
 
 自定义配置在 **Settings** 视图下（Pro 用户可使用可视化个性化定制）：
